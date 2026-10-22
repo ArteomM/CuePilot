@@ -14,8 +14,9 @@ jobs:
         include:
           - arch: arm64
             runner: macos-14
+          # Intel builds are cross-compiled on Apple Silicon: the Intel macos-13 runners are retired.
           - arch: x64
-            runner: macos-13
+            runner: macos-14
     runs-on: ${{ matrix.runner }}
     steps:
       - uses: actions/checkout@v4
