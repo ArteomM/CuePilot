@@ -37,9 +37,10 @@ if [ ! -d "$WORK/../whisper.cpp-$WHISPER_TAG" ]; then
   git clone --depth 1 --branch "$WHISPER_TAG" https://github.com/ggml-org/whisper.cpp.git "$WORK/../whisper.cpp-$WHISPER_TAG"
 fi
 # Static libraries: whisper-cli and whisper-server then need no dylibs inside the bundle. Metal is embedded.
+# GGML_NATIVE=OFF: no -march=native, so the Intel build can be cross-compiled on Apple Silicon and runs on any Mac.
 cmake -S "$WORK/../whisper.cpp-$WHISPER_TAG" -B "$WORK/whisper-build" -DCMAKE_BUILD_TYPE=Release \
   -DCMAKE_OSX_ARCHITECTURES="$CMAKE_ARCH" -DCMAKE_OSX_DEPLOYMENT_TARGET=13.0 \
-  -DBUILD_SHARED_LIBS=OFF -DGGML_METAL_EMBED_LIBRARY=ON -DWHISPER_BUILD_TESTS=OFF -DWHISPER_BUILD_SERVER=ON -DWHISPER_SDL2=OFF
+  -DBUILD_SHARED_LIBS=OFF -DGGML_NATIVE=OFF -DGGML_METAL_EMBED_LIBRARY=ON -DWHISPER_BUILD_TESTS=OFF -DWHISPER_BUILD_SERVER=ON -DWHISPER_SDL2=OFF
 cmake --build "$WORK/whisper-build" --config Release -j --target whisper-cli whisper-server
 cp "$WORK/whisper-build/bin/whisper-cli" "$WORK/whisper-build/bin/whisper-server" "$WORK/stage/"
 

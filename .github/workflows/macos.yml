@@ -10,6 +10,7 @@ on:
 jobs:
   build:
     strategy:
+      fail-fast: false
       matrix:
         include:
           - arch: arm64
@@ -24,7 +25,11 @@ jobs:
         with:
           dotnet-version: "8.0.x"
       - name: Build CuePilot.app
-        run: bash apps/CuePilot.Avalonia/macos/build-macos.sh ${{ matrix.arch }}
+        run: bash apps/CuePilot.Avalonia/macos/build-macos.sh ${{ matrix.arch }} 2>&1 | tee build.log
+        shell: bash -o pipefail {0}
+      - name: Show build errors
+        if: failure()
+        run: grep -iE "error|fatal|failed" build.log | tail -30 | sed 's/^/::error::/' || tail -30 build.log | sed 's/^/::error::/'
       - uses: actions/upload-artifact@v4
         with:
           name: CuePilot-mac-${{ matrix.arch }}
