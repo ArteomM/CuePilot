@@ -7,6 +7,9 @@ on:
       - "apps/**"
       - ".github/workflows/macos.yml"
 
+permissions:
+  contents: write
+
 jobs:
   build:
     strategy:
@@ -33,4 +36,24 @@ jobs:
       - uses: actions/upload-artifact@v4
         with:
           name: CuePilot-mac-${{ matrix.arch }}
-          path: dist/macos/*.zip
+          path: |
+            dist/macos/*.zip
+            dist/macos/*.dmg
+
+  release:
+    # The latest installers on the «mac-latest» release page: one .dmg per Mac type, no nested zips.
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          path: dist
+          merge-multiple: true
+      - name: Publish mac-latest release
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh release delete mac-latest --repo "$GITHUB_REPOSITORY" --yes --cleanup-tag || true
+          gh release create mac-latest dist/*.dmg --repo "$GITHUB_REPOSITORY" --target "$GITHUB_SHA" \
+            --title "CuePilot для macOS (последняя сборка)" --prerelease \
+            --notes "arm64 — Mac на Apple Silicon (M1–M4), x64 — Mac на Intel. Как установить: apps/CuePilot.Avalonia/macos/README-tester.md"

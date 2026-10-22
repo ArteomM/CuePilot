@@ -71,4 +71,13 @@ codesign --verify --deep --strict "$APP"
 ZIP="$ROOT/dist/macos/CuePilot-$VERSION-mac-$ARCH.zip"
 rm -f "$ZIP"
 ditto -c -k --keepParent "$APP" "$ZIP"
-echo "[build] done: $ZIP"
+
+# Installer: a disk image with CuePilot.app and a shortcut to «Программы» to drag it onto.
+DMG="$ROOT/dist/macos/CuePilot-$VERSION-mac-$ARCH.dmg"
+DMG_ROOT="$WORK/dmg"
+rm -rf "$DMG_ROOT" "$DMG"
+mkdir -p "$DMG_ROOT"
+cp -R "$APP" "$DMG_ROOT/"
+ln -s /Applications "$DMG_ROOT/Applications"
+hdiutil create -volname "CuePilot $VERSION" -srcfolder "$DMG_ROOT" -fs HFS+ -format UDZO -ov "$DMG" >/dev/null
+echo "[build] done: $ZIP, $DMG"
