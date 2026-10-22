@@ -116,7 +116,15 @@ public partial class MainWindow : Window
             }
         };
         _viewModel.OverlayMoveRequested += (dx, dy) => OnUi(() => MoveOverlay(dx, dy));
-        _viewModel.PermissionConfirmationRequested += () => Dispatcher.UIThread.Invoke(() => PermissionWizardWindow.Run(this, _viewModel.L));
+        if (OperatingSystem.IsMacOS())
+        {
+            // macOS reports its permissions itself: they are checked before each recording, no wizard.
+            _viewModel.PlatformPermissionCheckRequested += () => Dispatcher.UIThread.Invoke(CheckMacPermissions);
+        }
+        else
+        {
+            _viewModel.PermissionConfirmationRequested += () => Dispatcher.UIThread.Invoke(() => PermissionWizardWindow.Run(this, _viewModel.L));
+        }
         _viewModel.ConfirmationRequested += ShowConfirmationDialog;
         _viewModel.NotificationRequested += ShowNotification;
 
@@ -583,6 +591,12 @@ public partial class MainWindow : Window
 
     protected override void OnClosing(WindowClosingEventArgs e)
     {
+        // Quit from the app menu (⌘Q), the Dock or a system shutdown really quits.
+        if (e.CloseReason is WindowCloseReason.ApplicationShutdown or WindowCloseReason.OSShutdown)
+        {
+            _allowRealClose = true;
+        }
+
         if (_allowRealClose || _viewModel == null)
         {
             base.OnClosing(e);

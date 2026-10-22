@@ -2094,21 +2094,22 @@
                         </Grid>
                         <Grid Classes="hotkey" ColumnDefinitions="220,220,220" ToolTip.Tip="{Binding L[TipHotkeyMove]}">
                             <TextBlock Foreground="{Binding SecondaryTextBrush}" VerticalAlignment="Center" TextWrapping="Wrap" Text="{Binding L[HotkeyMove]}" />
-                            <StackPanel Grid.Column="1" Orientation="Horizontal">
-                                <TextBox Width="50" Margin="0,0,6,0" Padding="6,3" Text="{Binding MoveLeftHotkeyText}" />
-                                <TextBox Width="50" Margin="0,0,6,0" Padding="6,3" Text="{Binding MoveRightHotkeyText}" />
-                                <TextBox Width="50" Margin="0,0,6,0" Padding="6,3" Text="{Binding MoveUpHotkeyText}" />
-                                <TextBox Width="50" Padding="6,3" Text="{Binding MoveDownHotkeyText}" />
+                            <!-- Four fields do not fit the 220 px column: they take the hint column too, the hint follows them. -->
+                            <StackPanel Grid.Column="1" Grid.ColumnSpan="2" Orientation="Horizontal">
+                                <TextBox Width="100" Margin="0,0,6,0" Padding="8,3" Text="{Binding MoveLeftHotkeyText}" />
+                                <TextBox Width="100" Margin="0,0,6,0" Padding="8,3" Text="{Binding MoveRightHotkeyText}" />
+                                <TextBox Width="100" Margin="0,0,6,0" Padding="8,3" Text="{Binding MoveUpHotkeyText}" />
+                                <TextBox Width="100" Padding="8,3" Text="{Binding MoveDownHotkeyText}" />
+                                <TextBlock Margin="10,0,0,0" VerticalAlignment="Center" Foreground="{Binding SecondaryTextBrush}" Text="Alt+←→↑↓" />
                             </StackPanel>
-                            <TextBlock Grid.Column="2" Margin="8,0,0,0" VerticalAlignment="Center" Foreground="{Binding SecondaryTextBrush}" Text="Alt+←→↑↓" />
                         </Grid>
                         <Grid Classes="hotkey" ColumnDefinitions="220,220,220" ToolTip.Tip="{Binding L[TipHotkeyScroll]}">
                             <TextBlock Foreground="{Binding SecondaryTextBrush}" VerticalAlignment="Center" Text="{Binding L[HotkeyScroll]}" />
-                            <StackPanel Grid.Column="1" Orientation="Horizontal">
-                                <TextBox Width="90" Margin="0,0,6,0" Text="{Binding ScrollUpHotkeyText}" />
-                                <TextBox Width="90" Text="{Binding ScrollDownHotkeyText}" />
+                            <StackPanel Grid.Column="1" Grid.ColumnSpan="2" Orientation="Horizontal">
+                                <TextBox Width="160" Margin="0,0,6,0" Text="{Binding ScrollUpHotkeyText}" />
+                                <TextBox Width="160" Text="{Binding ScrollDownHotkeyText}" />
+                                <TextBlock Margin="10,0,0,0" VerticalAlignment="Center" Foreground="{Binding SecondaryTextBrush}" Text="Ctrl+Shift+Up/Down" />
                             </StackPanel>
-                            <TextBlock Grid.Column="2" Margin="8,0,0,0" VerticalAlignment="Center" Foreground="{Binding SecondaryTextBrush}" Text="Ctrl+Shift+Up/Down" />
                         </Grid>
                         <Grid Classes="hotkey" ColumnDefinitions="220,220,220" ToolTip.Tip="{Binding L[TipHotkeySnapshot]}">
                             <TextBlock Foreground="{Binding SecondaryTextBrush}" VerticalAlignment="Center" Text="{Binding L[HotkeySnapshot]}" />

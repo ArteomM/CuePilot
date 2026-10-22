@@ -355,6 +355,12 @@ public partial class MainViewModel : ObservableObject
     public event Action? MainWindowAttentionRequested;
     public event Action<int, int>? OverlayMoveRequested;
     public event Func<bool>? PermissionConfirmationRequested;
+
+    /// <summary>
+    /// A platform that can read its permissions itself (macOS) checks them before every recording instead of the
+    /// one-time permission wizard; false cancels the start. Not used on Windows.
+    /// </summary>
+    public event Func<bool>? PlatformPermissionCheckRequested;
     public event Func<string, string, bool>? ConfirmationRequested;
     public event Action<string, string, bool>? NotificationRequested;
 
@@ -1749,7 +1755,15 @@ public partial class MainViewModel : ObservableObject
                 false);
         }
 
-        if (!_permissionsConfirmed)
+        if (PlatformPermissionCheckRequested != null)
+        {
+            if (!PlatformPermissionCheckRequested())
+            {
+                AppendLog("[ui] Capture cancelled: system permissions are missing.");
+                return;
+            }
+        }
+        else if (!_permissionsConfirmed)
         {
             bool confirmed = PermissionConfirmationRequested?.Invoke() == true;
             if (!confirmed)

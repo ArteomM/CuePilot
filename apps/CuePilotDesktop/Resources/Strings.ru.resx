@@ -649,4 +649,8 @@
   <data name="QuestionRemoveConfirmMessage" xml:space="preserve"><value>Вопрос «{0}» и ответ на него будут удалены без возможности восстановления.</value></data>
   <data name="QuestionsRemoveManyConfirmMessage" xml:space="preserve"><value>Удалить выбранные вопросы ({0}) вместе с ответами? Восстановить их будет нельзя.</value></data>
   <data name="QuestionsRemovedFeedback" xml:space="preserve"><value>Удалено вопросов: {0}</value></data>
+  <data name="MacPermissionsTitle" xml:space="preserve"><value>Нужно разрешение macOS</value></data>
+  <data name="MacPermissionMicDenied" xml:space="preserve"><value>CuePilot не слышит ваш голос: доступ к микрофону выключен. Откройте настройки, включите CuePilot в разделе «Микрофон» и снова нажмите «Запустить CuePilot».</value></data>
+  <data name="MacPermissionScreenDenied" xml:space="preserve"><value>Чтобы слышать собеседников, CuePilot нужно разрешение «Запись экрана и системного звука». Откройте настройки, включите CuePilot и перезапустите его: macOS применяет это разрешение только после перезапуска.</value></data>
+  <data name="MacPermissionOpenSettings" xml:space="preserve"><value>Открыть настройки</value></data>
 </root>

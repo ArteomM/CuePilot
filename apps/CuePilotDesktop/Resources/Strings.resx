@@ -649,4 +649,8 @@
   <data name="QuestionRemoveConfirmMessage" xml:space="preserve"><value>The question «{0}» and its answer will be deleted for good.</value></data>
   <data name="QuestionsRemoveManyConfirmMessage" xml:space="preserve"><value>Delete the selected questions ({0}) with their answers? They cannot be restored.</value></data>
   <data name="QuestionsRemovedFeedback" xml:space="preserve"><value>Questions deleted: {0}</value></data>
+  <data name="MacPermissionsTitle" xml:space="preserve"><value>macOS permission needed</value></data>
+  <data name="MacPermissionMicDenied" xml:space="preserve"><value>CuePilot cannot hear your voice: microphone access is off. Open settings, turn CuePilot on under Microphone and press Start again.</value></data>
+  <data name="MacPermissionScreenDenied" xml:space="preserve"><value>To hear the other side of the call, CuePilot needs «Screen &amp; System Audio Recording». Open settings, turn CuePilot on and restart it: macOS applies this permission only after a restart.</value></data>
+  <data name="MacPermissionOpenSettings" xml:space="preserve"><value>Open settings</value></data>
 </root>

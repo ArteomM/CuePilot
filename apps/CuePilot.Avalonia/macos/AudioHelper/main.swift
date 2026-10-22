@@ -2,6 +2,7 @@
 //
 //   cuepilot-audio system   system audio via ScreenCaptureKit (macOS 13+)
 //   cuepilot-audio mic      the default microphone via AVAudioEngine
+//   cuepilot-audio request-mic   asks for microphone access (the macOS prompt) and exits: 0 allowed, 2 not
 //
 // Writes 48 kHz mono 32-bit float PCM to stdout and stops when stdin closes.
 // Exit codes: 0 stopped, 1 error, 2 permission denied, 3 macOS too old, 64 usage.
@@ -229,11 +230,29 @@ func startMicrophone() {
     }
 }
 
+func requestMicrophone() {
+    switch AVCaptureDevice.authorizationStatus(for: .audio) {
+    case .authorized:
+        exit(0)
+    case .notDetermined:
+        AVCaptureDevice.requestAccess(for: .audio) { granted in
+            exit(granted ? 0 : 2)
+        }
+    default:
+        exit(2)
+    }
+}
+
 signal(SIGPIPE, SIG_IGN)
 let arguments = CommandLine.arguments
 guard arguments.count >= 2 else {
-    log("usage: cuepilot-audio system|mic")
+    log("usage: cuepilot-audio system|mic|request-mic")
     exit(64)
+}
+
+if arguments[1] == "request-mic" {
+    requestMicrophone()
+    dispatchMain()
 }
 
 // DesktopCapture closes stdin to stop the stream.
@@ -248,7 +267,7 @@ case "system":
 case "mic":
     startMicrophone()
 default:
-    log("usage: cuepilot-audio system|mic")
+    log("usage: cuepilot-audio system|mic|request-mic")
     exit(64)
 }
 

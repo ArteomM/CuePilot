@@ -62,6 +62,16 @@ public partial class EchoDialog : Window
         return dialog._result;
     }
 
+    /// <summary>A question with its own confirm button text (for example «Открыть настройки»).</summary>
+    public static bool Ask(Window? owner, LocalizationService l, string title, string message, string confirmText)
+    {
+        var dialog = new EchoDialog(owner, title, message);
+        dialog.OkButton.Content = confirmText;
+        dialog.CancelButton.Content = l["DialogCancel"];
+        ModalRunner.Run(dialog, owner);
+        return dialog._result;
+    }
+
     public static void Notify(Window? owner, LocalizationService l, string title, string message, bool isError)
     {
         var dialog = new EchoDialog(owner, title, message);
