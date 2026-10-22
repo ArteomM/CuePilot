@@ -1,0 +1,57 @@
+<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        x:Class="CuePilot.Avalonia.Views.Dialogs.EchoDialog"
+        FontFamily="{StaticResource EchoFont}"
+        FontSize="14"
+        Width="440"
+        SizeToContent="Height"
+        SystemDecorations="None"
+        TransparencyLevelHint="Transparent"
+        Background="Transparent"
+        CanResize="False"
+        ShowInTaskbar="False"
+        WindowStartupLocation="CenterOwner"
+        UseLayoutRounding="True">
+    <!-- Confirmation and error dialog in the «Эхо» style; follows the day/night palette of the app. -->
+    <Border Margin="12"
+            Padding="24,20,20,18"
+            CornerRadius="18"
+            Background="{DynamicResource EchoSurfaceBrush}"
+            BorderBrush="{DynamicResource EchoBorderBrush}"
+            BorderThickness="1"
+            BoxShadow="0 4 24 0 #59000000">
+        <StackPanel>
+            <StackPanel Orientation="Horizontal">
+                <Ellipse x:Name="Marker" Width="10" Height="10" VerticalAlignment="Center" Fill="{DynamicResource EchoAccentBrush}" />
+                <TextBlock x:Name="TitleText"
+                           Margin="10,0,0,0"
+                           FontSize="18"
+                           FontWeight="ExtraBold"
+                           TextWrapping="Wrap"
+                           MaxWidth="360"
+                           Foreground="{DynamicResource EchoTextBrush}" />
+            </StackPanel>
+            <TextBlock x:Name="MessageText"
+                       Margin="0,12,0,0"
+                       FontSize="14"
+                       LineHeight="21"
+                       TextWrapping="Wrap"
+                       Foreground="{DynamicResource EchoMutedBrush}" />
+            <StackPanel Margin="0,20,0,0" HorizontalAlignment="Right" Orientation="Horizontal">
+                <Button x:Name="CancelButton"
+                        Height="38"
+                        MinWidth="110"
+                        Padding="16,0"
+                        IsCancel="True" />
+                <Button x:Name="OkButton"
+                        Classes="accent"
+                        Height="38"
+                        MinWidth="120"
+                        Margin="8,0,0,0"
+                        Padding="18,0"
+                        FontSize="14"
+                        IsDefault="True" />
+            </StackPanel>
+        </StackPanel>
+    </Border>
+</Window>

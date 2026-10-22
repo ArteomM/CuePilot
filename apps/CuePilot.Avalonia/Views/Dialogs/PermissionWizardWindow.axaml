@@ -1,0 +1,30 @@
+<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        x:Class="CuePilot.Avalonia.Views.Dialogs.PermissionWizardWindow"
+        Title="CuePilot"
+        Icon="avares://CuePilot/Assets/cuepilot-icon.png"
+        FontFamily="{StaticResource EchoFont}"
+        FontSize="14"
+        Height="360"
+        Width="640"
+        Background="{DynamicResource EchoBgBrush}"
+        WindowStartupLocation="CenterOwner"
+        CanResize="False">
+    <Grid Margin="16" RowDefinitions="Auto,*,Auto">
+        <TextBlock Name="StepTitleText" FontSize="20" FontWeight="SemiBold" Foreground="{DynamicResource EchoTextBrush}" />
+
+        <Border Grid.Row="1" Margin="0,12,0,12" Background="{DynamicResource EchoSurfaceAltBrush}" CornerRadius="8" Padding="12">
+            <StackPanel>
+                <TextBlock Name="StepDescriptionText" TextWrapping="Wrap" FontSize="14" Foreground="{DynamicResource EchoTextBrush}" />
+                <CheckBox Name="ConfirmCheckBox" Margin="0,16,0,0" Content="..." />
+            </StackPanel>
+        </Border>
+
+        <Grid Grid.Row="2" ColumnDefinitions="*,Auto,Auto,Auto">
+            <TextBlock Name="StepCounterText" VerticalAlignment="Center" Foreground="{DynamicResource EchoMutedBrush}" />
+            <Button Grid.Column="1" Name="BackButton" Width="100" Height="34" Margin="0,0,8,0" />
+            <Button Grid.Column="2" Name="NextButton" Width="100" Height="34" Margin="0,0,8,0" />
+            <Button Grid.Column="3" Name="FinishButton" Width="100" Height="34" />
+        </Grid>
+    </Grid>
+</Window>

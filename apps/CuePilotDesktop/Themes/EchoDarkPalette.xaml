@@ -1,0 +1,35 @@
+<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+    <!-- Ночная палитра «Эха». Дневная задаётся в MainViewModel.ApplyTheme; оверлей и индикатор всегда тёмные. -->
+    <SolidColorBrush x:Key="EchoBgBrush" Color="#0E1116" />
+    <SolidColorBrush x:Key="EchoSurfaceBrush" Color="#171B22" />
+    <SolidColorBrush x:Key="EchoSurfaceAltBrush" Color="#1E242D" />
+    <SolidColorBrush x:Key="EchoBorderBrush" Color="#2A313C" />
+    <SolidColorBrush x:Key="EchoTextBrush" Color="#E9EEF5" />
+    <SolidColorBrush x:Key="EchoMutedBrush" Color="#9AA5B5" />
+    <SolidColorBrush x:Key="EchoSoftTextBrush" Color="#C9D2DE" />
+    <SolidColorBrush x:Key="EchoAccentBrush" Color="#5EF0C1" />
+    <SolidColorBrush x:Key="EchoAccentTextBrush" Color="#5EF0C1" />
+    <SolidColorBrush x:Key="EchoAccentInkBrush" Color="#0E1116" />
+    <SolidColorBrush x:Key="EchoAccentSoftBrush" Color="#14302A" />
+    <SolidColorBrush x:Key="EchoAccentSoftBorderBrush" Color="#245446" />
+    <SolidColorBrush x:Key="EchoBadgeTextBrush" Color="#BFF7E3" />
+    <SolidColorBrush x:Key="EchoHoverBrush" Color="#262D37" />
+    <SolidColorBrush x:Key="EchoHoverBorderBrush" Color="#3A4553" />
+    <SolidColorBrush x:Key="EchoHoverLayerBrush" Color="#FFFFFF" />
+    <SolidColorBrush x:Key="EchoUserBubbleBrush" Color="#243A33" />
+    <SolidColorBrush x:Key="EchoHeaderBrush" Color="#171B22" />
+    <SolidColorBrush x:Key="EchoHeroBrush" Color="#13171D" />
+    <SolidColorBrush x:Key="EchoInputBrush" Color="#12161C" />
+    <SolidColorBrush x:Key="EchoPopupBrush" Color="#F7171B22" />
+    <SolidColorBrush x:Key="EchoTooltipBrush" Color="#F21E242D" />
+    <SolidColorBrush x:Key="EchoCardBorderBrush" Color="#222831" />
+    <SolidColorBrush x:Key="EchoCheckBorderBrush" Color="#5C6878" />
+    <SolidColorBrush x:Key="EchoDangerSoftBrush" Color="#3A2230" />
+    <SolidColorBrush x:Key="EchoDangerBorderBrush" Color="#7B4C5F" />
+    <SolidColorBrush x:Key="EchoDangerTextBrush" Color="#FFD9E0" />
+    <SolidColorBrush x:Key="EchoScrollThumbBrush" Color="#3A4553" />
+    <SolidColorBrush x:Key="EchoScrollThumbHoverBrush" Color="#55606F" />
+    <SolidColorBrush x:Key="EchoSelectedTabBrush" Color="#243A33" />
+    <SolidColorBrush x:Key="EchoDropTargetBrush" Color="#1A3A31" />
+</ResourceDictionary>

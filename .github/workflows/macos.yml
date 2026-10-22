@@ -1,0 +1,30 @@
+name: CuePilot for macOS
+
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - "apps/**"
+      - ".github/workflows/macos.yml"
+
+jobs:
+  build:
+    strategy:
+      matrix:
+        include:
+          - arch: arm64
+            runner: macos-14
+          - arch: x64
+            runner: macos-13
+    runs-on: ${{ matrix.runner }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: "8.0.x"
+      - name: Build CuePilot.app
+        run: bash apps/CuePilot.Avalonia/macos/build-macos.sh ${{ matrix.arch }}
+      - uses: actions/upload-artifact@v4
+        with:
+          name: CuePilot-mac-${{ matrix.arch }}
+          path: dist/macos/*.zip

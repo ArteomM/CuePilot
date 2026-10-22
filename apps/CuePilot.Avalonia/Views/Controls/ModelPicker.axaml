@@ -1,0 +1,133 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             x:Class="CuePilot.Avalonia.Views.Controls.ModelPicker"
+             x:CompileBindings="False"
+             x:Name="Root">
+    <UserControl.Styles>
+        <Style Selector="ListBoxItem.pickerRow">
+            <Setter Property="Focusable" Value="False" />
+            <Setter Property="HorizontalContentAlignment" Value="Stretch" />
+            <Setter Property="Padding" Value="0" />
+            <Setter Property="Template">
+                <ControlTemplate>
+                    <Border Name="Row" Padding="10,6" CornerRadius="8" Background="Transparent" Cursor="Hand">
+                        <ContentPresenter Content="{TemplateBinding Content}" ContentTemplate="{TemplateBinding ContentTemplate}" />
+                    </Border>
+                </ControlTemplate>
+            </Setter>
+        </Style>
+        <Style Selector="ListBoxItem.pickerRow:pointerover /template/ Border#Row">
+            <Setter Property="Background" Value="{DynamicResource EchoHoverBrush}" />
+        </Style>
+        <Style Selector="ListBoxItem.pickerRow:selected /template/ Border#Row">
+            <Setter Property="Background" Value="{DynamicResource EchoAccentSoftBrush}" />
+        </Style>
+        <Style Selector="Button.pickerLink">
+            <Setter Property="Focusable" Value="False" />
+            <Setter Property="Cursor" Value="Hand" />
+            <Setter Property="Foreground" Value="{DynamicResource EchoAccentTextBrush}" />
+            <Setter Property="Template">
+                <ControlTemplate>
+                    <Border Name="Chip" Padding="10,4" CornerRadius="8" Background="Transparent">
+                        <ContentPresenter VerticalAlignment="Center" Content="{TemplateBinding Content}" />
+                    </Border>
+                </ControlTemplate>
+            </Setter>
+        </Style>
+        <Style Selector="Button.pickerLink:pointerover /template/ Border#Chip">
+            <Setter Property="Background" Value="{DynamicResource EchoHoverBrush}" />
+        </Style>
+        <Style Selector="Border#OpenButton">
+            <Setter Property="Background" Value="Transparent" />
+        </Style>
+        <Style Selector="Border#OpenButton:pointerover">
+            <Setter Property="Background" Value="{DynamicResource EchoHoverBrush}" />
+        </Style>
+    </UserControl.Styles>
+    <Grid>
+        <!-- The id is typed freely; the list only helps to pick a correct spelling. -->
+        <TextBox x:Name="Box" Padding="12,0,38,0" VerticalContentAlignment="Center" />
+        <Border x:Name="OpenButton"
+                Width="30"
+                Margin="0,2,4,2"
+                HorizontalAlignment="Right"
+                CornerRadius="9"
+                Cursor="Hand"
+                ToolTip.Tip="{Binding L[TipModelPickerOpen]}">
+            <Path HorizontalAlignment="Center"
+                  VerticalAlignment="Center"
+                  Data="M 0,0 L 4.5,4.5 L 9,0"
+                  Stroke="{DynamicResource EchoMutedBrush}"
+                  StrokeThickness="1.6"
+                  StrokeLineCap="Round"
+                  StrokeJoin="Round" />
+        </Border>
+        <Popup x:Name="DropDown"
+               PlacementTarget="{Binding #Box}"
+               Placement="Bottom"
+               VerticalOffset="4"
+               IsLightDismissEnabled="True">
+            <Border Width="{Binding #Root.Bounds.Width}"
+                    Padding="4"
+                    CornerRadius="12"
+                    Background="{DynamicResource EchoPopupBrush}"
+                    BorderBrush="{DynamicResource EchoBorderBrush}"
+                    BorderThickness="1">
+                <DockPanel>
+                    <Grid DockPanel.Dock="Bottom" Margin="8,6,0,2" ColumnDefinitions="*,Auto">
+                        <TextBlock x:Name="StatusLine"
+                                   VerticalAlignment="Center"
+                                   FontSize="12"
+                                   TextWrapping="Wrap"
+                                   Foreground="{DynamicResource EchoMutedBrush}" />
+                        <Button x:Name="RefreshButton"
+                                Grid.Column="1"
+                                Margin="8,0,0,0"
+                                FontSize="12.5"
+                                Classes="pickerLink"
+                                ToolTip.Tip="{Binding L[TipModelPickerRefresh]}"
+                                Content="{Binding L[ModelPickerRefresh]}" />
+                    </Grid>
+                    <TextBlock x:Name="EmptyLine"
+                               DockPanel.Dock="Top"
+                               Margin="10,8"
+                               FontSize="12.5"
+                               TextWrapping="Wrap"
+                               Foreground="{DynamicResource EchoMutedBrush}"
+                               Text="{Binding L[ModelPickerNoMatch]}"
+                               IsVisible="False" />
+                    <ListBox x:Name="List"
+                             MaxHeight="300"
+                             Background="Transparent"
+                             BorderThickness="0"
+                             Focusable="False"
+                             ScrollViewer.HorizontalScrollBarVisibility="Disabled">
+                        <ListBox.ItemTemplate>
+                            <DataTemplate>
+                                <StackPanel>
+                                    <TextBlock FontSize="13.5"
+                                               TextTrimming="CharacterEllipsis"
+                                               Foreground="{DynamicResource EchoTextBrush}"
+                                               Classes.recommended="{Binding IsRecommended}"
+                                               Text="{Binding Id}">
+                                        <TextBlock.Styles>
+                                            <Style Selector="TextBlock.recommended">
+                                                <Setter Property="FontWeight" Value="SemiBold" />
+                                            </Style>
+                                        </TextBlock.Styles>
+                                    </TextBlock>
+                                    <TextBlock Margin="0,1,0,0"
+                                               FontSize="12"
+                                               TextTrimming="CharacterEllipsis"
+                                               Foreground="{DynamicResource EchoMutedBrush}"
+                                               IsVisible="{Binding Note, Converter={x:Static StringConverters.IsNotNullOrEmpty}}"
+                                               Text="{Binding Note}" />
+                                </StackPanel>
+                            </DataTemplate>
+                        </ListBox.ItemTemplate>
+                    </ListBox>
+                </DockPanel>
+            </Border>
+        </Popup>
+    </Grid>
+</UserControl>

@@ -1,0 +1,37 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <!--
+    Installer stub. Targets .NET Framework 4.8 (built into Windows 10/11), so the setup runs on a clean
+    machine; the app itself is published self-contained into payload.zip by build\build-installer.cmd.
+  -->
+  <PropertyGroup>
+    <OutputType>WinExe</OutputType>
+    <TargetFramework>net48</TargetFramework>
+    <LangVersion>latest</LangVersion>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>disable</ImplicitUsings>
+    <AssemblyName>SetupCuePilot</AssemblyName>
+    <RootNamespace>SetupCuePilot</RootNamespace>
+    <ApplicationIcon>..\..\apps\CuePilotDesktop\cuepilot-favicon.ico</ApplicationIcon>
+    <ApplicationManifest>app.manifest</ApplicationManifest>
+    <Version>1.0.4</Version>
+    <AssemblyVersion>1.0.4.0</AssemblyVersion>
+    <FileVersion>1.0.4.0</FileVersion>
+    <Product>CuePilot</Product>
+    <AssemblyTitle>CuePilot Setup</AssemblyTitle>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.NETFramework.ReferenceAssemblies" Version="1.0.3" PrivateAssets="all" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.IO.Compression" />
+    <Reference Include="System.IO.Compression.FileSystem" />
+    <Reference Include="System.Windows.Forms" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <EmbeddedResource Include="payload.zip" LogicalName="payload.zip" />
+    <EmbeddedResource Include="..\..\apps\CuePilotDesktop\Assets\Fonts\Manrope-Medium.ttf" LogicalName="Manrope-Medium.ttf" />
+    <EmbeddedResource Include="..\..\apps\CuePilotDesktop\Assets\Fonts\Manrope-Bold.ttf" LogicalName="Manrope-Bold.ttf" />
+  </ItemGroup>
+</Project>

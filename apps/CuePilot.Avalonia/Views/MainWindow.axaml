@@ -1,0 +1,2131 @@
+<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:controls="using:CuePilot.Avalonia.Views.Controls"
+        xmlns:vm="using:CuePilotDesktop.ViewModels"
+        xmlns:models="using:CuePilotDesktop.Models"
+        x:Class="CuePilot.Avalonia.Views.MainWindow"
+        x:CompileBindings="False"
+        Title="{Binding L[MainWindowTitle]}"
+        Icon="avares://CuePilot/Assets/cuepilot-icon.png"
+        Background="{Binding WindowBackgroundBrush}"
+        FontFamily="{StaticResource EchoFont}"
+        FontSize="14"
+        UseLayoutRounding="True"
+        Height="860"
+        Width="1280"
+        MinHeight="680"
+        MinWidth="980">
+    <Window.Styles>
+        <Style Selector="ListBox">
+            <Setter Property="Padding" Value="0" />
+        </Style>
+        <!-- Hidden (not collapsed) while selecting several: the row keeps its width. -->
+        <Style Selector="Button.hoverReveal.selecting">
+            <Setter Property="Opacity" Value="0" />
+            <Setter Property="IsHitTestVisible" Value="False" />
+        </Style>
+        <Style Selector="Button.hoverReveal.pending">
+            <Setter Property="Opacity" Value="0" />
+            <Setter Property="IsHitTestVisible" Value="False" />
+        </Style>
+        <Style Selector="CheckBox.reserved">
+            <Setter Property="Opacity" Value="0" />
+            <Setter Property="IsHitTestVisible" Value="False" />
+        </Style>
+        <!-- Back: faded on Home where it does nothing. -->
+        <Style Selector="Button#BackButton:disabled">
+            <Setter Property="Opacity" Value="0.6" />
+        </Style>
+        <!-- Screen-share badge: mint while hidden from the share, plain while visible to it. -->
+        <Style Selector="Border#ShareBadge">
+            <Setter Property="Background" Value="{DynamicResource EchoAccentSoftBrush}" />
+            <Setter Property="BorderBrush" Value="{DynamicResource EchoAccentSoftBorderBrush}" />
+        </Style>
+        <Style Selector="Border#ShareBadge.shown">
+            <Setter Property="Background" Value="{DynamicResource EchoSurfaceBrush}" />
+            <Setter Property="BorderBrush" Value="{DynamicResource EchoBorderBrush}" />
+        </Style>
+        <Style Selector="Ellipse#ShareBadgeHalo">
+            <Setter Property="Fill" Value="{DynamicResource EchoAccentBrush}" />
+            <Style.Animations>
+                <Animation Duration="0:0:2.2" IterationCount="Infinite">
+                    <KeyFrame Cue="0%">
+                        <Setter Property="Opacity" Value="0.45" />
+                        <Setter Property="ScaleTransform.ScaleX" Value="0.6" />
+                        <Setter Property="ScaleTransform.ScaleY" Value="0.6" />
+                    </KeyFrame>
+                    <KeyFrame Cue="100%">
+                        <Setter Property="Opacity" Value="0" />
+                        <Setter Property="ScaleTransform.ScaleX" Value="1.4" />
+                        <Setter Property="ScaleTransform.ScaleY" Value="1.4" />
+                    </KeyFrame>
+                </Animation>
+            </Style.Animations>
+        </Style>
+        <Style Selector="Ellipse#ShareBadgeHalo.shown">
+            <Setter Property="IsVisible" Value="False" />
+        </Style>
+        <Style Selector="Ellipse#ShareBadgeDot">
+            <Setter Property="Fill" Value="{DynamicResource EchoAccentBrush}" />
+        </Style>
+        <Style Selector="Ellipse#ShareBadgeDot.shown">
+            <Setter Property="Fill" Value="{DynamicResource EchoMutedBrush}" />
+        </Style>
+        <!-- «Что нового» pill. -->
+        <Style Selector="Button#WhatsNewButton">
+            <Setter Property="Template">
+                <ControlTemplate>
+                    <Border Name="PillBorder"
+                            Background="{DynamicResource EchoSurfaceBrush}"
+                            BorderBrush="{DynamicResource EchoBorderBrush}"
+                            BorderThickness="1"
+                            CornerRadius="16">
+                        <Grid>
+                            <Border Name="HoverLayer" CornerRadius="16" Background="{DynamicResource EchoHoverLayerBrush}" Opacity="0">
+                                <Border.Transitions>
+                                    <Transitions>
+                                        <DoubleTransition Property="Opacity" Duration="0:0:0.2" />
+                                    </Transitions>
+                                </Border.Transitions>
+                            </Border>
+                            <StackPanel Orientation="Horizontal" Margin="{TemplateBinding Padding}" VerticalAlignment="Center">
+                                <Ellipse Width="7" Height="7" Fill="{DynamicResource EchoAccentBrush}" VerticalAlignment="Center" />
+                                <ContentPresenter Margin="9,0,0,0"
+                                                  VerticalAlignment="Center"
+                                                  Content="{TemplateBinding Content}"
+                                                  Foreground="{TemplateBinding Foreground}" />
+                            </StackPanel>
+                        </Grid>
+                    </Border>
+                </ControlTemplate>
+            </Setter>
+        </Style>
+        <Style Selector="Button#WhatsNewButton:pointerover /template/ Border#PillBorder">
+            <Setter Property="BorderBrush" Value="{DynamicResource EchoAccentSoftBorderBrush}" />
+        </Style>
+        <Style Selector="Button#WhatsNewButton:pointerover /template/ Border#HoverLayer">
+            <Setter Property="Opacity" Value="0.05" />
+        </Style>
+        <!-- Topic rows: drop target and the «Все сессии» / «Без темы» rows. -->
+        <Style Selector="Border.topicRow.dropTarget">
+            <Setter Property="Background" Value="{DynamicResource EchoDropTargetBrush}" />
+            <Setter Property="BorderBrush" Value="{DynamicResource EchoAccentBrush}" />
+        </Style>
+        <Style Selector="TextBlock.topicName.special">
+            <Setter Property="Foreground" Value="{DynamicResource EchoSoftTextBrush}" />
+        </Style>
+        <Style Selector="TextBlock.renamable">
+            <Setter Property="Cursor" Value="IBeam" />
+        </Style>
+        <!-- Status lines that turn mint while something is out of date. -->
+        <Style Selector="TextBlock.staleStatus">
+            <Setter Property="Foreground" Value="{DynamicResource EchoMutedBrush}" />
+        </Style>
+        <Style Selector="TextBlock.staleStatus.stale">
+            <Setter Property="Foreground" Value="{DynamicResource EchoAccentTextBrush}" />
+            <Setter Property="FontWeight" Value="SemiBold" />
+        </Style>
+        <Style Selector="TextBlock.knowledgeStatus">
+            <Setter Property="Foreground" Value="{DynamicResource EchoMutedBrush}" />
+        </Style>
+        <Style Selector="TextBlock.knowledgeStatus.fresh, TextBlock.knowledgeStatus.changed">
+            <Setter Property="Foreground" Value="{DynamicResource EchoAccentTextBrush}" />
+        </Style>
+        <Style Selector="TextBlock.knowledgeStatus.failed">
+            <Setter Property="Foreground" Value="{DynamicResource EchoDangerTextBrush}" />
+        </Style>
+        <!-- Question cards: the chevron turns while the answer is open. -->
+        <Style Selector="Path.chevron">
+            <Setter Property="RenderTransform" Value="none" />
+        </Style>
+        <Style Selector="Path.chevron.expanded">
+            <Setter Property="RenderTransform" Value="rotate(90deg)" />
+        </Style>
+        <!-- Usage cost rows: the total stands out. -->
+        <Style Selector="TextBlock.costLabel.total">
+            <Setter Property="Foreground" Value="{DynamicResource EchoTextBrush}" />
+            <Setter Property="FontWeight" Value="Bold" />
+        </Style>
+        <Style Selector="TextBlock.costValue.total">
+            <Setter Property="Foreground" Value="{DynamicResource EchoAccentTextBrush}" />
+            <Setter Property="FontWeight" Value="Bold" />
+        </Style>
+        <!-- Session tabs: pill tabs with a mint border on the selected one. -->
+        <Style Selector="TabControl#SessionTabs">
+            <Setter Property="Padding" Value="0" />
+            <Setter Property="Template">
+                <ControlTemplate>
+                    <Border Background="{TemplateBinding Background}"
+                            BorderBrush="{TemplateBinding BorderBrush}"
+                            BorderThickness="1"
+                            CornerRadius="0">
+                        <DockPanel>
+                            <ItemsPresenter Name="PART_ItemsPresenter"
+                                            DockPanel.Dock="Top"
+                                            Margin="10,8,0,4"
+                                            ItemsPanel="{TemplateBinding ItemsPanel}" />
+                            <ContentPresenter Name="PART_SelectedContentHost"
+                                              Content="{TemplateBinding SelectedContent}"
+                                              ContentTemplate="{TemplateBinding SelectedContentTemplate}" />
+                        </DockPanel>
+                    </Border>
+                </ControlTemplate>
+            </Setter>
+        </Style>
+        <Style Selector="TabControl#SessionTabs > TabItem">
+            <Setter Property="Foreground" Value="{Binding $parent[Window].DataContext.PrimaryTextBrush}" />
+            <Setter Property="Background" Value="{DynamicResource EchoSurfaceAltBrush}" />
+            <Setter Property="BorderBrush" Value="{DynamicResource EchoBorderBrush}" />
+            <Setter Property="BorderThickness" Value="1" />
+            <Setter Property="Cursor" Value="Hand" />
+            <Setter Property="Padding" Value="12,5" />
+            <Setter Property="Margin" Value="0,0,8,0" />
+            <Setter Property="MinHeight" Value="0" />
+            <Setter Property="FontSize" Value="14" />
+            <Setter Property="Template">
+                <ControlTemplate>
+                    <Border Name="TabBorder"
+                            Background="{TemplateBinding Background}"
+                            BorderBrush="{TemplateBinding BorderBrush}"
+                            BorderThickness="{TemplateBinding BorderThickness}"
+                            CornerRadius="8">
+                        <ContentPresenter Name="PART_ContentPresenter"
+                                          Content="{TemplateBinding Header}"
+                                          Foreground="{TemplateBinding Foreground}"
+                                          HorizontalAlignment="Center"
+                                          VerticalAlignment="Center"
+                                          Margin="{TemplateBinding Padding}" />
+                    </Border>
+                </ControlTemplate>
+            </Setter>
+        </Style>
+        <Style Selector="TabControl#SessionTabs > TabItem:selected /template/ Border#TabBorder">
+            <Setter Property="Background" Value="{DynamicResource EchoSelectedTabBrush}" />
+            <Setter Property="BorderBrush" Value="{DynamicResource EchoAccentBrush}" />
+        </Style>
+        <Style Selector="TabControl#SessionTabs > TabItem:pointerover /template/ Border#TabBorder">
+            <Setter Property="Opacity" Value="0.93" />
+        </Style>
+        <Style Selector="ListBox#ModesList ListBoxItem TextBlock.modeCheck">
+            <Setter Property="IsVisible" Value="False" />
+        </Style>
+        <Style Selector="ListBox#ModesList ListBoxItem:selected TextBlock.modeCheck">
+            <Setter Property="IsVisible" Value="True" />
+        </Style>
+        <Style Selector="ProgressBar">
+            <Setter Property="Foreground" Value="{DynamicResource EchoAccentBrush}" />
+            <Setter Property="Background" Value="{DynamicResource EchoSurfaceAltBrush}" />
+            <Setter Property="MinHeight" Value="0" />
+        </Style>
+    </Window.Styles>
+
+    <Grid RowDefinitions="Auto,*">
+        <Border Padding="10,8"
+                Background="{DynamicResource EchoHeaderBrush}"
+                BorderBrush="{DynamicResource EchoBorderBrush}"
+                BorderThickness="0,0,0,1">
+            <Grid ColumnDefinitions="Auto,*,Auto">
+                <!-- Back: an accent pill with an arrow and a label, so it stands out inside a session; faded on Home where it does nothing. -->
+                <Button x:Name="BackButton"
+                        Classes="accent"
+                        Height="34"
+                        Padding="12,0,16,0"
+                        Command="{Binding GoHomeCommand}"
+                        ToolTip.Tip="{Binding L[TipGoHome]}"
+                        ToolTip.ShowOnDisabled="True">
+                    <StackPanel Orientation="Horizontal">
+                        <Path Width="16"
+                              Height="14"
+                              VerticalAlignment="Center"
+                              Stretch="Uniform"
+                              Stroke="{Binding $parent[Button].Foreground}"
+                              StrokeThickness="2.2"
+                              StrokeLineCap="Round"
+                              StrokeJoin="Round"
+                              Data="M 7,1 L 1,7 L 7,13 M 1,7 L 15,7" />
+                        <TextBlock Margin="8,0,0,0"
+                                   VerticalAlignment="Center"
+                                   FontSize="14"
+                                   FontWeight="Bold"
+                                   Text="{Binding L[GoBack]}" />
+                    </StackPanel>
+                </Button>
+
+                <TextBox Grid.Column="1"
+                         Margin="14,0"
+                         Height="34"
+                         VerticalContentAlignment="Center"
+                         Foreground="{Binding SecondaryTextBrush}"
+                         ToolTip.Tip="{Binding L[TipSearch]}"
+                         Text="{Binding SessionQuery}" />
+
+                <StackPanel Grid.Column="2" Orientation="Horizontal">
+                    <Button Width="36"
+                            Height="34"
+                            Margin="0,0,8,0"
+                            Padding="0"
+                            FontSize="15"
+                            Command="{Binding ToggleThemeCommand}"
+                            ToolTip.Tip="{Binding L[TipToggleTheme]}">
+                        <Grid Width="18" Height="18">
+                            <!-- Night theme: a sun (switch to day). -->
+                            <Canvas Width="18" Height="18" IsVisible="{Binding IsDarkTheme}">
+                                <Ellipse Canvas.Left="5" Canvas.Top="5" Width="8" Height="8" Fill="{DynamicResource EchoTextBrush}" />
+                                <Path Stroke="{DynamicResource EchoTextBrush}" StrokeThickness="1.6" StrokeLineCap="Round"
+                                      Data="M9,1 L9,2.6 M9,15.4 L9,17 M1,9 L2.6,9 M15.4,9 L17,9 M3.3,3.3 L4.5,4.5 M13.5,13.5 L14.7,14.7 M3.3,14.7 L4.5,13.5 M13.5,4.5 L14.7,3.3" />
+                            </Canvas>
+                            <!-- Day theme: a crescent moon (switch to night). -->
+                            <Path IsVisible="{Binding IsLightTheme}"
+                                  Fill="{DynamicResource EchoTextBrush}"
+                                  Data="M11.5,2 A7,7 0 1 0 16,12.5 A5.6,5.6 0 1 1 11.5,2 Z" />
+                        </Grid>
+                    </Button>
+                    <Button Width="180"
+                            Height="34"
+                            Margin="0,0,8,0"
+                            Command="{Binding OpenModesCommand}"
+                            ToolTip.Tip="{Binding L[TipModes]}"
+                            Content="{Binding ModesButtonText}" />
+                    <Button Width="110"
+                            Height="34"
+                            Command="{Binding OpenSettingsCommand}"
+                            ToolTip.Tip="{Binding L[TipSettings]}"
+                            Content="{Binding L[SettingsTab]}" />
+                </StackPanel>
+            </Grid>
+        </Border>
+
+        <!-- Pages: one is shown at a time (TabControl with hidden tabs on Windows). -->
+        <Panel Grid.Row="1" x:Name="MainPages">
+            <Grid x:Name="HomePage"
+                  RowDefinitions="Auto,*"
+                  IsVisible="{Binding SelectedMainPage, Converter={x:Static controls:EqualsConverter.Instance}, ConverterParameter=Home}">
+
+                <!-- Compact hero: logo, status pills and the main action in one row. -->
+                <Border Background="{DynamicResource EchoHeroBrush}" BorderBrush="{DynamicResource EchoBorderBrush}" BorderThickness="0,0,0,1">
+                    <Grid Margin="24,12,28,12" ColumnDefinitions="Auto,Auto,Auto,*,Auto">
+                        <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+                            <controls:EchoLogo Width="42"
+                                               Height="42"
+                                               Margin="-4,0,4,0"
+                                               IsAnimating="{Binding IsCapturing}" />
+                            <TextBlock FontSize="26" FontWeight="ExtraBold" VerticalAlignment="Center" Foreground="{DynamicResource EchoTextBrush}"><Run Text="Cue" /><Run Foreground="{DynamicResource EchoAccentTextBrush}" Text="Pilot" /></TextBlock>
+                        </StackPanel>
+
+                        <Border x:Name="ShareBadge"
+                                Grid.Column="1"
+                                Margin="22,0,0,0"
+                                Height="32"
+                                Padding="12,0"
+                                CornerRadius="16"
+                                VerticalAlignment="Center"
+                                BorderThickness="1"
+                                Classes.shown="{Binding ShowInScreenShare}"
+                                ToolTip.Tip="{Binding L[ScreenShareBadgeHint]}">
+                            <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+                                <Grid Width="14" Height="14" VerticalAlignment="Center">
+                                    <Ellipse x:Name="ShareBadgeHalo"
+                                             Width="14"
+                                             Height="14"
+                                             Opacity="0.35"
+                                             RenderTransformOrigin="0.5,0.5"
+                                             Classes.shown="{Binding ShowInScreenShare}">
+                                        <Ellipse.RenderTransform>
+                                            <ScaleTransform />
+                                        </Ellipse.RenderTransform>
+                                    </Ellipse>
+                                    <Ellipse x:Name="ShareBadgeDot" Width="8" Height="8" Classes.shown="{Binding ShowInScreenShare}" />
+                                </Grid>
+                                <Panel Margin="9,0,0,0" VerticalAlignment="Center">
+                                    <TextBlock FontSize="13"
+                                               FontWeight="SemiBold"
+                                               Foreground="{DynamicResource EchoBadgeTextBrush}"
+                                               Text="{Binding L[HiddenFromShareBadge]}"
+                                               IsVisible="{Binding !ShowInScreenShare}" />
+                                    <TextBlock FontSize="13"
+                                               FontWeight="SemiBold"
+                                               Foreground="{DynamicResource EchoSoftTextBrush}"
+                                               Text="{Binding L[DetectableBadge]}"
+                                               IsVisible="{Binding ShowInScreenShare}" />
+                                </Panel>
+                            </StackPanel>
+                        </Border>
+
+                        <Button x:Name="WhatsNewButton"
+                                Grid.Column="2"
+                                Margin="10,0,0,0"
+                                Height="32"
+                                VerticalAlignment="Center"
+                                Padding="12,0"
+                                FontSize="13"
+                                Foreground="{DynamicResource EchoSoftTextBrush}"
+                                ToolTip.Tip="{Binding L[TipWhatsNew]}"
+                                Command="{Binding ToggleWhatsNewCommand}">
+                            <TextBlock FontWeight="SemiBold" Text="{Binding WhatsNewButtonText}" />
+                        </Button>
+                        <Popup IsOpen="{Binding IsWhatsNewOpen, Mode=TwoWay}"
+                               PlacementTarget="{Binding #WhatsNewButton}"
+                               Placement="Bottom"
+                               VerticalOffset="10"
+                               IsLightDismissEnabled="True">
+                            <Border Width="440"
+                                    Padding="20,18"
+                                    CornerRadius="18"
+                                    Background="{DynamicResource EchoPopupBrush}"
+                                    BorderBrush="{DynamicResource EchoBorderBrush}"
+                                    BorderThickness="1">
+                                <StackPanel>
+                                    <DockPanel LastChildFill="False">
+                                        <Button DockPanel.Dock="Right"
+                                                Width="28"
+                                                Height="24"
+                                                Margin="10,0,0,0"
+                                                Padding="0"
+                                                Command="{Binding CloseWhatsNewCommand}"
+                                                ToolTip.Tip="{Binding L[TipClose]}"
+                                                Content="✕" />
+                                        <TextBlock Foreground="{Binding PrimaryTextBrush}"
+                                                   FontSize="18"
+                                                   FontWeight="ExtraBold"
+                                                   Text="{Binding WhatsNewTitle}" />
+                                    </DockPanel>
+                                    <TextBlock Margin="0,12,0,0"
+                                               Foreground="{Binding SecondaryTextBrush}"
+                                               FontSize="14"
+                                               LineHeight="22"
+                                               TextWrapping="Wrap"
+                                               Text="{Binding L[WhatsNewBody]}" />
+                                </StackPanel>
+                            </Border>
+                        </Popup>
+
+                        <Button Grid.Column="4"
+                                Classes="accent"
+                                MinWidth="200"
+                                Height="44"
+                                VerticalAlignment="Center"
+                                FontSize="16"
+                                Command="{Binding StartCaptureCommand}"
+                                ToolTip.Tip="{Binding L[TipStartCapture]}"
+                                Content="{Binding L[StartCuePilot]}" />
+                    </Grid>
+                </Border>
+
+                <Grid Grid.Row="1" Background="{DynamicResource EchoBgBrush}" ColumnDefinitions="240,*">
+                    <!-- Topics: drop sessions on a row to group them. -->
+                    <Border BorderBrush="{DynamicResource EchoBorderBrush}" BorderThickness="0,0,1,0" Padding="14,18,12,14">
+                        <DockPanel>
+                            <TextBlock DockPanel.Dock="Top"
+                                       Margin="10,0,0,10"
+                                       FontSize="12"
+                                       FontWeight="Bold"
+                                       Foreground="{DynamicResource EchoMutedBrush}"
+                                       Text="{Binding L[TopicsTitle]}" />
+                            <StackPanel DockPanel.Dock="Bottom">
+                                <TextBlock Margin="10,10,4,10"
+                                           FontSize="12"
+                                           TextWrapping="Wrap"
+                                           Foreground="{DynamicResource EchoMutedBrush}"
+                                           Text="{Binding L[TopicsDragHint]}" />
+                                <Button Height="36"
+                                        HorizontalAlignment="Stretch"
+                                        Command="{Binding CreateTopicCommand}"
+                                        ToolTip.Tip="{Binding L[TipCreateTopic]}"
+                                        Content="{Binding L[TopicCreate]}" />
+                            </StackPanel>
+                            <ListBox ItemsSource="{Binding TopicItems}"
+                                     SelectedItem="{Binding SelectedTopicItem, Mode=TwoWay}"
+                                     controls:ItemContainer.Classes="topic"
+                                     Background="Transparent"
+                                     BorderThickness="0"
+                                     ScrollViewer.HorizontalScrollBarVisibility="Disabled">
+                                <ListBox.ItemTemplate>
+                                    <DataTemplate>
+                                        <Border Classes="topicRow"
+                                                Classes.dropTarget="{Binding IsDropTarget}"
+                                                Padding="10,8"
+                                                CornerRadius="10"
+                                                Background="Transparent"
+                                                BorderThickness="1"
+                                                BorderBrush="Transparent"
+                                                DragDrop.AllowDrop="{Binding AcceptsDrop}"
+                                                ToolTip.Tip="{Binding $parent[Window].DataContext.L[TipTopicRow]}">
+                                            <Grid ColumnDefinitions="*,Auto,Auto">
+                                                <TextBlock Classes="topicName"
+                                                           Classes.special="{Binding !IsTopic}"
+                                                           FontSize="14"
+                                                           FontWeight="SemiBold"
+                                                           TextTrimming="CharacterEllipsis"
+                                                           Foreground="{DynamicResource EchoTextBrush}"
+                                                           Text="{Binding Name}" />
+                                                <Ellipse Grid.Column="1"
+                                                         Width="7"
+                                                         Height="7"
+                                                         Margin="8,0,0,0"
+                                                         VerticalAlignment="Center"
+                                                         Fill="{DynamicResource EchoAccentBrush}"
+                                                         ToolTip.Tip="{Binding $parent[Window].DataContext.L[TipTopicStale]}"
+                                                         IsVisible="{Binding IsStale}" />
+                                                <TextBlock Grid.Column="2"
+                                                           Margin="8,0,0,0"
+                                                           FontSize="12.5"
+                                                           FontWeight="SemiBold"
+                                                           VerticalAlignment="Center"
+                                                           Foreground="{DynamicResource EchoMutedBrush}"
+                                                           Text="{Binding SessionCount}" />
+                                            </Grid>
+                                        </Border>
+                                    </DataTemplate>
+                                </ListBox.ItemTemplate>
+                            </ListBox>
+                        </DockPanel>
+                    </Border>
+
+                    <Grid Grid.Column="1" Margin="28,18,28,14" RowDefinitions="Auto,Auto,*">
+                        <Grid ColumnDefinitions="*,Auto">
+                            <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+                                <TextBlock x:Name="TopicTitleText"
+                                           FontSize="24"
+                                           FontWeight="ExtraBold"
+                                           VerticalAlignment="Center"
+                                           Foreground="{DynamicResource EchoTextBrush}"
+                                           MaxWidth="460"
+                                           TextTrimming="CharacterEllipsis"
+                                           Classes.renamable="{Binding IsTopicSelected}"
+                                           IsVisible="{Binding !IsEditingTopicName}"
+                                           Text="{Binding LibraryTitle}" />
+                                <TextBox x:Name="TopicNameEditTextBox"
+                                         Width="360"
+                                         Height="38"
+                                         FontSize="18"
+                                         VerticalContentAlignment="Center"
+                                         Text="{Binding EditableTopicName}"
+                                         IsVisible="{Binding IsEditingTopicName}" />
+                                <Border Margin="12,0,0,0"
+                                        Padding="10,3"
+                                        VerticalAlignment="Center"
+                                        CornerRadius="11"
+                                        Background="{DynamicResource EchoSurfaceAltBrush}">
+                                    <TextBlock FontSize="12.5" FontWeight="SemiBold" Foreground="{DynamicResource EchoMutedBrush}" Text="{Binding VisibleSessionsCount}" />
+                                </Border>
+                                <StackPanel Orientation="Horizontal" IsVisible="{Binding IsTopicSelected}">
+                                    <Button Classes="ghost"
+                                            Margin="10,0,0,0"
+                                            Height="32"
+                                            Command="{Binding StartRenameTopicCommand}"
+                                            ToolTip.Tip="{Binding L[TipRenameTopic]}"
+                                            Content="{Binding L[TopicRename]}" />
+                                    <Button Classes="ghost"
+                                            Margin="2,0,0,0"
+                                            Height="32"
+                                            Command="{Binding DeleteTopicCommand}"
+                                            ToolTip.Tip="{Binding L[TipDeleteTopic]}"
+                                            Content="{Binding L[TopicDelete]}" />
+                                </StackPanel>
+                            </StackPanel>
+
+                            <StackPanel Grid.Column="1" Orientation="Horizontal" VerticalAlignment="Center">
+                                <TextBlock Margin="0,0,12,0"
+                                           VerticalAlignment="Center"
+                                           FontWeight="SemiBold"
+                                           Foreground="{DynamicResource EchoAccentTextBrush}"
+                                           Text="{Binding ActionFeedbackText}" />
+                                <!-- Selection and bulk actions belong to the session list. -->
+                                <StackPanel Orientation="Horizontal" IsVisible="{Binding ShowSessionsPanel}">
+                                    <StackPanel Orientation="Horizontal" IsVisible="{Binding !IsSelectionMode}">
+                                        <Button Height="34"
+                                                Padding="14,0"
+                                                Command="{Binding ToggleSelectionModeCommand}"
+                                                ToolTip.Tip="{Binding L[TipSelectMode]}"
+                                                Content="{Binding L[SelectSessions]}" />
+                                    </StackPanel>
+                                    <StackPanel Orientation="Horizontal" IsVisible="{Binding IsSelectionMode}">
+                                        <Button Height="34"
+                                                Padding="14,0"
+                                                Command="{Binding SelectAllSessionsCommand}"
+                                                ToolTip.Tip="{Binding L[TipSelectAll]}"
+                                                Content="{Binding L[SelectAllSessions]}" />
+                                        <Button x:Name="MoveCheckedButton"
+                                                Height="34"
+                                                Margin="8,0,0,0"
+                                                Padding="14,0"
+                                                IsEnabled="{Binding HasCheckedSessions}"
+                                                ToolTip.Tip="{Binding L[TipMoveChecked]}"
+                                                Content="{Binding L[MoveToTopic]}" />
+                                        <Button Height="34"
+                                                Margin="8,0,0,0"
+                                                Padding="14,0"
+                                                Background="{DynamicResource EchoDangerSoftBrush}"
+                                                BorderBrush="{DynamicResource EchoDangerBorderBrush}"
+                                                Foreground="{DynamicResource EchoDangerTextBrush}"
+                                                Command="{Binding DeleteCheckedSessionsCommand}"
+                                                ToolTip.Tip="{Binding L[TipDeleteChecked]}"
+                                                Content="{Binding DeleteCheckedText}" />
+                                        <Button Classes="accent"
+                                                Height="34"
+                                                Margin="8,0,0,0"
+                                                Padding="14,0"
+                                                FontSize="14"
+                                                Command="{Binding ToggleSelectionModeCommand}"
+                                                ToolTip.Tip="{Binding L[TipSelectDone]}"
+                                                Content="{Binding L[SelectDone]}" />
+                                    </StackPanel>
+                                </StackPanel>
+                            </StackPanel>
+                        </Grid>
+
+                        <!-- Tabs of a topic: sessions, summary, knowledge base, questions, graph. -->
+                        <Border Grid.Row="1"
+                                Margin="0,12,0,0"
+                                BorderBrush="{DynamicResource EchoBorderBrush}"
+                                BorderThickness="0,0,0,1"
+                                IsVisible="{Binding IsTopicSelected}">
+                            <StackPanel Orientation="Horizontal">
+                                <RadioButton GroupName="TopicTab" Classes="topicTab" IsChecked="{Binding IsTopicTabSessions, Mode=TwoWay}" ToolTip.Tip="{Binding L[TipTopicTabSessions]}">
+                                    <StackPanel Orientation="Horizontal">
+                                        <TextBlock Text="{Binding L[TopicTabSessions]}" />
+                                        <Border Classes="tabCount">
+                                            <TextBlock FontSize="12" HorizontalAlignment="Center" Text="{Binding VisibleSessionsCount}" />
+                                        </Border>
+                                    </StackPanel>
+                                </RadioButton>
+                                <RadioButton GroupName="TopicTab" Classes="topicTab" IsChecked="{Binding IsTopicTabSummary, Mode=TwoWay}" ToolTip.Tip="{Binding L[TipTopicTabSummary]}">
+                                    <StackPanel Orientation="Horizontal">
+                                        <TextBlock Text="{Binding L[TopicTabSummary]}" />
+                                        <Ellipse Width="7"
+                                                 Height="7"
+                                                 Margin="6,0,0,0"
+                                                 VerticalAlignment="Center"
+                                                 Fill="{DynamicResource EchoAccentBrush}"
+                                                 IsVisible="{Binding IsTopicKnowledgeStale}" />
+                                    </StackPanel>
+                                </RadioButton>
+                                <RadioButton GroupName="TopicTab" Classes="topicTab" IsChecked="{Binding IsTopicTabKnowledge, Mode=TwoWay}" ToolTip.Tip="{Binding L[TipTopicTabKnowledge]}">
+                                    <StackPanel Orientation="Horizontal">
+                                        <TextBlock Text="{Binding L[TopicTabKnowledge]}" />
+                                        <Border Classes="tabCount">
+                                            <TextBlock FontSize="12" HorizontalAlignment="Center" Text="{Binding KnowledgeSourcesCount}" />
+                                        </Border>
+                                    </StackPanel>
+                                </RadioButton>
+                                <RadioButton GroupName="TopicTab" Classes="topicTab" IsChecked="{Binding IsTopicTabQuestions, Mode=TwoWay}" ToolTip.Tip="{Binding L[TipTopicTabQuestions]}">
+                                    <StackPanel Orientation="Horizontal">
+                                        <TextBlock Text="{Binding L[TopicTabQuestions]}" />
+                                        <Border Classes="tabCount">
+                                            <TextBlock FontSize="12" HorizontalAlignment="Center" Text="{Binding TopicQuestionsCount}" />
+                                        </Border>
+                                    </StackPanel>
+                                </RadioButton>
+                                <RadioButton GroupName="TopicTab" Classes="topicTab" IsChecked="{Binding IsTopicTabGraph, Mode=TwoWay}" ToolTip.Tip="{Binding L[TipTopicTabGraph]}">
+                                    <StackPanel Orientation="Horizontal">
+                                        <TextBlock Text="{Binding L[TopicTabGraph]}" />
+                                        <Ellipse Width="7"
+                                                 Height="7"
+                                                 Margin="6,0,0,0"
+                                                 VerticalAlignment="Center"
+                                                 Fill="{DynamicResource EchoAccentBrush}"
+                                                 IsVisible="{Binding IsGraphStale}" />
+                                    </StackPanel>
+                                </RadioButton>
+                            </StackPanel>
+                        </Border>
+
+                        <!-- «Сессии»: the session list (also the whole view for «Все сессии» and «Без темы»). -->
+                        <Grid Grid.Row="2" IsVisible="{Binding ShowSessionsPanel}">
+                            <TextBlock Margin="2,24,0,0"
+                                       MaxWidth="520"
+                                       HorizontalAlignment="Left"
+                                       FontSize="14"
+                                       TextWrapping="Wrap"
+                                       Foreground="{DynamicResource EchoMutedBrush}"
+                                       Text="{Binding L[TopicEmptyHint]}"
+                                       IsVisible="{Binding VisibleSessionsCount, Converter={x:Static controls:IsZeroConverter.Instance}}" />
+
+                            <ListBox x:Name="SessionsList"
+                                     Margin="0,6,0,0"
+                                     ItemsSource="{Binding CompletedSessionsView}"
+                                     controls:ItemContainer.Classes="plain"
+                                     ScrollViewer.HorizontalScrollBarVisibility="Disabled"
+                                     BorderThickness="0"
+                                     Background="Transparent">
+                                <ListBox.DataTemplates>
+                                    <DataTemplate DataType="vm:SessionGroupHeader">
+                                        <TextBlock Margin="2,14,0,10"
+                                                   FontSize="13"
+                                                   FontWeight="Bold"
+                                                   Foreground="{DynamicResource EchoMutedBrush}"
+                                                   Text="{Binding Name}" />
+                                    </DataTemplate>
+                                    <DataTemplate DataType="models:SessionSummary">
+                                        <Grid Margin="0,0,0,10" Background="Transparent" ColumnDefinitions="Auto,*,Auto">
+                                            <CheckBox Margin="2,0,14,0"
+                                                      VerticalAlignment="Center"
+                                                      IsChecked="{Binding IsChecked, Mode=TwoWay}"
+                                                      ToolTip.Tip="{Binding $parent[Window].DataContext.L[TipCheckSession]}"
+                                                      IsVisible="{Binding $parent[Window].DataContext.IsSelectionMode}" />
+                                            <Button Grid.Column="1"
+                                                    Classes="sessionCard sessionCardDrag"
+                                                    Classes.checked="{Binding IsChecked}"
+                                                    HorizontalAlignment="Stretch"
+                                                    Command="{Binding $parent[Window].DataContext.OpenSessionCommand}"
+                                                    CommandParameter="{Binding}"
+                                                    ToolTip.Tip="{Binding $parent[Window].DataContext.L[TipOpenSession]}">
+                                                <Button.ContextMenu>
+                                                    <ContextMenu Opening="SessionCardMenu_OnOpening" />
+                                                </Button.ContextMenu>
+                                                <Grid ColumnDefinitions="*,Auto,Auto,Auto">
+                                                    <TextBlock Foreground="{DynamicResource EchoTextBrush}"
+                                                               FontSize="17"
+                                                               FontWeight="Bold"
+                                                               VerticalAlignment="Center"
+                                                               TextTrimming="CharacterEllipsis"
+                                                               Text="{Binding Title}" />
+                                                    <Border Grid.Column="1"
+                                                            Margin="16,0,0,0"
+                                                            Padding="10,3"
+                                                            VerticalAlignment="Center"
+                                                            CornerRadius="11"
+                                                            BorderThickness="1"
+                                                            Background="{DynamicResource EchoAccentSoftBrush}"
+                                                            BorderBrush="{DynamicResource EchoAccentSoftBorderBrush}"
+                                                            IsVisible="{Binding TopicName, Converter={x:Static StringConverters.IsNotNullOrEmpty}}">
+                                                        <TextBlock MaxWidth="180"
+                                                                   FontSize="12"
+                                                                   FontWeight="SemiBold"
+                                                                   TextTrimming="CharacterEllipsis"
+                                                                   Foreground="{DynamicResource EchoBadgeTextBrush}"
+                                                                   Text="{Binding TopicName}" />
+                                                    </Border>
+                                                    <Border Grid.Column="2"
+                                                            Margin="12,0,0,0"
+                                                            Padding="10,4"
+                                                            VerticalAlignment="Center"
+                                                            CornerRadius="11"
+                                                            Background="{DynamicResource EchoSurfaceAltBrush}">
+                                                        <TextBlock Foreground="{DynamicResource EchoMutedBrush}"
+                                                                   FontSize="12.5"
+                                                                   FontWeight="SemiBold"
+                                                                   Text="{Binding Usage.SessionDurationText}" />
+                                                    </Border>
+                                                    <TextBlock Grid.Column="3"
+                                                               Margin="18,0,0,0"
+                                                               VerticalAlignment="Center"
+                                                               Foreground="{DynamicResource EchoMutedBrush}"
+                                                               FontSize="15"
+                                                               Text="{Binding StartedAt, StringFormat={}{0:t}}" />
+                                                </Grid>
+                                            </Button>
+                                            <Button Grid.Column="2"
+                                                    Classes="danger hoverReveal"
+                                                    Classes.selecting="{Binding $parent[Window].DataContext.IsSelectionMode}"
+                                                    Width="34"
+                                                    Height="34"
+                                                    Margin="10,0,0,0"
+                                                    VerticalAlignment="Center"
+                                                    FontSize="18"
+                                                    FontWeight="SemiBold"
+                                                    Command="{Binding $parent[Window].DataContext.DeleteSessionCommand}"
+                                                    CommandParameter="{Binding}"
+                                                    ToolTip.Tip="{Binding $parent[Window].DataContext.L[TipDeleteSession]}"
+                                                    Content="×" />
+                                        </Grid>
+                                    </DataTemplate>
+                                </ListBox.DataTemplates>
+                            </ListBox>
+                        </Grid>
+
+                        <!-- «Сводка»: what the topic knows, gathered by the model from its sessions and parsed materials. -->
+                        <Border Grid.Row="2"
+                                Margin="0,16,0,0"
+                                Padding="24,16,16,14"
+                                CornerRadius="16"
+                                Background="{DynamicResource EchoSurfaceBrush}"
+                                BorderBrush="{DynamicResource EchoBorderBrush}"
+                                BorderThickness="1"
+                                IsVisible="{Binding ShowSummaryPanel}">
+                            <Grid RowDefinitions="Auto,*">
+                                <Grid ColumnDefinitions="*,Auto">
+                                    <StackPanel VerticalAlignment="Center">
+                                        <TextBlock FontSize="18"
+                                                   FontWeight="ExtraBold"
+                                                   Foreground="{DynamicResource EchoTextBrush}"
+                                                   Text="{Binding L[KnowledgeSummaryTitle]}" />
+                                        <StackPanel Margin="0,3,0,0" Orientation="Horizontal">
+                                            <controls:EchoThinkingDots Margin="0,0,8,0" VerticalAlignment="Center" IsVisible="{Binding IsTopicBusy}" />
+                                            <TextBlock Classes="staleStatus"
+                                                       Classes.stale="{Binding IsTopicKnowledgeStale}"
+                                                       FontSize="13"
+                                                       TextTrimming="CharacterEllipsis"
+                                                       Text="{Binding TopicKnowledgeStatusText}" />
+                                        </StackPanel>
+                                    </StackPanel>
+                                    <StackPanel Grid.Column="1" Orientation="Horizontal" VerticalAlignment="Center">
+                                        <Button Height="34"
+                                                Padding="14,0"
+                                                Command="{Binding CopyTopicKnowledgeCommand}"
+                                                ToolTip.Tip="{Binding L[TipCopyTopicKnowledge]}"
+                                                Content="{Binding L[CopyText]}" />
+                                        <Button Classes="accent"
+                                                Height="34"
+                                                Margin="8,0,0,0"
+                                                Padding="16,0"
+                                                FontSize="14"
+                                                Command="{Binding RefreshTopicKnowledgeCommand}"
+                                                ToolTip.Tip="{Binding L[TipRefreshTopicKnowledge]}"
+                                                Content="{Binding L[TopicRefreshKnowledge]}" />
+                                    </StackPanel>
+                                </Grid>
+                                <Border Grid.Row="1" Margin="0,12,0,0" BorderBrush="{DynamicResource EchoBorderBrush}" BorderThickness="0,1,0,0">
+                                    <Grid Margin="0,12,0,0">
+                                        <controls:MarkdownDocumentView Markdown="{Binding TopicKnowledgeText}"
+                                                                       IsVisible="{Binding HasTopicKnowledge}" />
+                                        <TextBlock MaxWidth="480"
+                                                   Margin="0,40,0,0"
+                                                   HorizontalAlignment="Center"
+                                                   VerticalAlignment="Top"
+                                                   TextAlignment="Center"
+                                                   TextWrapping="Wrap"
+                                                   FontSize="14"
+                                                   LineHeight="21"
+                                                   Foreground="{DynamicResource EchoMutedBrush}"
+                                                   Text="{Binding L[KnowledgeSummaryEmpty]}"
+                                                   IsVisible="{Binding !HasTopicKnowledge}" />
+                                    </Grid>
+                                </Border>
+                            </Grid>
+                        </Border>
+
+                        <!-- «База знаний»: sources on the left, the parsed text of the selected one on the right. -->
+                        <!-- Files, folders and text can also be dropped here or pasted with ⌘V (MainWindow.TopicWorkspace.cs). -->
+                        <Grid x:Name="KnowledgePanel"
+                              Grid.Row="2"
+                              Margin="0,16,0,0"
+                              Background="Transparent"
+                              DragDrop.AllowDrop="True"
+                              ColumnDefinitions="330,*"
+                              IsVisible="{Binding ShowKnowledgePanel}">
+                            <Border Padding="12"
+                                    CornerRadius="16"
+                                    Background="{DynamicResource EchoSurfaceBrush}"
+                                    BorderBrush="{DynamicResource EchoBorderBrush}"
+                                    BorderThickness="1">
+                                <DockPanel>
+                                    <UniformGrid DockPanel.Dock="Top" Columns="3">
+                                        <Button Height="36" Margin="0,0,4,0" HorizontalAlignment="Stretch" Command="{Binding AddKnowledgeFilesCommand}" ToolTip.Tip="{Binding L[TipKnowledgeAddFiles]}" Content="{Binding L[KnowledgeAddFiles]}" />
+                                        <Button Height="36" Margin="2,0,2,0" HorizontalAlignment="Stretch" Command="{Binding AddKnowledgeFolderCommand}" ToolTip.Tip="{Binding L[TipKnowledgeAddFolder]}" Content="{Binding L[KnowledgeAddFolder]}" />
+                                        <Button Height="36" Margin="4,0,0,0" HorizontalAlignment="Stretch" Command="{Binding AddKnowledgeNoteCommand}" ToolTip.Tip="{Binding L[TipKnowledgeAddNote]}" Content="{Binding L[KnowledgeAddNote]}" />
+                                    </UniformGrid>
+                                    <!-- Number of sources and the selection mode for removing several at once. -->
+                                    <Grid DockPanel.Dock="Top"
+                                          Margin="4,12,0,0"
+                                          ColumnDefinitions="*,Auto"
+                                          IsVisible="{Binding HasKnowledgeSources}">
+                                        <TextBlock VerticalAlignment="Center"
+                                                   FontSize="12.5"
+                                                   Foreground="{DynamicResource EchoMutedBrush}"
+                                                   Text="{Binding KnowledgeSourcesSummary}"
+                                                   IsVisible="{Binding !IsKnowledgeSelectionMode}" />
+                                        <Button Classes="ghost"
+                                                Height="28"
+                                                HorizontalAlignment="Left"
+                                                Command="{Binding SelectAllKnowledgeCommand}"
+                                                ToolTip.Tip="{Binding L[TipKnowledgeSelectAll]}"
+                                                Content="{Binding L[SelectAllSessions]}"
+                                                IsVisible="{Binding IsKnowledgeSelectionMode}" />
+                                        <Button Grid.Column="1"
+                                                Classes="ghost"
+                                                Height="28"
+                                                Command="{Binding ToggleKnowledgeSelectionModeCommand}"
+                                                ToolTip.Tip="{Binding L[TipKnowledgeSelect]}"
+                                                Content="{Binding L[SelectSessions]}"
+                                                IsVisible="{Binding !IsKnowledgeSelectionMode}" />
+                                        <Button Grid.Column="1"
+                                                Classes="ghost"
+                                                Height="28"
+                                                Command="{Binding ToggleKnowledgeSelectionModeCommand}"
+                                                ToolTip.Tip="{Binding L[TipSelectDone]}"
+                                                Content="{Binding L[SelectDone]}"
+                                                IsVisible="{Binding IsKnowledgeSelectionMode}" />
+                                    </Grid>
+                                    <StackPanel DockPanel.Dock="Bottom" Margin="0,8,0,0">
+                                        <StackPanel IsVisible="{Binding !IsKnowledgeSelectionMode}">
+                                            <Button Classes="accent"
+                                                    Height="36"
+                                                    HorizontalAlignment="Stretch"
+                                                    FontSize="14"
+                                                    Command="{Binding ParseAllKnowledgeCommand}"
+                                                    ToolTip.Tip="{Binding L[TipKnowledgeParseAll]}"
+                                                    Content="{Binding L[KnowledgeParseAll]}"
+                                                    IsVisible="{Binding HasUnparsedKnowledge}" />
+                                            <Button Classes="ghost"
+                                                    Height="32"
+                                                    Margin="0,4,0,0"
+                                                    HorizontalAlignment="Center"
+                                                    Command="{Binding OpenKnowledgeFolderCommand}"
+                                                    ToolTip.Tip="{Binding L[TipKnowledgeOpenFolder]}"
+                                                    Content="{Binding L[KnowledgeOpenFolder]}" />
+                                        </StackPanel>
+                                        <Button Height="36"
+                                                HorizontalAlignment="Stretch"
+                                                FontSize="14"
+                                                Background="{DynamicResource EchoDangerSoftBrush}"
+                                                BorderBrush="{DynamicResource EchoDangerBorderBrush}"
+                                                Foreground="{DynamicResource EchoDangerTextBrush}"
+                                                Command="{Binding RemoveCheckedKnowledgeCommand}"
+                                                ToolTip.Tip="{Binding L[TipKnowledgeRemoveChecked]}"
+                                                Content="{Binding RemoveCheckedKnowledgeText}"
+                                                IsVisible="{Binding IsKnowledgeSelectionMode}" />
+                                    </StackPanel>
+                                    <TextBlock DockPanel.Dock="Top"
+                                               Margin="4,12,4,8"
+                                               FontSize="12.5"
+                                               TextWrapping="Wrap"
+                                               Foreground="{DynamicResource EchoMutedBrush}"
+                                               Text="{Binding L[KnowledgeListHint]}"
+                                               IsVisible="{Binding !HasKnowledgeSources}" />
+                                    <ListBox x:Name="KnowledgeList"
+                                             Margin="0,6,0,0"
+                                             Background="Transparent"
+                                             BorderThickness="0"
+                                             ScrollViewer.HorizontalScrollBarVisibility="Disabled"
+                                             ItemsSource="{Binding KnowledgeItems}"
+                                             SelectedItem="{Binding SelectedKnowledgeItem, Mode=TwoWay}"
+                                             controls:ItemContainer.Classes="knowledge">
+                                        <ListBox.ItemTemplate>
+                                            <DataTemplate>
+                                                <Grid ColumnDefinitions="Auto,Auto,*,Auto">
+                                                    <!-- Checkbox of a source, shown only while selecting several sources. -->
+                                                    <CheckBox Margin="0,0,8,0"
+                                                              VerticalAlignment="Center"
+                                                              IsChecked="{Binding IsChecked, Mode=TwoWay}"
+                                                              IsVisible="{Binding $parent[Window].DataContext.IsKnowledgeSelectionMode}" />
+                                                    <Border Grid.Column="1"
+                                                            Width="32"
+                                                            Height="32"
+                                                            VerticalAlignment="Top"
+                                                            CornerRadius="10"
+                                                            Background="{DynamicResource EchoSurfaceAltBrush}">
+                                                        <TextBlock HorizontalAlignment="Center"
+                                                                   VerticalAlignment="Center"
+                                                                   FontSize="15"
+                                                                   Foreground="{DynamicResource EchoAccentTextBrush}"
+                                                                   Text="{Binding KindGlyph}" />
+                                                    </Border>
+                                                    <StackPanel Grid.Column="2" Margin="10,0,0,0">
+                                                        <TextBlock FontSize="14"
+                                                                   FontWeight="Bold"
+                                                                   TextTrimming="CharacterEllipsis"
+                                                                   Foreground="{DynamicResource EchoTextBrush}"
+                                                                   ToolTip.Tip="{Binding Subtitle}"
+                                                                   Text="{Binding Title}" />
+                                                        <StackPanel Margin="0,2,0,0" Orientation="Horizontal">
+                                                            <controls:EchoThinkingDots Margin="0,0,6,0" VerticalAlignment="Center" IsVisible="{Binding IsBusy}" />
+                                                            <TextBlock Classes="knowledgeStatus"
+                                                                       Classes.fresh="{Binding State, Converter={x:Static controls:EqualsConverter.Instance}, ConverterParameter=New}"
+                                                                       Classes.changed="{Binding State, Converter={x:Static controls:EqualsConverter.Instance}, ConverterParameter=Changed}"
+                                                                       Classes.failed="{Binding State, Converter={x:Static controls:EqualsConverter.Instance}, ConverterParameter=Failed}"
+                                                                       FontSize="12"
+                                                                       TextTrimming="CharacterEllipsis"
+                                                                       Text="{Binding StatusText}" />
+                                                        </StackPanel>
+                                                    </StackPanel>
+                                                    <!-- «×» on a hovered source; hidden while selecting several and while it is being parsed. -->
+                                                    <Button Grid.Column="3"
+                                                            Classes="danger hoverReveal"
+                                                            Width="28"
+                                                            Height="28"
+                                                            Margin="6,0,0,0"
+                                                            VerticalAlignment="Center"
+                                                            FontSize="16"
+                                                            FontWeight="SemiBold"
+                                                            Command="{Binding $parent[Window].DataContext.RemoveKnowledgeItemCommand}"
+                                                            CommandParameter="{Binding}"
+                                                            ToolTip.Tip="{Binding $parent[Window].DataContext.L[TipKnowledgeRemoveRow]}"
+                                                            Content="×">
+                                                        <Button.IsVisible>
+                                                            <MultiBinding Converter="{x:Static BoolConverters.And}">
+                                                                <Binding Path="!$parent[Window].DataContext.IsKnowledgeSelectionMode" />
+                                                                <Binding Path="!IsBusy" />
+                                                            </MultiBinding>
+                                                        </Button.IsVisible>
+                                                    </Button>
+                                                </Grid>
+                                            </DataTemplate>
+                                        </ListBox.ItemTemplate>
+                                    </ListBox>
+                                </DockPanel>
+                            </Border>
+
+                            <Border Grid.Column="1"
+                                    Margin="16,0,0,0"
+                                    Padding="22,16,16,14"
+                                    CornerRadius="16"
+                                    Background="{DynamicResource EchoSurfaceBrush}"
+                                    BorderBrush="{DynamicResource EchoBorderBrush}"
+                                    BorderThickness="1">
+                                <Grid RowDefinitions="Auto,*">
+                                    <Grid ColumnDefinitions="*,Auto">
+                                        <StackPanel VerticalAlignment="Center">
+                                            <TextBlock FontSize="18"
+                                                       FontWeight="ExtraBold"
+                                                       TextTrimming="CharacterEllipsis"
+                                                       Foreground="{DynamicResource EchoTextBrush}"
+                                                       Text="{Binding SelectedKnowledgeItem.Title}" />
+                                            <StackPanel Margin="0,3,0,0" Orientation="Horizontal">
+                                                <controls:EchoThinkingDots Margin="0,0,8,0" VerticalAlignment="Center" IsVisible="{Binding IsTopicBusy}" />
+                                                <TextBlock FontSize="13"
+                                                           TextTrimming="CharacterEllipsis"
+                                                           Foreground="{DynamicResource EchoMutedBrush}"
+                                                           Text="{Binding KnowledgeHeaderStatus}" />
+                                            </StackPanel>
+                                        </StackPanel>
+                                        <!-- A source: parse, edit (notes), open the original, copy, remove. -->
+                                        <StackPanel Grid.Column="1"
+                                                    Orientation="Horizontal"
+                                                    VerticalAlignment="Center"
+                                                    IsVisible="{Binding IsKnowledgeSourceSelected}">
+                                            <Button Classes="ghost"
+                                                    Height="34"
+                                                    Command="{Binding RemoveKnowledgeItemCommand}"
+                                                    ToolTip.Tip="{Binding L[TipKnowledgeRemove]}"
+                                                    Content="{Binding L[KnowledgeRemove]}" />
+                                            <Button Height="34"
+                                                    Margin="4,0,0,0"
+                                                    Padding="14,0"
+                                                    Command="{Binding EditKnowledgeNoteCommand}"
+                                                    ToolTip.Tip="{Binding L[TipKnowledgeEditNote]}"
+                                                    Content="{Binding L[KnowledgeEditNote]}"
+                                                    IsVisible="{Binding SelectedKnowledgeItem.IsNote}" />
+                                            <Button Height="34"
+                                                    Margin="4,0,0,0"
+                                                    Padding="14,0"
+                                                    Command="{Binding OpenKnowledgeOriginalCommand}"
+                                                    ToolTip.Tip="{Binding L[TipKnowledgeOpenOriginal]}"
+                                                    Content="{Binding L[KnowledgeOpenOriginal]}"
+                                                    IsVisible="{Binding SelectedKnowledgeItem.HasOriginal}" />
+                                            <Button Height="34"
+                                                    Margin="8,0,0,0"
+                                                    Padding="14,0"
+                                                    Command="{Binding CopyKnowledgePreviewCommand}"
+                                                    ToolTip.Tip="{Binding L[TipKnowledgeCopy]}"
+                                                    Content="{Binding L[CopyText]}" />
+                                            <Button Classes="accent"
+                                                    Height="34"
+                                                    Margin="8,0,0,0"
+                                                    Padding="16,0"
+                                                    FontSize="14"
+                                                    Command="{Binding ParseKnowledgeItemCommand}"
+                                                    ToolTip.Tip="{Binding L[TipKnowledgeParse]}"
+                                                    Content="{Binding SelectedKnowledgeItem.ParseButtonText}" />
+                                        </StackPanel>
+                                    </Grid>
+                                    <Border Grid.Row="1" Margin="0,12,0,0" BorderBrush="{DynamicResource EchoBorderBrush}" BorderThickness="0,1,0,0">
+                                        <Grid Margin="0,12,0,0">
+                                            <controls:MarkdownDocumentView Markdown="{Binding KnowledgePreviewText}"
+                                                                           IsVisible="{Binding HasKnowledgePreview}" />
+                                            <TextBlock MaxWidth="460"
+                                                       Margin="0,40,0,0"
+                                                       HorizontalAlignment="Center"
+                                                       VerticalAlignment="Top"
+                                                       TextAlignment="Center"
+                                                       TextWrapping="Wrap"
+                                                       FontSize="14"
+                                                       LineHeight="21"
+                                                       Foreground="{DynamicResource EchoMutedBrush}"
+                                                       Text="{Binding KnowledgeEmptyText}"
+                                                       IsVisible="{Binding !HasKnowledgePreview}" />
+                                        </Grid>
+                                    </Border>
+                                </Grid>
+                            </Border>
+                            <Grid x:Name="KnowledgeDropOverlay"
+                                  Grid.ColumnSpan="2"
+                                  IsHitTestVisible="False"
+                                  IsVisible="False">
+                                <Rectangle Opacity="0.9"
+                                           RadiusX="16"
+                                           RadiusY="16"
+                                           Fill="{DynamicResource EchoDropTargetBrush}"
+                                           Stroke="{DynamicResource EchoAccentBrush}"
+                                           StrokeThickness="2"
+                                           StrokeDashArray="5,4" />
+                                <Border HorizontalAlignment="Center"
+                                        VerticalAlignment="Center"
+                                        Padding="22,14"
+                                        CornerRadius="14"
+                                        Background="{DynamicResource EchoPopupBrush}"
+                                        BorderBrush="{DynamicResource EchoAccentSoftBorderBrush}"
+                                        BorderThickness="1">
+                                    <StackPanel>
+                                        <TextBlock HorizontalAlignment="Center"
+                                                   FontSize="16"
+                                                   FontWeight="SemiBold"
+                                                   Foreground="{DynamicResource EchoTextBrush}"
+                                                   Text="{Binding L[KnowledgeDropHint]}" />
+                                        <TextBlock Margin="0,4,0,0"
+                                                   HorizontalAlignment="Center"
+                                                   FontSize="12.5"
+                                                   Foreground="{DynamicResource EchoMutedBrush}"
+                                                   Text="{Binding L[KnowledgeDropSubHint]}" />
+                                    </StackPanel>
+                                </Border>
+                            </Grid>
+                        </Grid>
+
+                        <!-- «Вопросы»: the question box on top, then the questions like the session list, newest first. -->
+                        <Grid Grid.Row="2" Margin="0,16,0,0" RowDefinitions="Auto,Auto,*" IsVisible="{Binding ShowQuestionsPanel}">
+                            <Border Padding="8"
+                                    CornerRadius="18"
+                                    Background="{DynamicResource EchoSurfaceBrush}"
+                                    BorderBrush="{DynamicResource EchoBorderBrush}"
+                                    BorderThickness="1">
+                                <Grid ColumnDefinitions="*,Auto">
+                                    <TextBox x:Name="TopicQuestionTextBox"
+                                             MinHeight="40"
+                                             MaxHeight="150"
+                                             Padding="8,9"
+                                             FontSize="14.5"
+                                             Background="Transparent"
+                                             BorderThickness="0"
+                                             AcceptsReturn="True"
+                                             TextWrapping="Wrap"
+                                             ScrollViewer.VerticalScrollBarVisibility="Auto"
+                                             VerticalContentAlignment="Center"
+                                             Watermark="{Binding L[TopicAskPlaceholder]}"
+                                             ToolTip.Tip="{Binding L[TipTopicAskBox]}"
+                                             Text="{Binding TopicQuestionText}" />
+                                    <Button Grid.Column="1"
+                                            Classes="accent"
+                                            Height="40"
+                                            Margin="6,0,0,0"
+                                            Padding="20,0"
+                                            VerticalAlignment="Bottom"
+                                            FontSize="14"
+                                            Command="{Binding AskTopicCommand}"
+                                            ToolTip.Tip="{Binding L[TipTopicAsk]}"
+                                            Content="{Binding L[TopicAsk]}" />
+                                </Grid>
+                            </Border>
+
+                            <!-- Count, selection and bulk removal, as above the session list. -->
+                            <Grid Grid.Row="1"
+                                  Margin="2,14,0,8"
+                                  ColumnDefinitions="*,Auto"
+                                  IsVisible="{Binding HasTopicQuestions}">
+                                <TextBlock VerticalAlignment="Center"
+                                           FontSize="13"
+                                           FontWeight="Bold"
+                                           Foreground="{DynamicResource EchoMutedBrush}"
+                                           Text="{Binding TopicQuestionsSummary}" />
+                                <StackPanel Grid.Column="1" Orientation="Horizontal">
+                                    <Button Height="34"
+                                            Padding="14,0"
+                                            Command="{Binding ToggleQuestionSelectionModeCommand}"
+                                            ToolTip.Tip="{Binding L[TipQuestionsSelect]}"
+                                            Content="{Binding L[SelectSessions]}"
+                                            IsVisible="{Binding !IsQuestionSelectionMode}" />
+                                    <StackPanel Orientation="Horizontal" IsVisible="{Binding IsQuestionSelectionMode}">
+                                        <Button Height="34"
+                                                Padding="14,0"
+                                                Command="{Binding SelectAllQuestionsCommand}"
+                                                ToolTip.Tip="{Binding L[TipQuestionsSelectAll]}"
+                                                Content="{Binding L[SelectAllSessions]}" />
+                                        <Button Height="34"
+                                                Margin="8,0,0,0"
+                                                Padding="14,0"
+                                                Background="{DynamicResource EchoDangerSoftBrush}"
+                                                BorderBrush="{DynamicResource EchoDangerBorderBrush}"
+                                                Foreground="{DynamicResource EchoDangerTextBrush}"
+                                                Command="{Binding RemoveCheckedQuestionsCommand}"
+                                                ToolTip.Tip="{Binding L[TipQuestionsRemoveChecked]}"
+                                                Content="{Binding RemoveCheckedQuestionsText}" />
+                                        <Button Classes="accent"
+                                                Height="34"
+                                                Margin="8,0,0,0"
+                                                Padding="14,0"
+                                                FontSize="14"
+                                                Command="{Binding ToggleQuestionSelectionModeCommand}"
+                                                ToolTip.Tip="{Binding L[TipSelectDone]}"
+                                                Content="{Binding L[SelectDone]}" />
+                                    </StackPanel>
+                                </StackPanel>
+                            </Grid>
+
+                            <StackPanel Grid.Row="2"
+                                        MaxWidth="620"
+                                        Margin="0,40,0,0"
+                                        HorizontalAlignment="Center"
+                                        VerticalAlignment="Top"
+                                        IsVisible="{Binding !HasTopicQuestions}">
+                                <TextBlock HorizontalAlignment="Center"
+                                           FontSize="22"
+                                           FontWeight="ExtraBold"
+                                           Foreground="{DynamicResource EchoTextBrush}"
+                                           Text="{Binding L[QuestionsEmptyTitle]}" />
+                                <TextBlock Margin="0,8,0,18"
+                                           TextAlignment="Center"
+                                           TextWrapping="Wrap"
+                                           FontSize="14"
+                                           LineHeight="21"
+                                           Foreground="{DynamicResource EchoMutedBrush}"
+                                           Text="{Binding L[QuestionsEmptyHint]}" />
+                                <WrapPanel HorizontalAlignment="Center">
+                                    <Button Classes="chip" Command="{Binding AskTopicSuggestionCommand}" CommandParameter="{Binding L[QuestionSuggestion1]}" Content="{Binding L[QuestionSuggestion1]}" />
+                                    <Button Classes="chip" Command="{Binding AskTopicSuggestionCommand}" CommandParameter="{Binding L[QuestionSuggestion2]}" Content="{Binding L[QuestionSuggestion2]}" />
+                                    <Button Classes="chip" Command="{Binding AskTopicSuggestionCommand}" CommandParameter="{Binding L[QuestionSuggestion3]}" Content="{Binding L[QuestionSuggestion3]}" />
+                                    <Button Classes="chip" Command="{Binding AskTopicSuggestionCommand}" CommandParameter="{Binding L[QuestionSuggestion4]}" Content="{Binding L[QuestionSuggestion4]}" />
+                                </WrapPanel>
+                            </StackPanel>
+
+                            <!-- Virtualized: only the cards on screen are drawn, so a long history opens at once. -->
+                            <ListBox x:Name="QuestionsList"
+                                     Grid.Row="2"
+                                     ItemsSource="{Binding QuestionItems}"
+                                     controls:ItemContainer.Classes="plain"
+                                     ScrollViewer.HorizontalScrollBarVisibility="Disabled"
+                                     BorderThickness="0"
+                                     Background="Transparent"
+                                     IsVisible="{Binding HasTopicQuestions}">
+                                <ListBox.ItemTemplate>
+                                    <DataTemplate>
+                                        <Grid Margin="0,0,0,10" Background="Transparent" ColumnDefinitions="Auto,*,Auto">
+                                            <CheckBox Margin="2,18,14,0"
+                                                      VerticalAlignment="Top"
+                                                      IsChecked="{Binding IsChecked, Mode=TwoWay}"
+                                                      ToolTip.Tip="{Binding $parent[Window].DataContext.L[TipCheckQuestion]}"
+                                                      IsVisible="{Binding $parent[Window].DataContext.IsQuestionSelectionMode}" />
+                                            <Border Grid.Column="1" Classes="questionCard" Classes.checked="{Binding IsChecked}">
+                                                <StackPanel>
+                                                    <!-- The header opens and folds the answer (checks the card while selecting). -->
+                                                    <Button Classes="questionHeader"
+                                                            HorizontalAlignment="Stretch"
+                                                            Command="{Binding $parent[Window].DataContext.ToggleQuestionCommand}"
+                                                            CommandParameter="{Binding}"
+                                                            ToolTip.Tip="{Binding $parent[Window].DataContext.L[TipToggleQuestion]}">
+                                                        <Grid ColumnDefinitions="22,*,Auto">
+                                                            <Path Classes="chevron"
+                                                                  Classes.expanded="{Binding IsExpanded}"
+                                                                  Margin="0,6,0,0"
+                                                                  HorizontalAlignment="Left"
+                                                                  VerticalAlignment="Top"
+                                                                  Data="M 1,1 L 6,5.5 L 1,10"
+                                                                  StrokeThickness="2"
+                                                                  StrokeLineCap="Round"
+                                                                  StrokeJoin="Round"
+                                                                  Stroke="{DynamicResource EchoAccentTextBrush}"
+                                                                  RenderTransformOrigin="0.5,0.5" />
+                                                            <StackPanel Grid.Column="1">
+                                                                <TextBlock FontSize="15.5"
+                                                                           FontWeight="Bold"
+                                                                           TextWrapping="Wrap"
+                                                                           Foreground="{DynamicResource EchoTextBrush}"
+                                                                           Text="{Binding Question}" />
+                                                                <TextBlock Margin="0,4,0,0"
+                                                                           FontSize="13.5"
+                                                                           TextTrimming="CharacterEllipsis"
+                                                                           Foreground="{DynamicResource EchoMutedBrush}"
+                                                                           Text="{Binding AnswerPreview}">
+                                                                    <TextBlock.IsVisible>
+                                                                        <MultiBinding Converter="{x:Static BoolConverters.And}">
+                                                                            <Binding Path="!IsExpanded" />
+                                                                            <Binding Path="!IsPending" />
+                                                                        </MultiBinding>
+                                                                    </TextBlock.IsVisible>
+                                                                </TextBlock>
+                                                            </StackPanel>
+                                                            <TextBlock Grid.Column="2"
+                                                                       Margin="16,1,0,0"
+                                                                       VerticalAlignment="Top"
+                                                                       FontSize="13"
+                                                                       Foreground="{DynamicResource EchoMutedBrush}"
+                                                                       ToolTip.Tip="{Binding CostToolTip}"
+                                                                       Text="{Binding MetaText}" />
+                                                        </Grid>
+                                                    </Button>
+                                                    <StackPanel Margin="40,0,16,12" IsVisible="{Binding IsExpanded}">
+                                                        <StackPanel Orientation="Horizontal" Margin="0,2,0,4" IsVisible="{Binding IsPending}">
+                                                            <controls:EchoThinkingDots Margin="0,0,10,0" VerticalAlignment="Center" />
+                                                            <TextBlock FontSize="13.5"
+                                                                       Foreground="{DynamicResource EchoMutedBrush}"
+                                                                       Text="{Binding $parent[Window].DataContext.L[TopicAskBusy]}" />
+                                                        </StackPanel>
+                                                        <controls:MarkdownView Markdown="{Binding Answer}"
+                                                                               VerticalScrollBarVisibility="Disabled"
+                                                                               IsVisible="{Binding !IsPending}" />
+                                                        <Button Classes="ghost"
+                                                                Height="28"
+                                                                Margin="0,4,0,0"
+                                                                HorizontalAlignment="Right"
+                                                                Command="{Binding $parent[Window].DataContext.CopyTopicAnswerCommand}"
+                                                                CommandParameter="{Binding}"
+                                                                ToolTip.Tip="{Binding $parent[Window].DataContext.L[TipCopyTopicAnswer]}"
+                                                                Content="{Binding $parent[Window].DataContext.L[CopyText]}"
+                                                                IsVisible="{Binding !IsPending}" />
+                                                    </StackPanel>
+                                                </StackPanel>
+                                            </Border>
+                                            <!-- «×» on a hovered question; hidden while selecting several and while the answer is still coming. -->
+                                            <Button Grid.Column="2"
+                                                    Classes="danger hoverReveal"
+                                                    Classes.selecting="{Binding $parent[Window].DataContext.IsQuestionSelectionMode}"
+                                                    Width="34"
+                                                    Height="34"
+                                                    Margin="10,10,0,0"
+                                                    VerticalAlignment="Top"
+                                                    FontSize="18"
+                                                    FontWeight="SemiBold"
+                                                    Classes.pending="{Binding IsPending}"
+                                                    Command="{Binding $parent[Window].DataContext.RemoveQuestionCommand}"
+                                                    CommandParameter="{Binding}"
+                                                    ToolTip.Tip="{Binding $parent[Window].DataContext.L[TipRemoveQuestion]}"
+                                                    Content="×" />
+                                        </Grid>
+                                    </DataTemplate>
+                                </ListBox.ItemTemplate>
+                            </ListBox>
+                        </Grid>
+
+                        <!-- «Граф»: entities and relations of the topic, like the Obsidian graph. -->
+                        <Grid Grid.Row="2" Margin="0,16,0,0" RowDefinitions="Auto,*" IsVisible="{Binding ShowGraphPanel}">
+                            <Grid ColumnDefinitions="*,Auto,Auto">
+                                <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+                                    <controls:EchoThinkingDots Margin="0,0,8,0" VerticalAlignment="Center" IsVisible="{Binding IsGraphBusy}" />
+                                    <TextBlock Classes="staleStatus"
+                                               Classes.stale="{Binding IsGraphStale}"
+                                               FontSize="13"
+                                               TextTrimming="CharacterEllipsis"
+                                               Text="{Binding GraphStatusText}" />
+                                </StackPanel>
+                                <TextBox x:Name="GraphSearchTextBox"
+                                         Grid.Column="1"
+                                         Width="230"
+                                         Height="36"
+                                         Margin="12,0,0,0"
+                                         VerticalContentAlignment="Center"
+                                         FontSize="13.5"
+                                         Watermark="{Binding L[GraphSearchPlaceholder]}"
+                                         ToolTip.Tip="{Binding L[TipGraphSearch]}"
+                                         IsVisible="{Binding HasGraph}" />
+                                <Button Grid.Column="2"
+                                        Classes="accent"
+                                        Height="36"
+                                        Margin="10,0,0,0"
+                                        Padding="16,0"
+                                        FontSize="14"
+                                        Command="{Binding BuildTopicGraphCommand}"
+                                        ToolTip.Tip="{Binding L[TipGraphBuild]}"
+                                        Content="{Binding BuildGraphButtonText}" />
+                            </Grid>
+                            <Border Grid.Row="1"
+                                    Margin="0,12,0,0"
+                                    CornerRadius="16"
+                                    Background="{DynamicResource EchoSurfaceBrush}"
+                                    BorderBrush="{DynamicResource EchoBorderBrush}"
+                                    BorderThickness="1"
+                                    ClipToBounds="True">
+                                <Grid ClipToBounds="True">
+                                    <controls:GraphView x:Name="TopicGraphView"
+                                                        Graph="{Binding CurrentGraph}"
+                                                        Filter="{Binding #GraphSearchTextBox.Text}" />
+                                    <StackPanel MaxWidth="460"
+                                                HorizontalAlignment="Center"
+                                                VerticalAlignment="Center"
+                                                IsVisible="{Binding !HasGraph}">
+                                        <TextBlock HorizontalAlignment="Center"
+                                                   FontSize="20"
+                                                   FontWeight="ExtraBold"
+                                                   Foreground="{DynamicResource EchoTextBrush}"
+                                                   Text="{Binding L[GraphEmptyTitle]}" />
+                                        <TextBlock Margin="0,8,0,0"
+                                                   TextAlignment="Center"
+                                                   TextWrapping="Wrap"
+                                                   FontSize="14"
+                                                   LineHeight="21"
+                                                   Foreground="{DynamicResource EchoMutedBrush}"
+                                                   Text="{Binding L[GraphEmptyHint]}" />
+                                    </StackPanel>
+                                    <TextBlock Margin="0,0,14,10"
+                                               HorizontalAlignment="Right"
+                                               VerticalAlignment="Bottom"
+                                               IsHitTestVisible="False"
+                                               FontSize="11.5"
+                                               Foreground="{DynamicResource EchoSoftTextBrush}"
+                                               Text="{Binding L[GraphControlsHint]}"
+                                               IsVisible="{Binding HasGraph}" />
+
+                                    <!-- Details of the clicked node. -->
+                                    <Border x:Name="GraphDetailsPanel"
+                                            Width="300"
+                                            Margin="12"
+                                            Padding="16,14"
+                                            HorizontalAlignment="Right"
+                                            VerticalAlignment="Top"
+                                            CornerRadius="14"
+                                            Background="{DynamicResource EchoPopupBrush}"
+                                            BorderBrush="{DynamicResource EchoBorderBrush}"
+                                            BorderThickness="1"
+                                            BoxShadow="0 3 18 0 #40000000"
+                                            IsVisible="False">
+                                        <StackPanel>
+                                            <Grid>
+                                                <StackPanel Orientation="Horizontal" Margin="0,0,30,0">
+                                                    <Ellipse x:Name="GraphDetailsDot" Width="10" Height="10" VerticalAlignment="Center" />
+                                                    <TextBlock x:Name="GraphDetailsType"
+                                                               Margin="8,0,0,0"
+                                                               FontSize="12"
+                                                               FontWeight="SemiBold"
+                                                               VerticalAlignment="Center"
+                                                               Foreground="{DynamicResource EchoMutedBrush}" />
+                                                </StackPanel>
+                                                <Button x:Name="GraphDetailsCloseButton"
+                                                        Classes="ghost"
+                                                        Width="28"
+                                                        Height="28"
+                                                        HorizontalAlignment="Right"
+                                                        Padding="0"
+                                                        Content="×" />
+                                            </Grid>
+                                            <TextBlock x:Name="GraphDetailsTitle"
+                                                       Margin="0,6,0,0"
+                                                       FontSize="17"
+                                                       FontWeight="ExtraBold"
+                                                       TextWrapping="Wrap"
+                                                       Foreground="{DynamicResource EchoTextBrush}" />
+                                            <TextBlock x:Name="GraphDetailsDescription"
+                                                       Margin="0,6,0,0"
+                                                       FontSize="13.5"
+                                                       LineHeight="20"
+                                                       TextWrapping="Wrap"
+                                                       Foreground="{DynamicResource EchoSoftTextBrush}" />
+                                            <TextBlock Margin="0,12,0,4"
+                                                       FontSize="12"
+                                                       FontWeight="Bold"
+                                                       Foreground="{DynamicResource EchoMutedBrush}"
+                                                       Text="{Binding L[GraphDetailsLinks]}" />
+                                            <ScrollViewer MaxHeight="240" VerticalScrollBarVisibility="Auto">
+                                                <ItemsControl x:Name="GraphDetailsLinks">
+                                                    <ItemsControl.ItemTemplate>
+                                                        <DataTemplate>
+                                                            <Button Classes="ghost graphLink"
+                                                                    Margin="0,0,0,2"
+                                                                    Padding="8,4"
+                                                                    HorizontalAlignment="Stretch"
+                                                                    HorizontalContentAlignment="Left"
+                                                                    Tag="{Binding Node}">
+                                                                <StackPanel>
+                                                                    <TextBlock FontSize="13.5" FontWeight="SemiBold" TextWrapping="Wrap" Foreground="{DynamicResource EchoTextBrush}" Text="{Binding Label}" />
+                                                                    <TextBlock FontSize="12" TextWrapping="Wrap" Foreground="{DynamicResource EchoMutedBrush}" Text="{Binding Relation}" />
+                                                                </StackPanel>
+                                                            </Button>
+                                                        </DataTemplate>
+                                                    </ItemsControl.ItemTemplate>
+                                                </ItemsControl>
+                                            </ScrollViewer>
+                                            <TextBlock x:Name="GraphDetailsSources"
+                                                       Margin="0,10,0,0"
+                                                       FontSize="12"
+                                                       TextWrapping="Wrap"
+                                                       Foreground="{DynamicResource EchoMutedBrush}" />
+                                        </StackPanel>
+                                    </Border>
+                                </Grid>
+                            </Border>
+                        </Grid>
+                    </Grid>
+                </Grid>
+            </Grid>
+
+            <Grid x:Name="SessionPage"
+                  Margin="48,28,48,24"
+                  RowDefinitions="Auto,Auto,*,Auto"
+                  IsVisible="{Binding SelectedMainPage, Converter={x:Static controls:EqualsConverter.Instance}, ConverterParameter=Session}">
+                <TextBlock Foreground="{Binding SecondaryTextBrush}"
+                           FontSize="15"
+                           FontWeight="SemiBold"
+                           Text="{Binding SelectedSession.StartedAt, StringFormat='{}{0:dddd, dd MMM HH:mm}'}" />
+
+                <Grid Grid.Row="1" Margin="0,8,0,0" ColumnDefinitions="*,Auto">
+                    <TextBlock x:Name="SessionTitleTextBlock"
+                               Foreground="{Binding PrimaryTextBrush}"
+                               FontSize="38"
+                               FontWeight="ExtraBold"
+                               Cursor="IBeam"
+                               TextTrimming="CharacterEllipsis"
+                               ToolTip.Tip="{Binding L[TipRenameSession]}"
+                               IsVisible="{Binding !IsEditingSessionTitle}"
+                               Text="{Binding CurrentSessionTitle}" />
+                    <TextBox x:Name="SessionTitleEditTextBox"
+                             Foreground="{Binding PrimaryTextBrush}"
+                             Background="{DynamicResource EchoSurfaceBrush}"
+                             BorderBrush="{DynamicResource EchoBorderBrush}"
+                             BorderThickness="1"
+                             VerticalContentAlignment="Center"
+                             Padding="12,6"
+                             FontSize="30"
+                             IsVisible="{Binding IsEditingSessionTitle}"
+                             Text="{Binding EditableSessionTitle}" />
+                    <StackPanel Grid.Column="1" Margin="20,0,0,0" VerticalAlignment="Center" Orientation="Horizontal">
+                        <TextBlock Margin="0,0,12,0"
+                                   VerticalAlignment="Center"
+                                   FontWeight="SemiBold"
+                                   Foreground="{DynamicResource EchoAccentTextBrush}"
+                                   Text="{Binding ActionFeedbackText}" />
+                        <Button Margin="8,0,0,0" Content="{Binding L[FollowUpEmail]}" MinWidth="136" Padding="12,0" Height="34" Command="{Binding FollowUpEmailCommand}" ToolTip.Tip="{Binding L[TipFollowUpEmail]}" />
+                        <Button Margin="8,0,0,0" Content="{Binding L[Regenerate]}" MinWidth="118" Padding="12,0" Height="34" Command="{Binding RegenerateSummaryCommand}" ToolTip.Tip="{Binding L[TipRegenerate]}" />
+                        <Button Margin="8,0,0,0" Content="{Binding L[CopySummary]}" MinWidth="136" Padding="12,0" Height="34" Command="{Binding CopySummaryCommand}" ToolTip.Tip="{Binding L[TipCopySummary]}" />
+                    </StackPanel>
+                </Grid>
+                <TabControl x:Name="SessionTabs"
+                            Grid.Row="2"
+                            Margin="0,20,0,0"
+                            Background="{Binding SurfaceAltBrush}"
+                            BorderBrush="{Binding BorderBrush}"
+                            Foreground="{Binding PrimaryTextBrush}">
+                    <TabItem Tag="Summary" Header="{Binding L[TabSummary]}" ToolTip.Tip="{Binding L[TipTabSummary]}">
+                        <Grid Margin="10" RowDefinitions="Auto,*">
+                            <TextBlock Foreground="{Binding PrimaryTextBrush}" FontSize="26" FontWeight="ExtraBold" Text="{Binding L[SummaryDiscussionTitle]}" />
+                            <TextBox Grid.Row="1"
+                                     Classes="readOnlyText"
+                                     Margin="0,18,0,0"
+                                     Padding="0"
+                                     Foreground="{Binding PrimaryTextBrush}"
+                                     Background="Transparent"
+                                     BorderThickness="0"
+                                     FontSize="17"
+                                     IsReadOnly="True"
+                                     TextWrapping="Wrap"
+                                     AcceptsReturn="True"
+                                     VerticalContentAlignment="Top"
+                                     ScrollViewer.VerticalScrollBarVisibility="Auto"
+                                     ScrollViewer.HorizontalScrollBarVisibility="Disabled"
+                                     Text="{Binding CurrentSessionSummary, Mode=OneWay}" />
+                        </Grid>
+                    </TabItem>
+                    <TabItem Tag="Transcript" Header="{Binding L[TabTranscript]}" ToolTip.Tip="{Binding L[TipTabTranscript]}">
+                        <ListBox Margin="10"
+                                 Background="Transparent"
+                                 BorderThickness="0"
+                                 ItemsSource="{Binding SelectedSessionTranscript}">
+                            <ListBox.ItemTemplate>
+                                <DataTemplate>
+                                    <TextBlock Margin="0,0,0,10"
+                                               Foreground="{Binding $parent[Window].DataContext.PrimaryTextBrush}"
+                                               FontSize="16"
+                                               TextWrapping="Wrap"
+                                               Text="{Binding Text}" />
+                                </DataTemplate>
+                            </ListBox.ItemTemplate>
+                        </ListBox>
+                    </TabItem>
+                    <TabItem Tag="Email" Header="{Binding L[TabEmail]}" ToolTip.Tip="{Binding L[TipTabEmail]}">
+                        <Grid Margin="10" RowDefinitions="Auto,Auto,*">
+                            <Grid ColumnDefinitions="*,Auto">
+                                <TextBlock Foreground="{Binding PrimaryTextBrush}" FontSize="26" FontWeight="ExtraBold" Text="{Binding L[FollowUpEmailTitle]}" />
+                                <StackPanel Grid.Column="1" Orientation="Horizontal" VerticalAlignment="Center">
+                                    <Button Height="34" Padding="14,0" Command="{Binding FollowUpEmailCommand}" ToolTip.Tip="{Binding L[TipFollowUpEmailAgain]}" Content="{Binding L[FollowUpEmailAgain]}" />
+                                    <Button Classes="accent" Height="34" Margin="8,0,0,0" Padding="16,0" FontSize="14" Command="{Binding CopyFollowUpEmailCommand}" ToolTip.Tip="{Binding L[TipCopyEmail]}" Content="{Binding L[CopyEmail]}" />
+                                </StackPanel>
+                            </Grid>
+                            <StackPanel Grid.Row="1" Margin="0,12,0,0" Orientation="Horizontal">
+                                <controls:EchoThinkingDots Margin="0,0,10,0" VerticalAlignment="Center" IsVisible="{Binding IsFollowUpEmailBusy}" />
+                                <Panel MaxWidth="720">
+                                    <TextBlock FontSize="14" TextWrapping="Wrap" Foreground="{DynamicResource EchoMutedBrush}" Text="{Binding L[FollowUpEmailBusy]}" IsVisible="{Binding IsFollowUpEmailBusy}" />
+                                    <TextBlock FontSize="14" TextWrapping="Wrap" Foreground="{DynamicResource EchoMutedBrush}" Text="{Binding L[FollowUpEmailReadyHint]}">
+                                        <TextBlock.IsVisible>
+                                            <MultiBinding Converter="{x:Static BoolConverters.And}">
+                                                <Binding Path="HasFollowUpEmail" />
+                                                <Binding Path="!IsFollowUpEmailBusy" />
+                                            </MultiBinding>
+                                        </TextBlock.IsVisible>
+                                    </TextBlock>
+                                    <TextBlock FontSize="14" TextWrapping="Wrap" Foreground="{DynamicResource EchoMutedBrush}" Text="{Binding L[FollowUpEmailHint]}">
+                                        <TextBlock.IsVisible>
+                                            <MultiBinding Converter="{x:Static BoolConverters.And}">
+                                                <Binding Path="!HasFollowUpEmail" />
+                                                <Binding Path="!IsFollowUpEmailBusy" />
+                                            </MultiBinding>
+                                        </TextBlock.IsVisible>
+                                    </TextBlock>
+                                </Panel>
+                            </StackPanel>
+                            <TextBox Grid.Row="2"
+                                     Classes="readOnlyText"
+                                     Margin="0,16,0,0"
+                                     Foreground="{Binding PrimaryTextBrush}"
+                                     Background="Transparent"
+                                     BorderThickness="0"
+                                     Padding="0"
+                                     FontSize="16"
+                                     IsReadOnly="True"
+                                     TextWrapping="Wrap"
+                                     AcceptsReturn="True"
+                                     VerticalContentAlignment="Top"
+                                     ScrollViewer.VerticalScrollBarVisibility="Auto"
+                                     ScrollViewer.HorizontalScrollBarVisibility="Disabled"
+                                     Text="{Binding CurrentFollowUpEmail, Mode=OneWay}" />
+                        </Grid>
+                    </TabItem>
+                    <TabItem Tag="Usage" Header="{Binding L[TabUsage]}" ToolTip.Tip="{Binding L[TipTabUsage]}">
+                        <ScrollViewer Margin="10"
+                                      VerticalScrollBarVisibility="Auto"
+                                      HorizontalScrollBarVisibility="Disabled">
+                            <StackPanel Margin="0,0,8,0">
+                                <TextBlock FontSize="15"
+                                           Foreground="{DynamicResource EchoMutedBrush}"
+                                           Text="{Binding L[SessionUsageFallback]}"
+                                           IsVisible="{Binding !UsageView.HasData}" />
+                                <StackPanel IsVisible="{Binding UsageView.HasData}">
+                                    <!-- Main numbers as tiles; money and details stay folded below. -->
+                                    <ItemsControl ItemsSource="{Binding UsageView.Metrics}">
+                                        <ItemsControl.ItemsPanel>
+                                            <ItemsPanelTemplate>
+                                                <WrapPanel />
+                                            </ItemsPanelTemplate>
+                                        </ItemsControl.ItemsPanel>
+                                        <ItemsControl.ItemTemplate>
+                                            <DataTemplate>
+                                                <Border Width="176"
+                                                        Margin="0,0,10,10"
+                                                        Padding="14,10"
+                                                        CornerRadius="14"
+                                                        Background="{DynamicResource EchoSurfaceAltBrush}"
+                                                        ToolTip.Tip="{Binding Hint}">
+                                                    <StackPanel>
+                                                        <TextBlock FontSize="12.5"
+                                                                   TextTrimming="CharacterEllipsis"
+                                                                   Foreground="{DynamicResource EchoMutedBrush}"
+                                                                   Text="{Binding Label}" />
+                                                        <TextBlock Margin="0,3,0,0"
+                                                                   FontSize="19"
+                                                                   FontWeight="Bold"
+                                                                   TextTrimming="CharacterEllipsis"
+                                                                   Foreground="{DynamicResource EchoTextBrush}"
+                                                                   Text="{Binding Value}" />
+                                                    </StackPanel>
+                                                </Border>
+                                            </DataTemplate>
+                                        </ItemsControl.ItemTemplate>
+                                    </ItemsControl>
+                                    <Expander Classes="echo"
+                                              Margin="0,4,10,0"
+                                              HorizontalAlignment="Stretch"
+                                              Header="{Binding UsageView.CostHeader}"
+                                              ToolTip.Tip="{Binding L[TipUsageCost]}">
+                                        <ItemsControl ItemsSource="{Binding UsageView.CostRows}">
+                                            <ItemsControl.ItemTemplate>
+                                                <DataTemplate>
+                                                    <Grid Margin="0,4" ColumnDefinitions="*,Auto">
+                                                        <TextBlock Classes="costLabel"
+                                                                   Classes.total="{Binding IsTotal}"
+                                                                   FontSize="14"
+                                                                   TextWrapping="Wrap"
+                                                                   Foreground="{DynamicResource EchoMutedBrush}"
+                                                                   Text="{Binding Label}" />
+                                                        <TextBlock Grid.Column="1"
+                                                                   Classes="costValue"
+                                                                   Classes.total="{Binding IsTotal}"
+                                                                   Margin="16,0,0,0"
+                                                                   FontSize="14"
+                                                                   FontWeight="SemiBold"
+                                                                   Foreground="{DynamicResource EchoTextBrush}"
+                                                                   Text="{Binding Value}" />
+                                                    </Grid>
+                                                </DataTemplate>
+                                            </ItemsControl.ItemTemplate>
+                                        </ItemsControl>
+                                    </Expander>
+                                    <Expander Classes="echo"
+                                              Margin="0,10,10,0"
+                                              HorizontalAlignment="Stretch"
+                                              Header="{Binding UsageView.DialogHeader}"
+                                              ToolTip.Tip="{Binding L[TipUsageDialog]}">
+                                        <TextBox Classes="readOnlyText"
+                                                 Foreground="{DynamicResource EchoTextBrush}"
+                                                 Background="Transparent"
+                                                 BorderThickness="0"
+                                                 Padding="0"
+                                                 FontSize="14"
+                                                 IsReadOnly="True"
+                                                 TextWrapping="Wrap"
+                                                 Text="{Binding UsageView.DialogText, Mode=OneWay}" />
+                                    </Expander>
+                                </StackPanel>
+                            </StackPanel>
+                        </ScrollViewer>
+                    </TabItem>
+                </TabControl>
+
+                <Grid Grid.Row="3" Margin="0,18,0,0" RowDefinitions="Auto,Auto">
+                    <Grid ColumnDefinitions="Auto,*,Auto">
+                        <Button MinWidth="170"
+                                Height="44"
+                                Padding="12,0"
+                                Command="{Binding StartCaptureCommand}"
+                                ToolTip.Tip="{Binding L[TipNewRecording]}"
+                                Content="{Binding L[NewRecording]}" />
+                        <TextBox x:Name="SessionAskTextBox"
+                                 Grid.Column="1"
+                                 Margin="12,0,0,0"
+                                 Height="44"
+                                 VerticalContentAlignment="Center"
+                                 ToolTip.Tip="{Binding L[TipAskBox]}"
+                                 Text="{Binding OverlayPrompt}">
+                            <TextBox.KeyBindings>
+                                <KeyBinding Gesture="Enter" Command="{Binding WhatShouldISayCommand}" />
+                            </TextBox.KeyBindings>
+                        </TextBox>
+                        <Button Grid.Column="2"
+                                Classes="accent"
+                                Margin="10,0,0,0"
+                                Width="174"
+                                Height="44"
+                                Command="{Binding WhatShouldISayCommand}"
+                                ToolTip.Tip="{Binding L[TipAsk]}"
+                                Content="{Binding L[AskPrefix]}" />
+                    </Grid>
+                    <TextBlock Grid.Row="1"
+                               Margin="0,6,0,0"
+                               HorizontalAlignment="Right"
+                               Foreground="{Binding SecondaryTextBrush}"
+                               Text="{Binding LastVisualCaptureText}" />
+                </Grid>
+            </Grid>
+
+            <Grid x:Name="ModesPage"
+                  Margin="14"
+                  ColumnDefinitions="250,16,*"
+                  IsVisible="{Binding SelectedMainPage, Converter={x:Static controls:EqualsConverter.Instance}, ConverterParameter=Modes}">
+                <Border Grid.Column="0"
+                        Background="{DynamicResource EchoSurfaceBrush}"
+                        BorderBrush="{Binding BorderBrush}"
+                        BorderThickness="1"
+                        CornerRadius="12"
+                        Padding="10">
+                    <StackPanel>
+                        <Button Height="34"
+                                HorizontalAlignment="Stretch"
+                                Command="{Binding NewModeCommand}"
+                                Content="+ Новый режим" />
+                        <ListBox x:Name="ModesList"
+                                 Margin="0,12,0,0"
+                                 BorderThickness="0"
+                                 Background="Transparent"
+                                 ItemsSource="{Binding ModeOptions}"
+                                 SelectedItem="{Binding ModeEditorName, Mode=TwoWay}">
+                            <ListBox.ItemTemplate>
+                                <DataTemplate>
+                                    <Grid Margin="4,6" ColumnDefinitions="*,Auto">
+                                        <TextBlock Foreground="{Binding $parent[Window].DataContext.PrimaryTextBrush}"
+                                                   FontSize="16"
+                                                   Text="{Binding}" />
+                                        <TextBlock Grid.Column="1"
+                                                   Classes="modeCheck"
+                                                   Margin="8,0,0,0"
+                                                   FontSize="18"
+                                                   Foreground="{DynamicResource EchoAccentTextBrush}"
+                                                   Text="✓" />
+                                    </Grid>
+                                </DataTemplate>
+                            </ListBox.ItemTemplate>
+                        </ListBox>
+                    </StackPanel>
+                </Border>
+                <Border Grid.Column="2"
+                        Background="{DynamicResource EchoSurfaceBrush}"
+                        BorderBrush="{Binding BorderBrush}"
+                        BorderThickness="1"
+                        CornerRadius="12"
+                        Padding="18">
+                    <Grid RowDefinitions="Auto,Auto,Auto,Auto,Auto,Auto">
+                        <Grid ColumnDefinitions="*,Auto,Auto">
+                            <TextBlock FontSize="32"
+                                       FontWeight="ExtraBold"
+                                       Foreground="{Binding PrimaryTextBrush}"
+                                       Text="{Binding ModeEditorTitle}" />
+                            <Button Grid.Column="1"
+                                    Height="36"
+                                    Margin="0,6,8,0"
+                                    Padding="14,0"
+                                    Command="{Binding SetModeActiveCommand}"
+                                    Content="{Binding ModeActionButtonText}" />
+                            <Button Grid.Column="2"
+                                    Width="36"
+                                    Height="36"
+                                    Margin="0,6,0,0"
+                                    Padding="0"
+                                    HorizontalContentAlignment="Center"
+                                    Content="..." />
+                        </Grid>
+                        <TextBlock Grid.Row="1"
+                                   Margin="0,14,0,0"
+                                   Foreground="{Binding PrimaryTextBrush}"
+                                   FontSize="18"
+                                   FontWeight="SemiBold"
+                                   Text="Реальное время (prompt)" />
+                        <TextBox x:Name="ModeRealtimePromptTextBox"
+                                 Grid.Row="2"
+                                 Classes="modePrompt"
+                                 Margin="0,8,0,0"
+                                 Height="210"
+                                 Padding="12,8"
+                                 AcceptsReturn="True"
+                                 TextWrapping="Wrap"
+                                 VerticalContentAlignment="Top"
+                                 ScrollViewer.VerticalScrollBarVisibility="Auto"
+                                 Text="{Binding ModeEditorRealtimePrompt, Mode=TwoWay}" />
+                        <TextBlock Grid.Row="3"
+                                   Margin="0,14,0,0"
+                                   Foreground="{Binding PrimaryTextBrush}"
+                                   FontSize="18"
+                                   FontWeight="SemiBold"
+                                   Text="Файлы контекста" />
+                        <Border Grid.Row="4"
+                                Margin="0,8,0,0"
+                                Padding="16"
+                                CornerRadius="12"
+                                BorderBrush="{DynamicResource EchoBorderBrush}"
+                                BorderThickness="1"
+                                Background="{DynamicResource EchoBgBrush}">
+                            <StackPanel>
+                                <TextBlock Foreground="{Binding SecondaryTextBrush}"
+                                           Text="{Binding ModeEditorReferenceFile}" />
+                                <Button Width="170"
+                                        Margin="0,12,0,0"
+                                        HorizontalAlignment="Left"
+                                        Command="{Binding UploadModeReferenceFileCommand}"
+                                        Content="Загрузить файл" />
+                            </StackPanel>
+                        </Border>
+                        <TextBlock Grid.Row="5"
+                                   Margin="0,14,0,0"
+                                   VerticalAlignment="Top"
+                                   Foreground="{Binding PrimaryTextBrush}"
+                                   FontSize="18"
+                                   FontWeight="SemiBold"
+                                   Text="Шаблон заметок" />
+                        <TextBox x:Name="ModeNotesTemplateTextBox"
+                                 Grid.Row="5"
+                                 Classes="modePrompt"
+                                 Margin="0,52,0,0"
+                                 Height="120"
+                                 Padding="12,8"
+                                 AcceptsReturn="True"
+                                 TextWrapping="Wrap"
+                                 VerticalContentAlignment="Top"
+                                 ScrollViewer.VerticalScrollBarVisibility="Auto"
+                                 Text="{Binding ModeEditorNotesTemplate, Mode=TwoWay}" />
+                    </Grid>
+                </Border>
+            </Grid>
+
+            <ScrollViewer x:Name="SettingsPage"
+                          VerticalScrollBarVisibility="Auto"
+                          HorizontalScrollBarVisibility="Disabled"
+                          IsVisible="{Binding SelectedMainPage, Converter={x:Static controls:EqualsConverter.Instance}, ConverterParameter=Settings}">
+                <Grid Margin="24">
+                    <StackPanel>
+                        <StackPanel.Styles>
+                            <!-- The rows of Settings: a 230 px label and the field. -->
+                            <Style Selector="Grid.row">
+                                <Setter Property="Background" Value="Transparent" />
+                                <Setter Property="Margin" Value="0,10,0,0" />
+                            </Style>
+                            <Style Selector="Grid.hotkey">
+                                <Setter Property="Background" Value="Transparent" />
+                                <Setter Property="Margin" Value="0,8,0,0" />
+                            </Style>
+                            <Style Selector="TextBox">
+                                <Setter Property="MinHeight" Value="26" />
+                                <Setter Property="Padding" Value="12,3" />
+                            </Style>
+                        </StackPanel.Styles>
+                        <TextBlock Foreground="{Binding PrimaryTextBrush}" FontSize="30" FontWeight="ExtraBold" Text="{Binding L[SettingsTab]}" />
+                        <TextBlock Margin="0,16,0,0" Foreground="{Binding PrimaryTextBrush}" FontWeight="SemiBold" Text="{Binding L[SettingsSectionAppearance]}" />
+                        <Grid Classes="row" ColumnDefinitions="230,*" ToolTip.Tip="{Binding L[TipToggleTheme]}">
+                            <TextBlock Foreground="{Binding SecondaryTextBrush}" VerticalAlignment="Center" Text="{Binding L[SettingsTheme]}" />
+                            <StackPanel Grid.Column="1" Orientation="Horizontal">
+                                <RadioButton GroupName="ThemeMode" Classes="segment" IsChecked="{Binding IsDarkTheme, Mode=TwoWay}" ToolTip.Tip="{Binding L[TipThemeDark]}" Content="{Binding L[ThemeDark]}" />
+                                <RadioButton GroupName="ThemeMode" Classes="segment" IsChecked="{Binding IsLightTheme, Mode=TwoWay}" ToolTip.Tip="{Binding L[TipThemeLight]}" Content="{Binding L[ThemeLight]}" />
+                            </StackPanel>
+                        </Grid>
+                        <Grid Classes="row" ColumnDefinitions="230,*" ToolTip.Tip="{Binding L[TipLanguage]}">
+                            <TextBlock Foreground="{Binding SecondaryTextBrush}" VerticalAlignment="Center" Text="{Binding L[SettingsLanguage]}" />
+                            <StackPanel Grid.Column="1" Orientation="Horizontal">
+                                <RadioButton GroupName="UiLanguage" Classes="segment" IsChecked="{Binding IsRussianUi, Mode=TwoWay}" ToolTip.Tip="{Binding L[TipLanguageRu]}" Content="Русский (RU)" />
+                                <RadioButton GroupName="UiLanguage" Classes="segment" IsChecked="{Binding IsEnglishUi, Mode=TwoWay}" ToolTip.Tip="{Binding L[TipLanguageEn]}" Content="English (EN)" />
+                            </StackPanel>
+                        </Grid>
+                        <TextBlock Margin="0,6,0,0" Foreground="{Binding SecondaryTextBrush}" TextWrapping="Wrap" Text="{Binding L[SettingsLanguageHint]}" />
+                        <TextBlock Margin="0,16,0,0" Foreground="{Binding PrimaryTextBrush}" FontWeight="SemiBold" Text="{Binding L[SettingsSectionScreenShare]}" />
+                        <CheckBox Margin="0,8,0,0"
+                                  IsChecked="{Binding ShowInScreenShare, Mode=TwoWay}"
+                                  ToolTip.Tip="{Binding L[ShowInScreenShareHint]}"
+                                  Content="{Binding L[ShowInScreenShare]}" />
+                        <TextBlock Margin="0,4,0,0" Foreground="{Binding SecondaryTextBrush}" TextWrapping="Wrap" Text="{Binding L[ShowInScreenShareHint]}" />
+                        <TextBlock Margin="0,16,0,0" Foreground="{Binding PrimaryTextBrush}" FontWeight="SemiBold" Text="{Binding L[SettingsSectionAi]}" />
+                        <CheckBox Margin="0,8,0,0"
+                                  IsChecked="{Binding SmartModeEnabled, Mode=TwoWay}"
+                                  ToolTip.Tip="{Binding L[TipSmartMode]}"
+                                  Content="{Binding L[SmartModeToggle]}" />
+                        <TextBlock Margin="0,4,0,0" Foreground="{Binding SecondaryTextBrush}" TextWrapping="Wrap" Text="{Binding L[SmartModeHint]}" />
+                        <CheckBox Margin="0,10,0,0"
+                                  IsChecked="{Binding CaptureScreenContextEnabled, Mode=TwoWay}"
+                                  ToolTip.Tip="{Binding L[TipScreenContext]}"
+                                  Content="{Binding L[SettingsScreenContext]}" />
+                        <!-- Without screenshots as AI context nothing is captured, so its options are greyed out. -->
+                        <StackPanel Classes="dependent" IsEnabled="{Binding CaptureScreenContextEnabled}">
+                            <CheckBox Margin="0,8,0,0"
+                                      IsChecked="{Binding VideoContextEnabled, Mode=TwoWay}"
+                                      ToolTip.Tip="{Binding L[TipAutoSnapshots]}"
+                                      Content="{Binding L[SettingsAutoSnapshots]}" />
+                            <Grid Classes="row" ColumnDefinitions="230,*" ToolTip.Tip="{Binding L[TipSnapshotInterval]}" IsEnabled="{Binding VideoContextEnabled}">
+                                <TextBlock Foreground="{Binding SecondaryTextBrush}" VerticalAlignment="Center" Text="{Binding L[SettingsSnapshotInterval]}" />
+                                <TextBox Grid.Column="1" Text="{Binding VideoContextIntervalMs}" />
+                            </Grid>
+                            <Grid Classes="row" ColumnDefinitions="230,*" ToolTip.Tip="{Binding L[TipSnapshotBuffer]}">
+                                <TextBlock Foreground="{Binding SecondaryTextBrush}" VerticalAlignment="Center" Text="{Binding L[SettingsSnapshotBuffer]}" />
+                                <TextBox Grid.Column="1" Text="{Binding VisualContextMaxFrames}" />
+                            </Grid>
+                            <Grid Classes="row" ColumnDefinitions="230,*" ToolTip.Tip="{Binding L[TipSnapshotsPerRequest]}">
+                                <TextBlock Foreground="{Binding SecondaryTextBrush}" VerticalAlignment="Center" Text="{Binding L[SettingsSnapshotsPerRequest]}" />
+                                <TextBox Grid.Column="1" Text="{Binding VisualContextMaxImagesPerRequest}" />
+                            </Grid>
+                        </StackPanel>
+                        <TextBlock Margin="0,6,0,0" Foreground="{Binding SecondaryTextBrush}" TextWrapping="Wrap" Text="{Binding L[SettingsSnapshotsHint]}" />
+                        <TextBlock Margin="0,4,0,0" Foreground="{Binding SecondaryTextBrush}" Text="{Binding VisualContextStatusText}" />
+                        <TextBlock Margin="0,16,0,0" Foreground="{Binding PrimaryTextBrush}" FontWeight="SemiBold" Text="{Binding L[SettingsSectionLlm]}" />
+                        <!-- Provider first, then what it needs: its own address for «Custom», the key, the models. -->
+                        <Grid Classes="row" ColumnDefinitions="230,*" ToolTip.Tip="{Binding L[TipProviderPreset]}">
+                            <TextBlock Foreground="{Binding SecondaryTextBrush}" VerticalAlignment="Center" Text="{Binding L[SettingsProviderPreset]}" />
+                            <ComboBox Grid.Column="1"
+                                      HorizontalAlignment="Stretch"
+                                      ItemsSource="{Binding ApiProviderPresets}"
+                                      SelectedItem="{Binding SelectedApiPreset, Mode=TwoWay}" />
+                        </Grid>
+                        <Grid Classes="row" ColumnDefinitions="230,*" ToolTip.Tip="{Binding L[TipProvider]}" IsVisible="{Binding ProviderFieldVisibility}">
+                            <TextBlock Foreground="{Binding SecondaryTextBrush}" VerticalAlignment="Center" Text="{Binding L[SettingsProvider]}" />
+                            <TextBox Grid.Column="1" Text="{Binding ApiProvider}" />
+                        </Grid>
+                        <Grid Classes="row" ColumnDefinitions="230,*" ToolTip.Tip="{Binding L[TipBaseUrl]}" IsVisible="{Binding BaseUrlFieldVisibility}">
+                            <TextBlock Foreground="{Binding SecondaryTextBrush}" VerticalAlignment="Center" Text="{Binding L[SettingsBaseUrl]}" />
+                            <TextBox Grid.Column="1" Text="{Binding OpenAiBaseUrl}" />
+                        </Grid>
+                        <Grid Classes="row" ColumnDefinitions="230,*" ToolTip.Tip="{Binding L[TipEndpointPath]}" IsVisible="{Binding EndpointPathFieldVisibility}">
+                            <TextBlock Foreground="{Binding SecondaryTextBrush}" VerticalAlignment="Center" Text="{Binding L[SettingsEndpointPath]}" />
+                            <TextBox Grid.Column="1" Text="{Binding ChatCompletionsPath}" />
+                        </Grid>
+                        <Grid Classes="row" ColumnDefinitions="230,*" ToolTip.Tip="{Binding L[TipKeyHeader]}" IsVisible="{Binding ApiKeyHeaderFieldVisibility}">
+                            <TextBlock Foreground="{Binding SecondaryTextBrush}" VerticalAlignment="Center" Text="{Binding L[SettingsKeyHeader]}" />
+                            <TextBox Grid.Column="1" Text="{Binding ApiKeyHeaderName}" />
+                        </Grid>
+                        <Grid Classes="row" ColumnDefinitions="230,*" ToolTip.Tip="{Binding L[TipKeyPrefix]}" IsVisible="{Binding ApiKeyPrefixFieldVisibility}">
+                            <TextBlock Foreground="{Binding SecondaryTextBrush}" VerticalAlignment="Center" Text="{Binding L[SettingsKeyPrefix]}" />
+                            <TextBox Grid.Column="1" Text="{Binding ApiKeyPrefix}" />
+                        </Grid>
+                        <Grid Classes="row" ColumnDefinitions="230,*" ToolTip.Tip="{Binding L[TipApiKey]}" IsVisible="{Binding ApiKeyFieldVisibility}">
+                            <TextBlock Foreground="{Binding SecondaryTextBrush}" VerticalAlignment="Center" Text="{Binding L[SettingsApiKey]}" />
+                            <TextBox Grid.Column="1" Text="{Binding OpenAiApiKey}" />
+                        </Grid>
+                        <Grid Classes="row" ColumnDefinitions="230,*" ToolTip.Tip="{Binding L[TipModel]}">
+                            <TextBlock Foreground="{Binding SecondaryTextBrush}" VerticalAlignment="Center" Text="{Binding L[SettingsModel]}" />
+                            <controls:ModelPicker Grid.Column="1"
+                                                  Text="{Binding OpenAiModel, Mode=TwoWay}"
+                                                  Options="{Binding ChatModelOptions}"
+                                                  Status="{Binding ChatModelsStatus}"
+                                                  LoadCommand="{Binding LoadChatModelsCommand}" />
+                        </Grid>
+                        <Grid Classes="row" ColumnDefinitions="230,*" ToolTip.Tip="{Binding L[SettingsAnalysisModelHint]}">
+                            <TextBlock Foreground="{Binding SecondaryTextBrush}" VerticalAlignment="Center" Text="{Binding L[SettingsAnalysisModel]}" />
+                            <controls:ModelPicker Grid.Column="1"
+                                                  Text="{Binding AnalysisModel, Mode=TwoWay}"
+                                                  Options="{Binding ChatModelOptions}"
+                                                  Status="{Binding ChatModelsStatus}"
+                                                  LoadCommand="{Binding LoadChatModelsCommand}" />
+                        </Grid>
+                        <TextBlock Margin="0,6,0,0" Foreground="{Binding SecondaryTextBrush}" TextWrapping="Wrap" Text="{Binding L[SettingsModelPickerHint]}" />
+                        <TextBlock Margin="0,16,0,0" Foreground="{Binding PrimaryTextBrush}" FontWeight="SemiBold" Text="{Binding L[SettingsSttTitle]}" />
+                        <CheckBox Margin="0,8,0,0"
+                                  IsChecked="{Binding UseApiStt, Mode=TwoWay}"
+                                  ToolTip.Tip="{Binding L[SettingsSttHint]}"
+                                  Content="{Binding L[SettingsUseApiStt]}" />
+                        <!-- Same order as for the AI model: provider, key, model. Dimmed while recognition stays local. -->
+                        <StackPanel Classes="dependent" IsEnabled="{Binding UseApiStt}">
+                            <Grid Classes="row" ColumnDefinitions="230,*" ToolTip.Tip="{Binding L[TipSttProvider]}">
+                                <TextBlock Foreground="{Binding SecondaryTextBrush}" VerticalAlignment="Center" Text="{Binding L[SettingsProviderPreset]}" />
+                                <ComboBox Grid.Column="1"
+                                          HorizontalAlignment="Stretch"
+                                          ItemsSource="{Binding SttApiPresets}"
+                                          SelectedItem="{Binding SelectedSttPreset, Mode=TwoWay}" />
+                            </Grid>
+                            <Grid Classes="row" ColumnDefinitions="230,*" ToolTip.Tip="{Binding L[TipSttBaseUrl]}" IsVisible="{Binding SttBaseUrlFieldVisibility}">
+                                <TextBlock Foreground="{Binding SecondaryTextBrush}" VerticalAlignment="Center" Text="{Binding L[SettingsBaseUrl]}" />
+                                <TextBox Grid.Column="1" Text="{Binding SttApiBaseUrl}" />
+                            </Grid>
+                            <Grid Classes="row" ColumnDefinitions="230,*" ToolTip.Tip="{Binding L[TipSttApiKey]}">
+                                <TextBlock Foreground="{Binding SecondaryTextBrush}" VerticalAlignment="Center" Text="{Binding L[SettingsSttApiKey]}" />
+                                <TextBox Grid.Column="1" Text="{Binding SttApiKey}" />
+                            </Grid>
+                            <TextBlock Margin="0,6,0,0" Foreground="{Binding SecondaryTextBrush}" TextWrapping="Wrap" Text="{Binding SttKeySourceText}" />
+                            <TextBlock Margin="0,4,0,0" Foreground="{Binding SecondaryTextBrush}" TextWrapping="Wrap" Text="{Binding L[SettingsSttHint]}" />
+                            <Grid Classes="row" ColumnDefinitions="230,*" ToolTip.Tip="{Binding L[TipSttModel]}">
+                                <TextBlock Foreground="{Binding SecondaryTextBrush}" VerticalAlignment="Center" Text="{Binding L[SettingsSttModel]}" />
+                                <controls:ModelPicker Grid.Column="1"
+                                                      Text="{Binding SttApiModel, Mode=TwoWay}"
+                                                      Options="{Binding SpeechModelOptions}"
+                                                      Status="{Binding SpeechModelsStatus}"
+                                                      LoadCommand="{Binding LoadSpeechModelsCommand}" />
+                            </Grid>
+                        </StackPanel>
+                        <TextBlock Margin="0,4,0,0" Foreground="{Binding SecondaryTextBrush}" Text="{Binding SttStatusText}" />
+                        <Grid Classes="row" ColumnDefinitions="230,*" ToolTip.Tip="{Binding L[TipSttGlossary]}">
+                            <TextBlock Foreground="{Binding SecondaryTextBrush}" VerticalAlignment="Top" Margin="0,4,12,0" TextWrapping="Wrap" Text="{Binding L[SettingsSttGlossary]}" />
+                            <TextBox Grid.Column="1"
+                                     MinHeight="56"
+                                     Padding="10,6"
+                                     AcceptsReturn="True"
+                                     TextWrapping="Wrap"
+                                     VerticalContentAlignment="Top"
+                                     ScrollViewer.VerticalScrollBarVisibility="Auto"
+                                     Watermark="{Binding L[SettingsSttGlossaryExample]}"
+                                     Text="{Binding SttGlossary}" />
+                        </Grid>
+                        <TextBlock Margin="0,4,0,0" Foreground="{Binding SecondaryTextBrush}" TextWrapping="Wrap" Text="{Binding L[SettingsSttGlossaryHint]}" />
+                        <TextBlock Margin="0,16,0,0" Foreground="{Binding PrimaryTextBrush}" FontWeight="SemiBold" Text="{Binding L[SpeechModelTitle]}" />
+                        <TextBlock Margin="0,6,0,0" Foreground="{Binding SecondaryTextBrush}" TextWrapping="Wrap" Text="{Binding L[SpeechModelIntro]}" />
+                        <TextBlock Margin="0,4,0,0" Foreground="{Binding SecondaryTextBrush}" TextWrapping="Wrap" Text="{Binding SpeechModelHardwareText}" />
+                        <TextBlock Margin="0,4,0,0" Foreground="{Binding PrimaryTextBrush}" TextWrapping="Wrap" Text="{Binding SpeechModelStatusText}" />
+                        <ItemsControl Margin="0,8,0,0" ItemsSource="{Binding SpeechModels}">
+                            <ItemsControl.ItemTemplate>
+                                <DataTemplate>
+                                    <Border Margin="0,0,0,8"
+                                            Padding="12,10"
+                                            CornerRadius="8"
+                                            BorderThickness="1"
+                                            Background="{Binding $parent[Window].DataContext.SurfaceAltBrush}"
+                                            BorderBrush="{Binding $parent[Window].DataContext.BorderBrush}">
+                                        <Grid ColumnDefinitions="*,Auto">
+                                            <StackPanel>
+                                                <StackPanel Orientation="Horizontal">
+                                                    <TextBlock FontWeight="SemiBold"
+                                                               Foreground="{Binding $parent[Window].DataContext.PrimaryTextBrush}"
+                                                               Text="{Binding Title}" />
+                                                    <TextBlock Margin="10,0,0,0"
+                                                               Foreground="{Binding $parent[Window].DataContext.SecondaryTextBrush}"
+                                                               Text="{Binding SizeText}" />
+                                                    <Border Margin="10,0,0,0"
+                                                            Padding="8,1"
+                                                            CornerRadius="9"
+                                                            VerticalAlignment="Center"
+                                                            Background="{DynamicResource EchoAccentSoftBrush}"
+                                                            IsVisible="{Binding RecommendedVisibility}">
+                                                        <TextBlock Foreground="{DynamicResource EchoBadgeTextBrush}"
+                                                                   FontSize="11"
+                                                                   Text="{Binding $parent[Window].DataContext.L[SpeechModelRecommended]}" />
+                                                    </Border>
+                                                </StackPanel>
+                                                <TextBlock Margin="0,4,0,0"
+                                                           TextWrapping="Wrap"
+                                                           Foreground="{Binding $parent[Window].DataContext.SecondaryTextBrush}"
+                                                           Text="{Binding Description}" />
+                                                <TextBlock Margin="0,4,0,0"
+                                                           Foreground="{Binding $parent[Window].DataContext.SecondaryTextBrush}"
+                                                           Text="{Binding SuitabilityText}" />
+                                                <ProgressBar Margin="0,6,0,0"
+                                                             Height="6"
+                                                             Maximum="100"
+                                                             Value="{Binding ProgressPercent, Mode=OneWay}"
+                                                             IsVisible="{Binding DownloadingVisibility}" />
+                                            </StackPanel>
+                                            <StackPanel Grid.Column="1" Margin="12,0,0,0" VerticalAlignment="Center" HorizontalAlignment="Right">
+                                                <TextBlock HorizontalAlignment="Right"
+                                                           Foreground="{Binding $parent[Window].DataContext.PrimaryTextBrush}"
+                                                           Text="{Binding StatusText}" />
+                                                <StackPanel Margin="0,6,0,0" Orientation="Horizontal" HorizontalAlignment="Right">
+                                                    <Button MinWidth="96" Height="30" Padding="10,0"
+                                                            IsVisible="{Binding DownloadVisibility}"
+                                                            Command="{Binding $parent[Window].DataContext.DownloadSpeechModelCommand}"
+                                                            ToolTip.Tip="{Binding $parent[Window].DataContext.L[TipSpeechDownload]}"
+                                                            CommandParameter="{Binding}"
+                                                            Content="{Binding $parent[Window].DataContext.L[SpeechModelDownload]}" />
+                                                    <Button MinWidth="96" Height="30" Padding="10,0"
+                                                            IsVisible="{Binding UseVisibility}"
+                                                            Command="{Binding $parent[Window].DataContext.UseSpeechModelCommand}"
+                                                            ToolTip.Tip="{Binding $parent[Window].DataContext.L[TipSpeechUse]}"
+                                                            CommandParameter="{Binding}"
+                                                            Content="{Binding $parent[Window].DataContext.L[SpeechModelUse]}" />
+                                                    <Button MinWidth="80" Height="30" Margin="6,0,0,0" Padding="10,0"
+                                                            IsVisible="{Binding DeleteVisibility}"
+                                                            Command="{Binding $parent[Window].DataContext.DeleteSpeechModelCommand}"
+                                                            ToolTip.Tip="{Binding $parent[Window].DataContext.L[TipSpeechDelete]}"
+                                                            CommandParameter="{Binding}"
+                                                            Content="{Binding $parent[Window].DataContext.L[SpeechModelDelete]}" />
+                                                    <Button MinWidth="96" Height="30" Padding="10,0"
+                                                            IsVisible="{Binding DownloadingVisibility}"
+                                                            Command="{Binding $parent[Window].DataContext.CancelSpeechModelDownloadCommand}"
+                                                            ToolTip.Tip="{Binding $parent[Window].DataContext.L[TipSpeechCancel]}"
+                                                            Content="{Binding $parent[Window].DataContext.L[SpeechModelCancel]}" />
+                                                </StackPanel>
+                                            </StackPanel>
+                                        </Grid>
+                                    </Border>
+                                </DataTemplate>
+                            </ItemsControl.ItemTemplate>
+                        </ItemsControl>
+                        <TextBlock Margin="0,16,0,0" Foreground="{Binding PrimaryTextBrush}" FontWeight="SemiBold" Text="{Binding L[HotkeysTitle]}" />
+                        <Grid Classes="hotkey" ColumnDefinitions="220,220,220" ToolTip.Tip="{Binding L[TipHotkeyShowHide]}">
+                            <TextBlock Foreground="{Binding SecondaryTextBrush}" VerticalAlignment="Center" Text="{Binding L[HotkeyShowHide]}" />
+                            <TextBox Grid.Column="1" Text="{Binding ToggleOverlayHotkeyText}" />
+                            <TextBlock Grid.Column="2" Margin="8,0,0,0" VerticalAlignment="Center" Foreground="{Binding SecondaryTextBrush}" Text="Ctrl+/" />
+                        </Grid>
+                        <Grid Classes="hotkey" ColumnDefinitions="220,220,220" ToolTip.Tip="{Binding L[TipHotkeyAsk]}">
+                            <TextBlock Foreground="{Binding SecondaryTextBrush}" VerticalAlignment="Center" Text="{Binding L[HotkeyAsk]}" />
+                            <TextBox Grid.Column="1" Text="{Binding AskHotkeyText}" />
+                            <TextBlock Grid.Column="2" Margin="8,0,0,0" VerticalAlignment="Center" Foreground="{Binding SecondaryTextBrush}" Text="Ctrl+Enter" />
+                        </Grid>
+                        <Grid Classes="hotkey" ColumnDefinitions="220,220,220" ToolTip.Tip="{Binding L[TipHotkeyClearChat]}">
+                            <TextBlock Foreground="{Binding SecondaryTextBrush}" VerticalAlignment="Center" Text="{Binding L[HotkeyClearChat]}" />
+                            <TextBox Grid.Column="1" Text="{Binding ClearChatHotkeyText}" />
+                            <TextBlock Grid.Column="2" Margin="8,0,0,0" VerticalAlignment="Center" Foreground="{Binding SecondaryTextBrush}" Text="Ctrl+R" />
+                        </Grid>
+                        <Grid Classes="hotkey" ColumnDefinitions="220,220,220" ToolTip.Tip="{Binding L[TipHotkeyStartStop]}">
+                            <TextBlock Foreground="{Binding SecondaryTextBrush}" VerticalAlignment="Center" Text="{Binding L[HotkeyStartStop]}" />
+                            <TextBox Grid.Column="1" Text="{Binding ToggleCaptureHotkeyText}" />
+                            <TextBlock Grid.Column="2" Margin="8,0,0,0" VerticalAlignment="Center" Foreground="{Binding SecondaryTextBrush}" Text="Ctrl+Shift+/" />
+                        </Grid>
+                        <Grid Classes="hotkey" ColumnDefinitions="220,220,220" ToolTip.Tip="{Binding L[TipHotkeyMove]}">
+                            <TextBlock Foreground="{Binding SecondaryTextBrush}" VerticalAlignment="Center" TextWrapping="Wrap" Text="{Binding L[HotkeyMove]}" />
+                            <StackPanel Grid.Column="1" Orientation="Horizontal">
+                                <TextBox Width="50" Margin="0,0,6,0" Padding="6,3" Text="{Binding MoveLeftHotkeyText}" />
+                                <TextBox Width="50" Margin="0,0,6,0" Padding="6,3" Text="{Binding MoveRightHotkeyText}" />
+                                <TextBox Width="50" Margin="0,0,6,0" Padding="6,3" Text="{Binding MoveUpHotkeyText}" />
+                                <TextBox Width="50" Padding="6,3" Text="{Binding MoveDownHotkeyText}" />
+                            </StackPanel>
+                            <TextBlock Grid.Column="2" Margin="8,0,0,0" VerticalAlignment="Center" Foreground="{Binding SecondaryTextBrush}" Text="Alt+←→↑↓" />
+                        </Grid>
+                        <Grid Classes="hotkey" ColumnDefinitions="220,220,220" ToolTip.Tip="{Binding L[TipHotkeyScroll]}">
+                            <TextBlock Foreground="{Binding SecondaryTextBrush}" VerticalAlignment="Center" Text="{Binding L[HotkeyScroll]}" />
+                            <StackPanel Grid.Column="1" Orientation="Horizontal">
+                                <TextBox Width="90" Margin="0,0,6,0" Text="{Binding ScrollUpHotkeyText}" />
+                                <TextBox Width="90" Text="{Binding ScrollDownHotkeyText}" />
+                            </StackPanel>
+                            <TextBlock Grid.Column="2" Margin="8,0,0,0" VerticalAlignment="Center" Foreground="{Binding SecondaryTextBrush}" Text="Ctrl+Shift+Up/Down" />
+                        </Grid>
+                        <Grid Classes="hotkey" ColumnDefinitions="220,220,220" ToolTip.Tip="{Binding L[TipHotkeySnapshot]}">
+                            <TextBlock Foreground="{Binding SecondaryTextBrush}" VerticalAlignment="Center" Text="{Binding L[HotkeySnapshot]}" />
+                            <TextBox Grid.Column="1" Text="{Binding SnapshotHotkeyText}" />
+                            <TextBlock Grid.Column="2" Margin="8,0,0,0" VerticalAlignment="Center" Foreground="{Binding SecondaryTextBrush}" Text="Ctrl+Shift+S" />
+                        </Grid>
+                        <StackPanel Orientation="Horizontal" Margin="0,18,0,0">
+                            <Button MinWidth="170" Height="34" Padding="10,0" Command="{Binding SaveSettingsCommand}" ToolTip.Tip="{Binding L[TipSaveSettings]}" Content="{Binding L[SaveSettings]}" />
+                            <Button MinWidth="170" Height="34" Padding="10,0" Margin="8,0,0,0" Command="{Binding RunAudioTestCommand}" ToolTip.Tip="{Binding L[TipTestMicrophone]}" Content="{Binding L[TestMicrophone]}" />
+                            <Button MinWidth="190" Height="34" Padding="10,0" Margin="8,0,0,0" Command="{Binding RunAudioCaptureTestCommand}" ToolTip.Tip="{Binding L[TipTestAudioCapture]}" Content="{Binding L[TestAudioCapture]}" />
+                        </StackPanel>
+                        <TextBlock Margin="0,12,0,0" Foreground="{Binding PrimaryTextBrush}" Text="{Binding AudioHealthMessage}" />
+                        <TextBlock Margin="0,6,0,0" Foreground="{Binding SecondaryTextBrush}" Text="{Binding SystemStatsText}" />
+                        <TextBlock Margin="0,4,0,0" Foreground="{Binding SecondaryTextBrush}" Text="{Binding MicStatsText}" />
+                    </StackPanel>
+                </Grid>
+            </ScrollViewer>
+        </Panel>
+    </Grid>
+</Window>

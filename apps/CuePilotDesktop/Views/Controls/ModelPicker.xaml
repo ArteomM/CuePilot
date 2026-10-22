@@ -1,0 +1,162 @@
+<UserControl x:Class="CuePilotDesktop.Views.Controls.ModelPicker"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             x:Name="Root">
+    <UserControl.Resources>
+        <Style x:Key="PickerRowStyle" TargetType="ListBoxItem">
+            <Setter Property="Focusable" Value="False" />
+            <Setter Property="HorizontalContentAlignment" Value="Stretch" />
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="ListBoxItem">
+                        <Border x:Name="Row" Padding="10,6" CornerRadius="8" Background="Transparent" Cursor="Hand">
+                            <ContentPresenter />
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter TargetName="Row" Property="Background" Value="{DynamicResource EchoHoverBrush}" />
+                            </Trigger>
+                            <Trigger Property="IsSelected" Value="True">
+                                <Setter TargetName="Row" Property="Background" Value="{DynamicResource EchoAccentSoftBrush}" />
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+        <Style x:Key="PickerLinkButtonStyle" TargetType="Button">
+            <Setter Property="Focusable" Value="False" />
+            <Setter Property="Cursor" Value="Hand" />
+            <Setter Property="Foreground" Value="{DynamicResource EchoAccentTextBrush}" />
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border x:Name="Chip" Padding="10,4" CornerRadius="8" Background="Transparent">
+                            <ContentPresenter VerticalAlignment="Center" />
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter TargetName="Chip" Property="Background" Value="{DynamicResource EchoHoverBrush}" />
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+    </UserControl.Resources>
+    <Grid>
+        <!-- The id is typed freely; the list only helps to pick a correct spelling. -->
+        <TextBox x:Name="Box"
+                 Padding="12,0,38,0"
+                 PreviewKeyDown="Box_OnPreviewKeyDown"
+                 TextChanged="Box_OnTextChanged" />
+        <Border x:Name="OpenButton"
+                Width="30"
+                Margin="0,2,4,2"
+                HorizontalAlignment="Right"
+                CornerRadius="9"
+                Cursor="Hand"
+                ToolTip="{Binding L[TipModelPickerOpen]}"
+                MouseLeftButtonUp="OpenButton_OnMouseLeftButtonUp">
+            <Border.Style>
+                <Style TargetType="Border">
+                    <Setter Property="Background" Value="Transparent" />
+                    <Style.Triggers>
+                        <Trigger Property="IsMouseOver" Value="True">
+                            <Setter Property="Background" Value="{DynamicResource EchoHoverBrush}" />
+                        </Trigger>
+                    </Style.Triggers>
+                </Style>
+            </Border.Style>
+            <Path HorizontalAlignment="Center"
+                  VerticalAlignment="Center"
+                  Data="M 0,0 L 4.5,4.5 L 9,0"
+                  Stroke="{DynamicResource EchoMutedBrush}"
+                  StrokeThickness="1.6"
+                  StrokeStartLineCap="Round"
+                  StrokeEndLineCap="Round"
+                  StrokeLineJoin="Round" />
+        </Border>
+        <Popup x:Name="DropDown"
+               PlacementTarget="{Binding ElementName=Box}"
+               Placement="Bottom"
+               VerticalOffset="4"
+               AllowsTransparency="True"
+               StaysOpen="False"
+               Opened="DropDown_OnOpened"
+               Closed="DropDown_OnClosed">
+            <Border Width="{Binding ActualWidth, ElementName=Root}"
+                    Padding="4"
+                    CornerRadius="12"
+                    Background="{DynamicResource EchoPopupBrush}"
+                    BorderBrush="{DynamicResource EchoBorderBrush}"
+                    BorderThickness="1">
+                <DockPanel>
+                    <Grid DockPanel.Dock="Bottom" Margin="8,6,0,2">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*" />
+                            <ColumnDefinition Width="Auto" />
+                        </Grid.ColumnDefinitions>
+                        <TextBlock x:Name="StatusLine"
+                                   VerticalAlignment="Center"
+                                   FontSize="12"
+                                   TextWrapping="Wrap"
+                                   Foreground="{DynamicResource EchoMutedBrush}" />
+                        <Button Grid.Column="1"
+                                Margin="8,0,0,0"
+                                FontSize="12.5"
+                                Style="{StaticResource PickerLinkButtonStyle}"
+                                ToolTip="{Binding L[TipModelPickerRefresh]}"
+                                Content="{Binding L[ModelPickerRefresh]}"
+                                Click="Refresh_OnClick" />
+                    </Grid>
+                    <TextBlock x:Name="EmptyLine"
+                               DockPanel.Dock="Top"
+                               Margin="10,8"
+                               FontSize="12.5"
+                               TextWrapping="Wrap"
+                               Foreground="{DynamicResource EchoMutedBrush}"
+                               Text="{Binding L[ModelPickerNoMatch]}"
+                               Visibility="Collapsed" />
+                    <ListBox x:Name="List"
+                             MaxHeight="300"
+                             Background="Transparent"
+                             BorderThickness="0"
+                             Focusable="False"
+                             ScrollViewer.HorizontalScrollBarVisibility="Disabled"
+                             ScrollViewer.CanContentScroll="True"
+                             VirtualizingPanel.IsVirtualizing="True"
+                             VirtualizingPanel.VirtualizationMode="Recycling"
+                             ItemContainerStyle="{StaticResource PickerRowStyle}"
+                             PreviewMouseLeftButtonUp="List_OnPreviewMouseLeftButtonUp">
+                        <ListBox.ItemTemplate>
+                            <DataTemplate>
+                                <StackPanel>
+                                    <TextBlock x:Name="IdText"
+                                               FontSize="13.5"
+                                               TextTrimming="CharacterEllipsis"
+                                               Foreground="{DynamicResource EchoTextBrush}"
+                                               Text="{Binding Id}" />
+                                    <TextBlock x:Name="NoteText"
+                                               Margin="0,1,0,0"
+                                               FontSize="12"
+                                               TextTrimming="CharacterEllipsis"
+                                               Foreground="{DynamicResource EchoMutedBrush}"
+                                               Text="{Binding Note}" />
+                                </StackPanel>
+                                <DataTemplate.Triggers>
+                                    <DataTrigger Binding="{Binding IsRecommended}" Value="True">
+                                        <Setter TargetName="IdText" Property="FontWeight" Value="SemiBold" />
+                                    </DataTrigger>
+                                    <DataTrigger Binding="{Binding Note}" Value="">
+                                        <Setter TargetName="NoteText" Property="Visibility" Value="Collapsed" />
+                                    </DataTrigger>
+                                </DataTemplate.Triggers>
+                            </DataTemplate>
+                        </ListBox.ItemTemplate>
+                    </ListBox>
+                </DockPanel>
+            </Border>
+        </Popup>
+    </Grid>
+</UserControl>

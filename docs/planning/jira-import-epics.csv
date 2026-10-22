@@ -1,0 +1,9 @@
+Issue Type,Summary,Epic Name,Description,Priority,Labels
+Epic,"E1 Desktop Shell and App Lifecycle","E1 Desktop Shell and App Lifecycle","Deliver a stable desktop foundation with onboarding, permissions, tray, and overlay states.",Highest,"cuepilot,mvp,windows-first"
+Epic,"E2 Audio Capture Pipeline","E2 Audio Capture Pipeline","Capture system + mic audio with low latency and reliable diagnostics.",Highest,"cuepilot,mvp,audio,windows-first"
+Epic,"E3 RU Streaming STT","E3 RU Streaming STT","Provide Russian-first low-latency transcription with partial/final outputs.",Highest,"cuepilot,mvp,stt,ru"
+Epic,"E4 Suggestion Engine and Policy Router","E4 Suggestion Engine and Policy Router","Transform transcript context into short ranked suggestions in real time.",Highest,"cuepilot,mvp,llm"
+Epic,"E5 Screen Context ROI-first","E5 Screen Context ROI-first","Enable low-risk manual screen context ingestion for better relevance.",High,"cuepilot,screen-context,roi"
+Epic,"E6 Privacy and Stealth Layer","E6 Privacy and Stealth Layer","Provide transparent privacy controls and practical capture-exclusion behavior.",Highest,"cuepilot,privacy,stealth"
+Epic,"E7 Backend Essentials and Telemetry","E7 Backend Essentials and Telemetry","Add minimal backend capabilities after local loop validation.",High,"cuepilot,backend,telemetry"
+Epic,"E8 QA Beta Hardening and Release","E8 QA Beta Hardening and Release","Prove stability and usefulness with closed beta users.",Highest,"cuepilot,qa,beta"

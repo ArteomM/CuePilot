@@ -1,0 +1,62 @@
+<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:controls="using:CuePilot.Avalonia.Views.Controls"
+        x:Class="CuePilot.Avalonia.Views.IndicatorWindow"
+        FontFamily="{StaticResource EchoFont}"
+        FontSize="14"
+        Title="CuePilot Indicator"
+        Icon="avares://CuePilot/Assets/cuepilot-icon.png"
+        Width="300"
+        Height="54"
+        SystemDecorations="None"
+        TransparencyLevelHint="Transparent"
+        Background="Transparent"
+        CanResize="False"
+        Topmost="True"
+        ShowInTaskbar="False"
+        RequestedThemeVariant="Dark"
+        WindowStartupLocation="CenterScreen">
+    <!-- Overlay windows stay in the night palette in both app themes: they float over other apps. -->
+    <Window.Styles>
+        <Style Selector="Button.indicator">
+            <Setter Property="Background" Value="Transparent" />
+            <Setter Property="BorderBrush" Value="#2A313C" />
+            <Setter Property="Foreground" Value="#E9EEF5" />
+            <Setter Property="FontSize" Value="13" />
+            <Setter Property="Padding" Value="10,5" />
+        </Style>
+    </Window.Styles>
+    <Border Margin="4" Background="#EB171B22" BorderBrush="#2A313C" BorderThickness="1" CornerRadius="16" Padding="6">
+        <Grid ColumnDefinitions="Auto,*,Auto,Auto">
+            <Button Width="34"
+                    Height="34"
+                    Name="HomeButton"
+                    Classes="indicator"
+                    Padding="0">
+                <controls:EchoLogo x:Name="HomeLogo" Width="26" Height="26" />
+            </Button>
+
+            <Button Grid.Column="1"
+                    Margin="8,0,8,0"
+                    Name="HideAskButton"
+                    Classes="indicator"
+                    HorizontalAlignment="Stretch"
+                    Content="Hide" />
+
+            <Button Grid.Column="2"
+                    Width="42"
+                    Height="34"
+                    Margin="0,0,8,0"
+                    Name="StopButton"
+                    Classes="indicator"
+                    Content="■" />
+
+            <Button Grid.Column="3"
+                    Width="42"
+                    Height="34"
+                    Name="CaptureButton"
+                    Classes="indicator"
+                    Content="📷" />
+        </Grid>
+    </Border>
+</Window>

@@ -1,0 +1,53 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <!--
+    CuePilot for macOS (and later possibly Windows) on Avalonia.
+    Services, Models and ViewModels are shared with ../CuePilotDesktop; *.Wpf.cs files there are the WPF-only parts,
+    and Platform/ here holds the Avalonia/macOS counterparts.
+  -->
+  <PropertyGroup>
+    <OutputType>WinExe</OutputType>
+    <TargetFramework>net8.0</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <RootNamespace>CuePilot.Avalonia</RootNamespace>
+    <AssemblyName>CuePilot</AssemblyName>
+    <ApplicationIcon>..\CuePilotDesktop\cuepilot-favicon.ico</ApplicationIcon>
+    <AvaloniaUseCompiledBindingsByDefault>true</AvaloniaUseCompiledBindingsByDefault>
+    <Version>1.0.4</Version>
+    <AssemblyVersion>1.0.4.0</AssemblyVersion>
+    <FileVersion>1.0.4.0</FileVersion>
+    <InformationalVersion>1.0.4</InformationalVersion>
+    <Product>CuePilot</Product>
+    <Company>CuePilot</Company>
+    <CFBundleName>CuePilot</CFBundleName>
+    <CFBundleIdentifier>app.cuepilot.desktop</CFBundleIdentifier>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Avalonia" Version="11.3.0" />
+    <PackageReference Include="Avalonia.Desktop" Version="11.3.0" />
+    <PackageReference Include="Avalonia.Themes.Fluent" Version="11.3.0" />
+    <PackageReference Include="Avalonia.Headless" Version="11.3.0" />
+    <PackageReference Include="ExcelDataReader" Version="3.9.0" />
+    <PackageReference Include="ExcelDataReader.DataSet" Version="3.9.0" />
+    <PackageReference Include="OpenMcdf" Version="3.3.0" />
+    <PackageReference Include="PdfPig" Version="0.1.16" />
+  </ItemGroup>
+
+  <!-- Shared code from the WPF app. Windows-only services are left out and get Mac implementations later. -->
+  <ItemGroup>
+    <Compile Include="..\CuePilotDesktop\Models\**\*.cs" Link="Shared\Models\%(RecursiveDir)%(Filename)%(Extension)" />
+    <Compile Include="..\CuePilotDesktop\Services\**\*.cs"
+             Exclude="..\CuePilotDesktop\Services\HotkeyManager.cs;..\CuePilotDesktop\Services\HotkeyGesture.cs;..\CuePilotDesktop\Services\ScreenShareProtection.cs;..\CuePilotDesktop\Services\VisualContextCaptureService.cs"
+             Link="Shared\Services\%(RecursiveDir)%(Filename)%(Extension)" />
+    <Compile Include="..\CuePilotDesktop\ViewModels\**\*.cs" Exclude="..\CuePilotDesktop\ViewModels\**\*.Wpf.cs"
+             Link="Shared\ViewModels\%(RecursiveDir)%(Filename)%(Extension)" />
+    <Compile Include="..\CuePilotDesktop\Views\Controls\MarkdownBlocks.cs" Link="Shared\Views\MarkdownBlocks.cs" />
+    <EmbeddedResource Include="..\CuePilotDesktop\Resources\Strings.resx" ManifestResourceName="CuePilotDesktop.Resources.Strings" Link="Shared\Resources\Strings.resx" />
+    <EmbeddedResource Include="..\CuePilotDesktop\Resources\Strings.ru.resx" ManifestResourceName="CuePilotDesktop.Resources.Strings.ru" Link="Shared\Resources\Strings.ru.resx" />
+    <AvaloniaResource Include="..\CuePilotDesktop\Assets\Fonts\*.ttf" Link="Assets\Fonts\%(Filename)%(Extension)" />
+    <AvaloniaResource Include="..\CuePilotDesktop\cuepilot-icon.png" Link="Assets\cuepilot-icon.png" />
+  </ItemGroup>
+
+</Project>

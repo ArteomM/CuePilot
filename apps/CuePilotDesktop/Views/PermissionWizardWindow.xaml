@@ -1,0 +1,46 @@
+﻿<Window x:Class="CuePilotDesktop.Views.PermissionWizardWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="CuePilot"
+        Icon="/cuepilot-favicon.ico"
+        FontFamily="{StaticResource EchoFont}"
+        Height="360"
+        Width="640"
+        WindowStartupLocation="CenterOwner"
+        ResizeMode="NoResize">
+    <Grid Margin="16">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
+            <RowDefinition Height="Auto" />
+        </Grid.RowDefinitions>
+
+        <TextBlock Name="StepTitleText" FontSize="20" FontWeight="SemiBold" />
+
+        <Border Grid.Row="1" Margin="0,12,0,12" Background="#F9FAFB" CornerRadius="8" Padding="12">
+            <StackPanel>
+                <TextBlock Name="StepDescriptionText" TextWrapping="Wrap" FontSize="14" />
+                <CheckBox Name="ConfirmCheckBox"
+                          Margin="0,16,0,0"
+                          Content="..."
+                          Checked="OnConfirmChanged"
+                          Unchecked="OnConfirmChanged"/>
+            </StackPanel>
+        </Border>
+
+        <Grid Grid.Row="2">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="Auto" />
+                <ColumnDefinition Width="Auto" />
+                <ColumnDefinition Width="Auto" />
+            </Grid.ColumnDefinitions>
+
+            <TextBlock Name="StepCounterText" VerticalAlignment="Center" Foreground="#4B5563" />
+
+            <Button Grid.Column="1" Name="BackButton" Width="100" Height="34" Margin="0,0,8,0" Click="OnBackClick" />
+            <Button Grid.Column="2" Name="NextButton" Width="100" Height="34" Margin="0,0,8,0" Click="OnNextClick" />
+            <Button Grid.Column="3" Name="FinishButton" Width="100" Height="34" Click="OnFinishClick" />
+        </Grid>
+    </Grid>
+</Window>

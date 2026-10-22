@@ -1,0 +1,652 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, ...</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, ...</value>
+  </resheader>
+  <data name="MainWindowTitle" xml:space="preserve"><value>CuePilot Desktop</value></data>
+  <data name="MainHeader" xml:space="preserve"><value>CuePilot — десктопный суфлер</value></data>
+  <data name="StartCapture" xml:space="preserve"><value>Запустить захват</value></data>
+  <data name="StopCapture" xml:space="preserve"><value>Остановить захват</value></data>
+  <data name="WindowModeExpanded" xml:space="preserve"><value>Обычный</value></data>
+  <data name="WindowModeMini" xml:space="preserve"><value>Мини</value></data>
+  <data name="WindowModeHidden" xml:space="preserve"><value>Скрытый</value></data>
+  <data name="SessionModeMeeting" xml:space="preserve"><value>Встреча</value></data>
+  <data name="SessionModeSales" xml:space="preserve"><value>Продажи</value></data>
+  <data name="SessionModeInterview" xml:space="preserve"><value>Интервью</value></data>
+  <data name="RefreshDiagnostics" xml:space="preserve"><value>Обновить диагностику</value></data>
+  <data name="StatusLabel" xml:space="preserve"><value>Статус</value></data>
+  <data name="SystemStreamLabel" xml:space="preserve"><value>Системный поток</value></data>
+  <data name="MicStreamLabel" xml:space="preserve"><value>Поток микрофона</value></data>
+  <data name="DiagnosticsTab" xml:space="preserve"><value>Диагностика</value></data>
+  <data name="DotnetRuntimeLabel" xml:space="preserve"><value>dotnet runtime:</value></data>
+  <data name="CaptureBackendLabel" xml:space="preserve"><value>backend DesktopCapture:</value></data>
+  <data name="WhisperCliLabel" xml:space="preserve"><value>whisper-cli:</value></data>
+  <data name="WhisperModelLabel" xml:space="preserve"><value>модель whisper:</value></data>
+  <data name="SttDirLabel" xml:space="preserve"><value>директория stt chunks:</value></data>
+  <data name="LogsTab" xml:space="preserve"><value>Логи</value></data>
+  <data name="TranscriptTab" xml:space="preserve"><value>Транскрипт</value></data>
+  <data name="TranscriptHint" xml:space="preserve"><value>Транскрипт в реальном времени с тегами источников (system/mic).</value></data>
+  <data name="FilterAll" xml:space="preserve"><value>все</value></data>
+  <data name="FilterSystem" xml:space="preserve"><value>system</value></data>
+  <data name="FilterMic" xml:space="preserve"><value>mic</value></data>
+  <data name="ClearTranscript" xml:space="preserve"><value>Очистить транскрипт</value></data>
+  <data name="SettingsTab" xml:space="preserve"><value>Настройки</value></data>
+  <data name="UiLanguageLabel" xml:space="preserve"><value>Язык интерфейса</value></data>
+  <data name="OverlayHotkeyLabel" xml:space="preserve"><value>Горячая клавиша overlay</value></data>
+  <data name="CaptureHotkeyLabel" xml:space="preserve"><value>Горячая клавиша захвата</value></data>
+  <data name="SaveSettings" xml:space="preserve"><value>Сохранить настройки</value></data>
+  <data name="FooterText" xml:space="preserve"><value>MVP shell: управление захватом, режимы окна, диагностика и транскрипт.</value></data>
+  <data name="CaptureStatusCapturing" xml:space="preserve"><value>Захват идет</value></data>
+  <data name="CaptureStatusIdle" xml:space="preserve"><value>Ожидание</value></data>
+  <data name="PrivacyOn" xml:space="preserve"><value>Приватность: mic + system захват ВКЛ</value></data>
+  <data name="PrivacyOff" xml:space="preserve"><value>Приватность: захват выключен</value></data>
+  <data name="NoDataYet" xml:space="preserve"><value>Пока нет данных</value></data>
+  <data name="StatsAvgShort" xml:space="preserve"><value>ср.</value></data>
+  <data name="StatsPeakShort" xml:space="preserve"><value>пик</value></data>
+  <data name="WarningDiagnosticsTitle" xml:space="preserve"><value>Диагностика</value></data>
+  <data name="WarningDiagnosticsNotReady" xml:space="preserve"><value>Диагностика не готова к запуску. Откройте вкладку диагностики и устраните ERROR-состояния.</value></data>
+  <data name="ErrorTitle" xml:space="preserve"><value>Ошибка</value></data>
+  <data name="ErrorCaptureStart" xml:space="preserve"><value>Не удалось запустить процесс захвата:</value></data>
+  <data name="OverlayWindowTitle" xml:space="preserve"><value>CuePilot</value></data>
+  <data name="OverlayTitle" xml:space="preserve"><value>CuePilot</value></data>
+  <data name="OverlayPrompt" xml:space="preserve"><value>Спросите о разговоре или контексте экрана</value></data>
+  <data name="OverlayStatusRunning" xml:space="preserve"><value>● идёт запись</value></data>
+  <data name="OverlayStatusIdle" xml:space="preserve"><value>○ запись остановлена</value></data>
+  <data name="OverlaySuggestionPlaceholder" xml:space="preserve"><value>Здесь появится предпросмотр подсказки.</value></data>
+  <data name="PermissionWizardTitle" xml:space="preserve"><value>Мастер разрешений CuePilot</value></data>
+  <data name="WizardStep1Title" xml:space="preserve"><value>Шаг 1: Разрешения на захват аудио</value></data>
+  <data name="WizardStep1Description" xml:space="preserve"><value>Разрешите доступ к микрофону для CuePilot и проверьте, что входное устройство доступно в настройках звука Windows.</value></data>
+  <data name="WizardStep2Title" xml:space="preserve"><value>Шаг 2: Готовность захвата системного аудио</value></data>
+  <data name="WizardStep2Description" xml:space="preserve"><value>Убедитесь, что устройство вывода активно. CuePilot использует WASAPI loopback и не меняет состояние устройства вывода.</value></data>
+  <data name="WizardStep3Title" xml:space="preserve"><value>Шаг 3: Готовность STT runtime</value></data>
+  <data name="WizardStep3Description" xml:space="preserve"><value>Проверьте, что whisper-cli и модель находятся в корне проекта. При необходимости нажмите «Обновить диагностику».</value></data>
+  <data name="WizardStepCounter" xml:space="preserve"><value>Шаг {0} из {1}</value></data>
+  <data name="WizardConfirm" xml:space="preserve"><value>Подтверждаю, что шаг выполнен</value></data>
+  <data name="WizardBack" xml:space="preserve"><value>Назад</value></data>
+  <data name="WizardNext" xml:space="preserve"><value>Далее</value></data>
+  <data name="WizardFinish" xml:space="preserve"><value>Готово</value></data>
+  <data name="UiShellTitle" xml:space="preserve"><value>CuePilot Stealth Assistant</value></data>
+  <data name="ToggleOverlay" xml:space="preserve"><value>Переключить overlay</value></data>
+  <data name="MicShort" xml:space="preserve"><value>Мик</value></data>
+  <data name="ContextShort" xml:space="preserve"><value>Контекст</value></data>
+  <data name="OnboardingTab" xml:space="preserve"><value>Онбординг</value></data>
+  <data name="DesktopOnboarding" xml:space="preserve"><value>Онбординг desktop-приложения</value></data>
+  <data name="Complete" xml:space="preserve"><value>Завершить</value></data>
+  <data name="FirstUseOverlay" xml:space="preserve"><value>Пустой overlay при первом запуске</value></data>
+  <data name="ReadyState" xml:space="preserve"><value>Готово</value></data>
+  <data name="AskConversation" xml:space="preserve"><value>Спросите о вашем разговоре</value></data>
+  <data name="OverlaySuggestionSample" xml:space="preserve"><value>Подсказка: кратко подведите итог и задайте один follow-up вопрос.</value></data>
+  <data name="PermissionSetupTab" xml:space="preserve"><value>Разрешения</value></data>
+  <data name="PermissionMic" xml:space="preserve"><value>Разрешение микрофона</value></data>
+  <data name="PermissionMicDesc" xml:space="preserve"><value>Нужно для прослушивания и подсказок ответов.</value></data>
+  <data name="PermissionSystem" xml:space="preserve"><value>Системный звук / контекст экрана</value></data>
+  <data name="PermissionSystemDesc" xml:space="preserve"><value>Нужно для контекста встречи и тактических подсказок.</value></data>
+  <data name="PermissionAccessibility" xml:space="preserve"><value>Accessibility / интеграция управления</value></data>
+  <data name="PermissionAccessibilityDesc" xml:space="preserve"><value>Опционально для расширенной desktop-автоматизации.</value></data>
+  <data name="RecheckPermissions" xml:space="preserve"><value>Проверить разрешения снова</value></data>
+  <data name="PermissionScreen" xml:space="preserve"><value>Разрешение screen recording</value></data>
+  <data name="PermissionScreenDesc" xml:space="preserve"><value>Управляется в настройках приватности. Переключайте по своей политике.</value></data>
+  <data name="LiveAssistTab" xml:space="preserve"><value>Live assist</value></data>
+  <data name="CurrentContext" xml:space="preserve"><value>Текущий контекст</value></data>
+  <data name="SuggestedResponse" xml:space="preserve"><value>Рекомендуемый ответ</value></data>
+  <data name="AlternativeResponse" xml:space="preserve"><value>Альтернативный ответ</value></data>
+  <data name="FollowUpQuestion" xml:space="preserve"><value>Follow-up вопрос</value></data>
+  <data name="KeyPoints" xml:space="preserve"><value>Ключевые пункты (последние 1-3 мин)</value></data>
+  <data name="DashboardTab" xml:space="preserve"><value>Dashboard</value></data>
+  <data name="SessionTimeline" xml:space="preserve"><value>Таймлайн сессии</value></data>
+  <data name="SessionTimelineDesc" xml:space="preserve"><value>Старт -> discovery -> objection -> next steps</value></data>
+  <data name="SessionHistory" xml:space="preserve"><value>История сессий</value></data>
+  <data name="NotesActionItems" xml:space="preserve"><value>Заметки / action items</value></data>
+  <data name="NotesActionItemsSample" xml:space="preserve"><value>• Подготовить follow-up письмо&#x0a;• Подтвердить владельца бюджета&#x0a;• Назначить следующий звонок</value></data>
+  <data name="Sections" xml:space="preserve"><value>Секции</value></data>
+  <data name="SettingsGeneral" xml:space="preserve"><value>General</value></data>
+  <data name="SettingsInvisibility" xml:space="preserve"><value>Invisibility</value></data>
+  <data name="SettingsShortcuts" xml:space="preserve"><value>Shortcuts</value></data>
+  <data name="SettingsAudio" xml:space="preserve"><value>Audio</value></data>
+  <data name="SettingsLanguage" xml:space="preserve"><value>Language</value></data>
+  <data name="SettingsDisplay" xml:space="preserve"><value>Display</value></data>
+  <data name="SettingsPrivacy" xml:space="preserve"><value>Privacy</value></data>
+  <data name="SettingsAccount" xml:space="preserve"><value>Account</value></data>
+  <data name="SettingsUpdates" xml:space="preserve"><value>Updates</value></data>
+  <data name="ThemeMode" xml:space="preserve"><value>Тема</value></data>
+  <data name="Monitor" xml:space="preserve"><value>Монитор</value></data>
+  <data name="MonitorPrimary" xml:space="preserve"><value>Основной</value></data>
+  <data name="MonitorSecondary" xml:space="preserve"><value>Второй</value></data>
+  <data name="OutputLanguage" xml:space="preserve"><value>Язык вывода</value></data>
+  <data name="ShowInScreenShare" xml:space="preserve"><value>Показывать окна CuePilot при демонстрации экрана и записи</value></data>
+  <data name="ShowInScreenShareHint" xml:space="preserve"><value>Если выключено, вы видите окна CuePilot как обычно, а участники созвона (Zoom, Teams, Meet, Discord, Телемост) их не видят. Они также не попадают в запись экрана и скриншоты. Применяется сразу; чтобы запомнить, нажмите «Сохранить настройки».</value></data>
+  <data name="SettingsSectionScreenShare" xml:space="preserve"><value>Демонстрация экрана</value></data>
+  <data name="ShowInTaskbar" xml:space="preserve"><value>Показывать в taskbar / dock</value></data>
+  <data name="InvisibilityModeEnabled" xml:space="preserve"><value>Режим invisibility включен</value></data>
+  <data name="AutoLaunch" xml:space="preserve"><value>Автозапуск при старте системы</value></data>
+  <data name="CaptureScreenContext" xml:space="preserve"><value>Захват контекста экрана</value></data>
+  <data name="ResetSessionContext" xml:space="preserve"><value>Сбросить контекст сессии</value></data>
+  <data name="UpdateAndRestart" xml:space="preserve"><value>Обновить и перезапустить</value></data>
+  <data name="AudioTestTab" xml:space="preserve"><value>Тест аудио</value></data>
+  <data name="AudioInputTest" xml:space="preserve"><value>Проверка аудиовхода</value></data>
+  <data name="AudioInputTestDesc" xml:space="preserve"><value>Запускайте перед встречей, чтобы проверить сигнал и доверие к системе.</value></data>
+  <data name="TestAudio" xml:space="preserve"><value>Тест аудио</value></data>
+  <data name="TranscriptPreview" xml:space="preserve"><value>Превью транскрипта</value></data>
+  <data name="SignalTips" xml:space="preserve"><value>Если сигнал плохой:</value></data>
+  <data name="SignalTipMic" xml:space="preserve"><value>• Подвиньте микрофон ближе</value></data>
+  <data name="SignalTipSystem" xml:space="preserve"><value>• Проверьте источник системного звука</value></data>
+  <data name="SignalTipPermissions" xml:space="preserve"><value>• Проверьте разрешения в настройках ОС</value></data>
+  <data name="StatesTab" xml:space="preserve"><value>Состояния</value></data>
+  <data name="OnboardingStep0Title" xml:space="preserve"><value>Stealth-помощь в реальном времени</value></data>
+  <data name="OnboardingStep1Title" xml:space="preserve"><value>Разрешения</value></data>
+  <data name="OnboardingStep2Title" xml:space="preserve"><value>Тест аудио</value></data>
+  <data name="OnboardingStep3Title" xml:space="preserve"><value>Горячие клавиши</value></data>
+  <data name="OnboardingStep4Title" xml:space="preserve"><value>Первый overlay</value></data>
+  <data name="OnboardingStep0Text" xml:space="preserve"><value>CuePilot остается компактным во время звонка и показывает короткие тактические подсказки.</value></data>
+  <data name="OnboardingStep1Text" xml:space="preserve"><value>Включите микрофон и системный контекст, чтобы подсказки были релевантными и своевременными.</value></data>
+  <data name="OnboardingStep2Text" xml:space="preserve"><value>Запускайте тест аудио перед встречей, чтобы проверить качество сигнала.</value></data>
+  <data name="OnboardingStep3Text" xml:space="preserve"><value>Используйте keyboard-first шорткаты для мгновенного show/hide overlay.</value></data>
+  <data name="OnboardingStep4Text" xml:space="preserve"><value>Overlay стартует в тихом режиме: статус, один prompt и одна лучшая подсказка.</value></data>
+  <data name="AskPrefix" xml:space="preserve"><value>Спросить</value></data>
+  <data name="SampleBestResponse" xml:space="preserve"><value>Кратко: подтвердите цель, дайте один конкретный ответ и задайте уточняющий follow-up.</value></data>
+  <data name="SampleAlternativeResponse" xml:space="preserve"><value>Альтернатива: подтвердите риск и предложите следующий шаг с ответственным и сроком.</value></data>
+  <data name="SampleFollowUp" xml:space="preserve"><value>Follow up: какой один блокер нам нужно убрать сегодня?</value></data>
+  <data name="SampleKeyPoints" xml:space="preserve"><value>Ключевые пункты (3 мин): согласован scope, поднят риск по срокам, запрошен следующий чекпоинт.</value></data>
+  <data name="SampleContextSummary" xml:space="preserve"><value>Текущий контекст: продуктовый sync, обсуждение сроков, риски поставки.</value></data>
+  <data name="AudioHealthNoSystem" xml:space="preserve"><value>Не слышу системный звук</value></data>
+  <data name="AudioHealthListening" xml:space="preserve"><value>Слушаю корректно</value></data>
+  <data name="QuickActionSummarize" xml:space="preserve"><value>Суммаризировать</value></data>
+  <data name="QuickActionSuggestResponse" xml:space="preserve"><value>Предложить ответ</value></data>
+  <data name="QuickActionObjectionHelp" xml:space="preserve"><value>Помощь с возражением</value></data>
+  <data name="QuickActionWhatShouldISay" xml:space="preserve"><value>Что мне сказать</value></data>
+  <data name="QuickActionNextQuestion" xml:space="preserve"><value>Следующий вопрос</value></data>
+  <data name="HistoryItem1" xml:space="preserve"><value>10:30 Product sync — Zoom</value></data>
+  <data name="HistoryItem2" xml:space="preserve"><value>14:00 Sales discovery — Meet</value></data>
+  <data name="HistoryItem3" xml:space="preserve"><value>17:20 Interview prep — Teams</value></data>
+  <data name="StateReady" xml:space="preserve"><value>Готово</value></data>
+  <data name="StateIdle" xml:space="preserve"><value>ожидание</value></data>
+  <data name="StateListening" xml:space="preserve"><value>слушаю</value></data>
+  <data name="StateThinking" xml:space="preserve"><value>думаю</value></data>
+  <data name="StateSuggestionReady" xml:space="preserve"><value>подсказка готова</value></data>
+  <data name="StateHidden" xml:space="preserve"><value>скрытый режим</value></data>
+  <data name="StateNoSignal" xml:space="preserve"><value>нет сигнала</value></data>
+  <data name="StatePermissionsMissing" xml:space="preserve"><value>нет разрешений</value></data>
+  <data name="StateUnsupportedSource" xml:space="preserve"><value>источник не поддерживается</value></data>
+  <data name="StateBackendDisconnected" xml:space="preserve"><value>backend отключен</value></data>
+  <data name="StateTranscriptLag" xml:space="preserve"><value>задержка транскрипта</value></data>
+  <data name="StateCompact" xml:space="preserve"><value>компактный режим</value></data>
+  <data name="StateExpanded" xml:space="preserve"><value>расширенный режим</value></data>
+  <data name="StateDashboardOpen" xml:space="preserve"><value>dashboard открыт</value></data>
+  <data name="StateFocusMode" xml:space="preserve"><value>focus mode</value></data>
+  <data name="StateIdleDesc" xml:space="preserve"><value>Готово. Ожидаю контекст.</value></data>
+  <data name="StateListeningDesc" xml:space="preserve"><value>Слушаю микрофон и системный источник.</value></data>
+  <data name="StateThinkingDesc" xml:space="preserve"><value>Генерирую короткий тактический ответ.</value></data>
+  <data name="StateSuggestionReadyDesc" xml:space="preserve"><value>Лучший ответ уже доступен.</value></data>
+  <data name="StateHiddenDesc" xml:space="preserve"><value>Скрыто от screen share.</value></data>
+  <data name="StateNoSignalDesc" xml:space="preserve"><value>Не слышу системный звук.</value></data>
+  <data name="StatePermissionsMissingDesc" xml:space="preserve"><value>Нет разрешения на микрофон.</value></data>
+  <data name="StateUnsupportedSourceDesc" xml:space="preserve"><value>Источник нельзя захватить.</value></data>
+  <data name="StateBackendDisconnectedDesc" xml:space="preserve"><value>Runtime модели недоступен.</value></data>
+  <data name="StateTranscriptLagDesc" xml:space="preserve"><value>Задержка транскрипта выше порога.</value></data>
+  <data name="StateCompactDesc" xml:space="preserve"><value>Только одна строка подсказки.</value></data>
+  <data name="StateExpandedDesc" xml:space="preserve"><value>Открыта тактическая панель ответа.</value></data>
+  <data name="StateDashboardOpenDesc" xml:space="preserve"><value>Открыт подробный обзор сессии.</value></data>
+  <data name="StateFocusModeDesc" xml:space="preserve"><value>Сниженный визуальный шум во время звонка.</value></data>
+  <data name="SessionTitleFallback" xml:space="preserve"><value>Нет активной сессии</value></data>
+  <data name="SessionSummaryFallback" xml:space="preserve"><value>Запустите сессию, чтобы увидеть итоги.</value></data>
+  <data name="SessionUsageFallback" xml:space="preserve"><value>Статистики пока нет.</value></data>
+  <data name="UsageTranscriptItems" xml:space="preserve"><value>Фрагменты транскрипта</value></data>
+  <data name="UsageSuggestions" xml:space="preserve"><value>Подсказки</value></data>
+  <data name="UsageDurationMinutes" xml:space="preserve"><value>Длительность (мин)</value></data>
+  <data name="AudioTestNotReady" xml:space="preserve"><value>Тест аудио не выполнен: диагностика не готова.</value></data>
+  <data name="AudioTestRunning" xml:space="preserve"><value>Тест аудио выполняется.</value></data>
+  <data name="AudioTestStartCaptureHint" xml:space="preserve"><value>Сначала запустите захват, чтобы проверить живой сигнал mic/system.</value></data>
+  <data name="FollowUpEmail" xml:space="preserve"><value>Письмо по итогам</value></data>
+  <data name="Regenerate" xml:space="preserve"><value>Обновить итоги</value></data>
+  <data name="CopySummary" xml:space="preserve"><value>Копировать итоги</value></data>
+  <data name="WhatShouldISayButton" xml:space="preserve"><value>Спросить</value></data>
+  <data name="OverlayActionWhatShouldISay" xml:space="preserve"><value>• Что спросить</value></data>
+  <data name="OverlayActionFollowUpQuestions" xml:space="preserve"><value>• Уточняющие вопросы</value></data>
+  <data name="OverlayActionRecap" xml:space="preserve"><value>• Кратко</value></data>
+  <data name="IndicatorHide" xml:space="preserve"><value>Скрыть</value></data>
+  <data name="IndicatorAsk" xml:space="preserve"><value>Показать</value></data>
+  <data name="WhatsNewButtonText" xml:space="preserve"><value>Что нового в CuePilot {0} ↗</value></data>
+  <data name="WhatsNewTitle" xml:space="preserve"><value>CuePilot {0} — что изменилось</value></data>
+  <data name="WhatsNewBody" xml:space="preserve"><value>Версия 1.0.4:&#x0a;• Настройки: сначала провайдер, затем ключ API и модели; у «Распознавания речи» тоже появился выбор провайдера (Polza.ai, OpenAI, Groq или свой адрес).&#x0a;• Модели выбираются из списка самого провайдера (у Polza.ai — с ценой в ₽); набор текста сужает список, вписанная вручную модель сохраняется.&#x0a;&#x0a;Версия 1.0.3:&#x0a;• База знаний: файлы, группы файлов, папки и текст можно перетащить в раздел или вставить через Ctrl+V; каждый файл и папка становятся отдельной записью, текст — заметкой.&#x0a;• «Сводка» темы — отдельная вкладка между «Сессии» и «База знаний».&#x0a;• «Вопросы» — список как у сессий: новые сверху, ответ раскрывается по щелчку, удаление по одному и пачкой.&#x0a;• Второй запуск CuePilot показывает уже открытое окно, поэтому горячие клавиши больше не конфликтуют; если сочетание занято другой программой, об этом приходит одно сообщение.&#x0a;• В оверлее и свёрнутом режиме работают подсказки при наведении; повторный щелчок по значку CuePilot сворачивает окно.&#x0a;• Понятные пояснения к «Глубокому режиму» и «Словарю»; настройки автоснимков неактивны, когда снимки для ИИ выключены.&#x0a;&#x0a;Версия 1.0.2:&#x0a;• Внутри темы вкладки «Сессии», «База знаний», «Вопросы» и «Граф».&#x0a;• База знаний: прикрепляйте файлы (PDF, Word, Excel, картинки, txt, md), целые папки и свой текст. Каждый материал разбирается в Markdown отдельной кнопкой и хранится в CuePilot; разобранный текст виден справа.&#x0a;• Вопросы — диалог по теме с историей: ответы по сессиям и материалам, с источниками и списком расхождений.&#x0a;• Граф сущностей и связей в стиле Obsidian: перетаскивание, масштаб, поиск, карточка узла.&#x0a;• Заметная кнопка «Назад».&#x0a;• Материалы базы знаний убираются по одному (крестик или Delete) и пачкой («Выбрать»): граф сразу очищается от их данных, сводка обновляется.&#x0a;• Предпросмотр разобранного файла — отформатированный Markdown с заголовками, списками и таблицами; большие файлы открываются сразу.&#x0a;• Разбор и другие долгие действия идут в фоне, окно не зависает.&#x0a;• Стоимость сессии убрана из карточек и заголовка: она в раскрывающемся блоке на вкладке «Статистика».&#x0a;&#x0a;Версия 1.0.1:&#x0a;• Темы: группируйте сессии перетаскиванием, тема собирает общую базу знаний по всем своим сессиям (кнопка «Актуализировать»).&#x0a;• «Вопрос по теме»: ответ по актуальным итогам и расшифровкам всех сессий темы, с источниками и отдельным списком расхождений между людьми и встречами.&#x0a;• Выбор нескольких сессий: массовое удаление и перенос в тему, правый клик по карточке — меню.&#x0a;• «Письмо по итогам» теперь открывается на вкладке «Письмо» с копированием; «Пересоздать» стало «Обновить итоги».&#x0a;• Дневная и ночная тема, язык RU/EN (EN — распознавание и ответы на английском).&#x0a;• Подсказки на всех кнопках через 2 секунды, компактная шапка, новый установщик.&#x0a;• Новая запись начинается с чистого диалога в оверлее.&#x0a;&#x0a;• Новый дизайн «Эхо»: логотип и иконка, шрифт Manrope, анимация прослушивания. В оверлее кнопка «Спросить», а вопрос с главного экрана появляется в диалоге оверлея.&#x0a;• Polza.ai: быстрая модель для подсказок и более сильная для итогов и письма, стоимость в ₽ за запрос и за сессию.&#x0a;• Распознавание речи через API как опция; тишина пропускается, распознавание больше не отстаёт на длинных звонках.&#x0a;• Приложение не тормозит на длинных сессиях: каждая сессия хранится в своём файле и сохраняется в фоне.&#x0a;• Оверлей: кнопка «Что сказать», сворачивание по клику на заголовок.&#x0a;• Интерфейс, заголовки итогов и письмо по итогам на русском.&#x0a;• Установщик с ярлыками на рабочем столе и в меню «Пуск».</value></data>
+  <data name="SmartModeToggle" xml:space="preserve"><value>Глубокий режим ИИ</value></data>
+  <data name="HotkeysTitle" xml:space="preserve"><value>Горячие клавиши</value></data>
+  <data name="OpenAiKeyMissing" xml:space="preserve"><value>Не задан API-ключ. Укажите его в Настройках → API-ключ или положите строку ApiKey=... в файл %AppData%\CuePilot\secrets.txt (либо задайте переменную POLZA_API_KEY).</value></data>
+  <data name="WhatShouldISayPrompt" xml:space="preserve"><value>Подскажи, что лучше сказать следующим в этом разговоре.</value></data>
+  <data name="WhatShouldISayFallback" xml:space="preserve"><value>Подтвердите мысль собеседника, уточните ключевую потребность и предложите один конкретный следующий шаг.</value></data>
+  <data name="OpenAiRequestFailed" xml:space="preserve"><value>Не удалось получить ответ от LLM-провайдера.</value></data>
+  <data name="FollowUpEmailFallback" xml:space="preserve"><value>Спасибо за сегодняшнюю встречу. Кратко фиксирую следующие шаги: 1) согласовать приоритет, 2) подтвердить ответственных, 3) назначить следующий синк.</value></data>
+  <data name="OpenAiModelMissing" xml:space="preserve"><value>Не задана модель. Укажите её в настройках.</value></data>
+  <data name="OpenAiBaseUrlMissing" xml:space="preserve"><value>Не задан адрес API. Укажите его в настройках.</value></data>
+  <data name="OpenAiBaseUrlInvalid" xml:space="preserve"><value>Некорректный API base URL. Используйте полный URL, например https://api.openai.com/v1.</value></data>
+  <data name="DeleteSessionConfirmTitle" xml:space="preserve"><value>Удаление сессии</value></data>
+  <data name="DeleteSessionConfirmMessage" xml:space="preserve"><value>Удалить сессию "{0}"? Это действие нельзя отменить.</value></data>
+  <data name="SttApiKeyMissing" xml:space="preserve"><value>Включена расшифровка через API, но ключ не найден. В этой сессии используется локальный whisper.cpp.</value></data>
+  <data name="SettingsAnalysisModel" xml:space="preserve"><value>Модель для итогов и письма</value></data>
+  <data name="SettingsAnalysisModelHint" xml:space="preserve"><value>Используется для итогов сессии и письма по итогам. Пусто = та же, что для подсказок. Выберите из списка или впишите вручную</value></data>
+  <data name="SettingsSttTitle" xml:space="preserve"><value>Распознавание речи</value></data>
+  <data name="SettingsUseApiStt" xml:space="preserve"><value>Распознавать речь через API, а не локальным whisper.cpp</value></data>
+  <data name="SettingsSttModel" xml:space="preserve"><value>Модель распознавания</value></data>
+  <data name="SettingsSttApiKey" xml:space="preserve"><value>Ключ API</value></data>
+  <data name="SettingsSttGlossary" xml:space="preserve"><value>Словарь для распознавания речи</value></data>
+  <data name="SettingsSttGlossaryHint" xml:space="preserve"><value>Слова, которые распознавание речи часто пишет с ошибками: имена коллег, названия компаний и продуктов, термины. Через запятую или с новой строки. На ответы ИИ словарь не влияет.</value></data>
+  <data name="SettingsSttHint" xml:space="preserve"><value>Поле можно оставить пустым. Если API недоступен, фрагмент распознаётся локально через whisper.cpp.</value></data>
+  <data name="OverlayActionWhatToSay" xml:space="preserve"><value>• Что сказать</value></data>
+  <data name="SmartToggleShort" xml:space="preserve"><value>Глубже</value></data>
+  <data name="OverlaySendHint" xml:space="preserve"><value>Задать вопрос из поля ввода (Enter)</value></data>
+  <data name="OverlayOpenMainHint" xml:space="preserve"><value>Открыть сессию в главном окне</value></data>
+  <data name="OverlayExpandHint" xml:space="preserve"><value>Развернуть окно</value></data>
+  <data name="OverlayCollapseHint" xml:space="preserve"><value>Свернуть до панели кнопок и последнего ответа</value></data>
+  <data name="OverlayRoleUser" xml:space="preserve"><value>Вы</value></data>
+  <data name="OverlayRoleAssistant" xml:space="preserve"><value>CuePilot</value></data>
+  <data name="OverlayStatsSystem" xml:space="preserve"><value>Система</value></data>
+  <data name="OverlayStatsMic" xml:space="preserve"><value>Микрофон</value></data>
+  <data name="UnitKbPerSecond" xml:space="preserve"><value>КБ/с</value></data>
+  <data name="OverlaySttLag" xml:space="preserve"><value>отставание распознавания {0} с</value></data>
+  <data name="OverlayTokens" xml:space="preserve"><value>токенов {0}</value></data>
+  <data name="OverlayNoUsage" xml:space="preserve"><value>провайдер не вернул расход | снимков: {0}</value></data>
+  <data name="SnapshotTakenNotice" xml:space="preserve"><value>📷 Снимок добавлен в контекст</value></data>
+  <data name="SnapshotSkippedNotice" xml:space="preserve"><value>📷 Снимок не сделан</value></data>
+  <data name="ActionAsk" xml:space="preserve"><value>Вопрос</value></data>
+  <data name="ActionSummary" xml:space="preserve"><value>Итоги</value></data>
+  <data name="ActionSummaryRequest" xml:space="preserve"><value>Составь итоги сессии.</value></data>
+  <data name="ActionFollowUpEmail" xml:space="preserve"><value>Письмо по итогам</value></data>
+  <data name="ActionFollowUpEmailRequest" xml:space="preserve"><value>Подготовь письмо по итогам сессии.</value></data>
+  <data name="ActionFollowUpQuestions" xml:space="preserve"><value>Уточняющие вопросы</value></data>
+  <data name="ActionFollowUpQuestionsRequest" xml:space="preserve"><value>Предложи уточняющие вопросы по этому разговору.</value></data>
+  <data name="ActionFollowUpQuestionsRequestWithPrompt" xml:space="preserve"><value>Предложи уточняющие вопросы по теме: {0}</value></data>
+  <data name="ActionRecap" xml:space="preserve"><value>Кратко</value></data>
+  <data name="ActionRecapRequest" xml:space="preserve"><value>Кратко перескажи последнюю часть разговора.</value></data>
+  <data name="ActionWhatToSay" xml:space="preserve"><value>Что сказать</value></data>
+  <data name="ActionWhatToSayRequest" xml:space="preserve"><value>Подскажи, что мне сказать сейчас.</value></data>
+  <data name="ActionWhatToAsk" xml:space="preserve"><value>Что спросить</value></data>
+  <data name="ActionWhatToAskRequest" xml:space="preserve"><value>Подскажи следующий вопрос.</value></data>
+  <data name="SttStatusApi" xml:space="preserve"><value>Распознавание: через API ({0})</value></data>
+  <data name="SttStatusLocal" xml:space="preserve"><value>Распознавание: локально, whisper.cpp</value></data>
+  <data name="SttKeySourceField" xml:space="preserve"><value>Ключ для распознавания: введённый в поле выше.</value></data>
+  <data name="SttKeySourceSecrets" xml:space="preserve"><value>Ключ для распознавания: SttApiKey из secrets.txt.</value></data>
+  <data name="SttKeySourceLlmSecrets" xml:space="preserve"><value>Ключ для распознавания: тот же ключ Polza.ai, что и для подсказок (ApiKey из secrets.txt или POLZA_API_KEY). Ничего вводить не нужно.</value></data>
+  <data name="SttKeySourceLlmField" xml:space="preserve"><value>Ключ для распознавания: тот же API-ключ, что и для подсказок (поле выше).</value></data>
+  <data name="SttKeySourceMissing" xml:space="preserve"><value>Ключ для распознавания не найден: при включённом API будет использован локальный whisper.</value></data>
+  <data name="VisualStatusDisabled" xml:space="preserve"><value>Снимки экрана выключены.</value></data>
+  <data name="VisualStatusAuto" xml:space="preserve"><value>Автоснимки: экран проверяется каждые {0} мс, кадр сохраняется, если изображение изменилось.</value></data>
+  <data name="VisualStatusManualOnly" xml:space="preserve"><value>Только ручные снимки (📷 или Ctrl+Shift+S).</value></data>
+  <data name="VisualStatusIdle" xml:space="preserve"><value>Снимки экрана: ждут запуска записи.</value></data>
+  <data name="VisualLastFrame" xml:space="preserve"><value>Последний снимок {0} ({1}), всего: {2}</value></data>
+  <data name="VisualSourceManual" xml:space="preserve"><value>вручную</value></data>
+  <data name="VisualSourceAuto" xml:space="preserve"><value>авто</value></data>
+  <data name="VisualNoFrames" xml:space="preserve"><value>Снимков пока нет.</value></data>
+  <data name="VisualFramesCount" xml:space="preserve"><value>Снимков: {0}</value></data>
+  <data name="UsageMode" xml:space="preserve"><value>Режим</value></data>
+  <data name="UsageCostLlm" xml:space="preserve"><value>Запросы к ИИ</value></data>
+  <data name="UsageCostStt" xml:space="preserve"><value>Распознавание речи (API)</value></data>
+  <data name="UsageCostTotal" xml:space="preserve"><value>Итого за сессию</value></data>
+  <data name="UsageAiRequests" xml:space="preserve"><value>Запросов к ИИ</value></data>
+  <data name="UsageAiRequestsWithVisual" xml:space="preserve"><value>Запросов со снимками экрана</value></data>
+  <data name="UsageAiImagesSent" xml:space="preserve"><value>Снимков отправлено в ИИ</value></data>
+  <data name="UsageVisualFrames" xml:space="preserve"><value>Снимков сохранено</value></data>
+  <data name="UsageManualSnapshots" xml:space="preserve"><value>Ручных снимков</value></data>
+  <data name="UsageLastAiRequest" xml:space="preserve"><value>Последний запрос к ИИ</value></data>
+  <data name="UsageLastTokens" xml:space="preserve"><value>Токены последнего запроса</value></data>
+  <data name="UsageAssistDialogEmpty" xml:space="preserve"><value>Запросов к ассистенту пока не было.</value></data>
+  <data name="TrayOpen" xml:space="preserve"><value>Открыть CuePilot</value></data>
+  <data name="TrayExit" xml:space="preserve"><value>Выход</value></data>
+  <data name="IndicatorStopHint" xml:space="preserve"><value>Остановить запись</value></data>
+  <data name="IndicatorStartHint" xml:space="preserve"><value>Начать запись</value></data>
+  <data name="IndicatorHomeHint" xml:space="preserve"><value>Открыть главное окно CuePilot</value></data>
+  <data name="IndicatorSnapshotHint" xml:space="preserve"><value>Снимок экрана в контекст ИИ (Ctrl+Shift+S). Учитывается в следующем вопросе.</value></data>
+  <data name="DetectableBadge" xml:space="preserve"><value>Виден при демонстрации</value></data>
+  <data name="HiddenFromShareBadge" xml:space="preserve"><value>Скрыт от демонстрации</value></data>
+  <data name="ScreenShareBadgeHint" xml:space="preserve"><value>Видят ли участники созвона окна CuePilot, когда вы показываете экран. Меняется в «Настройках», раздел «Демонстрация экрана».</value></data>
+  <data name="StartCuePilot" xml:space="preserve"><value>Запустить CuePilot</value></data>
+  <data name="TabSummary" xml:space="preserve"><value>Итоги</value></data>
+  <data name="SummaryDiscussionTitle" xml:space="preserve"><value>Обсуждение</value></data>
+  <data name="TabTranscript" xml:space="preserve"><value>Транскрипт</value></data>
+  <data name="TabUsage" xml:space="preserve"><value>Статистика</value></data>
+  <data name="NewRecording" xml:space="preserve"><value>Новая запись</value></data>
+  <data name="SettingsSectionAi" xml:space="preserve"><value>Контекст для ИИ</value></data>
+  <data name="SettingsScreenContext" xml:space="preserve"><value>Снимки экрана как контекст для ИИ</value></data>
+  <data name="SettingsAutoSnapshots" xml:space="preserve"><value>Делать снимки автоматически, когда меняется экран</value></data>
+  <data name="SettingsSnapshotInterval" xml:space="preserve"><value>Проверять экран каждые, мс</value></data>
+  <data name="SettingsSnapshotBuffer" xml:space="preserve"><value>Хранить снимков в сессии</value></data>
+  <data name="SettingsSnapshotsPerRequest" xml:space="preserve"><value>Снимков в одном запросе к ИИ</value></data>
+  <data name="SettingsSnapshotsHint" xml:space="preserve"><value>Снимки делаются только во время записи. Последние из них прикладываются к каждому запросу к ИИ; кнопка 📷 добавляет снимок сразу.</value></data>
+  <data name="SettingsSectionLlm" xml:space="preserve"><value>Модель ИИ</value></data>
+  <data name="SettingsApiKey" xml:space="preserve"><value>API-ключ</value></data>
+  <data name="SettingsProviderPreset" xml:space="preserve"><value>Провайдер</value></data>
+  <data name="SettingsProvider" xml:space="preserve"><value>Название провайдера</value></data>
+  <data name="SettingsModel" xml:space="preserve"><value>Модель для подсказок</value></data>
+  <data name="SettingsBaseUrl" xml:space="preserve"><value>Адрес API</value></data>
+  <data name="SettingsEndpointPath" xml:space="preserve"><value>Путь запроса</value></data>
+  <data name="SettingsKeyHeader" xml:space="preserve"><value>Заголовок ключа</value></data>
+  <data name="SettingsKeyPrefix" xml:space="preserve"><value>Префикс ключа</value></data>
+  <data name="HotkeyShowHide" xml:space="preserve"><value>Показать/скрыть окно</value></data>
+  <data name="HotkeyAsk" xml:space="preserve"><value>Спросить</value></data>
+  <data name="HotkeyClearChat" xml:space="preserve"><value>Очистить чат</value></data>
+  <data name="HotkeyStartStop" xml:space="preserve"><value>Начать/остановить запись</value></data>
+  <data name="HotkeyMove" xml:space="preserve"><value>Двигать окно (← → ↑ ↓)</value></data>
+  <data name="HotkeyScroll" xml:space="preserve"><value>Прокрутка чата</value></data>
+  <data name="HotkeySnapshot" xml:space="preserve"><value>Снимок экрана</value></data>
+  <data name="TestMicrophone" xml:space="preserve"><value>Проверить микрофон</value></data>
+  <data name="TestAudioCapture" xml:space="preserve"><value>Проверить захват звука</value></data>
+  <data name="SpeechModelTitle" xml:space="preserve"><value>Модель для локального распознавания</value></data>
+  <data name="SpeechModelIntro" xml:space="preserve"><value>Модель не входит в установщик: скачайте её один раз. Она хранится в %LocalAppData%\CuePilot\models и сохраняется при переустановке. При распознавании через API модель не нужна.</value></data>
+  <data name="SpeechModelHardware" xml:space="preserve"><value>Ваш ПК: ядер процессора {0}, памяти {1} ГБ.</value></data>
+  <data name="SpeechModelSize" xml:space="preserve"><value>≈ {0} МБ</value></data>
+  <data name="SpeechModelRecommended" xml:space="preserve"><value>Рекомендуется</value></data>
+  <data name="SpeechModelSuitsPc" xml:space="preserve"><value>Подходит для вашего ПК</value></data>
+  <data name="SpeechModelMaySlow" xml:space="preserve"><value>Может не успевать: нужно от {0} ядер и {1} ГБ памяти</value></data>
+  <data name="SpeechModelActive" xml:space="preserve"><value>Используется</value></data>
+  <data name="SpeechModelInstalled" xml:space="preserve"><value>Скачана</value></data>
+  <data name="SpeechModelNotInstalled" xml:space="preserve"><value>Не скачана</value></data>
+  <data name="SpeechModelDownload" xml:space="preserve"><value>Скачать</value></data>
+  <data name="SpeechModelUse" xml:space="preserve"><value>Использовать</value></data>
+  <data name="SpeechModelDelete" xml:space="preserve"><value>Удалить</value></data>
+  <data name="SpeechModelCancel" xml:space="preserve"><value>Отменить</value></data>
+  <data name="SpeechModelDownloadStarting" xml:space="preserve"><value>Подключение…</value></data>
+  <data name="SpeechModelDownloadProgress" xml:space="preserve"><value>Загрузка: {0:0} из {1:0} МБ</value></data>
+  <data name="SpeechModelDownloadProgressUnknown" xml:space="preserve"><value>Загрузка: {0:0} МБ</value></data>
+  <data name="SpeechModelDownloadFailed" xml:space="preserve"><value>Не удалось скачать модель {0}: {1}</value></data>
+  <data name="SpeechModelDeleteTitle" xml:space="preserve"><value>Удаление модели</value></data>
+  <data name="SpeechModelDeleteConfirm" xml:space="preserve"><value>Удалить модель {0} с диска? Её можно будет скачать заново.</value></data>
+  <data name="SpeechModelMissingStatus" xml:space="preserve"><value>Модель не скачана, локальное распознавание не работает. Скачайте модель ниже (рекомендуется small) или включите распознавание через API.</value></data>
+  <data name="SpeechModelActiveStatus" xml:space="preserve"><value>Используется модель {0}.</value></data>
+  <data name="SpeechModelMissingOnStart" xml:space="preserve"><value>Модель распознавания речи не скачана, поэтому текст разговора не появится. Откройте Настройки → Распознавание речи и скачайте модель small (≈ 265 МБ) или включите распознавание через API.</value></data>
+  <data name="SpeechModelDesc_small_q8_0" xml:space="preserve"><value>Хорошо распознаёт русский и почти не путает его с украинским. Около 3 секунд на 5 секунд речи на обычном процессоре. Лучший выбор для большинства ПК.</value></data>
+  <data name="SpeechModelDesc_large_v3_turbo_q5_0" xml:space="preserve"><value>Самое высокое качество для русского: лучше справляется с терминами, именами и быстрой речью. Нагрузка на процессор высокая, примерно в 2–3 раза медленнее small. Для мощных ПК от 8 ядер.</value></data>
+  <data name="SpeechModelDesc_medium_q5_0" xml:space="preserve"><value>Качество выше small, но обычно ниже large-v3-turbo при похожей нагрузке. Имеет смысл, только если turbo у вас работает хуже.</value></data>
+  <data name="SpeechModelDesc_base_q8_0" xml:space="preserve"><value>Самая лёгкая и быстрая, но для русского слабая: часто путает его с украинским и пропускает слова. Только для очень слабых ПК.</value></data>
+  <data name="CopiedFeedback" xml:space="preserve"><value>Скопировано</value></data>
+  <data name="CopyEmail" xml:space="preserve"><value>Копировать письмо</value></data>
+  <data name="CopyText" xml:space="preserve"><value>Копировать</value></data>
+  <data name="DeleteCheckedConfirmTitle" xml:space="preserve"><value>Удаление сессий</value></data>
+  <data name="DeleteCheckedConfirmMessage" xml:space="preserve"><value>Удалить выбранные сессии ({0})? Расшифровки, итоги и снимки экрана будут удалены без возможности восстановления.</value></data>
+  <data name="DeleteCheckedSessions" xml:space="preserve"><value>Удалить ({0})</value></data>
+  <data name="DeleteTopicConfirmTitle" xml:space="preserve"><value>Удаление темы</value></data>
+  <data name="DeleteTopicConfirmMessage" xml:space="preserve"><value>Удалить тему «{0}» и её базу знаний? Сами сессии останутся в истории без темы.</value></data>
+  <data name="FollowUpEmailAgain" xml:space="preserve"><value>Составить заново</value></data>
+  <data name="FollowUpEmailBusy" xml:space="preserve"><value>Составляю письмо по итогам встречи…</value></data>
+  <data name="FollowUpEmailHint" xml:space="preserve"><value>Здесь появится черновик письма участникам: тема, краткое резюме, задачи с ответственными и сроками. Нажмите «Письмо по итогам» — письмо составляется по итогам и расшифровке этой сессии.</value></data>
+  <data name="FollowUpEmailReadyHint" xml:space="preserve"><value>Черновик готов: проверьте, скопируйте и вставьте в почту. Он сохранён в сессии.</value></data>
+  <data name="FollowUpEmailTitle" xml:space="preserve"><value>Письмо по итогам</value></data>
+  <data name="MenuDeleteSession" xml:space="preserve"><value>Удалить сессию</value></data>
+  <data name="MenuMoveToNewTopic" xml:space="preserve"><value>В новую тему…</value></data>
+  <data name="MenuMoveToTopic" xml:space="preserve"><value>В тему «{0}»</value></data>
+  <data name="MenuOpenSession" xml:space="preserve"><value>Открыть</value></data>
+  <data name="MenuRemoveFromTopic" xml:space="preserve"><value>Убрать из темы</value></data>
+  <data name="MoveToTopic" xml:space="preserve"><value>В тему…</value></data>
+  <data name="SelectAllSessions" xml:space="preserve"><value>Выбрать все</value></data>
+  <data name="SelectDone" xml:space="preserve"><value>Готово</value></data>
+  <data name="SelectSessions" xml:space="preserve"><value>Выбрать</value></data>
+  <data name="SessionsDeletedFeedback" xml:space="preserve"><value>Удалено сессий: {0}</value></data>
+  <data name="SessionsMovedFeedback" xml:space="preserve"><value>Перемещено: {0} → «{1}»</value></data>
+  <data name="SettingsLanguageHint" xml:space="preserve"><value>English: интерфейс, распознавание речи и ответы ИИ на английском. Язык распознавания меняется со следующей записи. Выбор темы и языка сохраняется сразу.</value></data>
+  <data name="SettingsSectionAppearance" xml:space="preserve"><value>Оформление и язык</value></data>
+  <data name="SettingsTheme" xml:space="preserve"><value>Тема оформления</value></data>
+  <data name="TabEmail" xml:space="preserve"><value>Письмо</value></data>
+  <data name="ThemeDark" xml:space="preserve"><value>Ночная</value></data>
+  <data name="ThemeLight" xml:space="preserve"><value>Дневная</value></data>
+  <data name="TipAsk" xml:space="preserve"><value>Задать вопрос по разговору. Вопрос и ответ появятся и в оверлее (Ctrl+Enter)</value></data>
+  <data name="TipAskBox" xml:space="preserve"><value>Введите вопрос к ИИ о текущем разговоре и нажмите Enter</value></data>
+  <data name="TipCheckSession" xml:space="preserve"><value>Отметить сессию для удаления или переноса в тему</value></data>
+  <data name="TipClose" xml:space="preserve"><value>Закрыть</value></data>
+  <data name="TipCopyEmail" xml:space="preserve"><value>Скопировать письмо в буфер обмена, чтобы вставить в почту</value></data>
+  <data name="TipCopySummary" xml:space="preserve"><value>Скопировать текст итогов в буфер обмена — например, чтобы вставить в мессенджер или почту</value></data>
+  <data name="TipCopyTopicKnowledge" xml:space="preserve"><value>Скопировать базу знаний темы в буфер обмена</value></data>
+  <data name="TipCreateTopic" xml:space="preserve"><value>Создать тему — раздел, в котором собираются связанные сессии и их общая база знаний</value></data>
+  <data name="TipDeleteChecked" xml:space="preserve"><value>Удалить отмеченные сессии без возможности восстановления</value></data>
+  <data name="TipDeleteSession" xml:space="preserve"><value>Удалить сессию</value></data>
+  <data name="TipDeleteTopic" xml:space="preserve"><value>Удалить тему. Сессии останутся в истории</value></data>
+  <data name="TipFollowUpEmail" xml:space="preserve"><value>Составить черновик письма участникам по итогам встречи: краткое резюме, задачи, ответственные и сроки. Откроется на вкладке «Письмо»</value></data>
+  <data name="TipFollowUpEmailAgain" xml:space="preserve"><value>Составить письмо заново по текущим итогам</value></data>
+  <data name="TipGoHome" xml:space="preserve"><value>На главный экран со списком сессий</value></data>
+  <data name="TipIndicatorAsk" xml:space="preserve"><value>Показать оверлей с подсказками</value></data>
+  <data name="TipIndicatorHide" xml:space="preserve"><value>Скрыть оверлей с подсказками</value></data>
+  <data name="TipLanguageEn" xml:space="preserve"><value>Интерфейс на английском, распознавание речи и ответы ИИ — на английском</value></data>
+  <data name="TipLanguageRu" xml:space="preserve"><value>Интерфейс на русском, распознавание речи и ответы ИИ — на русском</value></data>
+  <data name="TipModes" xml:space="preserve"><value>Режимы: свой промпт и шаблон заметок для разных типов встреч</value></data>
+  <data name="TipMoveChecked" xml:space="preserve"><value>Перенести отмеченные сессии в тему. Можно и перетащить их на тему слева</value></data>
+  <data name="TipNewRecording" xml:space="preserve"><value>Начать новую запись разговора</value></data>
+  <data name="TipOpenSession" xml:space="preserve"><value>Открыть сессию. Перетащите карточку на тему слева, чтобы сгруппировать; правый клик — меню</value></data>
+  <data name="TipOverlayFollowUp" xml:space="preserve"><value>Предложить уточняющие вопросы по последней теме разговора</value></data>
+  <data name="TipOverlayRecap" xml:space="preserve"><value>Кратко: о чём говорили последние минуты</value></data>
+  <data name="TipOverlayWhatToAsk" xml:space="preserve"><value>Подсказать, какой вопрос задать собеседнику сейчас</value></data>
+  <data name="TipOverlayWhatToSay" xml:space="preserve"><value>Подсказать, что ответить собеседнику сейчас</value></data>
+  <data name="TipRefreshTopicKnowledge" xml:space="preserve"><value>Пересобрать общую базу знаний по всем сессиям темы. Нужна после добавления или удаления сессий</value></data>
+  <data name="TipRegenerate" xml:space="preserve"><value>Заново составить итоги по всей расшифровке. Текущие итоги будут заменены</value></data>
+  <data name="TipRenameSession" xml:space="preserve"><value>Нажмите, чтобы переименовать сессию</value></data>
+  <data name="TipRenameTopic" xml:space="preserve"><value>Переименовать тему</value></data>
+  <data name="TipSaveSettings" xml:space="preserve"><value>Сохранить настройки. Ключ API и ваши значения при обновлении не перезаписываются</value></data>
+  <data name="TipSearch" xml:space="preserve"><value>Поиск по названию, итогам и расшифровке сессий</value></data>
+  <data name="TipSelectAll" xml:space="preserve"><value>Отметить все сессии в списке (повторное нажатие снимет отметки)</value></data>
+  <data name="TipSelectDone" xml:space="preserve"><value>Выйти из режима выбора</value></data>
+  <data name="TipSelectMode" xml:space="preserve"><value>Отметить несколько сессий, чтобы удалить их или перенести в тему</value></data>
+  <data name="TipSettings" xml:space="preserve"><value>Настройки: оформление, язык, ИИ, распознавание речи, горячие клавиши</value></data>
+  <data name="TipSmartMode" xml:space="preserve"><value>ИИ дольше думает над каждым ответом: точнее, но медленнее и дороже</value></data>
+  <data name="TipStartCapture" xml:space="preserve"><value>Начать запись разговора и подсказки в реальном времени (Ctrl+Shift+/)</value></data>
+  <data name="TipTabEmail" xml:space="preserve"><value>Черновик письма участникам по итогам встречи</value></data>
+  <data name="TipTabSummary" xml:space="preserve"><value>Итоги: задачи, ключевые моменты, участники</value></data>
+  <data name="TipTabTranscript" xml:space="preserve"><value>Расшифровка разговора</value></data>
+  <data name="TipTabUsage" xml:space="preserve"><value>Статистика: длительность, запросы к ИИ, стоимость</value></data>
+  <data name="TipTestAudioCapture" xml:space="preserve"><value>Проверить запись звука системы и микрофона</value></data>
+  <data name="TipTestMicrophone" xml:space="preserve"><value>Проверить микрофон</value></data>
+  <data name="TipThemeDark" xml:space="preserve"><value>Тёмная тема — графит и мята</value></data>
+  <data name="TipThemeLight" xml:space="preserve"><value>Светлая тема для работы днём</value></data>
+  <data name="TipToggleTheme" xml:space="preserve"><value>Переключить дневную и ночную тему</value></data>
+  <data name="TipTopicRow" xml:space="preserve"><value>Показать сессии. Перетащите сюда карточки сессий, чтобы перенести их</value></data>
+  <data name="TipTopicStale" xml:space="preserve"><value>Добавлены или удалены сессии — нажмите «Актуализировать»</value></data>
+  <data name="TipWhatsNew" xml:space="preserve"><value>Что изменилось в этой версии</value></data>
+  <data name="TopicAllSessions" xml:space="preserve"><value>Все сессии</value></data>
+  <data name="TopicCreate" xml:space="preserve"><value>+ Новая тема</value></data>
+  <data name="TopicDelete" xml:space="preserve"><value>Удалить тему</value></data>
+  <data name="TopicEmptyHint" xml:space="preserve"><value>Здесь пока нет сессий. Перетащите карточки сессий из раздела «Все сессии» на название темы слева или выберите несколько и нажмите «В тему…».</value></data>
+  <data name="TopicKnowledgeBusy" xml:space="preserve"><value>Собираю общую базу знаний по сессиям темы…</value></data>
+  <data name="TopicKnowledgeEmpty" xml:space="preserve"><value>Базы знаний ещё нет — нажмите «Актуализировать»</value></data>
+  <data name="TopicKnowledgeEmptyAnswer" xml:space="preserve"><value>Модель вернула пустой ответ.</value></data>
+  <data name="TopicKnowledgeStale" xml:space="preserve"><value>Состав сессий изменился — нажмите «Актуализировать»</value></data>
+  <data name="TopicKnowledgeTitle" xml:space="preserve"><value>Общий контекст и база знаний темы</value></data>
+  <data name="TopicKnowledgeUpToDate" xml:space="preserve"><value>Актуально на {0} · сессий: {1} · материалов: {2}</value></data>
+  <data name="TopicAsk" xml:space="preserve"><value>Спросить</value></data>
+  <data name="TopicAskPlaceholder" xml:space="preserve"><value>Задайте вопрос по теме — например, о чём договорились по срокам</value></data>
+  <data name="TopicAskBusy" xml:space="preserve"><value>Собираю актуальные данные по сессиям темы и ищу ответ…</value></data>
+  <data name="TopicAskAnswered" xml:space="preserve"><value>Вопрос: «{0}» · {1}</value></data>
+  <data name="TipTopicAsk" xml:space="preserve"><value>Ответить на вопрос по актуальным итогам и расшифровкам сессий темы. Расхождения в словах участников на последних встречах будут подсвечены отдельно</value></data>
+  <data name="TipTopicAskBox" xml:space="preserve"><value>Вопрос о теме: ответ строится по всем сессиям и базе знаний. Enter — отправить, Shift+Enter — новая строка</value></data>
+  <data name="TipCopyTopicAnswer" xml:space="preserve"><value>Скопировать ответ в буфер обмена</value></data>
+  <data name="TopicNewName" xml:space="preserve"><value>Новая тема</value></data>
+  <data name="TopicNoSessions" xml:space="preserve"><value>Перетащите сюда сессии, и тема соберёт по ним общую базу знаний</value></data>
+  <data name="TopicRefreshKnowledge" xml:space="preserve"><value>Актуализировать</value></data>
+  <data name="TopicRename" xml:space="preserve"><value>Переименовать</value></data>
+  <data name="TopicUnsorted" xml:space="preserve"><value>Без темы</value></data>
+  <data name="TopicsDragHint" xml:space="preserve"><value>Перетащите сессию на тему, чтобы сгруппировать</value></data>
+  <data name="TopicsTitle" xml:space="preserve"><value>ТЕМЫ</value></data>
+  <data name="TipHotkeyAsk" xml:space="preserve"><value>Задать вопрос ИИ из любого окна. Формат: Ctrl+Enter</value></data>
+  <data name="TipHotkeyClearChat" xml:space="preserve"><value>Очистить диалог в оверлее</value></data>
+  <data name="TipHotkeyMove" xml:space="preserve"><value>Двигать оверлей по экрану: влево, вправо, вверх, вниз</value></data>
+  <data name="TipHotkeyScroll" xml:space="preserve"><value>Прокрутить ответы в оверлее вверх и вниз</value></data>
+  <data name="TipHotkeyShowHide" xml:space="preserve"><value>Показать или скрыть оверлей с подсказками</value></data>
+  <data name="TipHotkeySnapshot" xml:space="preserve"><value>Сделать снимок экрана для контекста ИИ во время записи</value></data>
+  <data name="TipHotkeyStartStop" xml:space="preserve"><value>Начать или остановить запись разговора</value></data>
+  <data name="TipApiKey" xml:space="preserve"><value>Ключ выбранного провайдера. Если поле пустое, ключ берётся из %AppData%\CuePilot\secrets.txt. Хранится только на этом компьютере</value></data>
+  <data name="TipBaseUrl" xml:space="preserve"><value>Адрес API провайдера, например https://polza.ai/api/v1</value></data>
+  <data name="TipEndpointPath" xml:space="preserve"><value>Путь запроса к модели, обычно /chat/completions</value></data>
+  <data name="TipKeyHeader" xml:space="preserve"><value>HTTP-заголовок, в котором передаётся ключ, обычно Authorization</value></data>
+  <data name="TipKeyPrefix" xml:space="preserve"><value>Префикс перед ключом в заголовке, обычно Bearer</value></data>
+  <data name="TipModel" xml:space="preserve"><value>Быстрая модель для подсказок во время разговора. Выберите из списка или впишите название так, как у провайдера</value></data>
+  <data name="TipProviderPreset" xml:space="preserve"><value>Готовый набор настроек провайдера ИИ. Polza.ai — по умолчанию</value></data>
+  <data name="TipProvider" xml:space="preserve"><value>Название провайдера для своего набора настроек</value></data>
+  <data name="TipSnapshotBuffer" xml:space="preserve"><value>Сколько последних снимков экрана хранить для контекста</value></data>
+  <data name="TipSnapshotInterval" xml:space="preserve"><value>Как часто проверять экран на изменения, в миллисекундах</value></data>
+  <data name="TipSnapshotsPerRequest" xml:space="preserve"><value>Сколько снимков экрана отправлять ИИ в одном запросе (больше — точнее, но дороже)</value></data>
+  <data name="TipSttApiKey" xml:space="preserve"><value>Ключ провайдера распознавания. Пусто — используется основной ключ, если провайдер тот же</value></data>
+  <data name="TipSttGlossary" xml:space="preserve"><value>Имена и термины, которые распознавание должно писать правильно</value></data>
+  <data name="TipSttModel" xml:space="preserve"><value>Модель распознавания речи через API. Выберите из списка или впишите название так, как у провайдера</value></data>
+  <data name="SettingsModelPickerHint" xml:space="preserve"><value>Модель можно выбрать из списка провайдера (▾) или вписать самому: набор текста сужает список, введённое вручную сохраняется.</value></data>
+  <data name="TipSttProvider" xml:space="preserve"><value>Кто распознаёт речь через API: Polza.ai по умолчанию, OpenAI, Groq или свой адрес, совместимый с OpenAI</value></data>
+  <data name="TipSttBaseUrl" xml:space="preserve"><value>Адрес API распознавания, совместимого с OpenAI (…/v1); к нему добавляется /audio/transcriptions</value></data>
+  <data name="TipModelPickerOpen" xml:space="preserve"><value>Показать модели провайдера</value></data>
+  <data name="TipModelPickerRefresh" xml:space="preserve"><value>Заново запросить у провайдера актуальный список моделей</value></data>
+  <data name="ModelPickerRefresh" xml:space="preserve"><value>Обновить</value></data>
+  <data name="ModelPickerNoMatch" xml:space="preserve"><value>В списке такой модели нет. Значение сохранится как введено.</value></data>
+  <data name="ModelListLoading" xml:space="preserve"><value>Загружаю список моделей провайдера…</value></data>
+  <data name="ModelListLoaded" xml:space="preserve"><value>Моделей у провайдера: {0}</value></data>
+  <data name="ModelListFailed" xml:space="preserve"><value>Список провайдера не загрузился ({0}). Показаны подсказки CuePilot.</value></data>
+  <data name="ModelListHint" xml:space="preserve"><value>Подсказки CuePilot; полный список провайдера загрузится при открытии.</value></data>
+  <data name="ModelListTimeout" xml:space="preserve"><value>нет ответа</value></data>
+  <data name="ModelNoteFast" xml:space="preserve"><value>быстрая, для подсказок</value></data>
+  <data name="ModelNoteSmart" xml:space="preserve"><value>сильная, для итогов и письма</value></data>
+  <data name="ModelNoteLocal" xml:space="preserve"><value>локальная</value></data>
+  <data name="ModelNoteSttDefault" xml:space="preserve"><value>по умолчанию</value></data>
+  <data name="ModelNoteSttAccurate" xml:space="preserve"><value>точнее, дороже</value></data>
+  <data name="ModelNoteSttWhisper" xml:space="preserve"><value>классический Whisper</value></data>
+  <data name="ModelNoteSttFast" xml:space="preserve"><value>быстрая</value></data>
+  <data name="ModelPrice" xml:space="preserve"><value>{0} / {1} {2} за 1 млн токенов</value></data>
+  <data name="TipLanguage" xml:space="preserve"><value>Язык интерфейса, распознавания речи и ответов ИИ</value></data>
+  <data name="TipScreenContext" xml:space="preserve"><value>Добавлять к вопросам ИИ снимок экрана, чтобы он видел презентацию или документ</value></data>
+  <data name="TipAutoSnapshots" xml:space="preserve"><value>Автоматически делать снимки, когда экран заметно меняется</value></data>
+  <data name="DialogDelete" xml:space="preserve"><value>Удалить</value></data>
+  <data name="DialogYes" xml:space="preserve"><value>Да</value></data>
+  <data name="DialogCancel" xml:space="preserve"><value>Отмена</value></data>
+  <data name="DialogOk" xml:space="preserve"><value>Понятно</value></data>
+  <data name="TipSpeechDownload" xml:space="preserve"><value>Скачать модель распознавания речи (один раз)</value></data>
+  <data name="TipSpeechUse" xml:space="preserve"><value>Использовать эту модель для распознавания</value></data>
+  <data name="TipSpeechDelete" xml:space="preserve"><value>Удалить скачанную модель с диска</value></data>
+  <data name="TipSpeechCancel" xml:space="preserve"><value>Остановить скачивание</value></data>
+  <data name="GoBack" xml:space="preserve"><value>Назад</value></data>
+  <data name="TopicTabSessions" xml:space="preserve"><value>Сессии</value></data>
+  <data name="TopicTabKnowledge" xml:space="preserve"><value>База знаний</value></data>
+  <data name="TopicTabQuestions" xml:space="preserve"><value>Вопросы</value></data>
+  <data name="TopicTabGraph" xml:space="preserve"><value>Граф</value></data>
+  <data name="TipTopicTabSessions" xml:space="preserve"><value>Сессии этой темы. Перетащите сюда сессии из «Все сессии» или «Без темы»</value></data>
+  <data name="TipTopicTabKnowledge" xml:space="preserve"><value>Прикреплённые к теме файлы, папки и тексты, разобранные в Markdown</value></data>
+  <data name="TipTopicTabQuestions" xml:space="preserve"><value>Вопросы к ИИ о теме: ответы по сессиям и базе знаний, с источниками и расхождениями</value></data>
+  <data name="TipTopicTabGraph" xml:space="preserve"><value>Сущности темы и связи между ними: люди, компании, проекты, задачи, решения, документы</value></data>
+  <data name="KnowledgeAddFiles" xml:space="preserve"><value>+ Файлы</value></data>
+  <data name="KnowledgeAddFolder" xml:space="preserve"><value>+ Папка</value></data>
+  <data name="KnowledgeAddNote" xml:space="preserve"><value>+ Текст</value></data>
+  <data name="TipKnowledgeAddFiles" xml:space="preserve"><value>Прикрепить документы: PDF, Word (doc, docx), Excel (xls, xlsx), картинки (jpg, png), txt, md. Файлы можно и перетащить сюда или вставить через Ctrl+V</value></data>
+  <data name="TipKnowledgeAddFolder" xml:space="preserve"><value>Прикрепить папку: будут разобраны все поддерживаемые файлы в ней и во вложенных папках. Папку можно и перетащить сюда или вставить через Ctrl+V</value></data>
+  <data name="TipKnowledgeAddNote" xml:space="preserve"><value>Добавить свой текст: договорённости, контекст, требования. Он сразу попадает в базу знаний. Скопированный текст можно и перетащить сюда или вставить через Ctrl+V</value></data>
+  <data name="KnowledgeAddFilesTitle" xml:space="preserve"><value>Прикрепить документы к теме</value></data>
+  <data name="KnowledgeAddFolderTitle" xml:space="preserve"><value>Прикрепить папку к теме</value></data>
+  <data name="KnowledgeFileFilterName" xml:space="preserve"><value>Документы (PDF, Word, Excel, картинки, текст)</value></data>
+  <data name="KnowledgeListHint" xml:space="preserve"><value>Перетащите сюда документы, папки или текст, вставьте их через Ctrl+V или воспользуйтесь кнопками выше. CuePilot разберёт их в Markdown и будет использовать в сводке, ответах и графе.</value></data>
+  <data name="KnowledgeParseAll" xml:space="preserve"><value>Разобрать всё новое</value></data>
+  <data name="TipKnowledgeParseAll" xml:space="preserve"><value>Разобрать все новые и изменившиеся материалы по очереди</value></data>
+  <data name="KnowledgeOpenFolder" xml:space="preserve"><value>Открыть папку базы знаний</value></data>
+  <data name="TipKnowledgeOpenFolder" xml:space="preserve"><value>Открыть в проводнике папку, где CuePilot хранит разобранные .md файлы этой темы</value></data>
+  <data name="KnowledgeParse" xml:space="preserve"><value>Разобрать</value></data>
+  <data name="KnowledgeReparse" xml:space="preserve"><value>Разобрать заново</value></data>
+  <data name="TipKnowledgeParse" xml:space="preserve"><value>Прочитать материал и сохранить его в разобранном виде (Markdown). Картинки и сканы распознаёт ИИ</value></data>
+  <data name="KnowledgeRemove" xml:space="preserve"><value>Удалить</value></data>
+  <data name="TipKnowledgeRemove" xml:space="preserve"><value>Убрать материал из базы знаний темы. Оригинал на диске не удаляется</value></data>
+  <data name="KnowledgeEditNote" xml:space="preserve"><value>Изменить</value></data>
+  <data name="TipKnowledgeEditNote" xml:space="preserve"><value>Изменить текст заметки; после сохранения она разбирается заново</value></data>
+  <data name="KnowledgeOpenOriginal" xml:space="preserve"><value>Открыть</value></data>
+  <data name="TipKnowledgeOpenOriginal" xml:space="preserve"><value>Открыть оригинальный файл или папку</value></data>
+  <data name="TipKnowledgeCopy" xml:space="preserve"><value>Скопировать разобранный текст в буфер обмена</value></data>
+  <data name="KnowledgeAddedFeedback" xml:space="preserve"><value>Добавлено: {0}</value></data>
+  <data name="KnowledgeAlreadyAdded" xml:space="preserve"><value>Уже прикреплено к теме</value></data>
+  <data name="KnowledgeDropHint" xml:space="preserve"><value>Отпустите, чтобы добавить в базу знаний</value></data>
+  <data name="KnowledgeDropSubHint" xml:space="preserve"><value>Каждый файл и папка станут отдельной записью, текст станет заметкой</value></data>
+  <data name="KnowledgeAddedSkippedFeedback" xml:space="preserve"><value>Добавлено: {0}. Пропущено: {1}, такой формат не поддерживается</value></data>
+  <data name="KnowledgeUnsupportedFeedback" xml:space="preserve"><value>Ничего не добавлено: поддерживаются PDF, Word, Excel, картинки (jpg, png), txt и md</value></data>
+  <data name="KnowledgePasteFailed" xml:space="preserve"><value>Буфер обмена занят другой программой, попробуйте ещё раз</value></data>
+  <data name="KnowledgePasteEmpty" xml:space="preserve"><value>В буфере обмена нет файлов, папок или текста</value></data>
+  <data name="KnowledgeNoteDefaultTitle" xml:space="preserve"><value>Заметка</value></data>
+  <data name="KnowledgeParsing" xml:space="preserve"><value>Разбираю…</value></data>
+  <data name="KnowledgeParsingFile" xml:space="preserve"><value>Разбираю {0} из {1}: {2}</value></data>
+  <data name="KnowledgeRemoveConfirmTitle" xml:space="preserve"><value>Убрать из базы знаний?</value></data>
+  <data name="KnowledgeRemoveConfirmMessage" xml:space="preserve"><value>«{0}» и его разобранный текст будут убраны из темы. Из графа сразу исчезнет то, что было только в этом материале, сводка темы обновится. Оригинальные файлы на диске останутся.</value></data>
+  <data name="KnowledgeSkippedHeading" xml:space="preserve"><value>Не удалось разобрать</value></data>
+  <data name="KnowledgeSourceEmpty" xml:space="preserve"><value>Ещё не разобрано. Нажмите «Разобрать», и здесь появится текст, который CuePilot будет использовать.</value></data>
+  <data name="KnowledgeSummaryEmpty" xml:space="preserve"><value>Сводка ещё не собрана. Нажмите «Актуализировать»: CuePilot объединит сессии и материалы темы в одну базу знаний.</value></data>
+  <data name="KnowledgeSourceLabel" xml:space="preserve"><value>Источник</value></data>
+  <data name="KnowledgeTooManyImages" xml:space="preserve"><value>Слишком много картинок в папке: распознаются первые 40</value></data>
+  <data name="KnowledgeStatusNew" xml:space="preserve"><value>Новый, не разобран</value></data>
+  <data name="KnowledgeStatusChanged" xml:space="preserve"><value>Оригинал изменился, разберите заново</value></data>
+  <data name="KnowledgeStatusFailed" xml:space="preserve"><value>Ошибка</value></data>
+  <data name="KnowledgeStatusMissing" xml:space="preserve"><value>Оригинал не найден на диске</value></data>
+  <data name="KnowledgeStatusParsed" xml:space="preserve"><value>Разобран {0} · {1} симв.</value></data>
+  <data name="KnowledgeStatusParsedFolder" xml:space="preserve"><value>Разобрана {0} · файлов: {1}, пропущено: {2}</value></data>
+  <data name="KnowledgeSummaryTitle" xml:space="preserve"><value>Сводка темы</value></data>
+  <data name="NoteDialogAddTitle" xml:space="preserve"><value>Добавить текст в базу знаний</value></data>
+  <data name="NoteDialogEditTitle" xml:space="preserve"><value>Изменить заметку</value></data>
+  <data name="NoteDialogHint" xml:space="preserve"><value>Договорённости, контекст, требования — всё, что CuePilot должен учитывать в сводке, ответах и графе.</value></data>
+  <data name="NoteDialogTitlePlaceholder" xml:space="preserve"><value>Название заметки</value></data>
+  <data name="NoteDialogTextPlaceholder" xml:space="preserve"><value>Текст заметки</value></data>
+  <data name="NoteDialogAdd" xml:space="preserve"><value>Добавить</value></data>
+  <data name="NoteDialogSave" xml:space="preserve"><value>Сохранить</value></data>
+  <data name="QuestionsEmptyTitle" xml:space="preserve"><value>Спросите о теме</value></data>
+  <data name="QuestionsEmptyHint" xml:space="preserve"><value>Ответ собирается из итогов и расшифровок всех сессий темы и из базы знаний. Свежие встречи важнее старых, расхождения между людьми выделяются отдельно.</value></data>
+  <data name="QuestionSuggestion1" xml:space="preserve"><value>О чём договорились на последней встрече?</value></data>
+  <data name="QuestionSuggestion2" xml:space="preserve"><value>Где расхождения в словах участников?</value></data>
+  <data name="QuestionSuggestion3" xml:space="preserve"><value>Какие задачи открыты и у кого?</value></data>
+  <data name="QuestionSuggestion4" xml:space="preserve"><value>Какие сроки и цифры уже зафиксированы?</value></data>
+  <data name="GraphBuild" xml:space="preserve"><value>Построить граф</value></data>
+  <data name="GraphRebuild" xml:space="preserve"><value>Обновить граф</value></data>
+  <data name="TipGraphBuild" xml:space="preserve"><value>ИИ выделит сущности темы и связи между ними по сессиям и базе знаний</value></data>
+  <data name="GraphBusy" xml:space="preserve"><value>Строю граф…</value></data>
+  <data name="GraphEmpty" xml:space="preserve"><value>Граф ещё не построен</value></data>
+  <data name="GraphUpToDate" xml:space="preserve"><value>Узлов: {0} · связей: {1} · {2}</value></data>
+  <data name="GraphStale" xml:space="preserve"><value>есть новые данные, обновите граф</value></data>
+  <data name="GraphEmptyAnswer" xml:space="preserve"><value>Модель не нашла сущностей для графа.</value></data>
+  <data name="GraphEmptyTitle" xml:space="preserve"><value>Граф связей темы</value></data>
+  <data name="GraphEmptyHint" xml:space="preserve"><value>Нажмите «Построить граф»: CuePilot найдёт людей, компании, проекты, задачи, решения и документы и покажет, как они связаны.</value></data>
+  <data name="GraphSearchPlaceholder" xml:space="preserve"><value>Найти на графе</value></data>
+  <data name="TipGraphSearch" xml:space="preserve"><value>Подсветить узлы, в названии или описании которых есть этот текст</value></data>
+  <data name="GraphControlsHint" xml:space="preserve"><value>Колесо — масштаб · перетаскивание — перемещение · двойной щелчок — показать всё</value></data>
+  <data name="GraphDetailsLinks" xml:space="preserve"><value>Связи</value></data>
+  <data name="GraphDetailsSources" xml:space="preserve"><value>Источники</value></data>
+  <data name="GraphType_person" xml:space="preserve"><value>Люди</value></data>
+  <data name="GraphType_organization" xml:space="preserve"><value>Компании</value></data>
+  <data name="GraphType_project" xml:space="preserve"><value>Проекты</value></data>
+  <data name="GraphType_task" xml:space="preserve"><value>Задачи</value></data>
+  <data name="GraphType_decision" xml:space="preserve"><value>Решения</value></data>
+  <data name="GraphType_document" xml:space="preserve"><value>Документы</value></data>
+  <data name="GraphType_date" xml:space="preserve"><value>Даты</value></data>
+  <data name="GraphType_place" xml:space="preserve"><value>Места</value></data>
+  <data name="GraphType_term" xml:space="preserve"><value>Понятия</value></data>
+  <data name="KnowledgeRemoveChecked" xml:space="preserve"><value>Удалить выбранные ({0})</value></data>
+  <data name="KnowledgeSourcesSummary" xml:space="preserve"><value>Материалов: {0}</value></data>
+  <data name="TipKnowledgeSelect" xml:space="preserve"><value>Отметить несколько материалов, чтобы убрать их разом</value></data>
+  <data name="TipKnowledgeSelectAll" xml:space="preserve"><value>Отметить все материалы или снять все отметки</value></data>
+  <data name="TipKnowledgeRemoveChecked" xml:space="preserve"><value>Убрать отмеченные материалы из темы: их разобранный текст удалится, граф и сводка обновятся. Оригиналы на диске останутся</value></data>
+  <data name="TipKnowledgeRemoveRow" xml:space="preserve"><value>Убрать материал из темы (клавиша Delete)</value></data>
+  <data name="KnowledgeRemoveManyConfirmMessage" xml:space="preserve"><value>Убрать из темы материалов: {0}? Их разобранный текст удалится, из графа сразу исчезнет то, что было только в них, сводка темы обновится. Оригинальные файлы на диске останутся.</value></data>
+  <data name="KnowledgeRemovedFeedback" xml:space="preserve"><value>Убрано материалов: {0}</value></data>
+  <data name="KnowledgeAutoRefreshFailed" xml:space="preserve"><value>Сводку темы обновить не удалось. Нажмите «Актуализировать», когда будет связь и баланс</value></data>
+  <data name="KnowledgeParseTimeout" xml:space="preserve"><value>Разбор шёл дольше 10 минут и был остановлен. Попробуйте ещё раз или разделите файл на части</value></data>
+  <data name="UsageCostHeader" xml:space="preserve"><value>Стоимость · {0}</value></data>
+  <data name="UsageDialogHeader" xml:space="preserve"><value>Диалог с ассистентом · {0}</value></data>
+  <data name="TipUsageCost" xml:space="preserve"><value>Сколько стоила сессия: запросы к ИИ и распознавание речи</value></data>
+  <data name="TipUsageDialog" xml:space="preserve"><value>Все запросы к ассистенту за сессию и его ответы</value></data>
+  <data name="UsageLastTokensValue" xml:space="preserve"><value>запрос {0}, ответ {1}, всего {2}</value></data>
+  <data name="TopicAnswerCost" xml:space="preserve"><value>Стоимость ответа: {0}</value></data>
+  <data name="KnowledgeRemovedUpdatingFeedback" xml:space="preserve"><value>Убрано материалов: {0}. Сводка темы обновляется</value></data>
+  <data name="SmartModeHint" xml:space="preserve"><value>ИИ дольше обдумывает каждый ответ: подсказки в оверлее, итоги, письмо и ответы по теме. Точнее в сложных разговорах, но ответ приходит на несколько секунд позже и стоит дороже. Для обычных звонков можно не включать.</value></data>
+  <data name="SettingsSttGlossaryExample" xml:space="preserve"><value>Например: Артём, Polza.ai, CuePilot, KPI, Сбербанк</value></data>
+  <data name="HotkeysRegisterFailedMessage" xml:space="preserve"><value>Эти горячие клавиши уже заняты другой программой, поэтому CuePilot не может их использовать:&#x0a;{0}&#x0a;&#x0a;Поменяйте их в «Настройки → Горячие клавиши» или закройте программу, которая их заняла.</value></data>
+  <data name="TopicTabSummary" xml:space="preserve"><value>Сводка</value></data>
+  <data name="TipTopicTabSummary" xml:space="preserve"><value>Общая сводка темы по всем её сессиям и материалам. Точка — сводку пора актуализировать</value></data>
+  <data name="QuestionsSummary" xml:space="preserve"><value>Вопросов: {0}</value></data>
+  <data name="QuestionsRemoveChecked" xml:space="preserve"><value>Удалить выбранные ({0})</value></data>
+  <data name="TipQuestionsSelect" xml:space="preserve"><value>Отметить несколько вопросов, чтобы удалить их разом</value></data>
+  <data name="TipQuestionsSelectAll" xml:space="preserve"><value>Отметить все вопросы (повторное нажатие снимет отметки)</value></data>
+  <data name="TipQuestionsRemoveChecked" xml:space="preserve"><value>Удалить отмеченные вопросы вместе с ответами</value></data>
+  <data name="TipCheckQuestion" xml:space="preserve"><value>Отметить вопрос для удаления</value></data>
+  <data name="TipToggleQuestion" xml:space="preserve"><value>Показать или свернуть ответ</value></data>
+  <data name="TipRemoveQuestion" xml:space="preserve"><value>Удалить вопрос и ответ</value></data>
+  <data name="QuestionRemoveConfirmTitle" xml:space="preserve"><value>Удалить вопрос?</value></data>
+  <data name="QuestionRemoveConfirmMessage" xml:space="preserve"><value>Вопрос «{0}» и ответ на него будут удалены без возможности восстановления.</value></data>
+  <data name="QuestionsRemoveManyConfirmMessage" xml:space="preserve"><value>Удалить выбранные вопросы ({0}) вместе с ответами? Восстановить их будет нельзя.</value></data>
+  <data name="QuestionsRemovedFeedback" xml:space="preserve"><value>Удалено вопросов: {0}</value></data>
+</root>

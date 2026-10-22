@@ -1,0 +1,652 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, ...</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, ...</value>
+  </resheader>
+  <data name="MainWindowTitle" xml:space="preserve"><value>CuePilot Desktop</value></data>
+  <data name="MainHeader" xml:space="preserve"><value>CuePilot Desktop Shell</value></data>
+  <data name="StartCapture" xml:space="preserve"><value>Start Capture</value></data>
+  <data name="StopCapture" xml:space="preserve"><value>Stop Capture</value></data>
+  <data name="WindowModeExpanded" xml:space="preserve"><value>Expanded</value></data>
+  <data name="WindowModeMini" xml:space="preserve"><value>Mini</value></data>
+  <data name="WindowModeHidden" xml:space="preserve"><value>Hidden</value></data>
+  <data name="SessionModeMeeting" xml:space="preserve"><value>Meeting</value></data>
+  <data name="SessionModeSales" xml:space="preserve"><value>Sales</value></data>
+  <data name="SessionModeInterview" xml:space="preserve"><value>Interview</value></data>
+  <data name="RefreshDiagnostics" xml:space="preserve"><value>Refresh Diagnostics</value></data>
+  <data name="StatusLabel" xml:space="preserve"><value>Status</value></data>
+  <data name="SystemStreamLabel" xml:space="preserve"><value>System stream</value></data>
+  <data name="MicStreamLabel" xml:space="preserve"><value>Mic stream</value></data>
+  <data name="DiagnosticsTab" xml:space="preserve"><value>Diagnostics</value></data>
+  <data name="DotnetRuntimeLabel" xml:space="preserve"><value>dotnet runtime:</value></data>
+  <data name="CaptureBackendLabel" xml:space="preserve"><value>DesktopCapture backend:</value></data>
+  <data name="WhisperCliLabel" xml:space="preserve"><value>whisper-cli:</value></data>
+  <data name="WhisperModelLabel" xml:space="preserve"><value>whisper model:</value></data>
+  <data name="SttDirLabel" xml:space="preserve"><value>stt chunks directory:</value></data>
+  <data name="LogsTab" xml:space="preserve"><value>Logs</value></data>
+  <data name="TranscriptTab" xml:space="preserve"><value>Transcript Drawer</value></data>
+  <data name="TranscriptHint" xml:space="preserve"><value>Realtime transcript with source tags (system/mic).</value></data>
+  <data name="FilterAll" xml:space="preserve"><value>all</value></data>
+  <data name="FilterSystem" xml:space="preserve"><value>system</value></data>
+  <data name="FilterMic" xml:space="preserve"><value>mic</value></data>
+  <data name="ClearTranscript" xml:space="preserve"><value>Clear Transcript</value></data>
+  <data name="SettingsTab" xml:space="preserve"><value>Settings</value></data>
+  <data name="UiLanguageLabel" xml:space="preserve"><value>UI language</value></data>
+  <data name="OverlayHotkeyLabel" xml:space="preserve"><value>Toggle overlay hotkey</value></data>
+  <data name="CaptureHotkeyLabel" xml:space="preserve"><value>Toggle capture hotkey</value></data>
+  <data name="SaveSettings" xml:space="preserve"><value>Save settings</value></data>
+  <data name="FooterText" xml:space="preserve"><value>MVP shell: Start/Stop capture, window modes, diagnostics and transcript.</value></data>
+  <data name="CaptureStatusCapturing" xml:space="preserve"><value>Capturing</value></data>
+  <data name="CaptureStatusIdle" xml:space="preserve"><value>Idle</value></data>
+  <data name="PrivacyOn" xml:space="preserve"><value>Privacy: mic + system capture ON</value></data>
+  <data name="PrivacyOff" xml:space="preserve"><value>Privacy: capture off</value></data>
+  <data name="NoDataYet" xml:space="preserve"><value>No data yet</value></data>
+  <data name="StatsAvgShort" xml:space="preserve"><value>avg</value></data>
+  <data name="StatsPeakShort" xml:space="preserve"><value>peak</value></data>
+  <data name="WarningDiagnosticsTitle" xml:space="preserve"><value>Diagnostics</value></data>
+  <data name="WarningDiagnosticsNotReady" xml:space="preserve"><value>Diagnostics are not ready for capture. Open the Diagnostics tab and resolve ERROR states.</value></data>
+  <data name="ErrorTitle" xml:space="preserve"><value>Error</value></data>
+  <data name="ErrorCaptureStart" xml:space="preserve"><value>Failed to start capture process:</value></data>
+  <data name="OverlayWindowTitle" xml:space="preserve"><value>CuePilot</value></data>
+  <data name="OverlayTitle" xml:space="preserve"><value>CuePilot</value></data>
+  <data name="OverlayPrompt" xml:space="preserve"><value>Ask anything about your screen or conversation</value></data>
+  <data name="OverlayStatusRunning" xml:space="preserve"><value>● recording</value></data>
+  <data name="OverlayStatusIdle" xml:space="preserve"><value>○ not recording</value></data>
+  <data name="OverlaySuggestionPlaceholder" xml:space="preserve"><value>Suggestion preview will appear here.</value></data>
+  <data name="PermissionWizardTitle" xml:space="preserve"><value>CuePilot Permission Wizard</value></data>
+  <data name="WizardStep1Title" xml:space="preserve"><value>Step 1: Audio Capture Permissions</value></data>
+  <data name="WizardStep1Description" xml:space="preserve"><value>Allow microphone access for CuePilot and verify your input device is available in Windows sound settings.</value></data>
+  <data name="WizardStep2Title" xml:space="preserve"><value>Step 2: System Audio Capture Readiness</value></data>
+  <data name="WizardStep2Description" xml:space="preserve"><value>Ensure your output device is active. CuePilot uses WASAPI loopback and does not change output device state.</value></data>
+  <data name="WizardStep3Title" xml:space="preserve"><value>Step 3: STT Runtime Readiness</value></data>
+  <data name="WizardStep3Description" xml:space="preserve"><value>Confirm whisper-cli and model files are present in project root. Use Refresh Diagnostics if needed.</value></data>
+  <data name="WizardStepCounter" xml:space="preserve"><value>Step {0} of {1}</value></data>
+  <data name="WizardConfirm" xml:space="preserve"><value>I confirm this step is completed</value></data>
+  <data name="WizardBack" xml:space="preserve"><value>Back</value></data>
+  <data name="WizardNext" xml:space="preserve"><value>Next</value></data>
+  <data name="WizardFinish" xml:space="preserve"><value>Finish</value></data>
+  <data name="UiShellTitle" xml:space="preserve"><value>CuePilot Stealth Assistant</value></data>
+  <data name="ToggleOverlay" xml:space="preserve"><value>Toggle Overlay</value></data>
+  <data name="MicShort" xml:space="preserve"><value>Mic</value></data>
+  <data name="ContextShort" xml:space="preserve"><value>Context</value></data>
+  <data name="OnboardingTab" xml:space="preserve"><value>Onboarding</value></data>
+  <data name="DesktopOnboarding" xml:space="preserve"><value>Desktop onboarding</value></data>
+  <data name="Complete" xml:space="preserve"><value>Complete</value></data>
+  <data name="FirstUseOverlay" xml:space="preserve"><value>First-use empty overlay</value></data>
+  <data name="ReadyState" xml:space="preserve"><value>Ready</value></data>
+  <data name="AskConversation" xml:space="preserve"><value>Ask about your conversation</value></data>
+  <data name="OverlaySuggestionSample" xml:space="preserve"><value>Suggestion: summarize latest point and ask one follow-up.</value></data>
+  <data name="PermissionSetupTab" xml:space="preserve"><value>Permission setup</value></data>
+  <data name="PermissionMic" xml:space="preserve"><value>Microphone permission</value></data>
+  <data name="PermissionMicDesc" xml:space="preserve"><value>Required for listening and response suggestions.</value></data>
+  <data name="PermissionSystem" xml:space="preserve"><value>System audio / screen context</value></data>
+  <data name="PermissionSystemDesc" xml:space="preserve"><value>Needed for meeting context and tactical hints.</value></data>
+  <data name="PermissionAccessibility" xml:space="preserve"><value>Accessibility / control integration</value></data>
+  <data name="PermissionAccessibilityDesc" xml:space="preserve"><value>Optional for advanced desktop automation.</value></data>
+  <data name="RecheckPermissions" xml:space="preserve"><value>Re-check permissions</value></data>
+  <data name="PermissionScreen" xml:space="preserve"><value>Screen recording permission</value></data>
+  <data name="PermissionScreenDesc" xml:space="preserve"><value>Controlled by privacy settings. Toggle per your policy.</value></data>
+  <data name="LiveAssistTab" xml:space="preserve"><value>Live assist</value></data>
+  <data name="CurrentContext" xml:space="preserve"><value>Current context</value></data>
+  <data name="SuggestedResponse" xml:space="preserve"><value>Suggested response</value></data>
+  <data name="AlternativeResponse" xml:space="preserve"><value>Alternative response</value></data>
+  <data name="FollowUpQuestion" xml:space="preserve"><value>Follow-up question</value></data>
+  <data name="KeyPoints" xml:space="preserve"><value>Key points (last 1-3 min)</value></data>
+  <data name="DashboardTab" xml:space="preserve"><value>Dashboard</value></data>
+  <data name="SessionTimeline" xml:space="preserve"><value>Session timeline</value></data>
+  <data name="SessionTimelineDesc" xml:space="preserve"><value>Start -> discovery -> objection -> next steps</value></data>
+  <data name="SessionHistory" xml:space="preserve"><value>Session history</value></data>
+  <data name="NotesActionItems" xml:space="preserve"><value>Notes / action items</value></data>
+  <data name="NotesActionItemsSample" xml:space="preserve"><value>• Prepare follow-up email&#x0a;• Confirm budget owner&#x0a;• Schedule next call</value></data>
+  <data name="Sections" xml:space="preserve"><value>Sections</value></data>
+  <data name="SettingsGeneral" xml:space="preserve"><value>General</value></data>
+  <data name="SettingsInvisibility" xml:space="preserve"><value>Invisibility</value></data>
+  <data name="SettingsShortcuts" xml:space="preserve"><value>Shortcuts</value></data>
+  <data name="SettingsAudio" xml:space="preserve"><value>Audio</value></data>
+  <data name="SettingsLanguage" xml:space="preserve"><value>Language</value></data>
+  <data name="SettingsDisplay" xml:space="preserve"><value>Display</value></data>
+  <data name="SettingsPrivacy" xml:space="preserve"><value>Privacy</value></data>
+  <data name="SettingsAccount" xml:space="preserve"><value>Account</value></data>
+  <data name="SettingsUpdates" xml:space="preserve"><value>Updates</value></data>
+  <data name="ThemeMode" xml:space="preserve"><value>Theme mode</value></data>
+  <data name="Monitor" xml:space="preserve"><value>Monitor</value></data>
+  <data name="MonitorPrimary" xml:space="preserve"><value>Primary</value></data>
+  <data name="MonitorSecondary" xml:space="preserve"><value>Secondary</value></data>
+  <data name="OutputLanguage" xml:space="preserve"><value>Output language</value></data>
+  <data name="ShowInScreenShare" xml:space="preserve"><value>Show CuePilot windows in screen sharing and recordings</value></data>
+  <data name="ShowInScreenShareHint" xml:space="preserve"><value>When off, CuePilot windows stay visible to you but are hidden from screen sharing (Zoom, Teams, Meet, Discord), recordings and screenshots. Applies immediately; press "Save settings" to keep it.</value></data>
+  <data name="SettingsSectionScreenShare" xml:space="preserve"><value>Screen sharing</value></data>
+  <data name="ShowInTaskbar" xml:space="preserve"><value>Show in taskbar / dock</value></data>
+  <data name="InvisibilityModeEnabled" xml:space="preserve"><value>Invisibility mode enabled</value></data>
+  <data name="AutoLaunch" xml:space="preserve"><value>Auto launch on startup</value></data>
+  <data name="CaptureScreenContext" xml:space="preserve"><value>Capture screen context</value></data>
+  <data name="ResetSessionContext" xml:space="preserve"><value>Reset session context</value></data>
+  <data name="UpdateAndRestart" xml:space="preserve"><value>Update and restart</value></data>
+  <data name="AudioTestTab" xml:space="preserve"><value>Audio test</value></data>
+  <data name="AudioInputTest" xml:space="preserve"><value>Audio input test</value></data>
+  <data name="AudioInputTestDesc" xml:space="preserve"><value>Use this before live meetings to validate trust and signal.</value></data>
+  <data name="TestAudio" xml:space="preserve"><value>Test audio</value></data>
+  <data name="TranscriptPreview" xml:space="preserve"><value>Transcript preview</value></data>
+  <data name="SignalTips" xml:space="preserve"><value>Tips if signal is bad:</value></data>
+  <data name="SignalTipMic" xml:space="preserve"><value>• Move mic closer</value></data>
+  <data name="SignalTipSystem" xml:space="preserve"><value>• Check system output source</value></data>
+  <data name="SignalTipPermissions" xml:space="preserve"><value>• Verify permissions in OS settings</value></data>
+  <data name="StatesTab" xml:space="preserve"><value>States</value></data>
+  <data name="OnboardingStep0Title" xml:space="preserve"><value>Real-time stealth help</value></data>
+  <data name="OnboardingStep1Title" xml:space="preserve"><value>Permissions</value></data>
+  <data name="OnboardingStep2Title" xml:space="preserve"><value>Audio test</value></data>
+  <data name="OnboardingStep3Title" xml:space="preserve"><value>Shortcuts</value></data>
+  <data name="OnboardingStep4Title" xml:space="preserve"><value>First overlay</value></data>
+  <data name="OnboardingStep0Text" xml:space="preserve"><value>CuePilot stays compact during live calls and shows short tactical suggestions.</value></data>
+  <data name="OnboardingStep1Text" xml:space="preserve"><value>Enable mic and system context so suggestions are relevant and timely.</value></data>
+  <data name="OnboardingStep2Text" xml:space="preserve"><value>Run audio test before meetings to verify signal quality.</value></data>
+  <data name="OnboardingStep3Text" xml:space="preserve"><value>Use keyboard-first shortcuts to show/hide overlay instantly.</value></data>
+  <data name="OnboardingStep4Text" xml:space="preserve"><value>Overlay starts in quiet mode: status, one prompt, one best suggestion.</value></data>
+  <data name="AskPrefix" xml:space="preserve"><value>Ask</value></data>
+  <data name="SampleBestResponse" xml:space="preserve"><value>Keep it short: confirm the goal, give one concrete answer, and ask one clarifying follow-up.</value></data>
+  <data name="SampleAlternativeResponse" xml:space="preserve"><value>Alternative: acknowledge risk and propose a next step with owner and deadline.</value></data>
+  <data name="SampleFollowUp" xml:space="preserve"><value>Follow up: What is the one blocker we need to remove today?</value></data>
+  <data name="SampleKeyPoints" xml:space="preserve"><value>Key points (last 3 min): scope aligned, timeline risk raised, next check-in requested.</value></data>
+  <data name="SampleContextSummary" xml:space="preserve"><value>Current context: product sync, timeline discussion, delivery concerns.</value></data>
+  <data name="AudioHealthNoSystem" xml:space="preserve"><value>Not hearing system audio</value></data>
+  <data name="AudioHealthListening" xml:space="preserve"><value>Listening correctly</value></data>
+  <data name="QuickActionSummarize" xml:space="preserve"><value>Summarize</value></data>
+  <data name="QuickActionSuggestResponse" xml:space="preserve"><value>Suggest response</value></data>
+  <data name="QuickActionObjectionHelp" xml:space="preserve"><value>Objection help</value></data>
+  <data name="QuickActionWhatShouldISay" xml:space="preserve"><value>What should I say</value></data>
+  <data name="QuickActionNextQuestion" xml:space="preserve"><value>Next question</value></data>
+  <data name="HistoryItem1" xml:space="preserve"><value>10:30 Product sync — Zoom</value></data>
+  <data name="HistoryItem2" xml:space="preserve"><value>14:00 Sales discovery — Meet</value></data>
+  <data name="HistoryItem3" xml:space="preserve"><value>17:20 Interview prep — Teams</value></data>
+  <data name="StateReady" xml:space="preserve"><value>Ready</value></data>
+  <data name="StateIdle" xml:space="preserve"><value>idle</value></data>
+  <data name="StateListening" xml:space="preserve"><value>listening</value></data>
+  <data name="StateThinking" xml:space="preserve"><value>thinking</value></data>
+  <data name="StateSuggestionReady" xml:space="preserve"><value>suggestion ready</value></data>
+  <data name="StateHidden" xml:space="preserve"><value>hidden mode</value></data>
+  <data name="StateNoSignal" xml:space="preserve"><value>no signal</value></data>
+  <data name="StatePermissionsMissing" xml:space="preserve"><value>permissions missing</value></data>
+  <data name="StateUnsupportedSource" xml:space="preserve"><value>unsupported source</value></data>
+  <data name="StateBackendDisconnected" xml:space="preserve"><value>backend disconnected</value></data>
+  <data name="StateTranscriptLag" xml:space="preserve"><value>transcript lag</value></data>
+  <data name="StateCompact" xml:space="preserve"><value>compact mode</value></data>
+  <data name="StateExpanded" xml:space="preserve"><value>expanded mode</value></data>
+  <data name="StateDashboardOpen" xml:space="preserve"><value>dashboard open</value></data>
+  <data name="StateFocusMode" xml:space="preserve"><value>focus mode</value></data>
+  <data name="StateIdleDesc" xml:space="preserve"><value>Ready. Waiting for context.</value></data>
+  <data name="StateListeningDesc" xml:space="preserve"><value>Listening to mic/system sources.</value></data>
+  <data name="StateThinkingDesc" xml:space="preserve"><value>Generating short tactical response.</value></data>
+  <data name="StateSuggestionReadyDesc" xml:space="preserve"><value>Best response is available.</value></data>
+  <data name="StateHiddenDesc" xml:space="preserve"><value>Hidden from screen share.</value></data>
+  <data name="StateNoSignalDesc" xml:space="preserve"><value>Not hearing system audio.</value></data>
+  <data name="StatePermissionsMissingDesc" xml:space="preserve"><value>Microphone permission missing.</value></data>
+  <data name="StateUnsupportedSourceDesc" xml:space="preserve"><value>Source cannot be captured.</value></data>
+  <data name="StateBackendDisconnectedDesc" xml:space="preserve"><value>Model runtime disconnected.</value></data>
+  <data name="StateTranscriptLagDesc" xml:space="preserve"><value>Transcript latency above threshold.</value></data>
+  <data name="StateCompactDesc" xml:space="preserve"><value>One-line assist only.</value></data>
+  <data name="StateExpandedDesc" xml:space="preserve"><value>Tactical response panel open.</value></data>
+  <data name="StateDashboardOpenDesc" xml:space="preserve"><value>Detailed session view active.</value></data>
+  <data name="StateFocusModeDesc" xml:space="preserve"><value>Reduced visual noise during call.</value></data>
+  <data name="SessionTitleFallback" xml:space="preserve"><value>No active session</value></data>
+  <data name="SessionSummaryFallback" xml:space="preserve"><value>Start a session to see the summary here.</value></data>
+  <data name="SessionUsageFallback" xml:space="preserve"><value>No statistics yet.</value></data>
+  <data name="UsageTranscriptItems" xml:space="preserve"><value>Transcript items</value></data>
+  <data name="UsageSuggestions" xml:space="preserve"><value>Suggestions</value></data>
+  <data name="UsageDurationMinutes" xml:space="preserve"><value>Duration (min)</value></data>
+  <data name="AudioTestNotReady" xml:space="preserve"><value>Audio test failed: diagnostics are not ready.</value></data>
+  <data name="AudioTestRunning" xml:space="preserve"><value>Audio test running.</value></data>
+  <data name="AudioTestStartCaptureHint" xml:space="preserve"><value>Start capture first to verify live mic/system input.</value></data>
+  <data name="FollowUpEmail" xml:space="preserve"><value>Follow-up email</value></data>
+  <data name="Regenerate" xml:space="preserve"><value>Rewrite summary</value></data>
+  <data name="CopySummary" xml:space="preserve"><value>Copy summary</value></data>
+  <data name="WhatShouldISayButton" xml:space="preserve"><value>Ask</value></data>
+  <data name="OverlayActionWhatShouldISay" xml:space="preserve"><value>• What to ask</value></data>
+  <data name="OverlayActionFollowUpQuestions" xml:space="preserve"><value>• Follow-up questions</value></data>
+  <data name="OverlayActionRecap" xml:space="preserve"><value>• Recap</value></data>
+  <data name="IndicatorHide" xml:space="preserve"><value>Hide</value></data>
+  <data name="IndicatorAsk" xml:space="preserve"><value>Show</value></data>
+  <data name="WhatsNewButtonText" xml:space="preserve"><value>What's new in CuePilot {0} ↗</value></data>
+  <data name="WhatsNewTitle" xml:space="preserve"><value>CuePilot {0} highlights</value></data>
+  <data name="WhatsNewBody" xml:space="preserve"><value>Version 1.0.4:&#x0a;• Settings: the provider comes first, then the API key and the models; «Speech recognition» has its own provider choice too (Polza.ai, OpenAI, Groq or your own address).&#x0a;• Models are picked from the provider's own list (Polza.ai also shows prices in ₽); typing narrows the list, and a model typed by hand is kept.&#x0a;&#x0a;Version 1.0.3:&#x0a;• Knowledge base: drag files, groups of files, folders or text into it, or paste them with Ctrl+V; each file and folder becomes its own entry, text becomes a note.&#x0a;• The topic «Summary» is its own tab between «Sessions» and «Knowledge base».&#x0a;• «Questions» is a list like the sessions: newest on top, the answer opens on a click, delete one or several.&#x0a;• Starting CuePilot again shows the window that is already open, so hotkeys no longer clash; if another program holds a combination, one message says so.&#x0a;• Hover hints work in the overlay and the collapsed mode; a second click on the CuePilot icon folds the window.&#x0a;• Clear explanations of «Deep mode» and the glossary; auto-snapshot settings are greyed out when screenshots for AI are off.&#x0a;&#x0a;Version 1.0.2:&#x0a;• A topic now has tabs: Sessions, Knowledge base, Questions and Graph.&#x0a;• Knowledge base: attach files (PDF, Word, Excel, pictures, txt, md), whole folders and your own text. Each item is parsed to Markdown with its own button and stored by CuePilot; the parsed text is shown on the right.&#x0a;• Questions: a dialog about the topic with history, answers from sessions and materials, with sources and discrepancies.&#x0a;• An Obsidian-style graph of entities and relations: drag, zoom, search, node card.&#x0a;• A more visible Back button.&#x0a;• Knowledge base sources can be removed one by one (× or Delete) or several at once («Select»): the graph is cleaned of their data at once, the summary is updated.&#x0a;• The preview of a parsed file is formatted Markdown with headings, lists and tables; big files open at once.&#x0a;• Parsing and other long actions run in the background, the window does not freeze.&#x0a;• The session cost moved from the cards and the header to a folding block on the «Usage» tab.&#x0a;&#x0a;Version 1.0.1:&#x0a;• Topics: drag sessions into a topic; it builds a shared knowledge base from all its sessions (Update button).&#x0a;• «Ask about the topic»: answers from the current summaries and transcripts of all its sessions, with sources and a separate list of discrepancies between people and meetings.&#x0a;• Multi-select: delete or move several sessions, right-click a card for a menu.&#x0a;• The follow-up email now opens on the Email tab with a copy button.&#x0a;• Day and night theme, RU/EN language (EN records and answers in English).&#x0a;• Hints on every button after 2 seconds, compact header, new installer.&#x0a;• A new recording starts with an empty overlay dialog.&#x0a;&#x0a;• New «Echo» design: logo and icon, Manrope font, listening animation. The overlay has an «Ask» button, and a question asked on the main screen appears in the overlay dialog.&#x0a;• Polza.ai: fast model for live hints, a stronger one for the summary and email; cost in ₽ per request and per session.&#x0a;• Optional speech recognition through the API; silence is skipped, recognition no longer falls behind on long calls.&#x0a;• No more slowdown on long sessions: every session is stored in its own file and saved in the background.&#x0a;• Overlay: «What to say» action, compact mode by clicking the title.&#x0a;• Interface, summary headings and the follow-up email are in Russian.&#x0a;• Installer with desktop and Start menu shortcuts.</value></data>
+  <data name="SmartModeToggle" xml:space="preserve"><value>Deep AI mode</value></data>
+  <data name="HotkeysTitle" xml:space="preserve"><value>Hotkeys</value></data>
+  <data name="OpenAiKeyMissing" xml:space="preserve"><value>API key is missing. Add it in Settings → API key, or put a line ApiKey=... into %AppData%\CuePilot\secrets.txt (or set POLZA_API_KEY).</value></data>
+  <data name="WhatShouldISayPrompt" xml:space="preserve"><value>Suggest what I should say next in this conversation.</value></data>
+  <data name="WhatShouldISayFallback" xml:space="preserve"><value>Acknowledge the point, clarify the main need, then propose one concrete next step.</value></data>
+  <data name="OpenAiRequestFailed" xml:space="preserve"><value>Failed to generate response via configured LLM provider.</value></data>
+  <data name="FollowUpEmailFallback" xml:space="preserve"><value>Thanks for today’s discussion. Sharing quick next steps: 1) align on priority, 2) confirm owners, 3) schedule follow-up check-in.</value></data>
+  <data name="OpenAiModelMissing" xml:space="preserve"><value>Model is missing. Add it in Settings.</value></data>
+  <data name="OpenAiBaseUrlMissing" xml:space="preserve"><value>API address is missing. Add it in Settings.</value></data>
+  <data name="OpenAiBaseUrlInvalid" xml:space="preserve"><value>API base URL is invalid. Use a full URL like https://api.openai.com/v1.</value></data>
+  <data name="DeleteSessionConfirmTitle" xml:space="preserve"><value>Delete session</value></data>
+  <data name="DeleteSessionConfirmMessage" xml:space="preserve"><value>Delete session "{0}"? This action cannot be undone.</value></data>
+  <data name="SttApiKeyMissing" xml:space="preserve"><value>API transcription is enabled, but no API key was found. Local whisper.cpp will be used for this session.</value></data>
+  <data name="SettingsAnalysisModel" xml:space="preserve"><value>Model for summary and email</value></data>
+  <data name="SettingsAnalysisModelHint" xml:space="preserve"><value>Used for the session summary and the follow-up email. Empty = same as the model for hints. Pick it from the list or type it in</value></data>
+  <data name="SettingsSttTitle" xml:space="preserve"><value>Speech recognition</value></data>
+  <data name="SettingsUseApiStt" xml:space="preserve"><value>Recognize speech through the API instead of local whisper.cpp</value></data>
+  <data name="SettingsSttModel" xml:space="preserve"><value>Recognition model</value></data>
+  <data name="SettingsSttApiKey" xml:space="preserve"><value>API key</value></data>
+  <data name="SettingsSttGlossary" xml:space="preserve"><value>Speech recognition glossary</value></data>
+  <data name="SettingsSttGlossaryHint" xml:space="preserve"><value>Words speech recognition often gets wrong: colleagues' names, company and product names, terms. Comma or new line separated. The glossary does not change AI answers.</value></data>
+  <data name="SettingsSttHint" xml:space="preserve"><value>The field is optional. If the API fails, the chunk is recognized locally by whisper.cpp.</value></data>
+  <data name="OverlayActionWhatToSay" xml:space="preserve"><value>• What to say</value></data>
+  <data name="SmartToggleShort" xml:space="preserve"><value>Deep</value></data>
+  <data name="OverlaySendHint" xml:space="preserve"><value>Ask the question typed in the field (Enter)</value></data>
+  <data name="OverlayOpenMainHint" xml:space="preserve"><value>Open the session in the main window</value></data>
+  <data name="OverlayExpandHint" xml:space="preserve"><value>Expand the overlay</value></data>
+  <data name="OverlayCollapseHint" xml:space="preserve"><value>Collapse to the action bar and the latest answer</value></data>
+  <data name="OverlayRoleUser" xml:space="preserve"><value>You</value></data>
+  <data name="OverlayRoleAssistant" xml:space="preserve"><value>CuePilot</value></data>
+  <data name="OverlayStatsSystem" xml:space="preserve"><value>System</value></data>
+  <data name="OverlayStatsMic" xml:space="preserve"><value>Mic</value></data>
+  <data name="UnitKbPerSecond" xml:space="preserve"><value>KB/s</value></data>
+  <data name="OverlaySttLag" xml:space="preserve"><value>recognition lag {0} s</value></data>
+  <data name="OverlayTokens" xml:space="preserve"><value>tokens {0}</value></data>
+  <data name="OverlayNoUsage" xml:space="preserve"><value>provider returned no usage | images: {0}</value></data>
+  <data name="SnapshotTakenNotice" xml:space="preserve"><value>📷 Snapshot added to the context</value></data>
+  <data name="SnapshotSkippedNotice" xml:space="preserve"><value>📷 Snapshot was not taken</value></data>
+  <data name="ActionAsk" xml:space="preserve"><value>Question</value></data>
+  <data name="ActionSummary" xml:space="preserve"><value>Summary</value></data>
+  <data name="ActionSummaryRequest" xml:space="preserve"><value>Build the session summary.</value></data>
+  <data name="ActionFollowUpEmail" xml:space="preserve"><value>Follow-up email</value></data>
+  <data name="ActionFollowUpEmailRequest" xml:space="preserve"><value>Draft a follow-up email for this session.</value></data>
+  <data name="ActionFollowUpQuestions" xml:space="preserve"><value>Follow-up questions</value></data>
+  <data name="ActionFollowUpQuestionsRequest" xml:space="preserve"><value>Suggest follow-up questions for this conversation.</value></data>
+  <data name="ActionFollowUpQuestionsRequestWithPrompt" xml:space="preserve"><value>Suggest follow-up questions about: {0}</value></data>
+  <data name="ActionRecap" xml:space="preserve"><value>Recap</value></data>
+  <data name="ActionRecapRequest" xml:space="preserve"><value>Recap the latest part of the conversation.</value></data>
+  <data name="ActionWhatToSay" xml:space="preserve"><value>What to say</value></data>
+  <data name="ActionWhatToSayRequest" xml:space="preserve"><value>Suggest what I should say now.</value></data>
+  <data name="ActionWhatToAsk" xml:space="preserve"><value>What to ask</value></data>
+  <data name="ActionWhatToAskRequest" xml:space="preserve"><value>Suggest the next question.</value></data>
+  <data name="SttStatusApi" xml:space="preserve"><value>Recognition: API ({0})</value></data>
+  <data name="SttStatusLocal" xml:space="preserve"><value>Recognition: local whisper.cpp</value></data>
+  <data name="SttKeySourceField" xml:space="preserve"><value>Recognition key: the one entered in the field above.</value></data>
+  <data name="SttKeySourceSecrets" xml:space="preserve"><value>Recognition key: SttApiKey from secrets.txt.</value></data>
+  <data name="SttKeySourceLlmSecrets" xml:space="preserve"><value>Recognition key: the same Polza.ai key as for hints (ApiKey from secrets.txt or POLZA_API_KEY). Nothing else is needed.</value></data>
+  <data name="SttKeySourceLlmField" xml:space="preserve"><value>Recognition key: the same API key as for hints (Settings field above).</value></data>
+  <data name="SttKeySourceMissing" xml:space="preserve"><value>Recognition key not found: API recognition will fall back to local whisper.</value></data>
+  <data name="VisualStatusDisabled" xml:space="preserve"><value>Screenshots are off.</value></data>
+  <data name="VisualStatusAuto" xml:space="preserve"><value>Auto snapshots: screen is checked every {0} ms, a frame is kept when it changes.</value></data>
+  <data name="VisualStatusManualOnly" xml:space="preserve"><value>Manual snapshots only (📷 or Ctrl+Shift+S).</value></data>
+  <data name="VisualStatusIdle" xml:space="preserve"><value>Screenshots: waiting for capture to start.</value></data>
+  <data name="VisualLastFrame" xml:space="preserve"><value>Last snapshot {0} ({1}), stored: {2}</value></data>
+  <data name="VisualSourceManual" xml:space="preserve"><value>manual</value></data>
+  <data name="VisualSourceAuto" xml:space="preserve"><value>auto</value></data>
+  <data name="VisualNoFrames" xml:space="preserve"><value>No snapshots yet.</value></data>
+  <data name="VisualFramesCount" xml:space="preserve"><value>Snapshots: {0}</value></data>
+  <data name="UsageMode" xml:space="preserve"><value>Mode</value></data>
+  <data name="UsageCostLlm" xml:space="preserve"><value>AI requests</value></data>
+  <data name="UsageCostStt" xml:space="preserve"><value>Speech recognition (API)</value></data>
+  <data name="UsageCostTotal" xml:space="preserve"><value>Total for the session</value></data>
+  <data name="UsageAiRequests" xml:space="preserve"><value>AI requests</value></data>
+  <data name="UsageAiRequestsWithVisual" xml:space="preserve"><value>AI requests with screenshots</value></data>
+  <data name="UsageAiImagesSent" xml:space="preserve"><value>Screenshots sent to AI</value></data>
+  <data name="UsageVisualFrames" xml:space="preserve"><value>Stored snapshots</value></data>
+  <data name="UsageManualSnapshots" xml:space="preserve"><value>Manual snapshots</value></data>
+  <data name="UsageLastAiRequest" xml:space="preserve"><value>Last AI request</value></data>
+  <data name="UsageLastTokens" xml:space="preserve"><value>Last request tokens</value></data>
+  <data name="UsageAssistDialogEmpty" xml:space="preserve"><value>No requests to the assistant yet.</value></data>
+  <data name="TrayOpen" xml:space="preserve"><value>Open CuePilot</value></data>
+  <data name="TrayExit" xml:space="preserve"><value>Exit</value></data>
+  <data name="IndicatorStopHint" xml:space="preserve"><value>Stop recording</value></data>
+  <data name="IndicatorStartHint" xml:space="preserve"><value>Start recording</value></data>
+  <data name="IndicatorHomeHint" xml:space="preserve"><value>Open CuePilot main window</value></data>
+  <data name="IndicatorSnapshotHint" xml:space="preserve"><value>Screenshot into the AI context (Ctrl+Shift+S). Used by the next question.</value></data>
+  <data name="DetectableBadge" xml:space="preserve"><value>Visible in screen share</value></data>
+  <data name="HiddenFromShareBadge" xml:space="preserve"><value>Hidden from screen share</value></data>
+  <data name="ScreenShareBadgeHint" xml:space="preserve"><value>Whether others see CuePilot windows when you share your screen. Change it in Settings, "Screen sharing".</value></data>
+  <data name="StartCuePilot" xml:space="preserve"><value>Start CuePilot</value></data>
+  <data name="TabSummary" xml:space="preserve"><value>Summary</value></data>
+  <data name="SummaryDiscussionTitle" xml:space="preserve"><value>Discussion</value></data>
+  <data name="TabTranscript" xml:space="preserve"><value>Transcript</value></data>
+  <data name="TabUsage" xml:space="preserve"><value>Usage</value></data>
+  <data name="NewRecording" xml:space="preserve"><value>New recording</value></data>
+  <data name="SettingsSectionAi" xml:space="preserve"><value>Context for AI</value></data>
+  <data name="SettingsScreenContext" xml:space="preserve"><value>Use screenshots as AI context</value></data>
+  <data name="SettingsAutoSnapshots" xml:space="preserve"><value>Take snapshots automatically when the screen changes</value></data>
+  <data name="SettingsSnapshotInterval" xml:space="preserve"><value>Screen check interval, ms</value></data>
+  <data name="SettingsSnapshotBuffer" xml:space="preserve"><value>Keep snapshots per session</value></data>
+  <data name="SettingsSnapshotsPerRequest" xml:space="preserve"><value>Snapshots per AI request</value></data>
+  <data name="SettingsSnapshotsHint" xml:space="preserve"><value>Snapshots are taken only while recording. The latest ones are attached to every AI request; the 📷 button adds one right away.</value></data>
+  <data name="SettingsSectionLlm" xml:space="preserve"><value>AI model</value></data>
+  <data name="SettingsApiKey" xml:space="preserve"><value>API key</value></data>
+  <data name="SettingsProviderPreset" xml:space="preserve"><value>Provider preset</value></data>
+  <data name="SettingsProvider" xml:space="preserve"><value>Provider name</value></data>
+  <data name="SettingsModel" xml:space="preserve"><value>Model for hints</value></data>
+  <data name="SettingsBaseUrl" xml:space="preserve"><value>API address</value></data>
+  <data name="SettingsEndpointPath" xml:space="preserve"><value>Request path</value></data>
+  <data name="SettingsKeyHeader" xml:space="preserve"><value>Key header</value></data>
+  <data name="SettingsKeyPrefix" xml:space="preserve"><value>Key prefix</value></data>
+  <data name="HotkeyShowHide" xml:space="preserve"><value>Show/hide overlay</value></data>
+  <data name="HotkeyAsk" xml:space="preserve"><value>Ask</value></data>
+  <data name="HotkeyClearChat" xml:space="preserve"><value>Clear chat</value></data>
+  <data name="HotkeyStartStop" xml:space="preserve"><value>Start/stop recording</value></data>
+  <data name="HotkeyMove" xml:space="preserve"><value>Move overlay (← → ↑ ↓)</value></data>
+  <data name="HotkeyScroll" xml:space="preserve"><value>Scroll chat</value></data>
+  <data name="HotkeySnapshot" xml:space="preserve"><value>Screenshot</value></data>
+  <data name="TestMicrophone" xml:space="preserve"><value>Test microphone</value></data>
+  <data name="TestAudioCapture" xml:space="preserve"><value>Test audio capture</value></data>
+  <data name="SpeechModelTitle" xml:space="preserve"><value>Local speech recognition model</value></data>
+  <data name="SpeechModelIntro" xml:space="preserve"><value>The model is not included in the installer: download it once. It is stored in %LocalAppData%\CuePilot\models and survives reinstalls. API recognition does not need a model.</value></data>
+  <data name="SpeechModelHardware" xml:space="preserve"><value>Your PC: {0} CPU cores, {1} GB of memory.</value></data>
+  <data name="SpeechModelSize" xml:space="preserve"><value>≈ {0} MB</value></data>
+  <data name="SpeechModelRecommended" xml:space="preserve"><value>Recommended</value></data>
+  <data name="SpeechModelSuitsPc" xml:space="preserve"><value>Suits your PC</value></data>
+  <data name="SpeechModelMaySlow" xml:space="preserve"><value>May lag: needs {0}+ cores and {1} GB of memory</value></data>
+  <data name="SpeechModelActive" xml:space="preserve"><value>In use</value></data>
+  <data name="SpeechModelInstalled" xml:space="preserve"><value>Downloaded</value></data>
+  <data name="SpeechModelNotInstalled" xml:space="preserve"><value>Not downloaded</value></data>
+  <data name="SpeechModelDownload" xml:space="preserve"><value>Download</value></data>
+  <data name="SpeechModelUse" xml:space="preserve"><value>Use</value></data>
+  <data name="SpeechModelDelete" xml:space="preserve"><value>Delete</value></data>
+  <data name="SpeechModelCancel" xml:space="preserve"><value>Cancel</value></data>
+  <data name="SpeechModelDownloadStarting" xml:space="preserve"><value>Connecting…</value></data>
+  <data name="SpeechModelDownloadProgress" xml:space="preserve"><value>Downloading: {0:0} of {1:0} MB</value></data>
+  <data name="SpeechModelDownloadProgressUnknown" xml:space="preserve"><value>Downloading: {0:0} MB</value></data>
+  <data name="SpeechModelDownloadFailed" xml:space="preserve"><value>Could not download model {0}: {1}</value></data>
+  <data name="SpeechModelDeleteTitle" xml:space="preserve"><value>Delete model</value></data>
+  <data name="SpeechModelDeleteConfirm" xml:space="preserve"><value>Delete model {0} from disk? You can download it again later.</value></data>
+  <data name="SpeechModelMissingStatus" xml:space="preserve"><value>No model downloaded, local recognition does not work. Download a model below (small is recommended) or turn on API recognition.</value></data>
+  <data name="SpeechModelActiveStatus" xml:space="preserve"><value>Using model {0}.</value></data>
+  <data name="SpeechModelMissingOnStart" xml:space="preserve"><value>The speech recognition model is not downloaded, so no transcript will appear. Open Settings → Speech recognition and download the small model (≈ 265 MB), or turn on API recognition.</value></data>
+  <data name="SpeechModelDesc_small_q8_0" xml:space="preserve"><value>Recognizes Russian well and rarely confuses it with Ukrainian. About 3 seconds per 5 seconds of speech on a regular CPU. Best choice for most PCs.</value></data>
+  <data name="SpeechModelDesc_large_v3_turbo_q5_0" xml:space="preserve"><value>Best quality for Russian: handles terms, names and fast speech better. High CPU load, roughly 2–3 times slower than small. For powerful PCs with 8+ cores.</value></data>
+  <data name="SpeechModelDesc_medium_q5_0" xml:space="preserve"><value>Better than small, but usually below large-v3-turbo at a similar load. Only worth it if turbo works worse for you.</value></data>
+  <data name="SpeechModelDesc_base_q8_0" xml:space="preserve"><value>Lightest and fastest, but weak for Russian: often confuses it with Ukrainian and drops words. Only for very weak PCs.</value></data>
+  <data name="CopiedFeedback" xml:space="preserve"><value>Copied</value></data>
+  <data name="CopyEmail" xml:space="preserve"><value>Copy email</value></data>
+  <data name="CopyText" xml:space="preserve"><value>Copy</value></data>
+  <data name="DeleteCheckedConfirmTitle" xml:space="preserve"><value>Delete sessions</value></data>
+  <data name="DeleteCheckedConfirmMessage" xml:space="preserve"><value>Delete the selected sessions ({0})? Transcripts, summaries and screenshots will be deleted permanently.</value></data>
+  <data name="DeleteCheckedSessions" xml:space="preserve"><value>Delete ({0})</value></data>
+  <data name="DeleteTopicConfirmTitle" xml:space="preserve"><value>Delete topic</value></data>
+  <data name="DeleteTopicConfirmMessage" xml:space="preserve"><value>Delete the topic "{0}" and its knowledge base? The sessions stay in the history without a topic.</value></data>
+  <data name="FollowUpEmailAgain" xml:space="preserve"><value>Draft again</value></data>
+  <data name="FollowUpEmailBusy" xml:space="preserve"><value>Drafting the follow-up email…</value></data>
+  <data name="FollowUpEmailHint" xml:space="preserve"><value>A draft email to the participants appears here: subject, short recap, action items with owners and deadlines. Press "Follow-up email"; the draft is based on this session's summary and transcript.</value></data>
+  <data name="FollowUpEmailReadyHint" xml:space="preserve"><value>The draft is ready: review it, copy it and paste it into your mail. It is saved with the session.</value></data>
+  <data name="FollowUpEmailTitle" xml:space="preserve"><value>Follow-up email</value></data>
+  <data name="MenuDeleteSession" xml:space="preserve"><value>Delete session</value></data>
+  <data name="MenuMoveToNewTopic" xml:space="preserve"><value>To a new topic…</value></data>
+  <data name="MenuMoveToTopic" xml:space="preserve"><value>To topic "{0}"</value></data>
+  <data name="MenuOpenSession" xml:space="preserve"><value>Open</value></data>
+  <data name="MenuRemoveFromTopic" xml:space="preserve"><value>Remove from topic</value></data>
+  <data name="MoveToTopic" xml:space="preserve"><value>To topic…</value></data>
+  <data name="SelectAllSessions" xml:space="preserve"><value>Select all</value></data>
+  <data name="SelectDone" xml:space="preserve"><value>Done</value></data>
+  <data name="SelectSessions" xml:space="preserve"><value>Select</value></data>
+  <data name="SessionsDeletedFeedback" xml:space="preserve"><value>Sessions deleted: {0}</value></data>
+  <data name="SessionsMovedFeedback" xml:space="preserve"><value>Moved: {0} → "{1}"</value></data>
+  <data name="SettingsLanguageHint" xml:space="preserve"><value>Russian: interface, speech recognition and AI answers in Russian. The recognition language changes from the next recording. Theme and language are saved at once.</value></data>
+  <data name="SettingsSectionAppearance" xml:space="preserve"><value>Appearance and language</value></data>
+  <data name="SettingsTheme" xml:space="preserve"><value>Theme</value></data>
+  <data name="TabEmail" xml:space="preserve"><value>Email</value></data>
+  <data name="ThemeDark" xml:space="preserve"><value>Night</value></data>
+  <data name="ThemeLight" xml:space="preserve"><value>Day</value></data>
+  <data name="TipAsk" xml:space="preserve"><value>Ask about the conversation. The question and answer also appear in the overlay (Ctrl+Enter)</value></data>
+  <data name="TipAskBox" xml:space="preserve"><value>Type a question about the current conversation and press Enter</value></data>
+  <data name="TipCheckSession" xml:space="preserve"><value>Check the session to delete it or move it to a topic</value></data>
+  <data name="TipClose" xml:space="preserve"><value>Close</value></data>
+  <data name="TipCopyEmail" xml:space="preserve"><value>Copy the email to the clipboard to paste it into your mail</value></data>
+  <data name="TipCopySummary" xml:space="preserve"><value>Copy the summary text to the clipboard, e.g. to paste into a messenger or email</value></data>
+  <data name="TipCopyTopicKnowledge" xml:space="preserve"><value>Copy the topic knowledge base to the clipboard</value></data>
+  <data name="TipCreateTopic" xml:space="preserve"><value>Create a topic: a section that groups related sessions and builds their shared knowledge base</value></data>
+  <data name="TipDeleteChecked" xml:space="preserve"><value>Permanently delete the checked sessions</value></data>
+  <data name="TipDeleteSession" xml:space="preserve"><value>Delete session</value></data>
+  <data name="TipDeleteTopic" xml:space="preserve"><value>Delete the topic. The sessions stay in the history</value></data>
+  <data name="TipFollowUpEmail" xml:space="preserve"><value>Draft an email to the participants: short recap, action items, owners and deadlines. Opens on the Email tab</value></data>
+  <data name="TipFollowUpEmailAgain" xml:space="preserve"><value>Draft the email again from the current summary</value></data>
+  <data name="TipGoHome" xml:space="preserve"><value>Back to the home screen with your sessions</value></data>
+  <data name="TipIndicatorAsk" xml:space="preserve"><value>Show the hints overlay</value></data>
+  <data name="TipIndicatorHide" xml:space="preserve"><value>Hide the hints overlay</value></data>
+  <data name="TipLanguageEn" xml:space="preserve"><value>English interface; speech recognition and AI answers in English</value></data>
+  <data name="TipLanguageRu" xml:space="preserve"><value>Russian interface; speech recognition and AI answers in Russian</value></data>
+  <data name="TipModes" xml:space="preserve"><value>Modes: your own prompt and notes template for different kinds of meetings</value></data>
+  <data name="TipMoveChecked" xml:space="preserve"><value>Move the checked sessions to a topic. You can also drag them onto a topic on the left</value></data>
+  <data name="TipNewRecording" xml:space="preserve"><value>Start a new recording</value></data>
+  <data name="TipOpenSession" xml:space="preserve"><value>Open the session. Drag the card onto a topic on the left to group it; right-click for a menu</value></data>
+  <data name="TipOverlayFollowUp" xml:space="preserve"><value>Suggest follow-up questions about the latest topic</value></data>
+  <data name="TipOverlayRecap" xml:space="preserve"><value>Recap: what the last few minutes were about</value></data>
+  <data name="TipOverlayWhatToAsk" xml:space="preserve"><value>Suggest a question to ask right now</value></data>
+  <data name="TipOverlayWhatToSay" xml:space="preserve"><value>Suggest what to say right now</value></data>
+  <data name="TipRefreshTopicKnowledge" xml:space="preserve"><value>Rebuild the shared knowledge base from all sessions of the topic. Needed after sessions are added or removed</value></data>
+  <data name="TipRegenerate" xml:space="preserve"><value>Write the summary again from the whole transcript. The current summary is replaced</value></data>
+  <data name="TipRenameSession" xml:space="preserve"><value>Click to rename the session</value></data>
+  <data name="TipRenameTopic" xml:space="preserve"><value>Rename the topic</value></data>
+  <data name="TipSaveSettings" xml:space="preserve"><value>Save the settings. Your API key and values are kept on upgrade</value></data>
+  <data name="TipSearch" xml:space="preserve"><value>Search session titles, summaries and transcripts</value></data>
+  <data name="TipSelectAll" xml:space="preserve"><value>Check all sessions in the list (press again to uncheck)</value></data>
+  <data name="TipSelectDone" xml:space="preserve"><value>Leave selection mode</value></data>
+  <data name="TipSelectMode" xml:space="preserve"><value>Check several sessions to delete them or move them to a topic</value></data>
+  <data name="TipSettings" xml:space="preserve"><value>Settings: appearance, language, AI, speech recognition, hotkeys</value></data>
+  <data name="TipSmartMode" xml:space="preserve"><value>The AI thinks longer over every answer: more accurate, slower and more expensive</value></data>
+  <data name="TipStartCapture" xml:space="preserve"><value>Start recording the conversation with live hints (Ctrl+Shift+/)</value></data>
+  <data name="TipTabEmail" xml:space="preserve"><value>Draft email to the participants</value></data>
+  <data name="TipTabSummary" xml:space="preserve"><value>Summary: action items, highlights, participants</value></data>
+  <data name="TipTabTranscript" xml:space="preserve"><value>Conversation transcript</value></data>
+  <data name="TipTabUsage" xml:space="preserve"><value>Usage: duration, AI requests, cost</value></data>
+  <data name="TipTestAudioCapture" xml:space="preserve"><value>Check system and microphone audio capture</value></data>
+  <data name="TipTestMicrophone" xml:space="preserve"><value>Check the microphone</value></data>
+  <data name="TipThemeDark" xml:space="preserve"><value>Dark theme: graphite and mint</value></data>
+  <data name="TipThemeLight" xml:space="preserve"><value>Light theme for daytime</value></data>
+  <data name="TipToggleTheme" xml:space="preserve"><value>Switch between day and night theme</value></data>
+  <data name="TipTopicRow" xml:space="preserve"><value>Show sessions. Drag session cards here to move them</value></data>
+  <data name="TipTopicStale" xml:space="preserve"><value>Sessions were added or removed: press Update</value></data>
+  <data name="TipWhatsNew" xml:space="preserve"><value>What changed in this version</value></data>
+  <data name="TopicAllSessions" xml:space="preserve"><value>All sessions</value></data>
+  <data name="TopicCreate" xml:space="preserve"><value>+ New topic</value></data>
+  <data name="TopicDelete" xml:space="preserve"><value>Delete topic</value></data>
+  <data name="TopicEmptyHint" xml:space="preserve"><value>No sessions here yet. Drag session cards from All sessions onto a topic on the left, or check several and press To topic…</value></data>
+  <data name="TopicKnowledgeBusy" xml:space="preserve"><value>Building the shared knowledge base…</value></data>
+  <data name="TopicKnowledgeEmpty" xml:space="preserve"><value>No knowledge base yet: press Update</value></data>
+  <data name="TopicKnowledgeEmptyAnswer" xml:space="preserve"><value>The model returned an empty answer.</value></data>
+  <data name="TopicKnowledgeStale" xml:space="preserve"><value>The sessions changed: press Update</value></data>
+  <data name="TopicKnowledgeTitle" xml:space="preserve"><value>Shared context and knowledge base</value></data>
+  <data name="TopicKnowledgeUpToDate" xml:space="preserve"><value>Up to date as of {0} · sessions: {1} · materials: {2}</value></data>
+  <data name="TopicAsk" xml:space="preserve"><value>Ask</value></data>
+  <data name="TopicAskPlaceholder" xml:space="preserve"><value>Ask about this topic, e.g. what was agreed on deadlines</value></data>
+  <data name="TopicAskBusy" xml:space="preserve"><value>Gathering current data from the topic's sessions and looking for the answer…</value></data>
+  <data name="TopicAskAnswered" xml:space="preserve"><value>Question: “{0}” · {1}</value></data>
+  <data name="TipTopicAsk" xml:space="preserve"><value>Answer from the current summaries and transcripts of the topic's sessions. Conflicting statements by participants in recent meetings are flagged separately</value></data>
+  <data name="TipTopicAskBox" xml:space="preserve"><value>A question about the topic: answered from all its sessions and the knowledge base. Enter sends, Shift+Enter adds a line</value></data>
+  <data name="TipCopyTopicAnswer" xml:space="preserve"><value>Copy the answer to the clipboard</value></data>
+  <data name="TopicNewName" xml:space="preserve"><value>New topic</value></data>
+  <data name="TopicNoSessions" xml:space="preserve"><value>Drag sessions here and the topic builds a shared knowledge base from them</value></data>
+  <data name="TopicRefreshKnowledge" xml:space="preserve"><value>Update</value></data>
+  <data name="TopicRename" xml:space="preserve"><value>Rename</value></data>
+  <data name="TopicUnsorted" xml:space="preserve"><value>No topic</value></data>
+  <data name="TopicsDragHint" xml:space="preserve"><value>Drag a session onto a topic to group it</value></data>
+  <data name="TopicsTitle" xml:space="preserve"><value>TOPICS</value></data>
+  <data name="TipHotkeyAsk" xml:space="preserve"><value>Ask the AI from any window. Format: Ctrl+Enter</value></data>
+  <data name="TipHotkeyClearChat" xml:space="preserve"><value>Clear the overlay dialog</value></data>
+  <data name="TipHotkeyMove" xml:space="preserve"><value>Move the overlay: left, right, up, down</value></data>
+  <data name="TipHotkeyScroll" xml:space="preserve"><value>Scroll the overlay answers up and down</value></data>
+  <data name="TipHotkeyShowHide" xml:space="preserve"><value>Show or hide the hints overlay</value></data>
+  <data name="TipHotkeySnapshot" xml:space="preserve"><value>Take a screenshot for the AI context while recording</value></data>
+  <data name="TipHotkeyStartStop" xml:space="preserve"><value>Start or stop recording</value></data>
+  <data name="TipApiKey" xml:space="preserve"><value>Key of the selected provider. When empty, the key is read from %AppData%\CuePilot\secrets.txt. Stored only on this PC</value></data>
+  <data name="TipBaseUrl" xml:space="preserve"><value>Provider API address, e.g. https://polza.ai/api/v1</value></data>
+  <data name="TipEndpointPath" xml:space="preserve"><value>Request path, usually /chat/completions</value></data>
+  <data name="TipKeyHeader" xml:space="preserve"><value>HTTP header that carries the key, usually Authorization</value></data>
+  <data name="TipKeyPrefix" xml:space="preserve"><value>Prefix before the key in the header, usually Bearer</value></data>
+  <data name="TipModel" xml:space="preserve"><value>Fast model for live hints during the conversation. Pick it from the list or type the id as the provider spells it</value></data>
+  <data name="TipProviderPreset" xml:space="preserve"><value>Ready-made AI provider settings. Polza.ai is the default</value></data>
+  <data name="TipProvider" xml:space="preserve"><value>Provider name for a custom preset</value></data>
+  <data name="TipSnapshotBuffer" xml:space="preserve"><value>How many recent screenshots to keep for context</value></data>
+  <data name="TipSnapshotInterval" xml:space="preserve"><value>How often to check the screen for changes, in milliseconds</value></data>
+  <data name="TipSnapshotsPerRequest" xml:space="preserve"><value>How many screenshots to send per AI request (more is more precise but costs more)</value></data>
+  <data name="TipSttApiKey" xml:space="preserve"><value>Key of the recognition provider. Empty means the main key is used when the provider is the same</value></data>
+  <data name="TipSttGlossary" xml:space="preserve"><value>Names and terms speech recognition must spell correctly</value></data>
+  <data name="TipSttModel" xml:space="preserve"><value>Speech recognition model for the API. Pick it from the list or type the id as the provider spells it</value></data>
+  <data name="SettingsModelPickerHint" xml:space="preserve"><value>Pick a model from the provider's list (▾) or type it in yourself: typing narrows the list, any value you type is kept.</value></data>
+  <data name="TipSttProvider" xml:space="preserve"><value>Who recognizes speech through the API: Polza.ai by default, OpenAI, Groq or your own OpenAI-compatible address</value></data>
+  <data name="TipSttBaseUrl" xml:space="preserve"><value>Address of an OpenAI-compatible recognition API (…/v1); /audio/transcriptions is added to it</value></data>
+  <data name="TipModelPickerOpen" xml:space="preserve"><value>Show the provider's models</value></data>
+  <data name="TipModelPickerRefresh" xml:space="preserve"><value>Ask the provider for its current list of models again</value></data>
+  <data name="ModelPickerRefresh" xml:space="preserve"><value>Refresh</value></data>
+  <data name="ModelPickerNoMatch" xml:space="preserve"><value>Not in the list. The value is kept as typed.</value></data>
+  <data name="ModelListLoading" xml:space="preserve"><value>Loading the provider's models…</value></data>
+  <data name="ModelListLoaded" xml:space="preserve"><value>Models at the provider: {0}</value></data>
+  <data name="ModelListFailed" xml:space="preserve"><value>The provider's list did not load ({0}). CuePilot's suggestions are shown.</value></data>
+  <data name="ModelListHint" xml:space="preserve"><value>CuePilot's suggestions; the provider's full list loads when the list opens.</value></data>
+  <data name="ModelListTimeout" xml:space="preserve"><value>no answer</value></data>
+  <data name="ModelNoteFast" xml:space="preserve"><value>fast, for hints</value></data>
+  <data name="ModelNoteSmart" xml:space="preserve"><value>strong, for summaries and the email</value></data>
+  <data name="ModelNoteLocal" xml:space="preserve"><value>local</value></data>
+  <data name="ModelNoteSttDefault" xml:space="preserve"><value>default</value></data>
+  <data name="ModelNoteSttAccurate" xml:space="preserve"><value>more accurate, costs more</value></data>
+  <data name="ModelNoteSttWhisper" xml:space="preserve"><value>classic Whisper</value></data>
+  <data name="ModelNoteSttFast" xml:space="preserve"><value>fast</value></data>
+  <data name="ModelPrice" xml:space="preserve"><value>{0} / {1} {2} per 1M tokens</value></data>
+  <data name="TipLanguage" xml:space="preserve"><value>Language of the interface, speech recognition and AI answers</value></data>
+  <data name="TipScreenContext" xml:space="preserve"><value>Add a screenshot to AI questions so it sees the slides or document</value></data>
+  <data name="TipAutoSnapshots" xml:space="preserve"><value>Take screenshots automatically when the screen changes noticeably</value></data>
+  <data name="DialogDelete" xml:space="preserve"><value>Delete</value></data>
+  <data name="DialogYes" xml:space="preserve"><value>Yes</value></data>
+  <data name="DialogCancel" xml:space="preserve"><value>Cancel</value></data>
+  <data name="DialogOk" xml:space="preserve"><value>OK</value></data>
+  <data name="TipSpeechDownload" xml:space="preserve"><value>Download the speech model (once)</value></data>
+  <data name="TipSpeechUse" xml:space="preserve"><value>Use this model for recognition</value></data>
+  <data name="TipSpeechDelete" xml:space="preserve"><value>Delete the downloaded model from disk</value></data>
+  <data name="TipSpeechCancel" xml:space="preserve"><value>Stop the download</value></data>
+  <data name="GoBack" xml:space="preserve"><value>Back</value></data>
+  <data name="TopicTabSessions" xml:space="preserve"><value>Sessions</value></data>
+  <data name="TopicTabKnowledge" xml:space="preserve"><value>Knowledge base</value></data>
+  <data name="TopicTabQuestions" xml:space="preserve"><value>Questions</value></data>
+  <data name="TopicTabGraph" xml:space="preserve"><value>Graph</value></data>
+  <data name="TipTopicTabSessions" xml:space="preserve"><value>Sessions of this topic. Drag sessions here from «All sessions» or «No topic»</value></data>
+  <data name="TipTopicTabKnowledge" xml:space="preserve"><value>Files, folders and texts attached to the topic, parsed to Markdown</value></data>
+  <data name="TipTopicTabQuestions" xml:space="preserve"><value>Ask AI about the topic: answers from sessions and the knowledge base, with sources and discrepancies</value></data>
+  <data name="TipTopicTabGraph" xml:space="preserve"><value>Entities of the topic and how they relate: people, companies, projects, tasks, decisions, documents</value></data>
+  <data name="KnowledgeAddFiles" xml:space="preserve"><value>+ Files</value></data>
+  <data name="KnowledgeAddFolder" xml:space="preserve"><value>+ Folder</value></data>
+  <data name="KnowledgeAddNote" xml:space="preserve"><value>+ Text</value></data>
+  <data name="TipKnowledgeAddFiles" xml:space="preserve"><value>Attach documents: PDF, Word (doc, docx), Excel (xls, xlsx), pictures (jpg, png), txt, md. You can also drag files here or paste them with Ctrl+V</value></data>
+  <data name="TipKnowledgeAddFolder" xml:space="preserve"><value>Attach a folder: every supported file in it and its subfolders is parsed. A folder can also be dragged here or pasted with Ctrl+V</value></data>
+  <data name="TipKnowledgeAddNote" xml:space="preserve"><value>Add your own text: agreements, context, requirements. It goes into the knowledge base at once. Copied text can also be dragged here or pasted with Ctrl+V</value></data>
+  <data name="KnowledgeAddFilesTitle" xml:space="preserve"><value>Attach documents to the topic</value></data>
+  <data name="KnowledgeAddFolderTitle" xml:space="preserve"><value>Attach a folder to the topic</value></data>
+  <data name="KnowledgeFileFilterName" xml:space="preserve"><value>Documents (PDF, Word, Excel, pictures, text)</value></data>
+  <data name="KnowledgeListHint" xml:space="preserve"><value>Drag documents, folders or text here, paste them with Ctrl+V or use the buttons above. CuePilot parses them to Markdown and uses them in the summary, answers and graph.</value></data>
+  <data name="KnowledgeParseAll" xml:space="preserve"><value>Parse everything new</value></data>
+  <data name="TipKnowledgeParseAll" xml:space="preserve"><value>Parse all new and changed items one by one</value></data>
+  <data name="KnowledgeOpenFolder" xml:space="preserve"><value>Open knowledge base folder</value></data>
+  <data name="TipKnowledgeOpenFolder" xml:space="preserve"><value>Open the folder where CuePilot keeps the parsed .md files of this topic</value></data>
+  <data name="KnowledgeParse" xml:space="preserve"><value>Parse</value></data>
+  <data name="KnowledgeReparse" xml:space="preserve"><value>Parse again</value></data>
+  <data name="TipKnowledgeParse" xml:space="preserve"><value>Read the item and store it as Markdown. Pictures and scans are recognized by AI</value></data>
+  <data name="KnowledgeRemove" xml:space="preserve"><value>Remove</value></data>
+  <data name="TipKnowledgeRemove" xml:space="preserve"><value>Remove the item from the topic knowledge base. The original on disk is kept</value></data>
+  <data name="KnowledgeEditNote" xml:space="preserve"><value>Edit</value></data>
+  <data name="TipKnowledgeEditNote" xml:space="preserve"><value>Edit the note; it is parsed again after saving</value></data>
+  <data name="KnowledgeOpenOriginal" xml:space="preserve"><value>Open</value></data>
+  <data name="TipKnowledgeOpenOriginal" xml:space="preserve"><value>Open the original file or folder</value></data>
+  <data name="TipKnowledgeCopy" xml:space="preserve"><value>Copy the parsed text to the clipboard</value></data>
+  <data name="KnowledgeAddedFeedback" xml:space="preserve"><value>Added: {0}</value></data>
+  <data name="KnowledgeAlreadyAdded" xml:space="preserve"><value>Already attached to the topic</value></data>
+  <data name="KnowledgeDropHint" xml:space="preserve"><value>Drop to add to the knowledge base</value></data>
+  <data name="KnowledgeDropSubHint" xml:space="preserve"><value>Each file and folder becomes its own entry, text becomes a note</value></data>
+  <data name="KnowledgeAddedSkippedFeedback" xml:space="preserve"><value>Added: {0}. Skipped: {1}, unsupported format</value></data>
+  <data name="KnowledgeUnsupportedFeedback" xml:space="preserve"><value>Nothing added: PDF, Word, Excel, pictures (jpg, png), txt and md are supported</value></data>
+  <data name="KnowledgePasteFailed" xml:space="preserve"><value>Another program is using the clipboard, try again</value></data>
+  <data name="KnowledgePasteEmpty" xml:space="preserve"><value>The clipboard has no files, folders or text</value></data>
+  <data name="KnowledgeNoteDefaultTitle" xml:space="preserve"><value>Note</value></data>
+  <data name="KnowledgeParsing" xml:space="preserve"><value>Parsing…</value></data>
+  <data name="KnowledgeParsingFile" xml:space="preserve"><value>Parsing {0} of {1}: {2}</value></data>
+  <data name="KnowledgeRemoveConfirmTitle" xml:space="preserve"><value>Remove from the knowledge base?</value></data>
+  <data name="KnowledgeRemoveConfirmMessage" xml:space="preserve"><value>«{0}» and its parsed text will be removed from the topic. What only this source said disappears from the graph at once, and the topic summary is updated. The original files on disk stay.</value></data>
+  <data name="KnowledgeSkippedHeading" xml:space="preserve"><value>Could not parse</value></data>
+  <data name="KnowledgeSourceEmpty" xml:space="preserve"><value>Not parsed yet. Press «Parse» and the text CuePilot will use appears here.</value></data>
+  <data name="KnowledgeSummaryEmpty" xml:space="preserve"><value>The summary is not built yet. Press «Update»: CuePilot merges the sessions and materials of the topic into one knowledge base.</value></data>
+  <data name="KnowledgeSourceLabel" xml:space="preserve"><value>Source</value></data>
+  <data name="KnowledgeTooManyImages" xml:space="preserve"><value>Too many pictures in the folder: the first 40 are recognized</value></data>
+  <data name="KnowledgeStatusNew" xml:space="preserve"><value>New, not parsed</value></data>
+  <data name="KnowledgeStatusChanged" xml:space="preserve"><value>The original changed, parse again</value></data>
+  <data name="KnowledgeStatusFailed" xml:space="preserve"><value>Error</value></data>
+  <data name="KnowledgeStatusMissing" xml:space="preserve"><value>The original is not found on disk</value></data>
+  <data name="KnowledgeStatusParsed" xml:space="preserve"><value>Parsed {0} · {1} chars</value></data>
+  <data name="KnowledgeStatusParsedFolder" xml:space="preserve"><value>Parsed {0} · files: {1}, skipped: {2}</value></data>
+  <data name="KnowledgeSummaryTitle" xml:space="preserve"><value>Topic summary</value></data>
+  <data name="NoteDialogAddTitle" xml:space="preserve"><value>Add text to the knowledge base</value></data>
+  <data name="NoteDialogEditTitle" xml:space="preserve"><value>Edit note</value></data>
+  <data name="NoteDialogHint" xml:space="preserve"><value>Agreements, context, requirements: anything CuePilot should take into account in the summary, answers and graph.</value></data>
+  <data name="NoteDialogTitlePlaceholder" xml:space="preserve"><value>Note title</value></data>
+  <data name="NoteDialogTextPlaceholder" xml:space="preserve"><value>Note text</value></data>
+  <data name="NoteDialogAdd" xml:space="preserve"><value>Add</value></data>
+  <data name="NoteDialogSave" xml:space="preserve"><value>Save</value></data>
+  <data name="QuestionsEmptyTitle" xml:space="preserve"><value>Ask about the topic</value></data>
+  <data name="QuestionsEmptyHint" xml:space="preserve"><value>The answer is built from the summaries and transcripts of all sessions of the topic and from its knowledge base. Recent meetings win over older ones; discrepancies between people are listed separately.</value></data>
+  <data name="QuestionSuggestion1" xml:space="preserve"><value>What did we agree on at the last meeting?</value></data>
+  <data name="QuestionSuggestion2" xml:space="preserve"><value>Where do participants contradict each other?</value></data>
+  <data name="QuestionSuggestion3" xml:space="preserve"><value>Which tasks are open and who owns them?</value></data>
+  <data name="QuestionSuggestion4" xml:space="preserve"><value>Which deadlines and figures are already fixed?</value></data>
+  <data name="GraphBuild" xml:space="preserve"><value>Build graph</value></data>
+  <data name="GraphRebuild" xml:space="preserve"><value>Update graph</value></data>
+  <data name="TipGraphBuild" xml:space="preserve"><value>AI finds the entities of the topic and the relations between them in the sessions and knowledge base</value></data>
+  <data name="GraphBusy" xml:space="preserve"><value>Building the graph…</value></data>
+  <data name="GraphEmpty" xml:space="preserve"><value>No graph yet</value></data>
+  <data name="GraphUpToDate" xml:space="preserve"><value>Nodes: {0} · links: {1} · {2}</value></data>
+  <data name="GraphStale" xml:space="preserve"><value>new data, update the graph</value></data>
+  <data name="GraphEmptyAnswer" xml:space="preserve"><value>The model found no entities for the graph.</value></data>
+  <data name="GraphEmptyTitle" xml:space="preserve"><value>Topic graph</value></data>
+  <data name="GraphEmptyHint" xml:space="preserve"><value>Press «Build graph»: CuePilot finds people, companies, projects, tasks, decisions and documents and shows how they are connected.</value></data>
+  <data name="GraphSearchPlaceholder" xml:space="preserve"><value>Find on the graph</value></data>
+  <data name="TipGraphSearch" xml:space="preserve"><value>Highlight nodes whose name or description contains this text</value></data>
+  <data name="GraphControlsHint" xml:space="preserve"><value>Wheel to zoom · drag to move · double-click to fit</value></data>
+  <data name="GraphDetailsLinks" xml:space="preserve"><value>Links</value></data>
+  <data name="GraphDetailsSources" xml:space="preserve"><value>Sources</value></data>
+  <data name="GraphType_person" xml:space="preserve"><value>People</value></data>
+  <data name="GraphType_organization" xml:space="preserve"><value>Companies</value></data>
+  <data name="GraphType_project" xml:space="preserve"><value>Projects</value></data>
+  <data name="GraphType_task" xml:space="preserve"><value>Tasks</value></data>
+  <data name="GraphType_decision" xml:space="preserve"><value>Decisions</value></data>
+  <data name="GraphType_document" xml:space="preserve"><value>Documents</value></data>
+  <data name="GraphType_date" xml:space="preserve"><value>Dates</value></data>
+  <data name="GraphType_place" xml:space="preserve"><value>Places</value></data>
+  <data name="GraphType_term" xml:space="preserve"><value>Terms</value></data>
+  <data name="KnowledgeRemoveChecked" xml:space="preserve"><value>Remove selected ({0})</value></data>
+  <data name="KnowledgeSourcesSummary" xml:space="preserve"><value>Sources: {0}</value></data>
+  <data name="TipKnowledgeSelect" xml:space="preserve"><value>Check several sources to remove them at once</value></data>
+  <data name="TipKnowledgeSelectAll" xml:space="preserve"><value>Check all sources or clear all checks</value></data>
+  <data name="TipKnowledgeRemoveChecked" xml:space="preserve"><value>Remove the checked sources from the topic: their parsed text is deleted, the graph and the summary are updated. The originals on disk stay</value></data>
+  <data name="TipKnowledgeRemoveRow" xml:space="preserve"><value>Remove the source from the topic (Delete key)</value></data>
+  <data name="KnowledgeRemoveManyConfirmMessage" xml:space="preserve"><value>Remove {0} sources from the topic? Their parsed text is deleted, what only they said disappears from the graph at once, and the topic summary is updated. The original files on disk stay.</value></data>
+  <data name="KnowledgeRemovedFeedback" xml:space="preserve"><value>Removed sources: {0}</value></data>
+  <data name="KnowledgeAutoRefreshFailed" xml:space="preserve"><value>Could not update the topic summary. Press «Update» when the connection and balance allow</value></data>
+  <data name="KnowledgeParseTimeout" xml:space="preserve"><value>Parsing took more than 10 minutes and was stopped. Try again or split the file into parts</value></data>
+  <data name="UsageCostHeader" xml:space="preserve"><value>Cost · {0}</value></data>
+  <data name="UsageDialogHeader" xml:space="preserve"><value>Assistant dialog · {0}</value></data>
+  <data name="TipUsageCost" xml:space="preserve"><value>What the session cost: AI requests and speech recognition</value></data>
+  <data name="TipUsageDialog" xml:space="preserve"><value>All requests to the assistant during the session and its answers</value></data>
+  <data name="UsageLastTokensValue" xml:space="preserve"><value>prompt {0}, answer {1}, total {2}</value></data>
+  <data name="TopicAnswerCost" xml:space="preserve"><value>Answer cost: {0}</value></data>
+  <data name="KnowledgeRemovedUpdatingFeedback" xml:space="preserve"><value>Removed sources: {0}. The topic summary is updating</value></data>
+  <data name="SmartModeHint" xml:space="preserve"><value>The AI thinks longer over every answer: overlay hints, summaries, the follow-up email and topic answers. More accurate in hard conversations, but each answer comes a few seconds later and costs more. Not needed for ordinary calls.</value></data>
+  <data name="SettingsSttGlossaryExample" xml:space="preserve"><value>For example: Artem, Polza.ai, CuePilot, KPI, Sberbank</value></data>
+  <data name="HotkeysRegisterFailedMessage" xml:space="preserve"><value>These hotkeys are already taken by another program, so CuePilot cannot use them:&#x0a;{0}&#x0a;&#x0a;Change them in «Settings → Hotkeys» or close the program that took them.</value></data>
+  <data name="TopicTabSummary" xml:space="preserve"><value>Summary</value></data>
+  <data name="TipTopicTabSummary" xml:space="preserve"><value>The topic summary over all its sessions and sources. A dot means it should be updated</value></data>
+  <data name="QuestionsSummary" xml:space="preserve"><value>Questions: {0}</value></data>
+  <data name="QuestionsRemoveChecked" xml:space="preserve"><value>Delete selected ({0})</value></data>
+  <data name="TipQuestionsSelect" xml:space="preserve"><value>Check several questions to delete them at once</value></data>
+  <data name="TipQuestionsSelectAll" xml:space="preserve"><value>Check all questions (press again to uncheck)</value></data>
+  <data name="TipQuestionsRemoveChecked" xml:space="preserve"><value>Delete the checked questions with their answers</value></data>
+  <data name="TipCheckQuestion" xml:space="preserve"><value>Check the question to delete it</value></data>
+  <data name="TipToggleQuestion" xml:space="preserve"><value>Show or fold the answer</value></data>
+  <data name="TipRemoveQuestion" xml:space="preserve"><value>Delete the question and its answer</value></data>
+  <data name="QuestionRemoveConfirmTitle" xml:space="preserve"><value>Delete the question?</value></data>
+  <data name="QuestionRemoveConfirmMessage" xml:space="preserve"><value>The question «{0}» and its answer will be deleted for good.</value></data>
+  <data name="QuestionsRemoveManyConfirmMessage" xml:space="preserve"><value>Delete the selected questions ({0}) with their answers? They cannot be restored.</value></data>
+  <data name="QuestionsRemovedFeedback" xml:space="preserve"><value>Questions deleted: {0}</value></data>
+</root>

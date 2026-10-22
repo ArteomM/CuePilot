@@ -1,0 +1,664 @@
+<Styles xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+    <!-- «Эхо»: графит и мятный акцент живого слушания. Порт CuePilotDesktop/Themes/Echo.xaml и стилей MainWindow.xaml.
+         WPF-ключи стилей стали классами: EchoAccentButtonStyle → Button.accent, EchoGhostButtonStyle → Button.ghost и т. д. -->
+
+    <Style Selector="Window">
+        <Setter Property="FontFamily" Value="{DynamicResource EchoFont}" />
+        <Setter Property="Foreground" Value="{DynamicResource EchoTextBrush}" />
+    </Style>
+
+    <!-- Обычная кнопка (EchoButtonStyle): графитовая плашка с тонкой рамкой, подсветка плавно проявляется. -->
+    <Style Selector="Button">
+        <Setter Property="Background" Value="{DynamicResource EchoSurfaceAltBrush}" />
+        <Setter Property="Foreground" Value="{DynamicResource EchoTextBrush}" />
+        <Setter Property="BorderBrush" Value="{DynamicResource EchoBorderBrush}" />
+        <Setter Property="BorderThickness" Value="1" />
+        <Setter Property="FontWeight" Value="SemiBold" />
+        <Setter Property="Padding" Value="14,6" />
+        <Setter Property="Cursor" Value="Hand" />
+        <Setter Property="HorizontalContentAlignment" Value="Center" />
+        <Setter Property="VerticalContentAlignment" Value="Center" />
+        <Setter Property="CornerRadius" Value="12" />
+        <Setter Property="RenderTransform" Value="scale(1)" />
+        <Setter Property="Transitions">
+            <Transitions>
+                <TransformOperationsTransition Property="RenderTransform" Duration="0:0:0.12" />
+            </Transitions>
+        </Setter>
+        <Setter Property="Template">
+            <ControlTemplate>
+                <Border Name="ButtonBorder"
+                        Background="{TemplateBinding Background}"
+                        BorderBrush="{TemplateBinding BorderBrush}"
+                        BorderThickness="{TemplateBinding BorderThickness}"
+                        CornerRadius="{TemplateBinding CornerRadius}">
+                    <Grid>
+                        <Border Name="HoverLayer" CornerRadius="11" Background="{DynamicResource EchoHoverLayerBrush}" Opacity="0">
+                            <Border.Transitions>
+                                <Transitions>
+                                    <DoubleTransition Property="Opacity" Duration="0:0:0.2" Easing="CubicEaseOut" />
+                                </Transitions>
+                            </Border.Transitions>
+                        </Border>
+                        <ContentPresenter Name="PART_ContentPresenter"
+                                          Content="{TemplateBinding Content}"
+                                          ContentTemplate="{TemplateBinding ContentTemplate}"
+                                          Foreground="{TemplateBinding Foreground}"
+                                          HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
+                                          VerticalAlignment="{TemplateBinding VerticalContentAlignment}"
+                                          HorizontalContentAlignment="{TemplateBinding HorizontalContentAlignment}"
+                                          VerticalContentAlignment="{TemplateBinding VerticalContentAlignment}"
+                                          Margin="{TemplateBinding Padding}" />
+                    </Grid>
+                </Border>
+            </ControlTemplate>
+        </Setter>
+    </Style>
+    <Style Selector="Button:pointerover /template/ Border#ButtonBorder">
+        <Setter Property="BorderBrush" Value="{DynamicResource EchoHoverBorderBrush}" />
+    </Style>
+    <Style Selector="Button:pointerover /template/ Border#HoverLayer">
+        <Setter Property="Opacity" Value="0.06" />
+    </Style>
+    <Style Selector="Button:pressed">
+        <Setter Property="RenderTransform" Value="scale(0.98)" />
+    </Style>
+    <Style Selector="Button:disabled /template/ Border#ButtonBorder">
+        <Setter Property="Opacity" Value="0.5" />
+    </Style>
+
+    <!-- Главная кнопка действия (EchoAccentButtonStyle): мятная заливка, тёмный текст, мягкое свечение при наведении. -->
+    <Style Selector="Button.accent">
+        <Setter Property="Background" Value="{DynamicResource EchoAccentBrush}" />
+        <Setter Property="Foreground" Value="{DynamicResource EchoAccentInkBrush}" />
+        <Setter Property="BorderThickness" Value="0" />
+        <Setter Property="FontWeight" Value="ExtraBold" />
+        <Setter Property="FontSize" Value="15" />
+        <Setter Property="Padding" Value="18,0" />
+        <Setter Property="HorizontalContentAlignment" Value="Center" />
+        <Setter Property="VerticalContentAlignment" Value="Center" />
+        <Setter Property="Template">
+            <ControlTemplate>
+                <Grid>
+                    <Border Name="Glow" CornerRadius="17" Margin="-3" Opacity="0" BorderBrush="#555EF0C1" BorderThickness="3">
+                        <Border.Transitions>
+                            <Transitions>
+                                <DoubleTransition Property="Opacity" Duration="0:0:0.25" Easing="CubicEaseOut" />
+                            </Transitions>
+                        </Border.Transitions>
+                    </Border>
+                    <Border Name="ButtonBorder" Background="{TemplateBinding Background}" CornerRadius="14">
+                        <Grid>
+                            <Border Name="HoverLayer" CornerRadius="14" Background="#FFFFFF" Opacity="0">
+                                <Border.Transitions>
+                                    <Transitions>
+                                        <DoubleTransition Property="Opacity" Duration="0:0:0.2" Easing="CubicEaseOut" />
+                                    </Transitions>
+                                </Border.Transitions>
+                            </Border>
+                            <ContentPresenter Name="PART_ContentPresenter"
+                                              Content="{TemplateBinding Content}"
+                                              ContentTemplate="{TemplateBinding ContentTemplate}"
+                                              Foreground="{TemplateBinding Foreground}"
+                                              HorizontalAlignment="Center"
+                                              VerticalAlignment="Center"
+                                              Margin="{TemplateBinding Padding}" />
+                        </Grid>
+                    </Border>
+                </Grid>
+            </ControlTemplate>
+        </Setter>
+    </Style>
+    <Style Selector="Button.accent:pointerover /template/ Border#HoverLayer">
+        <Setter Property="Opacity" Value="0.18" />
+    </Style>
+    <Style Selector="Button.accent:pointerover /template/ Border#Glow">
+        <Setter Property="Opacity" Value="1" />
+    </Style>
+    <Style Selector="Button.accent:pressed">
+        <Setter Property="RenderTransform" Value="scale(0.97)" />
+    </Style>
+    <Style Selector="Button.accent:disabled /template/ Border#ButtonBorder">
+        <Setter Property="Opacity" Value="0.45" />
+    </Style>
+
+    <!-- Прозрачная кнопка для панелей (EchoGhostButtonStyle): только текст, подложка проявляется при наведении. -->
+    <Style Selector="Button.ghost">
+        <Setter Property="Background" Value="Transparent" />
+        <Setter Property="BorderBrush" Value="Transparent" />
+        <Setter Property="Foreground" Value="{DynamicResource EchoSoftTextBrush}" />
+        <Setter Property="Padding" Value="10,5" />
+    </Style>
+
+    <!-- Подсказки по темам вопросов (ChipButtonStyle). -->
+    <Style Selector="Button.chip">
+        <Setter Property="Height" Value="36" />
+        <Setter Property="Padding" Value="14,0" />
+        <Setter Property="Margin" Value="0,0,8,8" />
+        <Setter Property="FontWeight" Value="SemiBold" />
+    </Style>
+
+    <!-- «×» на карточке (DeleteSessionButtonStyle): невидим, пока строка не под курсором, но всегда ловит мышь. -->
+    <Style Selector="Button.danger">
+        <Setter Property="Padding" Value="0" />
+        <Setter Property="HorizontalContentAlignment" Value="Center" />
+        <Setter Property="VerticalContentAlignment" Value="Center" />
+        <Setter Property="Background" Value="{DynamicResource EchoDangerSoftBrush}" />
+        <Setter Property="BorderBrush" Value="{DynamicResource EchoDangerBorderBrush}" />
+        <Setter Property="Foreground" Value="{DynamicResource EchoDangerTextBrush}" />
+    </Style>
+    <Style Selector="Button.hoverReveal">
+        <Setter Property="Opacity" Value="0" />
+    </Style>
+    <Style Selector="ListBoxItem:pointerover Button.hoverReveal">
+        <Setter Property="Opacity" Value="1" />
+    </Style>
+
+    <!-- Карточка сессии (SessionCardButtonStyle): акцентная, пока отмечена. -->
+    <Style Selector="Button.sessionCard">
+        <Setter Property="Background" Value="{DynamicResource EchoSurfaceBrush}" />
+        <Setter Property="BorderBrush" Value="{DynamicResource EchoCardBorderBrush}" />
+        <Setter Property="HorizontalContentAlignment" Value="Stretch" />
+        <Setter Property="Padding" Value="20,13" />
+    </Style>
+    <Style Selector="Button.sessionCard.checked">
+        <Setter Property="Background" Value="{DynamicResource EchoAccentSoftBrush}" />
+        <Setter Property="BorderBrush" Value="{DynamicResource EchoAccentBrush}" />
+    </Style>
+
+    <!-- Заголовок вопроса (QuestionHeaderButtonStyle): прозрачный, подсвечивается при наведении. -->
+    <Style Selector="Button.questionHeader">
+        <Setter Property="Foreground" Value="{DynamicResource EchoTextBrush}" />
+        <Setter Property="HorizontalContentAlignment" Value="Stretch" />
+        <Setter Property="Template">
+            <ControlTemplate>
+                <Border Name="HeaderBorder" Padding="18,13,16,12" CornerRadius="16" Background="Transparent">
+                    <ContentPresenter Name="PART_ContentPresenter"
+                                      Content="{TemplateBinding Content}"
+                                      ContentTemplate="{TemplateBinding ContentTemplate}"
+                                      Foreground="{TemplateBinding Foreground}"
+                                      HorizontalAlignment="Stretch" />
+                </Border>
+            </ControlTemplate>
+        </Setter>
+    </Style>
+    <Style Selector="Button.questionHeader:pointerover /template/ Border#HeaderBorder">
+        <Setter Property="Background" Value="{DynamicResource EchoHoverBrush}" />
+    </Style>
+
+    <!-- Карточка вопроса (QuestionCardStyle). -->
+    <Style Selector="Border.questionCard">
+        <Setter Property="CornerRadius" Value="16" />
+        <Setter Property="BorderThickness" Value="1" />
+        <Setter Property="Background" Value="{DynamicResource EchoSurfaceBrush}" />
+        <Setter Property="BorderBrush" Value="{DynamicResource EchoCardBorderBrush}" />
+    </Style>
+    <Style Selector="Border.questionCard.checked">
+        <Setter Property="Background" Value="{DynamicResource EchoAccentSoftBrush}" />
+        <Setter Property="BorderBrush" Value="{DynamicResource EchoAccentBrush}" />
+    </Style>
+
+    <!-- Счётчик на вкладке темы (TabCountStyle). -->
+    <Style Selector="Border.tabCount">
+        <Setter Property="Margin" Value="7,0,0,0" />
+        <Setter Property="Padding" Value="7,1" />
+        <Setter Property="MinWidth" Value="22" />
+        <Setter Property="VerticalAlignment" Value="Center" />
+        <Setter Property="CornerRadius" Value="9" />
+        <Setter Property="Background" Value="{DynamicResource EchoSurfaceAltBrush}" />
+    </Style>
+
+    <!-- Группа настроек, зависящая от галочки выше: тускнеет, пока галочка снята (DependentSettingsStyle). -->
+    <Style Selector="StackPanel.dependent:disabled">
+        <Setter Property="Opacity" Value="0.45" />
+    </Style>
+
+    <!-- Вкладки внутри темы (TopicTabStyle): текст с мятным подчёркиванием у выбранной. -->
+    <Style Selector="RadioButton.topicTab">
+        <Setter Property="Foreground" Value="{DynamicResource EchoMutedBrush}" />
+        <Setter Property="FontSize" Value="14.5" />
+        <Setter Property="FontWeight" Value="Bold" />
+        <Setter Property="Cursor" Value="Hand" />
+        <Setter Property="Margin" Value="0,0,26,0" />
+        <Setter Property="Template">
+            <ControlTemplate>
+                <Grid Background="Transparent">
+                    <ContentPresenter Name="PART_ContentPresenter"
+                                      Content="{TemplateBinding Content}"
+                                      ContentTemplate="{TemplateBinding ContentTemplate}"
+                                      Foreground="{TemplateBinding Foreground}"
+                                      Margin="2,4,2,12"
+                                      VerticalAlignment="Center" />
+                    <Border Name="Underline" Height="3" VerticalAlignment="Bottom" CornerRadius="1.5"
+                            Background="{DynamicResource EchoAccentBrush}" Opacity="0" />
+                </Grid>
+            </ControlTemplate>
+        </Setter>
+    </Style>
+    <Style Selector="RadioButton.topicTab:pointerover">
+        <Setter Property="Foreground" Value="{DynamicResource EchoTextBrush}" />
+    </Style>
+    <Style Selector="RadioButton.topicTab:checked">
+        <Setter Property="Foreground" Value="{DynamicResource EchoTextBrush}" />
+    </Style>
+    <Style Selector="RadioButton.topicTab:checked /template/ Border#Underline">
+        <Setter Property="Opacity" Value="1" />
+    </Style>
+
+    <!-- Сегменты выбора темы и языка (SegmentStyle). -->
+    <Style Selector="RadioButton.segment">
+        <Setter Property="Foreground" Value="{DynamicResource EchoTextBrush}" />
+        <Setter Property="FontWeight" Value="SemiBold" />
+        <Setter Property="Cursor" Value="Hand" />
+        <Setter Property="Margin" Value="0,0,8,0" />
+        <Setter Property="Template">
+            <ControlTemplate>
+                <Border Name="Segment" Height="36" MinWidth="120" Padding="16,0" CornerRadius="18"
+                        Background="{DynamicResource EchoSurfaceAltBrush}"
+                        BorderBrush="{DynamicResource EchoBorderBrush}"
+                        BorderThickness="1">
+                    <ContentPresenter Name="PART_ContentPresenter"
+                                      Content="{TemplateBinding Content}"
+                                      ContentTemplate="{TemplateBinding ContentTemplate}"
+                                      Foreground="{TemplateBinding Foreground}"
+                                      HorizontalAlignment="Center"
+                                      VerticalAlignment="Center" />
+                </Border>
+            </ControlTemplate>
+        </Setter>
+    </Style>
+    <Style Selector="RadioButton.segment:pointerover /template/ Border#Segment">
+        <Setter Property="BorderBrush" Value="{DynamicResource EchoHoverBorderBrush}" />
+    </Style>
+    <Style Selector="RadioButton.segment:checked /template/ Border#Segment">
+        <Setter Property="Background" Value="{DynamicResource EchoAccentSoftBrush}" />
+        <Setter Property="BorderBrush" Value="{DynamicResource EchoAccentBrush}" />
+    </Style>
+
+    <!-- Галочка (ModernCheckBoxStyle): скруглённый квадрат, мятная заливка с тёмной галкой. -->
+    <Style Selector="CheckBox">
+        <Setter Property="Foreground" Value="{DynamicResource EchoTextBrush}" />
+        <Setter Property="Cursor" Value="Hand" />
+        <Setter Property="Template">
+            <ControlTemplate>
+                <StackPanel Orientation="Horizontal" VerticalAlignment="Center" Background="Transparent">
+                    <Grid Width="18" Height="18">
+                        <Border Name="Box" CornerRadius="6"
+                                Background="{DynamicResource EchoBgBrush}"
+                                BorderBrush="{DynamicResource EchoCheckBorderBrush}"
+                                BorderThickness="1" />
+                        <Path Name="Mark" Margin="2,1,0,0" IsVisible="False" StrokeThickness="2"
+                              Stroke="{DynamicResource EchoAccentInkBrush}" Data="M 2 8 L 6 12 L 13 3" />
+                    </Grid>
+                    <ContentPresenter Name="PART_ContentPresenter"
+                                      Content="{TemplateBinding Content}"
+                                      ContentTemplate="{TemplateBinding ContentTemplate}"
+                                      Foreground="{TemplateBinding Foreground}"
+                                      IsVisible="{TemplateBinding Content, Converter={x:Static ObjectConverters.IsNotNull}}"
+                                      Margin="10,0,0,0"
+                                      VerticalAlignment="Center" />
+                </StackPanel>
+            </ControlTemplate>
+        </Setter>
+    </Style>
+    <Style Selector="CheckBox:checked /template/ Border#Box">
+        <Setter Property="Background" Value="{DynamicResource EchoAccentBrush}" />
+        <Setter Property="BorderBrush" Value="{DynamicResource EchoAccentBrush}" />
+    </Style>
+    <Style Selector="CheckBox:checked /template/ Path#Mark">
+        <Setter Property="IsVisible" Value="True" />
+    </Style>
+    <Style Selector="CheckBox:pointerover /template/ Border#Box">
+        <Setter Property="BorderBrush" Value="{DynamicResource EchoAccentBrush}" />
+    </Style>
+
+    <!-- Поле ввода (RoundedTextBoxStyle). -->
+    <Style Selector="ComboBox">
+        <Setter Property="Background" Value="{DynamicResource EchoInputBrush}" />
+        <Setter Property="Foreground" Value="{DynamicResource EchoTextBrush}" />
+        <Setter Property="BorderBrush" Value="{DynamicResource EchoBorderBrush}" />
+        <Setter Property="BorderThickness" Value="1" />
+        <Setter Property="CornerRadius" Value="12" />
+        <Setter Property="Padding" Value="12,0" />
+        <Setter Property="MinHeight" Value="34" />
+        <Setter Property="VerticalContentAlignment" Value="Center" />
+    </Style>
+    <Style Selector="ComboBox:pointerover /template/ Border#Background">
+        <Setter Property="Background" Value="{DynamicResource EchoInputBrush}" />
+        <Setter Property="BorderBrush" Value="{DynamicResource EchoAccentSoftBorderBrush}" />
+    </Style>
+    <Style Selector="ComboBox:focus-within /template/ Border#Background">
+        <Setter Property="BorderBrush" Value="{DynamicResource EchoAccentBrush}" />
+    </Style>
+    <Style Selector="TextBox">
+        <Setter Property="Background" Value="{DynamicResource EchoInputBrush}" />
+        <Setter Property="Foreground" Value="{DynamicResource EchoTextBrush}" />
+        <Setter Property="BorderBrush" Value="{DynamicResource EchoBorderBrush}" />
+        <Setter Property="BorderThickness" Value="1" />
+        <Setter Property="CornerRadius" Value="12" />
+        <Setter Property="Padding" Value="12,0" />
+        <Setter Property="MinHeight" Value="0" />
+        <Setter Property="VerticalContentAlignment" Value="Center" />
+        <Setter Property="CaretBrush" Value="{DynamicResource EchoAccentTextBrush}" />
+        <Setter Property="SelectionBrush" Value="{DynamicResource EchoAccentBrush}" />
+        <Setter Property="SelectionForegroundBrush" Value="{DynamicResource EchoAccentInkBrush}" />
+    </Style>
+    <Style Selector="TextBox:pointerover /template/ Border#PART_BorderElement">
+        <Setter Property="Background" Value="{DynamicResource EchoInputBrush}" />
+        <Setter Property="BorderBrush" Value="{DynamicResource EchoHoverBorderBrush}" />
+    </Style>
+    <Style Selector="TextBox:focus /template/ Border#PART_BorderElement">
+        <Setter Property="Background" Value="{DynamicResource EchoInputBrush}" />
+        <Setter Property="BorderBrush" Value="{DynamicResource EchoAccentBrush}" />
+        <Setter Property="BorderThickness" Value="1" />
+    </Style>
+    <Style Selector="TextBox:pointerover, TextBox:focus">
+        <Setter Property="Foreground" Value="{DynamicResource EchoTextBrush}" />
+    </Style>
+
+    <Style Selector="ListBox">
+        <Setter Property="Background" Value="{DynamicResource EchoSurfaceBrush}" />
+        <Setter Property="Foreground" Value="{DynamicResource EchoTextBrush}" />
+        <Setter Property="BorderBrush" Value="{DynamicResource EchoBorderBrush}" />
+    </Style>
+
+    <!-- Строки истории (PlainListBoxItemStyle): без системной подсветки, состояние показывает сама карточка. -->
+    <Style Selector="ListBoxItem.plain">
+        <Setter Property="HorizontalContentAlignment" Value="Stretch" />
+        <Setter Property="Padding" Value="0" />
+        <Setter Property="Template">
+            <ControlTemplate>
+                <Border Background="Transparent">
+                    <ContentPresenter Name="PART_ContentPresenter"
+                                      Content="{TemplateBinding Content}"
+                                      ContentTemplate="{TemplateBinding ContentTemplate}"
+                                      HorizontalContentAlignment="Stretch" />
+                </Border>
+            </ControlTemplate>
+        </Setter>
+    </Style>
+
+    <!-- Строки боковой панели тем (TopicListBoxItemStyle). -->
+    <Style Selector="ListBoxItem.topic">
+        <Setter Property="HorizontalContentAlignment" Value="Stretch" />
+        <Setter Property="Margin" Value="0,0,0,2" />
+        <Setter Property="Cursor" Value="Hand" />
+        <Setter Property="Template">
+            <ControlTemplate>
+                <Border Name="Row" CornerRadius="10" Background="Transparent" BorderBrush="Transparent" BorderThickness="1">
+                    <ContentPresenter Name="PART_ContentPresenter"
+                                      Content="{TemplateBinding Content}"
+                                      ContentTemplate="{TemplateBinding ContentTemplate}"
+                                      HorizontalContentAlignment="Stretch" />
+                </Border>
+            </ControlTemplate>
+        </Setter>
+    </Style>
+    <Style Selector="ListBoxItem.topic:pointerover /template/ Border#Row">
+        <Setter Property="Background" Value="{DynamicResource EchoSurfaceAltBrush}" />
+    </Style>
+    <Style Selector="ListBoxItem.topic:selected /template/ Border#Row">
+        <Setter Property="Background" Value="{DynamicResource EchoAccentSoftBrush}" />
+        <Setter Property="BorderBrush" Value="{DynamicResource EchoAccentSoftBorderBrush}" />
+    </Style>
+
+    <!-- Строки «Базы знаний» (KnowledgeListItemStyle): выбранная строка — мягкая акцентная карточка. -->
+    <Style Selector="ListBoxItem.knowledge">
+        <Setter Property="HorizontalContentAlignment" Value="Stretch" />
+        <Setter Property="Cursor" Value="Hand" />
+        <Setter Property="Template">
+            <ControlTemplate>
+                <Border Name="Row" Margin="0,0,0,4" Padding="10,9" CornerRadius="12"
+                        Background="Transparent" BorderBrush="Transparent" BorderThickness="1">
+                    <ContentPresenter Name="PART_ContentPresenter"
+                                      Content="{TemplateBinding Content}"
+                                      ContentTemplate="{TemplateBinding ContentTemplate}"
+                                      HorizontalContentAlignment="Stretch" />
+                </Border>
+            </ControlTemplate>
+        </Setter>
+    </Style>
+    <Style Selector="ListBoxItem.knowledge:pointerover /template/ Border#Row">
+        <Setter Property="Background" Value="{DynamicResource EchoHoverBrush}" />
+    </Style>
+    <Style Selector="ListBoxItem.knowledge:selected /template/ Border#Row">
+        <Setter Property="Background" Value="{DynamicResource EchoAccentSoftBrush}" />
+        <Setter Property="BorderBrush" Value="{DynamicResource EchoAccentSoftBorderBrush}" />
+    </Style>
+
+    <!-- Подсказки: карточка со скруглением, появляются через 2 с. -->
+    <Style Selector="ToolTip">
+        <Setter Property="Foreground" Value="{DynamicResource EchoTextBrush}" />
+        <Setter Property="Background" Value="{DynamicResource EchoTooltipBrush}" />
+        <Setter Property="BorderBrush" Value="{DynamicResource EchoBorderBrush}" />
+        <Setter Property="BorderThickness" Value="1" />
+        <Setter Property="CornerRadius" Value="10" />
+        <Setter Property="Padding" Value="10,6" />
+        <Setter Property="MaxWidth" Value="360" />
+        <Setter Property="FontSize" Value="13" />
+    </Style>
+    <Style Selector="ToolTip TextBlock">
+        <Setter Property="TextWrapping" Value="Wrap" />
+    </Style>
+    <Style Selector=":is(Control)">
+        <Setter Property="ToolTip.ShowDelay" Value="2000" />
+    </Style>
+
+    <!-- Контекстное меню карточек: плоский список, мягкая подсветка пункта. -->
+    <Style Selector="ContextMenu">
+        <Setter Property="Foreground" Value="{DynamicResource EchoTextBrush}" />
+        <Setter Property="Background" Value="{DynamicResource EchoSurfaceBrush}" />
+        <Setter Property="BorderBrush" Value="{DynamicResource EchoBorderBrush}" />
+        <Setter Property="BorderThickness" Value="1" />
+        <Setter Property="CornerRadius" Value="12" />
+        <Setter Property="Padding" Value="6" />
+        <Setter Property="MinWidth" Value="220" />
+    </Style>
+    <Style Selector="ContextMenu MenuItem">
+        <Setter Property="Foreground" Value="{DynamicResource EchoTextBrush}" />
+        <Setter Property="Cursor" Value="Hand" />
+        <Setter Property="CornerRadius" Value="8" />
+        <Setter Property="Padding" Value="12,8" />
+    </Style>
+    <Style Selector="ContextMenu MenuItem:pointerover /template/ Border#PART_LayoutRoot">
+        <Setter Property="Background" Value="{DynamicResource EchoSurfaceAltBrush}" />
+    </Style>
+    <Style Selector="ContextMenu Separator">
+        <Setter Property="Height" Value="1" />
+        <Setter Property="Margin" Value="8,5" />
+        <Setter Property="Background" Value="{DynamicResource EchoBorderBrush}" />
+    </Style>
+
+    <!-- Раскрывающийся блок (EchoExpanderStyle): заголовок со стрелкой во всю ширину. -->
+    <Style Selector="Expander.echo">
+        <Setter Property="Foreground" Value="{DynamicResource EchoTextBrush}" />
+        <Setter Property="Background" Value="{DynamicResource EchoSurfaceBrush}" />
+        <Setter Property="BorderBrush" Value="{DynamicResource EchoBorderBrush}" />
+        <Setter Property="BorderThickness" Value="1" />
+        <Setter Property="HorizontalAlignment" Value="Stretch" />
+        <Setter Property="Template">
+            <ControlTemplate>
+                <Border Background="{TemplateBinding Background}"
+                        BorderBrush="{TemplateBinding BorderBrush}"
+                        BorderThickness="{TemplateBinding BorderThickness}"
+                        CornerRadius="14">
+                    <DockPanel>
+                        <ToggleButton Name="ExpanderHeader"
+                                      DockPanel.Dock="Top"
+                                      Cursor="Hand"
+                                      HorizontalAlignment="Stretch"
+                                      IsChecked="{TemplateBinding IsExpanded, Mode=TwoWay}">
+                            <ToggleButton.Template>
+                                <ControlTemplate>
+                                    <Border Name="HeaderBorder" Padding="16,12" CornerRadius="14" Background="Transparent">
+                                        <Grid ColumnDefinitions="22,*">
+                                            <Path Name="Chevron" Width="7" Height="11" HorizontalAlignment="Left" VerticalAlignment="Center"
+                                                  Data="M 1,1 L 6,5.5 L 1,10" Stretch="None" StrokeThickness="2"
+                                                  StrokeLineCap="Round" StrokeJoin="Round"
+                                                  Stroke="{DynamicResource EchoAccentTextBrush}" />
+                                            <ContentPresenter Grid.Column="1" VerticalAlignment="Center"
+                                                              Content="{TemplateBinding Content}"
+                                                              FontSize="14.5" FontWeight="SemiBold" />
+                                        </Grid>
+                                    </Border>
+                                </ControlTemplate>
+                            </ToggleButton.Template>
+                            <ContentPresenter Content="{TemplateBinding Header}"
+                                              ContentTemplate="{TemplateBinding HeaderTemplate}"
+                                              Foreground="{TemplateBinding Foreground}" />
+                        </ToggleButton>
+                        <ContentPresenter Name="ExpanderBody" Margin="16,2,16,14"
+                                          IsVisible="{TemplateBinding IsExpanded}"
+                                          Content="{TemplateBinding Content}"
+                                          ContentTemplate="{TemplateBinding ContentTemplate}" />
+                    </DockPanel>
+                </Border>
+            </ControlTemplate>
+        </Setter>
+    </Style>
+    <Style Selector="Expander.echo ToggleButton#ExpanderHeader:checked /template/ Path#Chevron">
+        <Setter Property="RenderTransform" Value="rotate(90deg)" />
+    </Style>
+    <Style Selector="Expander.echo ToggleButton#ExpanderHeader:pointerover /template/ Border#HeaderBorder">
+        <Setter Property="Background" Value="{DynamicResource EchoHoverBrush}" />
+    </Style>
+
+    <!-- Тонкая скруглённая полоса прокрутки без стрелок. -->
+    <Style Selector="ScrollBar">
+        <Setter Property="AllowAutoHide" Value="False" />
+    </Style>
+    <Style Selector="ScrollBar:vertical">
+        <Setter Property="Width" Value="8" />
+        <Setter Property="MinWidth" Value="8" />
+    </Style>
+    <Style Selector="ScrollBar:horizontal">
+        <Setter Property="Height" Value="8" />
+        <Setter Property="MinHeight" Value="8" />
+    </Style>
+    <Style Selector="ScrollBar /template/ RepeatButton">
+        <Setter Property="IsVisible" Value="False" />
+    </Style>
+    <Style Selector="ScrollBar /template/ Thumb">
+        <Setter Property="Background" Value="{DynamicResource EchoScrollThumbBrush}" />
+        <Setter Property="CornerRadius" Value="4" />
+        <Setter Property="Template">
+            <ControlTemplate>
+                <Border Background="{TemplateBinding Background}" CornerRadius="4" Margin="1,2" />
+            </ControlTemplate>
+        </Setter>
+    </Style>
+    <Style Selector="ScrollBar /template/ Thumb:pointerover">
+        <Setter Property="Background" Value="{DynamicResource EchoScrollThumbHoverBrush}" />
+    </Style>
+    <Style Selector="ScrollBar /template/ Thumb:pressed">
+        <Setter Property="Background" Value="{DynamicResource EchoAccentBrush}" />
+    </Style>
+    <!--
+        Fluent styles colour the content presenter of buttons, list rows and radio buttons by name (PART_ContentPresenter)
+        for hover, press, selection and its own «accent» class. In the Echo templates the presenter only holds content:
+        the borders around it draw the states, so here it stays transparent and keeps the control's text colour.
+        One style per state (not one selector list): a style is a state trigger only if every branch of its selector is,
+        and only a trigger outranks the Fluent theme's own state triggers.
+    -->
+    <Style Selector="Button /template/ ContentPresenter#PART_ContentPresenter">
+        <Setter Property="Background" Value="Transparent" />
+        <Setter Property="BorderBrush" Value="Transparent" />
+        <Setter Property="Foreground" Value="{Binding $parent[Button].Foreground}" />
+    </Style>
+    <Style Selector="Button:pointerover /template/ ContentPresenter#PART_ContentPresenter">
+        <Setter Property="Background" Value="Transparent" />
+        <Setter Property="BorderBrush" Value="Transparent" />
+        <Setter Property="Foreground" Value="{Binding $parent[Button].Foreground}" />
+    </Style>
+    <Style Selector="Button:pressed /template/ ContentPresenter#PART_ContentPresenter">
+        <Setter Property="Background" Value="Transparent" />
+        <Setter Property="BorderBrush" Value="Transparent" />
+        <Setter Property="Foreground" Value="{Binding $parent[Button].Foreground}" />
+    </Style>
+    <Style Selector="Button:disabled /template/ ContentPresenter#PART_ContentPresenter">
+        <Setter Property="Background" Value="Transparent" />
+        <Setter Property="BorderBrush" Value="Transparent" />
+        <Setter Property="Foreground" Value="{Binding $parent[Button].Foreground}" />
+    </Style>
+    <Style Selector="Button.accent /template/ ContentPresenter#PART_ContentPresenter">
+        <Setter Property="Background" Value="Transparent" />
+        <Setter Property="BorderBrush" Value="Transparent" />
+        <Setter Property="Foreground" Value="{Binding $parent[Button].Foreground}" />
+    </Style>
+    <Style Selector="Button.accent:pointerover /template/ ContentPresenter#PART_ContentPresenter">
+        <Setter Property="Background" Value="Transparent" />
+        <Setter Property="BorderBrush" Value="Transparent" />
+        <Setter Property="Foreground" Value="{Binding $parent[Button].Foreground}" />
+    </Style>
+    <Style Selector="Button.accent:pressed /template/ ContentPresenter#PART_ContentPresenter">
+        <Setter Property="Background" Value="Transparent" />
+        <Setter Property="BorderBrush" Value="Transparent" />
+        <Setter Property="Foreground" Value="{Binding $parent[Button].Foreground}" />
+    </Style>
+    <Style Selector="Button.accent:disabled /template/ ContentPresenter#PART_ContentPresenter">
+        <Setter Property="Background" Value="Transparent" />
+        <Setter Property="BorderBrush" Value="Transparent" />
+        <Setter Property="Foreground" Value="{Binding $parent[Button].Foreground}" />
+    </Style>
+    <Style Selector="ListBoxItem /template/ ContentPresenter#PART_ContentPresenter">
+        <Setter Property="Background" Value="Transparent" />
+        <Setter Property="Foreground" Value="{Binding $parent[ListBoxItem].Foreground}" />
+    </Style>
+    <Style Selector="ListBoxItem:pointerover /template/ ContentPresenter#PART_ContentPresenter">
+        <Setter Property="Background" Value="Transparent" />
+        <Setter Property="Foreground" Value="{Binding $parent[ListBoxItem].Foreground}" />
+    </Style>
+    <Style Selector="ListBoxItem:pressed /template/ ContentPresenter#PART_ContentPresenter">
+        <Setter Property="Background" Value="Transparent" />
+        <Setter Property="Foreground" Value="{Binding $parent[ListBoxItem].Foreground}" />
+    </Style>
+    <Style Selector="ListBoxItem:selected /template/ ContentPresenter#PART_ContentPresenter">
+        <Setter Property="Background" Value="Transparent" />
+        <Setter Property="Foreground" Value="{Binding $parent[ListBoxItem].Foreground}" />
+    </Style>
+    <Style Selector="ListBoxItem:selected:pointerover /template/ ContentPresenter#PART_ContentPresenter">
+        <Setter Property="Background" Value="Transparent" />
+        <Setter Property="Foreground" Value="{Binding $parent[ListBoxItem].Foreground}" />
+    </Style>
+    <Style Selector="ListBoxItem:selected:pressed /template/ ContentPresenter#PART_ContentPresenter">
+        <Setter Property="Background" Value="Transparent" />
+        <Setter Property="Foreground" Value="{Binding $parent[ListBoxItem].Foreground}" />
+    </Style>
+    <Style Selector="ListBoxItem:selected:focus /template/ ContentPresenter#PART_ContentPresenter">
+        <Setter Property="Background" Value="Transparent" />
+        <Setter Property="Foreground" Value="{Binding $parent[ListBoxItem].Foreground}" />
+    </Style>
+    <Style Selector="RadioButton:pointerover /template/ ContentPresenter#PART_ContentPresenter">
+        <Setter Property="Foreground" Value="{Binding $parent[RadioButton].Foreground}" />
+    </Style>
+    <Style Selector="RadioButton:pressed /template/ ContentPresenter#PART_ContentPresenter">
+        <Setter Property="Foreground" Value="{Binding $parent[RadioButton].Foreground}" />
+    </Style>
+    <Style Selector="RadioButton:checked /template/ ContentPresenter#PART_ContentPresenter">
+        <Setter Property="Foreground" Value="{Binding $parent[RadioButton].Foreground}" />
+    </Style>
+    <Style Selector="RadioButton:disabled /template/ ContentPresenter#PART_ContentPresenter">
+        <Setter Property="Foreground" Value="{Binding $parent[RadioButton].Foreground}" />
+    </Style>
+    <Style Selector="CheckBox:pointerover /template/ ContentPresenter#PART_ContentPresenter">
+        <Setter Property="Foreground" Value="{Binding $parent[CheckBox].Foreground}" />
+    </Style>
+    <Style Selector="CheckBox:pressed /template/ ContentPresenter#PART_ContentPresenter">
+        <Setter Property="Foreground" Value="{Binding $parent[CheckBox].Foreground}" />
+    </Style>
+    <Style Selector="CheckBox:checked /template/ ContentPresenter#PART_ContentPresenter">
+        <Setter Property="Foreground" Value="{Binding $parent[CheckBox].Foreground}" />
+    </Style>
+    <Style Selector="CheckBox:disabled /template/ ContentPresenter#PART_ContentPresenter">
+        <Setter Property="Foreground" Value="{Binding $parent[CheckBox].Foreground}" />
+    </Style>
+    <Style Selector="CheckBox:checked:pointerover /template/ ContentPresenter#PART_ContentPresenter">
+        <Setter Property="Foreground" Value="{Binding $parent[CheckBox].Foreground}" />
+    </Style>
+    <!-- List rows: no Fluent selection bar and no default padding; the Echo row templates draw the state. -->
+    <Style Selector="ListBoxItem">
+        <Setter Property="Padding" Value="0" />
+        <Setter Property="MinHeight" Value="0" />
+    </Style>
+</Styles>

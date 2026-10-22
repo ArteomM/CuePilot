@@ -1,0 +1,25 @@
+# Secrets: never commit
+secrets.txt
+*.secrets.txt
+
+# Build output
+bin/
+obj/
+
+# Runtime data
+stt-chunks/
+captures/
+qa/
+
+# Installer build output
+build/installer/
+build/setup-builder/payload.zip
+
+# Local Claude workspace, speech models, whisper binaries
+.claude/
+models/
+tools/whisper.cpp/
+
+# macOS build output
+dist/
+*.tgz
