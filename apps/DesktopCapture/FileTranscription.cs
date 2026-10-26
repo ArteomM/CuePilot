@@ -118,7 +118,9 @@ namespace DesktopCapture
                                 Console.WriteLine("[file-stt] " + Seconds(start) + " " + Seconds(finish) + " " + OneLine(text));
                             }
 
-                            Console.WriteLine("[file-progress] " + Seconds(finish) + " " + Seconds(decoder.Duration.TotalSeconds));
+                            // Resampling can run a few samples past the length the container reports.
+                            double total = decoder.Duration.TotalSeconds;
+                            Console.WriteLine("[file-progress] " + Seconds(total > 0 ? Math.Min(finish, total) : finish) + " " + Seconds(total));
 
                             // Nothing gets through (no key, no money, the server is down): no point in going on.
                             if (transcribed == 0 && failed >= 5)
@@ -169,8 +171,8 @@ namespace DesktopCapture
                 var job = new SttJob { Source = "file", WavPath = wavPath, CreatedAtUtc = DateTime.UtcNow };
                 string text = Transcribe(job, options, previousText);
 
-                // On silence or music the model sometimes returns only symbols ("❤", "..."): no letters, no speech.
-                return string.IsNullOrWhiteSpace(text) || !text.Any(char.IsLetterOrDigit) ? null : text.Trim();
+                // On silence or music the model sometimes returns only symbols ("❤", "...") or repeats its prompt: no speech.
+                return string.IsNullOrWhiteSpace(text) || !text.Any(char.IsLetterOrDigit) || IsPromptEcho(text, options) ? null : text.Trim();
             }
             catch (Exception ex)
             {

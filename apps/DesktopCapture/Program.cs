@@ -707,7 +707,7 @@ namespace DesktopCapture
                     lastTextBySource.TryGetValue(job.Source, out string previousText);
                     string transcript = Transcribe(job, options, previousText);
                     // On silence or music the model sometimes returns only symbols ("❤", "..."): no letters, no speech.
-                    if (string.IsNullOrWhiteSpace(transcript) || !transcript.Any(char.IsLetterOrDigit))
+                    if (string.IsNullOrWhiteSpace(transcript) || !transcript.Any(char.IsLetterOrDigit) || IsPromptEcho(transcript, options))
                     {
                         continue;
                     }
@@ -1166,6 +1166,26 @@ namespace DesktopCapture
         }
 
         private const string RussianPrimingPrompt = "Разговор на русском языке.";
+
+        /// <summary>
+        /// On music or noise without speech whisper often returns its own prompt («Разговор на русском языке.»,
+        /// the glossary): a reply of three or more words that all come from the priming phrase and the glossary is no speech.
+        /// </summary>
+        private static bool IsPromptEcho(string text, RuntimeOptions options)
+        {
+            string[] words = PromptWords(text);
+            if (words.Length < 3)
+            {
+                return false;
+            }
+
+            var promptWords = new HashSet<string>(PromptWords(RussianPrimingPrompt + " Термины Terms " + options.SttGlossary), StringComparer.Ordinal);
+            return words.All(promptWords.Contains);
+        }
+
+        private static string[] PromptWords(string text) =>
+            new string((text ?? string.Empty).ToLowerInvariant().Select(c => char.IsLetterOrDigit(c) ? c : ' ').ToArray())
+                .Split(' ', StringSplitOptions.RemoveEmptyEntries);
         private static readonly char[] UkrainianOnlyLetters = { 'і', 'ї', 'є', 'ґ', 'І', 'Ї', 'Є', 'Ґ' };
 
         private static string RunWhisperCpp(string wavPath, RuntimeOptions options)
