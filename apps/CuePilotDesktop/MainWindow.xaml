@@ -586,14 +586,13 @@
                                             </Ellipse.Style>
                                         </Ellipse>
                                     </Grid>
-                                    <TextBlock Margin="9,0,0,0" FontSize="13" FontWeight="SemiBold" VerticalAlignment="Center">
+                                    <!-- The text stays the same; the dot lights up while the windows are hidden from the share. -->
+                                    <TextBlock Margin="9,0,0,0" FontSize="13" FontWeight="SemiBold" VerticalAlignment="Center" Text="{Binding L[HiddenFromShareBadge]}">
                                         <TextBlock.Style>
                                             <Style TargetType="TextBlock">
-                                                <Setter Property="Text" Value="{Binding L[HiddenFromShareBadge]}" />
                                                 <Setter Property="Foreground" Value="{DynamicResource EchoBadgeTextBrush}" />
                                                 <Style.Triggers>
                                                     <DataTrigger Binding="{Binding ShowInScreenShare}" Value="True">
-                                                        <Setter Property="Text" Value="{Binding L[DetectableBadge]}" />
                                                         <Setter Property="Foreground" Value="{DynamicResource EchoSoftTextBrush}" />
                                                     </DataTrigger>
                                                 </Style.Triggers>

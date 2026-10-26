@@ -36,7 +36,7 @@
         <Style Selector="Button#BackButton:disabled">
             <Setter Property="Opacity" Value="0.6" />
         </Style>
-        <!-- Screen-share badge: mint while hidden from the share, plain while visible to it. -->
+        <!-- Screen-share badge: always «Скрыт от демонстрации»; mint with a lit dot while hidden, plain with a grey dot while visible. -->
         <Style Selector="Border#ShareBadge">
             <Setter Property="Background" Value="{DynamicResource EchoAccentSoftBrush}" />
             <Setter Property="BorderBrush" Value="{DynamicResource EchoAccentSoftBorderBrush}" />
@@ -70,6 +70,12 @@
         </Style>
         <Style Selector="Ellipse#ShareBadgeDot.shown">
             <Setter Property="Fill" Value="{DynamicResource EchoMutedBrush}" />
+        </Style>
+        <Style Selector="TextBlock#ShareBadgeText">
+            <Setter Property="Foreground" Value="{DynamicResource EchoBadgeTextBrush}" />
+        </Style>
+        <Style Selector="TextBlock#ShareBadgeText.shown">
+            <Setter Property="Foreground" Value="{DynamicResource EchoSoftTextBrush}" />
         </Style>
         <!-- «Что нового» pill. -->
         <Style Selector="Button#WhatsNewButton">
@@ -336,18 +342,14 @@
                                     </Ellipse>
                                     <Ellipse x:Name="ShareBadgeDot" Width="8" Height="8" Classes.shown="{Binding ShowInScreenShare}" />
                                 </Grid>
-                                <Panel Margin="9,0,0,0" VerticalAlignment="Center">
-                                    <TextBlock FontSize="13"
-                                               FontWeight="SemiBold"
-                                               Foreground="{DynamicResource EchoBadgeTextBrush}"
-                                               Text="{Binding L[HiddenFromShareBadge]}"
-                                               IsVisible="{Binding !ShowInScreenShare}" />
-                                    <TextBlock FontSize="13"
-                                               FontWeight="SemiBold"
-                                               Foreground="{DynamicResource EchoSoftTextBrush}"
-                                               Text="{Binding L[DetectableBadge]}"
-                                               IsVisible="{Binding ShowInScreenShare}" />
-                                </Panel>
+                                <!-- The text stays the same; the dot lights up while the windows are hidden from the share. -->
+                                <TextBlock x:Name="ShareBadgeText"
+                                           Margin="9,0,0,0"
+                                           VerticalAlignment="Center"
+                                           FontSize="13"
+                                           FontWeight="SemiBold"
+                                           Classes.shown="{Binding ShowInScreenShare}"
+                                           Text="{Binding L[HiddenFromShareBadge]}" />
                             </StackPanel>
                         </Border>
 
