@@ -63,7 +63,7 @@ public static class KnowledgeGraphPruner
     }
 
     /// <summary>Lower case without the file extension and the «[D2]» reference the model sometimes keeps.</summary>
-    private static string Normalize(string name)
+    internal static string Normalize(string name)
     {
         string text = name.Trim();
         if (text.StartsWith('[') && text.IndexOf(']') is > 0 and < 8 and var close)
@@ -80,6 +80,6 @@ public static class KnowledgeGraphPruner
         return text.Trim().ToLowerInvariant();
     }
 
-    private static bool Matches(string name, string removed) =>
+    internal static bool Matches(string name, string removed) =>
         name == removed || (removed.Length >= 8 && name.Contains(removed, StringComparison.Ordinal));
 }

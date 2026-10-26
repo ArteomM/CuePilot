@@ -89,7 +89,9 @@ public partial class ConversationAssistService
     /// <summary>
     /// Answers a question about a topic from the current state of its sessions and attached documents,
     /// not only the saved knowledge base, and flags conflicting statements of different people.
-    /// Earlier questions of the dialog are passed so follow-up questions make sense.
+    /// Earlier questions of the dialog are passed so follow-up questions make sense. The graph part
+    /// (<see cref="TopicGraphRetrieval.Select"/>) adds the entities linked to the ones the question names: their
+    /// words widen the search in transcripts and documents, and their sessions get transcript excerpts too.
     /// </summary>
     public async Task<AssistResult> AskTopicAsync(
         string topicName,
@@ -99,8 +101,10 @@ public partial class ConversationAssistService
         IReadOnlyList<TopicQuestionEntry> history,
         string question,
         AssistOptions options,
+        TopicGraphContext? graph = null,
         CancellationToken cancellationToken = default)
     {
+        graph ??= TopicGraphContext.Empty;
         const int maxCharsPerSummary = 5000;
         const int maxSessionChars = 60000;
         const int recentSessionsWithTranscript = 4;
@@ -110,6 +114,8 @@ public partial class ConversationAssistService
         {
             SessionSummary session = newestFirst[i];
             bool recent = i < recentSessionsWithTranscript;
+            // An older session that the graph links to the question also gets its transcript lines.
+            bool linked = !graph.IsEmpty && graph.IsSource(session.Title);
             context.Append("### [S").Append(i + 1).Append("] ").Append(session.Title)
                 .Append(" (").Append(session.StartedAt.ToString("yyyy-MM-dd HH:mm")).AppendLine(")");
             if (!string.IsNullOrWhiteSpace(session.SummaryText))
@@ -117,16 +123,16 @@ public partial class ConversationAssistService
                 context.AppendLine("Summary:").AppendLine(Cap(session.SummaryText.Trim(), maxCharsPerSummary));
             }
 
-            if (recent || string.IsNullOrWhiteSpace(session.SummaryText))
+            if (recent || linked || string.IsNullOrWhiteSpace(session.SummaryText))
             {
                 // Speaker-attributed lines let the model quote who said what; the question picks the relevant ones.
-                context.AppendLine("Transcript excerpts:").AppendLine(BuildTranscriptContext(session, question, recent ? 80 : 40).TrimEnd());
+                context.AppendLine("Transcript excerpts:").AppendLine(BuildTranscriptContext(session, question, recent ? 80 : 40, graph.RelatedTerms).TrimEnd());
             }
 
             context.AppendLine();
         }
 
-        string documentContext = BuildDocumentExcerpts(documents, question, 30000);
+        string documentContext = BuildDocumentExcerpts(documents, question, 30000, graph);
         var dialog = new StringBuilder();
         foreach (TopicQuestionEntry entry in history.TakeLast(3))
         {
@@ -142,6 +148,8 @@ public partial class ConversationAssistService
             "You answer questions about a topic (a series of related meetings plus attached documents) using only the data provided. " +
             "Sessions are listed newest first and labelled [S1], [S2], …; [S1] is the most recent. Documents are labelled [D1], [D2], …. " +
             "The saved knowledge base may be outdated: when it disagrees with session data, trust the session data and the most recent session. " +
+            "The knowledge graph excerpt (when given) lists the entities named in the question and what they are linked to; use it to find related people, tasks, decisions and documents in the data, " +
+            "but take facts and sources from the sessions and documents. " +
             "Keep names, numbers and terminology exactly as given. Do not invent facts; if the data does not answer the question, say so. Write in Russian.";
         string fullPrompt =
             $"Topic: {topicName}\n" +
@@ -153,10 +161,12 @@ public partial class ConversationAssistService
             (context.Length > 0 ? context.ToString() : "(no sessions)\n") + "\n" +
             "Document excerpts relevant to the question:\n" +
             (documentContext.Length > 0 ? documentContext : "(none)\n") + "\n" +
+            (graph.IsEmpty ? string.Empty : "Knowledge graph excerpt (built earlier from the same data, may be outdated):\n" + graph.Text + "\n\n") +
             (dialog.Length > 0 ? "Earlier questions in this dialog (for context only):\n" + dialog + "\n" : string.Empty) +
             $"Question: {question.Trim()}\n\n" +
             "Answer format:\n" +
-            "1. A direct answer first (2-6 sentences or a short list), reflecting the latest state. After each fact add its source as (S<n>, <date>) or (D<n>).\n" +
+            "1. A direct answer first (2-6 sentences or a short list), reflecting the latest state. After each fact add its source as (S<n>, <date>) or (D<n>)" +
+            (graph.IsEmpty ? "." : "; a fact found only in the graph excerpt gets (" + (english ? "graph" : "граф") + ").") + "\n" +
             "2. If different people made conflicting or inconsistent statements relevant to the question — between sessions, " +
             "especially the most recent ones, within one session, or between a meeting and a document — add a section \"## ⚠ " + conflictsHeading + "\" " +
             "with one bullet per conflict: who said what, in which session or document and when, and which statement is the latest. " +
@@ -259,9 +269,10 @@ public partial class ConversationAssistService
 
     /// <summary>
     /// Passages of the documents that share the most words with the question, plus the opening of each document,
-    /// so a question about a large folder still sees the parts that matter.
+    /// so a question about a large folder still sees the parts that matter. Words of linked graph entities count
+    /// half as much as the question's own, and a passage of a document the graph links to the question gets a point more.
     /// </summary>
-    private static string BuildDocumentExcerpts(IReadOnlyList<TopicDocument> documents, string question, int maxChars)
+    private static string BuildDocumentExcerpts(IReadOnlyList<TopicDocument> documents, string question, int maxChars, TopicGraphContext? graph = null)
     {
         if (documents.Count == 0)
         {
@@ -269,14 +280,17 @@ public partial class ConversationAssistService
         }
 
         string[] tokens = TokenizeQuery(question).Select(Stem).Where(t => t.Length >= 3).ToArray();
+        IReadOnlyList<string> related = graph?.RelatedTerms ?? [];
         var chunks = new List<(int Document, int Order, string Text, int Score)>();
         for (int d = 0; d < documents.Count; d++)
         {
             int order = 0;
+            bool linked = graph is { IsEmpty: false } && graph.IsSource(documents[d].Title);
             foreach (string chunk in SplitChunks(documents[d].Markdown, 1400))
             {
-                int score = tokens.Length == 0 ? 0 : tokens.Count(t => chunk.Contains(t, StringComparison.OrdinalIgnoreCase));
-                chunks.Add((d, order++, chunk, score));
+                int score = 2 * tokens.Count(t => chunk.Contains(t, StringComparison.OrdinalIgnoreCase)) +
+                    related.Count(t => chunk.Contains(t, StringComparison.OrdinalIgnoreCase));
+                chunks.Add((d, order++, chunk, score > 0 && linked ? score + 1 : score));
             }
         }
 

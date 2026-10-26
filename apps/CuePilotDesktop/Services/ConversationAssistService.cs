@@ -377,7 +377,8 @@ public partial class ConversationAssistService
         return summary.Length == 0 ? "(no visual context)" : summary.ToString().TrimEnd();
     }
 
-    private static string BuildTranscriptContext(SessionSummary session, string? query = null, int maxLines = 20)
+    /// <param name="relatedTerms">Words of linked graph entities: they count half as much as the words of the query.</param>
+    private static string BuildTranscriptContext(SessionSummary session, string? query = null, int maxLines = 20, IReadOnlyCollection<string>? relatedTerms = null)
     {
         if (session.Transcript.Count == 0)
         {
@@ -386,15 +387,17 @@ public partial class ConversationAssistService
 
         IEnumerable<SessionTranscriptItem> source = session.Transcript;
         string[] queryTokens = TokenizeQuery(query);
-        if (queryTokens.Length > 0 && session.Transcript.Count > maxLines)
+        IReadOnlyCollection<string> related = relatedTerms ?? [];
+        bool Mentions(SessionTranscriptItem item, string token) =>
+            (!string.IsNullOrWhiteSpace(item.SummaryReadyText) && item.SummaryReadyText.Contains(token, StringComparison.OrdinalIgnoreCase)) ||
+            item.Text.Contains(token, StringComparison.OrdinalIgnoreCase);
+        if ((queryTokens.Length > 0 || related.Count > 0) && session.Transcript.Count > maxLines)
         {
             source = session.Transcript
                 .Select(item => new
                 {
                     Item = item,
-                    Score = queryTokens.Count(t =>
-                        (!string.IsNullOrWhiteSpace(item.SummaryReadyText) && item.SummaryReadyText.Contains(t, StringComparison.OrdinalIgnoreCase)) ||
-                        item.Text.Contains(t, StringComparison.OrdinalIgnoreCase))
+                    Score = 2 * queryTokens.Count(t => Mentions(item, t)) + related.Count(t => Mentions(item, t))
                 })
                 .Where(x => x.Score > 0)
                 .OrderByDescending(x => x.Score)

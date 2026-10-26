@@ -1365,9 +1365,15 @@ public partial class MainViewModel
             List<TopicDocument> documents = await LoadTopicDocumentsAsync(topic);
             AssistOptions options = BuildAssistOptions();
             List<TopicQuestionEntry> history = topic.Questions.ToList();
-            // Choosing passages of big documents is real work: it runs off the UI thread together with the request.
-            AssistResult result = await Task.Run(() => _conversationAssistService.AskTopicAsync(
-                topic.Name, topic.KnowledgeText, sessions, documents, history, question, options));
+            bool english = string.Equals(_settings.OutputLanguage, "en", StringComparison.OrdinalIgnoreCase);
+            TopicGraphContext graph = TopicGraphContext.Empty;
+            // Reading the graph and choosing passages of big documents is real work: it runs off the UI thread together with the request.
+            AssistResult result = await Task.Run(() =>
+            {
+                graph = TopicGraphRetrieval.Select(ReadGraphQuietly(topic.Id), question, english);
+                return _conversationAssistService.AskTopicAsync(
+                    topic.Name, topic.KnowledgeText, sessions, documents, history, question, options, graph);
+            });
             if (string.IsNullOrWhiteSpace(result.Text))
             {
                 throw new InvalidOperationException(L["TopicKnowledgeEmptyAnswer"]);
@@ -1386,7 +1392,8 @@ public partial class MainViewModel
             pending.IsPending = false;
             pending.Refresh();
             string cost = result.Usage?.CostRub is double rub ? $", {rub:0.##} ₽" : string.Empty;
-            AppendLog($"[topics] Question answered: {sessions.Count} session(s), {documents.Count} document(s), tokens={result.Usage?.TotalTokens ?? 0}{cost}.");
+            string graphUse = graph.IsEmpty ? "graph: no match" : $"graph: {graph.MatchedNodes} matched, {graph.LinkedNodes} linked";
+            AppendLog($"[topics] Question answered: {sessions.Count} session(s), {documents.Count} document(s), {graphUse}, tokens={result.Usage?.TotalTokens ?? 0}{cost}.");
         }
         catch (Exception ex)
         {
@@ -1403,6 +1410,19 @@ public partial class MainViewModel
         {
             IsTopicQuestionBusy = false;
             OnQuestionItemsChanged();
+        }
+    }
+
+    /// <summary>The saved graph of a topic for answering questions; a missing or broken file just means no graph.</summary>
+    private TopicGraph? ReadGraphQuietly(string topicId)
+    {
+        try
+        {
+            return _knowledgeStore.ReadGraph(topicId);
+        }
+        catch (Exception)
+        {
+            return null;
         }
     }
 
