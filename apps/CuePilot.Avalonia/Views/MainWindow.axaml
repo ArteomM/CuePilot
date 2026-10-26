@@ -1517,20 +1517,27 @@
                         </Grid>
                     </TabItem>
                     <TabItem Tag="Transcript" Header="{Binding L[TabTranscript]}" ToolTip.Tip="{Binding L[TipTabTranscript]}">
-                        <ListBox Margin="10"
-                                 Background="Transparent"
-                                 BorderThickness="0"
-                                 ItemsSource="{Binding SelectedSessionTranscript}">
-                            <ListBox.ItemTemplate>
-                                <DataTemplate>
-                                    <TextBlock Margin="0,0,0,10"
-                                               Foreground="{Binding $parent[Window].DataContext.PrimaryTextBrush}"
-                                               FontSize="16"
-                                               TextWrapping="Wrap"
-                                               Text="{Binding Text}" />
-                                </DataTemplate>
-                            </ListBox.ItemTemplate>
-                        </ListBox>
+                        <Grid Margin="10" RowDefinitions="Auto,*">
+                            <Grid ColumnDefinitions="*,Auto">
+                                <TextBlock Foreground="{Binding PrimaryTextBrush}" FontSize="26" FontWeight="ExtraBold" Text="{Binding L[TabTranscript]}" />
+                                <Button Grid.Column="1" Classes="accent" Height="34" Padding="16,0" FontSize="14" VerticalAlignment="Center" Command="{Binding CopyTranscriptCommand}" ToolTip.Tip="{Binding L[TipCopyTranscript]}" Content="{Binding L[CopyTranscript]}" />
+                            </Grid>
+                            <ListBox Grid.Row="1"
+                                     Margin="0,18,0,0"
+                                     Background="Transparent"
+                                     BorderThickness="0"
+                                     ItemsSource="{Binding SelectedSessionTranscript}">
+                                <ListBox.ItemTemplate>
+                                    <DataTemplate>
+                                        <TextBlock Margin="0,0,0,10"
+                                                   Foreground="{Binding $parent[Window].DataContext.PrimaryTextBrush}"
+                                                   FontSize="16"
+                                                   TextWrapping="Wrap"
+                                                   Text="{Binding Text}" />
+                                    </DataTemplate>
+                                </ListBox.ItemTemplate>
+                            </ListBox>
+                        </Grid>
                     </TabItem>
                     <TabItem Tag="Email" Header="{Binding L[TabEmail]}" ToolTip.Tip="{Binding L[TipTabEmail]}">
                         <Grid Margin="10" RowDefinitions="Auto,Auto,*">

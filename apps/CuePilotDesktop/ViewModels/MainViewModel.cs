@@ -308,6 +308,7 @@ public partial class MainViewModel : ObservableObject
         WhatShouldISayCommand = _whatShouldISayCommand;
         RegenerateSummaryCommand = _regenerateSummaryCommand;
         CopySummaryCommand = _copySummaryCommand;
+        CopyTranscriptCommand = new RelayCommand(CopyTranscriptToClipboard);
         FollowUpEmailCommand = _followUpEmailCommand;
         FollowUpQuestionCommand = _followUpQuestionCommand;
         SuggestNextQuestionCommand = _suggestNextQuestionCommand;
@@ -412,6 +413,7 @@ public partial class MainViewModel : ObservableObject
     public RelayCommand WhatShouldISayCommand { get; }
     public RelayCommand RegenerateSummaryCommand { get; }
     public RelayCommand CopySummaryCommand { get; }
+    public RelayCommand CopyTranscriptCommand { get; }
     public RelayCommand FollowUpEmailCommand { get; }
     public RelayCommand FollowUpQuestionCommand { get; }
     public RelayCommand SuggestNextQuestionCommand { get; }
@@ -2718,6 +2720,36 @@ public partial class MainViewModel : ObservableObject
     {
         CopyToClipboard(CurrentSessionSummary ?? string.Empty);
         AppendLog("[assist] Summary copied to clipboard.");
+    }
+
+    private void CopyTranscriptToClipboard()
+    {
+        if (SelectedSession is not { } session || SelectedSessionTranscript.Count == 0)
+        {
+            return;
+        }
+
+        CopyToClipboard(BuildTranscriptText(session.Title, session.StartedAt, SelectedSessionTranscript));
+        AppendLog($"[session] Transcript copied to clipboard: {SelectedSessionTranscript.Count} line(s).");
+    }
+
+    /// <summary>The title and date, then «[10:02:15] Имя: текст» per line, ready to paste into a messenger or a document.</summary>
+    private static string BuildTranscriptText(string title, DateTime startedAt, IEnumerable<SessionTranscriptItem> items)
+    {
+        var text = new StringBuilder();
+        text.Append(title.Trim()).Append(" · ").AppendLine(startedAt.ToString("g", CultureInfo.CurrentCulture)).AppendLine();
+        foreach (SessionTranscriptItem item in items)
+        {
+            text.Append('[').Append(item.Timestamp.ToString("HH:mm:ss", CultureInfo.InvariantCulture)).Append("] ");
+            if (!string.IsNullOrWhiteSpace(item.SpeakerName))
+            {
+                text.Append(item.SpeakerName.Trim()).Append(": ");
+            }
+
+            text.AppendLine(item.Text.Trim());
+        }
+
+        return text.ToString().TrimEnd();
     }
 
     /// <summary>

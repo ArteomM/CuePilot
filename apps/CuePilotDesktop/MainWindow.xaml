@@ -2071,19 +2071,34 @@
                             </Grid>
                         </TabItem>
                         <TabItem Tag="Transcript" Header="{Binding L[TabTranscript]}" ToolTip="{Binding L[TipTabTranscript]}">
-                            <ListBox Margin="10"
-                                     ItemsSource="{Binding SelectedSessionTranscript}"
-                                     VirtualizingPanel.IsVirtualizing="True"
-                                     VirtualizingPanel.VirtualizationMode="Recycling">
-                                <ListBox.ItemTemplate>
-                                    <DataTemplate>
-                                        <TextBlock Margin="0,0,0,10"
-                                                   Foreground="{Binding DataContext.PrimaryTextBrush, RelativeSource={RelativeSource AncestorType=Window}}"
-                                                   FontSize="16"
-                                                   Text="{Binding Text}" />
-                                    </DataTemplate>
-                                </ListBox.ItemTemplate>
-                            </ListBox>
+                            <Grid Margin="10">
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="Auto" />
+                                    <RowDefinition Height="*" />
+                                </Grid.RowDefinitions>
+                                <Grid>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="*" />
+                                        <ColumnDefinition Width="Auto" />
+                                    </Grid.ColumnDefinitions>
+                                    <TextBlock Foreground="{Binding PrimaryTextBrush}" FontSize="26" FontWeight="ExtraBold" Text="{Binding L[TabTranscript]}" />
+                                    <Button Grid.Column="1" Height="34" Padding="16,0" FontSize="14" VerticalAlignment="Center" Style="{StaticResource EchoAccentButtonStyle}" Command="{Binding CopyTranscriptCommand}" ToolTip="{Binding L[TipCopyTranscript]}" Content="{Binding L[CopyTranscript]}" />
+                                </Grid>
+                                <ListBox Grid.Row="1"
+                                         Margin="0,18,0,0"
+                                         ItemsSource="{Binding SelectedSessionTranscript}"
+                                         VirtualizingPanel.IsVirtualizing="True"
+                                         VirtualizingPanel.VirtualizationMode="Recycling">
+                                    <ListBox.ItemTemplate>
+                                        <DataTemplate>
+                                            <TextBlock Margin="0,0,0,10"
+                                                       Foreground="{Binding DataContext.PrimaryTextBrush, RelativeSource={RelativeSource AncestorType=Window}}"
+                                                       FontSize="16"
+                                                       Text="{Binding Text}" />
+                                        </DataTemplate>
+                                    </ListBox.ItemTemplate>
+                                </ListBox>
+                            </Grid>
                         </TabItem>
                         <TabItem Tag="Email" Header="{Binding L[TabEmail]}" ToolTip="{Binding L[TipTabEmail]}">
                             <Grid Margin="10">
