@@ -146,6 +146,7 @@ public partial class MainViewModel
     public string KnowledgeEmptyText => _selectedKnowledgeItem switch
     {
         null => string.Empty,
+        { IsBusy: true, CanStop: true } item => item.StatusText,
         { IsBusy: true } => L["KnowledgeParsing"],
         { State: KnowledgeItemState.Failed } item => item.StatusText,
         _ => L["KnowledgeSourceEmpty"]
@@ -343,6 +344,7 @@ public partial class MainViewModel
         AddKnowledgeFilesCommand = new RelayCommand(AddKnowledgeFiles, () => SelectedTopic != null);
         AddKnowledgeFolderCommand = new RelayCommand(AddKnowledgeFolder, () => SelectedTopic != null);
         AddKnowledgeNoteCommand = new RelayCommand(AddKnowledgeNote, () => SelectedTopic != null);
+        InitializeKnowledgeMedia();
         ParseKnowledgeItemCommand = new RelayCommand(
             async parameter => await ParseKnowledgeItemAsync(parameter as KnowledgeItemViewModel ?? SelectedKnowledgeItem),
             parameter => (parameter as KnowledgeItemViewModel ?? SelectedKnowledgeItem) is { IsBusy: false });
@@ -476,6 +478,7 @@ public partial class MainViewModel
         AddKnowledgeFilesCommand?.RaiseCanExecuteChanged();
         AddKnowledgeFolderCommand?.RaiseCanExecuteChanged();
         AddKnowledgeNoteCommand?.RaiseCanExecuteChanged();
+        AddKnowledgeMediaCommand?.RaiseCanExecuteChanged();
         OpenKnowledgeFolderCommand?.RaiseCanExecuteChanged();
         AskTopicCommand?.RaiseCanExecuteChanged();
         AskTopicSuggestionCommand?.RaiseCanExecuteChanged();
@@ -562,6 +565,7 @@ public partial class MainViewModel
         RemoveKnowledgeItemCommand?.RaiseCanExecuteChanged();
         EditKnowledgeNoteCommand?.RaiseCanExecuteChanged();
         OpenKnowledgeOriginalCommand?.RaiseCanExecuteChanged();
+        StopKnowledgeItemCommand?.RaiseCanExecuteChanged();
         RefreshTopicKnowledgeCommand?.RaiseCanExecuteChanged();
         AskTopicCommand?.RaiseCanExecuteChanged();
         AskTopicSuggestionCommand?.RaiseCanExecuteChanged();
@@ -592,6 +596,7 @@ public partial class MainViewModel
         RemoveKnowledgeItemCommand?.RaiseCanExecuteChanged();
         EditKnowledgeNoteCommand?.RaiseCanExecuteChanged();
         OpenKnowledgeOriginalCommand?.RaiseCanExecuteChanged();
+        StopKnowledgeItemCommand?.RaiseCanExecuteChanged();
     }
 
     /// <summary>Reads the parsed Markdown of a source off the UI thread; a newer selection wins.</summary>
@@ -671,8 +676,8 @@ public partial class MainViewModel
     };
 
     /// <summary>
-    /// Files and folders dropped or pasted into «База знаний»: every folder and every supported file becomes its own
-    /// source. The paths are checked off the UI thread, since a network folder can take a while to answer.
+    /// Files and folders dropped or pasted into «База знаний»: every folder, every supported file and every audio or
+    /// video file becomes its own source. The paths are checked off the UI thread, since a network folder can take a while to answer.
     /// </summary>
     public async Task AddKnowledgePathsAsync(IReadOnlyList<string> paths)
     {
@@ -710,6 +715,10 @@ public partial class MainViewModel
             else if (File.Exists(path) && DocumentParser.IsSupported(path))
             {
                 sources.Add(FileSource(path));
+            }
+            else if (File.Exists(path) && MediaTranscriptionService.IsMedia(path))
+            {
+                sources.Add(MediaSource(path));
             }
             else
             {
@@ -1072,6 +1081,10 @@ public partial class MainViewModel
                         .AppendLine(body);
                     parsedFiles = 1;
                     break;
+                case KnowledgeSourceKind.Media:
+                    markdown.Append(await TranscribeMediaSourceAsync(item, source));
+                    parsedFiles = 1;
+                    break;
                 case KnowledgeSourceKind.Folder:
                     List<string> files = await Task.Run(() => DocumentParser.EnumerateFolder(source.Path).ToList());
                     markdown.Append("# ").AppendLine(source.Title).AppendLine()
@@ -1119,6 +1132,12 @@ public partial class MainViewModel
             SaveTopics();
             string cost = costRub > 0 ? $", {costRub:0.##} ₽" : string.Empty;
             AppendLog($"[knowledge] Parsed {source.Kind}: {parsedFiles} file(s), {skippedFiles} skipped, {text.Length} chars{cost}.");
+        }
+        catch (OperationCanceledException) when (source.Kind == KnowledgeSourceKind.Media)
+        {
+            // Stopped by the user: what was parsed before stays as it was.
+            AppendLog("[knowledge] Transcription stopped: " + source.Title);
+            ShowFeedback(L["KnowledgeTranscriptionStopped"]);
         }
         catch (Exception ex)
         {
@@ -1513,6 +1532,7 @@ public sealed class KnowledgeItemViewModel : ObservableObject
     private KnowledgeItemState _state;
     private string _currentStamp = string.Empty;
     private bool _isChecked;
+    private bool _canStop;
 
     public KnowledgeItemViewModel(KnowledgeSource source)
     {
@@ -1525,13 +1545,30 @@ public sealed class KnowledgeItemViewModel : ObservableObject
     public string Id => Source.Id;
     public string Title => Source.Title;
 
-    /// <summary>Kind glyph for the list: file, folder or note.</summary>
+    /// <summary>Kind glyph for the list: file, folder, note or audio/video.</summary>
     public string KindGlyph => Source.Kind switch
     {
         KnowledgeSourceKind.Folder => "▣",
         KnowledgeSourceKind.Note => "✎",
+        KnowledgeSourceKind.Media => "♪",
         _ => "▤"
     };
+
+    /// <summary>An audio or video being transcribed can be stopped.</summary>
+    public bool CanStop
+    {
+        get => _canStop;
+        set
+        {
+            if (_canStop == value)
+            {
+                return;
+            }
+
+            _canStop = value;
+            OnPropertyChanged();
+        }
+    }
 
     public string Subtitle
     {

@@ -3,6 +3,8 @@
 //   cuepilot-audio system   system audio via ScreenCaptureKit (macOS 13+)
 //   cuepilot-audio mic      the default microphone via AVAudioEngine
 //   cuepilot-audio request-mic   asks for microphone access (the macOS prompt) and exits: 0 allowed, 2 not
+//   cuepilot-audio decode <media> <out.wav>   the sound of an audio or video file (mp3, m4a, wav, aiff, mp4, mov…)
+//                                             as a 16 kHz mono 16-bit WAV, via AVFoundation; exit 4 = no sound track
 //
 // Writes 48 kHz mono 32-bit float PCM to stdout and stops when stdin closes.
 // Exit codes: 0 stopped, 1 error, 2 permission denied, 3 macOS too old, 64 usage.
@@ -243,6 +245,90 @@ func requestMicrophone() {
     }
 }
 
+/// RIFF header of a 16 kHz mono 16-bit PCM WAV with the given data size.
+func wavHeader(dataBytes: UInt32) -> Data {
+    var header = Data()
+    func append32(_ value: UInt32) { withUnsafeBytes(of: value.littleEndian) { header.append(contentsOf: $0) } }
+    func append16(_ value: UInt16) { withUnsafeBytes(of: value.littleEndian) { header.append(contentsOf: $0) } }
+    header.append(contentsOf: Array("RIFF".utf8))
+    append32(36 + dataBytes)
+    header.append(contentsOf: Array("WAVEfmt ".utf8))
+    append32(16)
+    append16(1)       // PCM
+    append16(1)       // mono
+    append32(16000)   // sample rate
+    append32(32000)   // bytes per second
+    append16(2)       // block align
+    append16(16)      // bits per sample
+    header.append(contentsOf: Array("data".utf8))
+    append32(dataBytes)
+    return header
+}
+
+func decodeFile(input: String, output: String) {
+    Task {
+        do {
+            let asset = AVURLAsset(url: URL(fileURLWithPath: input))
+            guard let track = try await asset.loadTracks(withMediaType: .audio).first else {
+                log("the file has no sound track")
+                exit(4)
+            }
+
+            let reader = try AVAssetReader(asset: asset)
+            let settings: [String: Any] = [
+                AVFormatIDKey: kAudioFormatLinearPCM,
+                AVSampleRateKey: 16000,
+                AVNumberOfChannelsKey: 1,
+                AVLinearPCMBitDepthKey: 16,
+                AVLinearPCMIsFloatKey: false,
+                AVLinearPCMIsBigEndianKey: false,
+                AVLinearPCMIsNonInterleaved: false
+            ]
+            let trackOutput = AVAssetReaderTrackOutput(track: track, outputSettings: settings)
+            trackOutput.alwaysCopiesSampleData = false
+            reader.add(trackOutput)
+            guard reader.startReading() else {
+                throw reader.error ?? NSError(domain: "cuepilot-audio", code: 1, userInfo: [NSLocalizedDescriptionKey: "cannot read the file"])
+            }
+
+            guard FileManager.default.createFile(atPath: output, contents: wavHeader(dataBytes: 0)),
+                  let file = FileHandle(forWritingAtPath: output) else {
+                throw NSError(domain: "cuepilot-audio", code: 1, userInfo: [NSLocalizedDescriptionKey: "cannot create \(output)"])
+            }
+
+            file.seekToEndOfFile()
+            var total: UInt64 = 0
+            while let sampleBuffer = trackOutput.copyNextSampleBuffer() {
+                guard let block = CMSampleBufferGetDataBuffer(sampleBuffer) else {
+                    continue
+                }
+
+                let length = CMBlockBufferGetDataLength(block)
+                var data = Data(count: length)
+                let status = data.withUnsafeMutableBytes { bytes in
+                    CMBlockBufferCopyDataBytes(block, atOffset: 0, dataLength: length, destination: bytes.baseAddress!)
+                }
+                if status == kCMBlockBufferNoErr {
+                    file.write(data)
+                    total += UInt64(length)
+                }
+            }
+
+            if reader.status == .failed {
+                throw reader.error ?? NSError(domain: "cuepilot-audio", code: 1, userInfo: [NSLocalizedDescriptionKey: "decoding failed"])
+            }
+
+            file.seek(toFileOffset: 0)
+            file.write(wavHeader(dataBytes: UInt32(min(total, UInt64(UInt32.max - 36)))))
+            file.closeFile()
+            exit(0)
+        } catch {
+            log("decoding failed: \(error.localizedDescription)")
+            exit(1)
+        }
+    }
+}
+
 signal(SIGPIPE, SIG_IGN)
 let arguments = CommandLine.arguments
 guard arguments.count >= 2 else {
@@ -252,6 +338,16 @@ guard arguments.count >= 2 else {
 
 if arguments[1] == "request-mic" {
     requestMicrophone()
+    dispatchMain()
+}
+
+if arguments[1] == "decode" {
+    guard arguments.count >= 4 else {
+        log("usage: cuepilot-audio decode <media file> <output.wav>")
+        exit(64)
+    }
+
+    decodeFile(input: arguments[2], output: arguments[3])
     dispatchMain()
 }
 

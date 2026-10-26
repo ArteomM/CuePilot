@@ -102,6 +102,7 @@ public class KnowledgeStore
             switch (source.Kind)
             {
                 case KnowledgeSourceKind.File:
+                case KnowledgeSourceKind.Media:
                     var file = new FileInfo(source.Path);
                     return file.Exists ? $"{file.Length}:{file.LastWriteTimeUtc.Ticks}" : "missing";
                 case KnowledgeSourceKind.Folder:

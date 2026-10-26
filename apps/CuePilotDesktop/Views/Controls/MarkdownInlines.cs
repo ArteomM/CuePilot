@@ -1,22 +1,23 @@
 using System.Text.RegularExpressions;
 using System.Windows;
 using System.Windows.Documents;
+using System.Windows.Input;
 using System.Windows.Media;
 
 namespace CuePilotDesktop.Views.Controls;
 
-/// <summary>**Bold**, `code` and *italic* inside a line, for both TextBlock and FlowDocument inlines.</summary>
+/// <summary>**Bold**, `code`, *italic* and [links](url) inside a line, for both TextBlock and FlowDocument inlines.</summary>
 public static class MarkdownInlines
 {
     // A time limit keeps an odd line (thousands of asterisks) from freezing the window; it is then shown as plain text.
     private static readonly Regex InlinePattern = new(
-        @"\*\*(.+?)\*\*|`([^`]+)`|(?<![\*\w])\*(?!\s)(.+?)(?<!\s)\*(?!\*)",
+        @"\*\*(.+?)\*\*|`([^`]+)`|(?<![\*\w])\*(?!\s)(.+?)(?<!\s)\*(?!\*)|" + MarkdownLinks.Pattern,
         RegexOptions.Compiled,
         TimeSpan.FromMilliseconds(50));
 
     public static void Add(InlineCollection inlines, string text, double fontSize)
     {
-        if (text.IndexOfAny(['*', '`']) < 0)
+        if (text.IndexOfAny(['*', '`', '[']) < 0)
         {
             inlines.Add(new Run(text));
             return;
@@ -51,9 +52,17 @@ public static class MarkdownInlines
                 code.SetResourceReference(TextElement.BackgroundProperty, "EchoSurfaceAltBrush");
                 inlines.Add(code);
             }
-            else
+            else if (match.Groups[3].Success)
             {
                 inlines.Add(new Italic(new Run(match.Groups[3].Value)));
+            }
+            else
+            {
+                string url = match.Groups[5].Value;
+                var link = new Hyperlink(new Run(match.Groups[4].Value)) { Cursor = Cursors.Hand, ToolTip = Uri.UnescapeDataString(url) };
+                link.SetResourceReference(TextElement.ForegroundProperty, "EchoAccentTextBrush");
+                link.Click += (_, _) => MarkdownLinks.Open(url);
+                inlines.Add(link);
             }
 
             position = match.Index + match.Length;

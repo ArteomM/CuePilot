@@ -1205,10 +1205,11 @@
                                         BorderBrush="{DynamicResource EchoBorderBrush}"
                                         BorderThickness="1">
                                     <DockPanel>
-                                        <UniformGrid DockPanel.Dock="Top" Columns="3">
-                                            <Button Height="36" Margin="0,0,4,0" Command="{Binding AddKnowledgeFilesCommand}" ToolTip="{Binding L[TipKnowledgeAddFiles]}" Content="{Binding L[KnowledgeAddFiles]}" />
-                                            <Button Height="36" Margin="2,0,2,0" Command="{Binding AddKnowledgeFolderCommand}" ToolTip="{Binding L[TipKnowledgeAddFolder]}" Content="{Binding L[KnowledgeAddFolder]}" />
-                                            <Button Height="36" Margin="4,0,0,0" Command="{Binding AddKnowledgeNoteCommand}" ToolTip="{Binding L[TipKnowledgeAddNote]}" Content="{Binding L[KnowledgeAddNote]}" />
+                                        <UniformGrid DockPanel.Dock="Top" Columns="2">
+                                            <Button Height="36" Margin="0,0,3,3" Command="{Binding AddKnowledgeFilesCommand}" ToolTip="{Binding L[TipKnowledgeAddFiles]}" Content="{Binding L[KnowledgeAddFiles]}" />
+                                            <Button Height="36" Margin="3,0,0,3" Command="{Binding AddKnowledgeFolderCommand}" ToolTip="{Binding L[TipKnowledgeAddFolder]}" Content="{Binding L[KnowledgeAddFolder]}" />
+                                            <Button Height="36" Margin="0,3,3,0" Command="{Binding AddKnowledgeMediaCommand}" ToolTip="{Binding L[TipKnowledgeAddMedia]}" Content="{Binding L[KnowledgeAddMedia]}" />
+                                            <Button Height="36" Margin="3,3,0,0" Command="{Binding AddKnowledgeNoteCommand}" ToolTip="{Binding L[TipKnowledgeAddNote]}" Content="{Binding L[KnowledgeAddNote]}" />
                                         </UniformGrid>
                                         <!-- Number of sources and the selection mode for removing several at once. -->
                                         <Grid DockPanel.Dock="Top"
@@ -1426,7 +1427,19 @@
                                                         Style="{StaticResource EchoAccentButtonStyle}"
                                                         Command="{Binding ParseKnowledgeItemCommand}"
                                                         ToolTip="{Binding L[TipKnowledgeParse]}"
-                                                        Content="{Binding SelectedKnowledgeItem.ParseButtonText}" />
+                                                        Content="{Binding SelectedKnowledgeItem.ParseButtonText}"
+                                                        Visibility="{Binding SelectedKnowledgeItem.CanStop, Converter={StaticResource InverseBoolToVisibility}}" />
+                                                <Button Height="34"
+                                                        Margin="8,0,0,0"
+                                                        Padding="16,0"
+                                                        FontSize="14"
+                                                        Background="{DynamicResource EchoDangerSoftBrush}"
+                                                        BorderBrush="{DynamicResource EchoDangerBorderBrush}"
+                                                        Foreground="{DynamicResource EchoDangerTextBrush}"
+                                                        Command="{Binding StopKnowledgeItemCommand}"
+                                                        ToolTip="{Binding L[TipKnowledgeStop]}"
+                                                        Content="{Binding L[KnowledgeStop]}"
+                                                        Visibility="{Binding SelectedKnowledgeItem.CanStop, Converter={StaticResource BoolToVisibility}}" />
                                             </StackPanel>
                                         </Grid>
                                         <Border Grid.Row="1" Margin="0,12,0,0" BorderBrush="{DynamicResource EchoBorderBrush}" BorderThickness="0,1,0,0">

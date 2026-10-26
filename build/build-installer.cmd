@@ -10,7 +10,7 @@ cd /d "%~dp0.."
 if exist "%USERPROFILE%\.dotnet8" set "PATH=%USERPROFILE%\.dotnet8;%PATH%"
 where dotnet >nul 2>nul || (echo [build] .NET SDK not found. & goto :fail)
 
-set "VERSION=1.0.4"
+set "VERSION=1.0.5"
 set "ROOT=%CD%"
 set "STAGE=%ROOT%\build\installer\stage"
 set "PAYLOAD=%ROOT%\build\setup-builder\payload.zip"

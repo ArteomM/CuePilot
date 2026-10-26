@@ -1,4 +1,7 @@
+using System.Diagnostics;
+using System.IO;
 using System.Text.RegularExpressions;
+using CuePilotDesktop.Services;
 
 namespace CuePilotDesktop.Views.Controls;
 
@@ -211,4 +214,44 @@ public static class MarkdownBlocks
 
         return Regex.Split(inner, @"(?<!\\)\|").Select(c => c.Replace("\\|", "|").Trim()).ToArray();
     }
+}
+
+/// <summary>
+/// [text](url) links in rendered Markdown. Parsed documents and AI answers can carry any link, so a click opens only
+/// web pages and attached audio or video; any other file is shown in its folder instead of being started.
+/// </summary>
+public static class MarkdownLinks
+{
+    /// <summary>Group 1: the text, group 2: the address (http, https or file).</summary>
+    public const string Pattern = @"\[([^\]\n]+)\]\((https?://[^)\s]+|file:///[^)\s]+)\)";
+
+    public static void Open(string url)
+    {
+        if (!Uri.TryCreate(url, UriKind.Absolute, out Uri? uri))
+        {
+            return;
+        }
+
+        try
+        {
+            if (uri.Scheme == Uri.UriSchemeHttp || uri.Scheme == Uri.UriSchemeHttps)
+            {
+                Start(uri.AbsoluteUri);
+            }
+            else if (uri.IsFile && File.Exists(uri.LocalPath) && MediaTranscriptionService.IsMedia(uri.LocalPath))
+            {
+                Start(uri.LocalPath);
+            }
+            else if (uri.IsFile && Path.GetDirectoryName(uri.LocalPath) is { } folder && Directory.Exists(folder))
+            {
+                Start(folder);
+            }
+        }
+        catch (Exception)
+        {
+            // No program for the file: the link just does nothing.
+        }
+    }
+
+    private static void Start(string target) => Process.Start(new ProcessStartInfo(target) { UseShellExecute = true })?.Dispose();
 }

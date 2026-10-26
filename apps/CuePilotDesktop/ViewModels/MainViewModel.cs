@@ -1738,6 +1738,23 @@ public partial class MainViewModel : ObservableObject
         OnboardingStepIndex--;
     }
 
+    /// <summary>
+    /// DesktopCapture's folder, local whisper (empty when missing) and the folder for audio pieces; shared by
+    /// live capture and media transcription in the knowledge base.
+    /// </summary>
+    private (string CaptureDir, string WhisperBin, string WhisperModel, string SttDir) ResolveCaptureTools()
+    {
+        // Source checkout: apps/DesktopCapture; installed copy: DesktopCapture.exe sits in the app folder.
+        string desktopCaptureProjectDir = Path.Combine(_projectRoot, "apps", "DesktopCapture");
+        string desktopCaptureDir = Directory.Exists(desktopCaptureProjectDir) ? desktopCaptureProjectDir : _projectRoot;
+        string whisperBinCandidate = _settings.WhisperBinPath ?? PlatformPaths.DefaultWhisperBin(_projectRoot);
+        string whisperBin = File.Exists(whisperBinCandidate) ? whisperBinCandidate : string.Empty;
+        string whisperModel = SpeechModelCatalog.ResolveActiveModelPath(_settings, _projectRoot) ?? string.Empty;
+        string sttDir = _settings.SttDirectoryPath ?? EnvironmentDiagnosticsService.DefaultSttChunksDirectory;
+        Directory.CreateDirectory(sttDir);
+        return (desktopCaptureDir, whisperBin, whisperModel, sttDir);
+    }
+
     private void StartCapture()
     {
         if (_captureOrchestrator.IsRunning)
@@ -1778,14 +1795,7 @@ public partial class MainViewModel : ObservableObject
             AppendLog("[ui] Permission wizard completed.");
         }
 
-        // Source checkout: apps/DesktopCapture; installed copy: DesktopCapture.exe sits in the app folder.
-        string desktopCaptureProjectDir = Path.Combine(_projectRoot, "apps", "DesktopCapture");
-        string desktopCaptureDir = Directory.Exists(desktopCaptureProjectDir) ? desktopCaptureProjectDir : _projectRoot;
-        string whisperBinCandidate = _settings.WhisperBinPath ?? PlatformPaths.DefaultWhisperBin(_projectRoot);
-        string whisperBin = File.Exists(whisperBinCandidate) ? whisperBinCandidate : string.Empty;
-        string whisperModel = SpeechModelCatalog.ResolveActiveModelPath(_settings, _projectRoot) ?? string.Empty;
-        string sttDir = _settings.SttDirectoryPath ?? EnvironmentDiagnosticsService.DefaultSttChunksDirectory;
-        Directory.CreateDirectory(sttDir);
+        (string desktopCaptureDir, string whisperBin, string whisperModel, string sttDir) = ResolveCaptureTools();
 
         bool useApiStt = UseApiStt;
         string sttApiKey = useApiStt ? ResolveSttApiKey() : string.Empty;

@@ -48,14 +48,7 @@ public class CaptureOrchestratorService
         }
 
         string captureArgs = BuildCaptureArguments(options);
-
-        // Installed copy: DesktopCapture.exe next to the app. Source checkout: the built exe, otherwise dotnet run.
-        string? captureExe = new[]
-        {
-            Path.Combine(options.WorkingDirectory, PlatformPaths.CaptureExecutableName),
-            Path.Combine(options.WorkingDirectory, "bin", "Debug", PlatformPaths.CaptureTargetFramework, PlatformPaths.CaptureExecutableName),
-            Path.Combine(options.WorkingDirectory, "bin", "Release", PlatformPaths.CaptureTargetFramework, PlatformPaths.CaptureExecutableName)
-        }.FirstOrDefault(File.Exists);
+        string? captureExe = FindCaptureExecutable(options.WorkingDirectory);
         bool useBuiltExecutable = captureExe != null;
         string fileName = captureExe ?? "dotnet";
         string args = useBuiltExecutable ? captureArgs : PlatformPaths.CaptureDotnetRunPrefix + captureArgs;
@@ -116,6 +109,14 @@ public class CaptureOrchestratorService
         _process.BeginErrorReadLine();
         RunningStateChanged?.Invoke(this, true);
     }
+
+    /// <summary>Installed copy: DesktopCapture next to the app. Source checkout: the built exe; null means «dotnet run».</summary>
+    public static string? FindCaptureExecutable(string workingDirectory) => new[]
+    {
+        Path.Combine(workingDirectory, PlatformPaths.CaptureExecutableName),
+        Path.Combine(workingDirectory, "bin", "Debug", PlatformPaths.CaptureTargetFramework, PlatformPaths.CaptureExecutableName),
+        Path.Combine(workingDirectory, "bin", "Release", PlatformPaths.CaptureTargetFramework, PlatformPaths.CaptureExecutableName)
+    }.FirstOrDefault(File.Exists);
 
     public void Stop()
     {

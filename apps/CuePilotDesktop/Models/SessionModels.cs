@@ -195,7 +195,9 @@ public enum KnowledgeSourceKind
 {
     File,
     Folder,
-    Note
+    Note,
+    /// <summary>Audio or video: «Разобрать» transcribes its sound.</summary>
+    Media
 }
 
 /// <summary>Something attached to a topic's knowledge base. «Разобрать» turns it into Markdown stored by CuePilot.</summary>

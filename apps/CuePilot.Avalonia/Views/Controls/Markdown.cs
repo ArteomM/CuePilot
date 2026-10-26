@@ -5,18 +5,19 @@ using Avalonia.Controls.Documents;
 using Avalonia.Controls.Presenters;
 using Avalonia.Controls.Primitives;
 using Avalonia.Controls.Templates;
+using Avalonia.Input;
 using Avalonia.Layout;
 using Avalonia.Media;
 using CuePilotDesktop.Views.Controls;
 
 namespace CuePilot.Avalonia.Views.Controls;
 
-/// <summary>**Bold**, `code` and *italic* inside a line (port of MarkdownInlines.cs).</summary>
+/// <summary>**Bold**, `code`, *italic* and [links](url) inside a line (port of MarkdownInlines.cs).</summary>
 public static class MarkdownInlines
 {
     // A time limit keeps an odd line (thousands of asterisks) from freezing the window; it is then shown as plain text.
     private static readonly Regex InlinePattern = new(
-        @"\*\*(.+?)\*\*|`([^`]+)`|(?<![\*\w])\*(?!\s)(.+?)(?<!\s)\*(?!\*)",
+        @"\*\*(.+?)\*\*|`([^`]+)`|(?<![\*\w])\*(?!\s)(.+?)(?<!\s)\*(?!\*)|" + MarkdownLinks.Pattern,
         RegexOptions.Compiled,
         TimeSpan.FromMilliseconds(50));
 
@@ -24,7 +25,7 @@ public static class MarkdownInlines
 
     public static void Add(InlineCollection inlines, string text, double fontSize)
     {
-        if (text.IndexOfAny(['*', '`']) < 0)
+        if (text.IndexOfAny(['*', '`', '[']) < 0)
         {
             inlines.Add(new Run(text));
             return;
@@ -59,9 +60,13 @@ public static class MarkdownInlines
                 code.Bind(TextElement.BackgroundProperty, code.GetResourceObservable("EchoSurfaceAltBrush"));
                 inlines.Add(code);
             }
-            else
+            else if (match.Groups[3].Success)
             {
                 inlines.Add(new Run(match.Groups[3].Value) { FontStyle = FontStyle.Italic });
+            }
+            else
+            {
+                inlines.Add(Link(match.Groups[4].Value, match.Groups[5].Value, fontSize));
             }
 
             position = match.Index + match.Length;
@@ -71,6 +76,29 @@ public static class MarkdownInlines
         {
             inlines.Add(new Run(text[position..]));
         }
+    }
+
+    /// <summary>A clickable piece of text; what a click may open is decided by <see cref="MarkdownLinks.Open"/>.</summary>
+    private static InlineUIContainer Link(string text, string url, double fontSize)
+    {
+        var link = new TextBlock
+        {
+            Text = text,
+            FontSize = fontSize,
+            TextDecorations = TextDecorations.Underline,
+            Cursor = new Cursor(StandardCursorType.Hand)
+        };
+        ToolTip.SetTip(link, Uri.UnescapeDataString(url));
+        link.Bind(TextBlock.ForegroundProperty, link.GetResourceObservable("EchoAccentTextBrush"));
+        link.PointerReleased += (_, e) =>
+        {
+            if (e.InitialPressMouseButton == MouseButton.Left)
+            {
+                e.Handled = true;
+                MarkdownLinks.Open(url);
+            }
+        };
+        return new InlineUIContainer(link) { BaselineAlignment = BaselineAlignment.TextBottom };
     }
 
     /// <summary>Lines of a paragraph separated by line breaks.</summary>

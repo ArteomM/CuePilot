@@ -18,7 +18,7 @@ using NAudio.Wave;
 
 namespace DesktopCapture
 {
-    class Program
+    partial class Program
     {
         private const int WhisperTargetSampleRate = 16000;
         private const int VadFrameSamples = 480; // 30 ms at 16 kHz
@@ -90,6 +90,13 @@ namespace DesktopCapture
 
             string sttChunksDirectory = Path.GetFullPath(options.SttChunksDirectory ?? Path.Combine(".", "stt-chunks"));
             Directory.CreateDirectory(sttChunksDirectory);
+
+            if (!string.IsNullOrWhiteSpace(options.TranscribeFilePath))
+            {
+                Environment.ExitCode = TranscribeFile(options, sttChunksDirectory);
+                StopWhisperServer();
+                return;
+            }
 
             // Local whisper is CPU bound: one shared worker. API calls are I/O bound: one worker per source,
             // so system and mic are transcribed in parallel and do not wait for each other.
@@ -1363,6 +1370,10 @@ namespace DesktopCapture
                         i++;
                         options.SttApiModel = i < args.Length ? args[i] : null;
                         break;
+                    case "--transcribe-file":
+                        i++;
+                        options.TranscribeFilePath = i < args.Length ? args[i] : null;
+                        break;
                     default:
                         if (!arg.StartsWith("--") && string.IsNullOrWhiteSpace(options.OutputPath))
                         {
@@ -1721,6 +1732,9 @@ namespace DesktopCapture
             public string SttApiModel;
             public string SttApiKey;
             public string SttGlossary;
+
+            /// <summary>Audio or video file to transcribe instead of recording (see FileTranscription.cs).</summary>
+            public string TranscribeFilePath;
 
             public bool WhisperEnabled
             {
