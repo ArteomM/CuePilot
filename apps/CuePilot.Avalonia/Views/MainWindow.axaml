@@ -1487,7 +1487,6 @@
                                    Text="{Binding ActionFeedbackText}" />
                         <Button Margin="8,0,0,0" Content="{Binding L[FollowUpEmail]}" MinWidth="136" Padding="12,0" Height="34" Command="{Binding FollowUpEmailCommand}" ToolTip.Tip="{Binding L[TipFollowUpEmail]}" />
                         <Button Margin="8,0,0,0" Content="{Binding L[Regenerate]}" MinWidth="118" Padding="12,0" Height="34" Command="{Binding RegenerateSummaryCommand}" ToolTip.Tip="{Binding L[TipRegenerate]}" />
-                        <Button Margin="8,0,0,0" Content="{Binding L[CopySummary]}" MinWidth="136" Padding="12,0" Height="34" Command="{Binding CopySummaryCommand}" ToolTip.Tip="{Binding L[TipCopySummary]}" />
                     </StackPanel>
                 </Grid>
                 <TabControl x:Name="SessionTabs"
@@ -1498,7 +1497,10 @@
                             Foreground="{Binding PrimaryTextBrush}">
                     <TabItem Tag="Summary" Header="{Binding L[TabSummary]}" ToolTip.Tip="{Binding L[TipTabSummary]}">
                         <Grid Margin="10" RowDefinitions="Auto,*">
-                            <TextBlock Foreground="{Binding PrimaryTextBrush}" FontSize="26" FontWeight="ExtraBold" Text="{Binding L[SummaryDiscussionTitle]}" />
+                            <Grid ColumnDefinitions="*,Auto">
+                                <TextBlock Foreground="{Binding PrimaryTextBrush}" FontSize="26" FontWeight="ExtraBold" Text="{Binding L[SummaryDiscussionTitle]}" />
+                                <Button Grid.Column="1" Classes="accent" Height="34" Padding="16,0" FontSize="14" VerticalAlignment="Center" Command="{Binding CopySummaryCommand}" ToolTip.Tip="{Binding L[TipCopySummary]}" Content="{Binding L[CopySummary]}" />
+                            </Grid>
                             <TextBox Grid.Row="1"
                                      Classes="readOnlyText"
                                      Margin="0,18,0,0"
