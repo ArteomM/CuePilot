@@ -29,8 +29,13 @@ jobs:
         with:
           distribution: temurin
           java-version: "17"
+      # The runner's default SDK is newer and refuses net8.0-android; global.json next to the project keeps the
+      # .NET 8 SDK for every dotnet command run from that folder.
       - name: Install the .NET Android workload
-        run: dotnet workload install android
+        working-directory: apps/CuePilot.Android
+        run: |
+          dotnet --version
+          dotnet workload install android
       # Without a signing key in the secrets the APK is signed with the .NET debug key; it is cached so that
       # every build has the same key and installs over the previous one (the phone keeps its data).
       - name: Keep the debug signing key between builds
@@ -47,21 +52,26 @@ jobs:
             echo "SIGNING_ARGS=-p:AndroidKeyStore=true -p:AndroidSigningKeyStore=$RUNNER_TEMP/cuepilot.keystore -p:AndroidSigningKeyAlias=cuepilot -p:AndroidSigningStorePass=env:ANDROID_KEYSTORE_PASSWORD -p:AndroidSigningKeyPass=env:ANDROID_KEYSTORE_PASSWORD" >> "$GITHUB_ENV"
           fi
       - name: Build the APK
-        shell: bash -o pipefail {0}
+        shell: bash -e -o pipefail {0}
+        working-directory: apps/CuePilot.Android
         env:
           AVALONIA_TELEMETRY_OPTOUT: "1"
           DOTNET_CLI_TELEMETRY_OPTOUT: "1"
           ANDROID_KEYSTORE_PASSWORD: ${{ secrets.ANDROID_KEYSTORE_PASSWORD }}
         run: |
-          VERSION="$(sed -n 's:.*<ApplicationDisplayVersion>\(.*\)</ApplicationDisplayVersion>.*:\1:p' apps/CuePilot.Android/CuePilot.Android.csproj)"
-          dotnet publish apps/CuePilot.Android/CuePilot.Android.csproj -c Release -f net8.0-android \
-            -p:AndroidSdkDirectory="$ANDROID_SDK_ROOT" $SIGNING_ARGS -o dist/android-build --nologo 2>&1 | tee build.log
-          mkdir -p dist/android
-          cp dist/android-build/*-Signed.apk "dist/android/CuePilot-$VERSION-android.apk"
-          ls -la dist/android
+          VERSION="$(sed -n 's:.*<ApplicationDisplayVersion>\(.*\)</ApplicationDisplayVersion>.*:\1:p' CuePilot.Android.csproj)"
+          OUT="$GITHUB_WORKSPACE/dist"
+          # Missing Android platform or build tools are installed by the SDK itself.
+          dotnet build CuePilot.Android.csproj -t:InstallAndroidDependencies -f net8.0-android \
+            -p:AndroidSdkDirectory="$ANDROID_SDK_ROOT" -p:AcceptAndroidSDKLicenses=True --nologo 2>&1 | tee "$OUT-deps.log"
+          dotnet publish CuePilot.Android.csproj -c Release -f net8.0-android \
+            -p:AndroidSdkDirectory="$ANDROID_SDK_ROOT" $SIGNING_ARGS -o "$OUT/android-build" --nologo 2>&1 | tee "$GITHUB_WORKSPACE/build.log"
+          mkdir -p "$OUT/android"
+          cp "$OUT"/android-build/*-Signed.apk "$OUT/android/CuePilot-$VERSION-android.apk"
+          ls -la "$OUT/android"
       - name: Show build errors
         if: failure()
-        run: grep -E "error|fatal" build.log | sort -u | tail -40 | sed 's/^/::error::/' || tail -40 build.log
+        run: grep -hE "error|fatal" build.log dist-deps.log 2>/dev/null | sort -u | tail -40 | sed 's/^/::error::/' || tail -40 build.log
       - uses: actions/upload-artifact@v4
         with:
           name: CuePilot-android
