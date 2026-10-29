@@ -36,7 +36,8 @@ public class MicrophoneService : Service
     public override StartCommandResult OnStartCommand(Intent? intent, StartCommandFlags flags, int startId)
     {
         Notification notification = BuildNotification();
-        if (Build.VERSION.SdkInt >= BuildVersionCodes.Q)
+        // The «microphone» service type exists since Android 11.
+        if (Build.VERSION.SdkInt >= BuildVersionCodes.R)
         {
             StartForeground(NotificationId, notification, ForegroundService.TypeMicrophone);
         }

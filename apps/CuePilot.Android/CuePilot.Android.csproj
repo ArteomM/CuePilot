@@ -39,7 +39,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <TrimmerRootAssembly Include="CuePilot" />
+    <TrimmerRootAssembly Include="CuePilot" RootMode="All" />
     <!-- The Android SDK adds global usings of Android.App and Android.Widget: their Application and Button clash with Avalonia's. -->
     <Using Remove="Android.App" />
     <Using Remove="Android.Widget" />
