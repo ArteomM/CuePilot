@@ -459,10 +459,12 @@
 
                         <!-- «База знаний»: sources; a tap opens the parsed text over the page. -->
                         <Grid RowDefinitions="Auto,Auto,*,Auto" IsVisible="{Binding ShowKnowledgePanel}">
-                            <UniformGrid Columns="3">
-                                <Button Margin="0,0,3,0" Padding="4,0" HorizontalAlignment="Stretch" FontSize="13.5" Command="{Binding AddKnowledgeFilesCommand}" Content="{Binding L[KnowledgeAddFiles]}" />
-                                <Button Margin="3,0" Padding="4,0" HorizontalAlignment="Stretch" FontSize="13.5" Command="{Binding AddKnowledgeMediaCommand}" Content="{Binding L[KnowledgeAddMedia]}" />
-                                <Button Margin="3,0,0,0" Padding="4,0" HorizontalAlignment="Stretch" FontSize="13.5" Click="AddNote_OnClick" Content="{Binding L[KnowledgeAddNote]}" />
+                            <!-- Same four buttons as on the computer: documents and pictures, a folder, recordings, own text. -->
+                            <UniformGrid Columns="2">
+                                <Button Margin="0,0,3,3" Padding="4,0" HorizontalAlignment="Stretch" FontSize="13.5" Command="{Binding AddKnowledgeFilesCommand}" Content="{Binding L[KnowledgeAddFiles]}" />
+                                <Button Margin="3,0,0,3" Padding="4,0" HorizontalAlignment="Stretch" FontSize="13.5" Command="{Binding AddKnowledgeFolderCommand}" Content="{Binding L[KnowledgeAddFolder]}" />
+                                <Button Margin="0,3,3,0" Padding="4,0" HorizontalAlignment="Stretch" FontSize="13.5" Command="{Binding AddKnowledgeMediaCommand}" Content="{Binding L[KnowledgeAddMedia]}" />
+                                <Button Margin="3,3,0,0" Padding="4,0" HorizontalAlignment="Stretch" FontSize="13.5" Click="AddNote_OnClick" Content="{Binding L[KnowledgeAddNote]}" />
                             </UniformGrid>
                             <Grid Grid.Row="1" Margin="2,10,0,4" ColumnDefinitions="*,Auto" IsVisible="{Binding HasKnowledgeSources}">
                                 <TextBlock VerticalAlignment="Center" FontSize="13" Foreground="{DynamicResource EchoMutedBrush}" Text="{Binding KnowledgeSourcesSummary}" IsVisible="{Binding !IsKnowledgeSelectionMode}" />
@@ -707,7 +709,6 @@
                                      Text="{Binding EditableSessionTitle}" />
                             <Button Grid.Column="1" Classes="ghost icon" Margin="6,0,0,0" FontSize="18" VerticalAlignment="Top" Click="SessionPageMenu_OnClick" Content="⋯" />
                         </Grid>
-                        <TextBlock Margin="0,2,0,0" FontSize="13" FontWeight="SemiBold" Foreground="{DynamicResource EchoAccentTextBrush}" Text="{Binding ActionFeedbackText}" />
                     </StackPanel>
 
                     <!-- Recording bar: the live session only. -->
@@ -1016,6 +1017,20 @@
         </Grid>
 
         <!-- Dialogs and action sheets (MainView.Dialogs.cs fills them). -->
+        <!-- Short confirmations («Скопировано», «Добавлено: 3») on every page, like the feedback line on the computer. -->
+        <Border Margin="16,66,16,0"
+                Padding="16,10"
+                HorizontalAlignment="Center"
+                VerticalAlignment="Top"
+                CornerRadius="20"
+                BorderThickness="1"
+                Background="{DynamicResource EchoPopupBrush}"
+                BorderBrush="{DynamicResource EchoAccentSoftBorderBrush}"
+                IsHitTestVisible="False"
+                IsVisible="{Binding ActionFeedbackText, Converter={x:Static StringConverters.IsNotNullOrEmpty}}">
+            <TextBlock FontSize="14" FontWeight="SemiBold" TextWrapping="Wrap" Foreground="{DynamicResource EchoAccentTextBrush}" Text="{Binding ActionFeedbackText}" />
+        </Border>
+
         <Grid x:Name="DialogLayer" Background="#99000000" IsVisible="False" PointerPressed="DialogLayer_OnPointerPressed">
             <Border x:Name="DialogCard"
                     Margin="16"

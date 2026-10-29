@@ -2,8 +2,9 @@
 
   <!--
     CuePilot for Android phones on Avalonia. Models, Services and ViewModels are shared with ../CuePilotDesktop,
-    the Echo theme and controls with ../CuePilot.Avalonia. Platform/ holds the phone parts: microphone capture with
-    API speech recognition (no DesktopCapture, no local whisper), file pickers and the view model hooks.
+    the Echo theme and controls with ../CuePilot.Avalonia. Platform/ holds the phone parts: microphone capture and
+    media decoding, speech recognition through the API or whisper.cpp built into the APK (native/), file and
+    folder pickers and the view model hooks.
     Views/ is a phone layout of the same pages: Home with topics, a session, settings.
   -->
   <PropertyGroup>
@@ -11,6 +12,8 @@
     <TargetFramework>net8.0-android</TargetFramework>
     <SupportedOSPlatformVersion>26</SupportedOSPlatformVersion>
     <Nullable>enable</Nullable>
+    <!-- Platform/LocalWhisper.cs calls whisper.cpp through function pointers. -->
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
     <ImplicitUsings>enable</ImplicitUsings>
     <RootNamespace>CuePilot.Android</RootNamespace>
     <!-- Same assembly name as the Mac app, so avares://CuePilot/... in the shared theme resolves. -->
@@ -55,11 +58,12 @@
     <PackageReference Include="PdfPig" Version="0.1.16" />
   </ItemGroup>
 
-  <!-- Shared code. The capture service and diagnostics have phone versions in Platform/ (same class names). -->
+  <!-- Shared code. Capture, media transcription, diagnostics and the speech model catalog have phone versions
+       in Platform/ (same class names). -->
   <ItemGroup>
     <Compile Include="..\CuePilotDesktop\Models\**\*.cs" Link="Shared\Models\%(RecursiveDir)%(Filename)%(Extension)" />
     <Compile Include="..\CuePilotDesktop\Services\**\*.cs"
-             Exclude="..\CuePilotDesktop\Services\HotkeyManager.cs;..\CuePilotDesktop\Services\HotkeyGesture.cs;..\CuePilotDesktop\Services\ScreenShareProtection.cs;..\CuePilotDesktop\Services\VisualContextCaptureService.cs;..\CuePilotDesktop\Services\CaptureOrchestratorService.cs;..\CuePilotDesktop\Services\EnvironmentDiagnosticsService.cs;..\CuePilotDesktop\Services\MediaTranscriptionService.cs"
+             Exclude="..\CuePilotDesktop\Services\HotkeyManager.cs;..\CuePilotDesktop\Services\HotkeyGesture.cs;..\CuePilotDesktop\Services\ScreenShareProtection.cs;..\CuePilotDesktop\Services\VisualContextCaptureService.cs;..\CuePilotDesktop\Services\CaptureOrchestratorService.cs;..\CuePilotDesktop\Services\EnvironmentDiagnosticsService.cs;..\CuePilotDesktop\Services\MediaTranscriptionService.cs;..\CuePilotDesktop\Services\SpeechModelCatalog.cs"
              Link="Shared\Services\%(RecursiveDir)%(Filename)%(Extension)" />
     <Compile Include="..\CuePilotDesktop\ViewModels\**\*.cs" Exclude="..\CuePilotDesktop\ViewModels\**\*.Wpf.cs"
              Link="Shared\ViewModels\%(RecursiveDir)%(Filename)%(Extension)" />
@@ -68,6 +72,11 @@
     <EmbeddedResource Include="..\CuePilotDesktop\Resources\Strings.ru.resx" ManifestResourceName="CuePilotDesktop.Resources.Strings.ru" Link="Shared\Resources\Strings.ru.resx" />
     <AvaloniaResource Include="..\CuePilotDesktop\Assets\Fonts\*.ttf" Link="Assets\Fonts\%(Filename)%(Extension)" />
     <AvaloniaResource Include="..\CuePilotDesktop\cuepilot-icon.png" Link="Assets\cuepilot-icon.png" />
+  </ItemGroup>
+
+  <!-- whisper.cpp for 64-bit phones, built by native/build-android.sh (in CI before the APK). -->
+  <ItemGroup>
+    <AndroidNativeLibrary Include="native\out\arm64-v8a\*.so" Abi="arm64-v8a" />
   </ItemGroup>
 
   <!-- Echo theme and controls of the Mac app. -->

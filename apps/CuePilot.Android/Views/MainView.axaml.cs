@@ -40,13 +40,17 @@ public partial class MainView : UserControl
         localizationService.SetLanguage(settings.UiLanguage);
         MobileText.Language = localizationService.CurrentLanguageCode;
 
+        bool localWhisper = PrepareLocalWhisper(dataRoot);
         var diagnostics = new DiagnosticsViewModel(new EnvironmentDiagnosticsService(dataRoot));
         _capture = new CaptureOrchestratorService();
         _viewModel = new MainViewModel(dataRoot, _capture, new NoVisualContextCapture(), diagnostics, settingsService, localizationService);
 
-        // The phone has no local whisper and no screen to capture.
-        _viewModel.UseApiStt = true;
+        // No screen of other apps to capture; without whisper.cpp (a 32-bit phone) speech goes through the API only.
         _viewModel.CaptureScreenContextEnabled = false;
+        if (!localWhisper)
+        {
+            _viewModel.UseApiStt = true;
+        }
 
         _viewModel.PlatformPermissionCheckRequested += () => PhonePlatform.HasMicrophonePermission();
         _viewModel.ConfirmationRequested += OnConfirmationRequested;
@@ -161,6 +165,32 @@ public partial class MainView : UserControl
     private void TopLevel_OnBackRequested(object? sender, RoutedEventArgs e) => e.Handled = HandleBack();
 
     /// <summary>Sessions, topics and settings live in the app's own storage; this folder stands in for the install folder.</summary>
+    /// <summary>
+    /// The view model counts local recognition as installed when «whisper-cli» sits in the app folder (the Mac
+    /// layout). On the phone whisper.cpp is a library inside the APK, so a small marker file stands for it.
+    /// </summary>
+    private static bool PrepareLocalWhisper(string dataRoot)
+    {
+        string marker = PlatformPaths.DefaultWhisperBin(dataRoot);
+        bool available = LocalWhisper.IsAvailable;
+        try
+        {
+            if (available && !File.Exists(marker))
+            {
+                File.WriteAllText(marker, "whisper.cpp is built into CuePilot for Android (libcuepilot_whisper).\n");
+            }
+            else if (!available && File.Exists(marker))
+            {
+                File.Delete(marker);
+            }
+        }
+        catch (IOException)
+        {
+        }
+
+        return available;
+    }
+
     public static string ResolveDataRoot()
     {
         string root = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "CuePilot", "app");

@@ -54,6 +54,7 @@ public sealed class MobileText : System.ComponentModel.INotifyPropertyChanged
         ["SessionActions"] = ("Сессия", "Session"),
         ["TopicEmptyHint"] = ("Здесь пока нет сессий. Нажмите «Запустить CuePilot», чтобы записать разговор. Перенести сессию в тему можно кнопкой «⋯» на её карточке.", "No sessions here yet. Tap «Start CuePilot» to record a conversation. Move a session to a topic with «⋯» on its card."),
         ["AskPlaceholder"] = ("Спросите о разговоре", "Ask about the conversation"),
+        ["CopyingFolder"] = ("Копирую документы из папки…", "Copying the folder's documents…"),
     };
 
     public static string Get(string key) =>

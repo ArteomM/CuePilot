@@ -10,11 +10,9 @@ namespace CuePilotDesktop.Services;
 /// The speech API of the phone (OpenAI-compatible /audio/transcriptions), with the same prompt, retries and
 /// body-format fallback as DesktopCapture. Used by live recording and by media files in the knowledge base.
 /// </summary>
-public sealed class SpeechApiClient
+public sealed class SpeechApiClient : ISpeechRecognizer
 {
     public const int SampleRate = 16000;
-    private const string RussianPrimingPrompt = "Разговор на русском языке.";
-    private static readonly char[] UkrainianOnlyLetters = { 'і', 'ї', 'є', 'ґ', 'І', 'Ї', 'Є', 'Ґ' };
     private static readonly HttpClient SttHttpClient = new() { Timeout = TimeSpan.FromSeconds(60) };
 
     private readonly string _apiUrl;
@@ -30,18 +28,22 @@ public sealed class SpeechApiClient
         _apiKey = apiKey ?? string.Empty;
         _model = model ?? string.Empty;
         _language = language ?? string.Empty;
-        _glossary = string.Join(", ", (glossary ?? string.Empty)
-            .Split(new[] { '\r', '\n', ',', ';' }, StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries));
+        _glossary = SpeechPrompt.NormalizeGlossary(glossary);
     }
+
+    public string Name => "API " + _model;
 
     /// <summary>Total cost reported by the API (usage.cost_rub), RUB.</summary>
     public double CostRub { get; private set; }
+
+    public string Transcribe(short[] samples, string previousText, CancellationToken token) =>
+        Transcribe(BuildWav(samples), previousText, token);
 
     /// <summary>Recognizes one WAV chunk; <paramref name="previousText"/> keeps words cut at the chunk border.</summary>
     public string Transcribe(byte[] wav, string previousText, CancellationToken token)
     {
         string url = _apiUrl.TrimEnd('/') + "/audio/transcriptions";
-        string prompt = BuildContinuityPrompt(previousText);
+        string prompt = SpeechPrompt.Build(_model, _language, _glossary, previousText);
         for (int attempt = 1; ; attempt++)
         {
             using var request = new HttpRequestMessage(HttpMethod.Post, url);
@@ -149,60 +151,11 @@ public sealed class SpeechApiClient
             : string.Empty;
     }
 
-    /// <summary>Same prompt as DesktopCapture: Russian priming phrase, glossary, tail of the previous chunk.</summary>
-    private string BuildContinuityPrompt(string previousText)
+    public bool IsPromptEcho(string text) => SpeechPrompt.IsEcho(text, _glossary);
+
+    public void Dispose()
     {
-        string model = _model;
-        if (model.Contains("diarize", StringComparison.OrdinalIgnoreCase) ||
-            model.StartsWith("aiesa/", StringComparison.OrdinalIgnoreCase))
-        {
-            return string.Empty;
-        }
-
-        bool russian = string.Equals(_language, "ru", StringComparison.OrdinalIgnoreCase);
-        string text = (previousText ?? string.Empty).Trim();
-        if (russian && text.IndexOfAny(UkrainianOnlyLetters) >= 0)
-        {
-            text = string.Empty;
-        }
-
-        if (text.Length > 200)
-        {
-            text = text[^200..];
-        }
-
-        var parts = new List<string>();
-        if (russian)
-        {
-            parts.Add(RussianPrimingPrompt);
-        }
-
-        if (_glossary.Length > 0)
-        {
-            parts.Add((russian ? "Термины: " : "Terms: ") + _glossary + ".");
-        }
-
-        parts.Add(text);
-        return string.Join(" ", parts).Trim();
     }
-
-    /// <summary>On noise without speech the model may return its own prompt: three or more words all from it is no speech.</summary>
-    public bool IsPromptEcho(string text)
-    {
-        string[] words = PromptWords(text);
-        if (words.Length < 3)
-        {
-            return false;
-        }
-
-        var promptWords = new HashSet<string>(PromptWords(RussianPrimingPrompt + " Термины Terms " + _glossary), StringComparer.Ordinal);
-        return words.All(promptWords.Contains);
-    }
-
-    private static string[] PromptWords(string text) =>
-        new string((text ?? string.Empty).ToLowerInvariant().Select(c => char.IsLetterOrDigit(c) ? c : ' ').ToArray())
-            .Split(' ', StringSplitOptions.RemoveEmptyEntries);
-
 
     /// <summary>16 kHz mono 16-bit WAV.</summary>
     public static byte[] BuildWav(short[] samples)

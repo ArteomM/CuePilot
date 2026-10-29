@@ -68,9 +68,9 @@ public class CaptureOrchestratorService
         }
 
         RunningStateChanged?.Invoke(this, true);
-        Log(options.UseApiStt
-            ? "[service] Phone microphone capture started, speech recognition through " + options.SttApiModel + "."
-            : "[service] Phone microphone capture started without speech recognition (no API key).");
+        Log(run.SpeechName.Length > 0
+            ? "[service] Phone microphone capture started, speech recognition: " + run.SpeechName + "."
+            : "[service] Phone microphone capture started without speech recognition (no API key and no downloaded model).");
     }
 
     /// <summary>No DesktopCapture on the phone: media files in the knowledge base cannot be transcribed by it.</summary>
@@ -183,7 +183,7 @@ public class CaptureOrchestratorService
         private readonly BlockingCollection<Chunk> _queue = new();
         private readonly CancellationTokenSource _abort = new();
         private readonly TaskCompletionSource _finished = new(TaskCreationOptions.RunContinuationsAsynchronously);
-        private readonly SpeechApiClient _speech;
+        private readonly ISpeechRecognizer? _speech;
         private Thread? _readerThread;
         private Task? _recognizer;
         private volatile bool _stopRequested;
@@ -198,7 +198,22 @@ public class CaptureOrchestratorService
             _owner = owner;
             _options = options;
             _source = source;
-            _speech = new SpeechApiClient(options.SttApiUrl, options.SttApiKey, options.SttApiModel, options.Language, options.SttGlossary);
+            _speech = CreateRecognizer(options);
+        }
+
+        public string SpeechName => _speech?.Name ?? string.Empty;
+
+        /// <summary>The API when it is on and has a key, otherwise whisper.cpp with the downloaded model, otherwise none.</summary>
+        private static ISpeechRecognizer? CreateRecognizer(CaptureStartOptions options)
+        {
+            if (options.UseApiStt)
+            {
+                return new SpeechApiClient(options.SttApiUrl, options.SttApiKey, options.SttApiModel, options.Language, options.SttGlossary);
+            }
+
+            return !string.IsNullOrWhiteSpace(options.WhisperModel) && LocalWhisper.IsAvailable
+                ? new LocalWhisperRecognizer(options.WhisperModel, options.Language, options.SttGlossary)
+                : null;
         }
 
         public void Start()
@@ -370,20 +385,19 @@ public class CaptureOrchestratorService
                         continue;
                     }
 
-                    byte[] wav = SpeechApiClient.BuildWav(chunk.Samples);
                     if (_options.KeepChunks && !string.IsNullOrWhiteSpace(_options.SttDir))
                     {
-                        TrySaveChunk(wav, chunk.StartedAt);
+                        TrySaveChunk(SpeechApiClient.BuildWav(chunk.Samples), chunk.StartedAt);
                     }
 
-                    if (!_options.UseApiStt)
+                    if (_speech == null)
                     {
                         continue;
                     }
 
                     try
                     {
-                        string text = _speech.Transcribe(wav, _previousText, _abort.Token);
+                        string text = _speech.Transcribe(chunk.Samples, _previousText, _abort.Token);
                         if (string.IsNullOrWhiteSpace(text) || !text.Any(char.IsLetterOrDigit) || _speech.IsPromptEcho(text))
                         {
                             continue;
@@ -398,8 +412,13 @@ public class CaptureOrchestratorService
                     }
                 }
             }
+            catch (OperationCanceledException)
+            {
+                // Killed: whisper.cpp stopped mid-piece.
+            }
             finally
             {
+                _speech?.Dispose();
                 _owner.Finish(this);
                 _finished.TrySetResult();
             }
@@ -424,7 +443,7 @@ public class CaptureOrchestratorService
                 MicPeak = peak,
                 SttQueueLength = queued,
                 SttLagSeconds = lag,
-                SttCostRub = _speech.CostRub
+                SttCostRub = _speech?.CostRub ?? 0
             });
         }
 

@@ -29,6 +29,18 @@ public class MainActivity : AvaloniaMainActivity<App>
         Current = this;
         CaptureOrchestratorService.PcmSourceFactory = () => new AndroidMicrophone();
         MediaTranscriptionService.DecoderFactory = path => new AndroidMediaDecoder(path);
+        LocalWhisper.JavaLoader = name =>
+        {
+            try
+            {
+                Java.Lang.JavaSystem.LoadLibrary(name);
+                return true;
+            }
+            catch (Java.Lang.Throwable)
+            {
+                return false;
+            }
+        };
         CaptureOrchestratorService.RecordingStateHook = recording =>
         {
             if (recording)

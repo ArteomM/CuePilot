@@ -86,14 +86,14 @@ public static class MediaTranscriptionService
         Action<string>? log,
         CancellationToken token)
     {
-        if (!request.UseApiStt)
-        {
-            throw new InvalidOperationException("Speech recognition through the API is off or has no key.");
-        }
-
-        var speech = new SpeechApiClient(request.SttApiUrl, request.SttApiKey, request.SttApiModel, request.Language, request.SttGlossary);
+        // The view model has already chosen: the API when it is on and has a key, otherwise local whisper.cpp.
+        using ISpeechRecognizer speech = request.UseApiStt
+            ? new SpeechApiClient(request.SttApiUrl, request.SttApiKey, request.SttApiModel, request.Language, request.SttGlossary)
+            : !string.IsNullOrWhiteSpace(request.WhisperModel) && LocalWhisper.IsAvailable
+                ? new LocalWhisperRecognizer(request.WhisperModel, request.Language, request.SttGlossary)
+                : throw new InvalidOperationException("No speech recognition: turn on the API or download a speech model in Settings.");
         var result = new MediaTranscriptionResult();
-        log?.Invoke($"[media] Transcribing {Path.GetFileName(request.MediaPath)} (API {request.SttApiModel}).");
+        log?.Invoke($"[media] Transcribing {Path.GetFileName(request.MediaPath)} ({speech.Name}).");
         using IMediaPcmReader reader = OpenReader(request.MediaPath);
         result.Duration = reader.Duration;
         progress?.Report(new MediaTranscriptionProgress(TimeSpan.Zero, result.Duration));
@@ -117,7 +117,7 @@ public static class MediaTranscriptionService
                 TimeSpan end = TimeSpan.FromSeconds((pieceStart + piece.Count) / (double)SampleRate);
                 try
                 {
-                    string text = speech.Transcribe(SpeechApiClient.BuildWav(piece.ToArray()), previousText, token);
+                    string text = speech.Transcribe(piece.ToArray(), previousText, token);
                     string cleaned = TranscriptTextPipeline.CleanRecognizedText(text);
                     if (!string.IsNullOrWhiteSpace(cleaned) && cleaned.Any(char.IsLetterOrDigit) && !speech.IsPromptEcho(cleaned))
                     {

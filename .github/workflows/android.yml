@@ -41,6 +41,16 @@ jobs:
           SDKMANAGER="$(ls "$ANDROID_SDK_ROOT"/cmdline-tools/*/bin/sdkmanager | sort -V | tail -1)"
           yes | "$SDKMANAGER" --sdk_root="$ANDROID_SDK_ROOT" "platforms;android-34" "build-tools;34.0.0" "platform-tools" > /dev/null
           ls "$ANDROID_SDK_ROOT/platforms" "$ANDROID_SDK_ROOT/build-tools"
+      # whisper.cpp for local speech recognition; rebuilt only when native/ changes.
+      - name: Keep the whisper.cpp libraries between builds
+        id: whisper-cache
+        uses: actions/cache@v4
+        with:
+          path: apps/CuePilot.Android/native/out
+          key: cuepilot-android-whisper-${{ hashFiles('apps/CuePilot.Android/native/*') }}
+      - name: Build whisper.cpp for the phone
+        if: steps.whisper-cache.outputs.cache-hit != 'true'
+        run: bash apps/CuePilot.Android/native/build-android.sh
       # Without a signing key in the secrets the APK is signed with the .NET debug key; it is cached so that
       # every build has the same key and installs over the previous one (the phone keeps its data).
       - name: Keep the debug signing key between builds

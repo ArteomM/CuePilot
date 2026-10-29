@@ -5,6 +5,7 @@ using Avalonia.Controls.ApplicationLifetimes;
 using Avalonia.Platform.Storage;
 using Avalonia.Styling;
 using CuePilotDesktop.Models;
+using CuePilotDesktop.Services;
 
 // Same namespace as the shared partial class, so this completes CuePilotDesktop.ViewModels.MainViewModel.
 namespace CuePilotDesktop.ViewModels;
@@ -53,27 +54,116 @@ public partial class MainViewModel
         return paths;
     }
 
-    /// <summary>Folders of a phone are not readable as plain folders: the knowledge base takes files and text there.</summary>
-    private partial Task<IReadOnlyList<string>> PickFoldersAsync(string title, bool multiple) =>
-        Task.FromResult<IReadOnlyList<string>>([]);
+    /// <summary>
+    /// A phone folder is a content tree, not a path: its supported documents (and those of its subfolders) are
+    /// copied into the app with the same layout, and that copy is parsed like a folder on the computer. The copy
+    /// runs off the UI thread, since a big folder on a memory card can take a while.
+    /// </summary>
+    private async partial Task<IReadOnlyList<string>> PickFoldersAsync(string title, bool multiple)
+    {
+        if (MainTopLevel?.StorageProvider is not { CanPickFolder: true } storage)
+        {
+            return [];
+        }
 
-    private static async Task<string?> CopyIntoAppAsync(IStorageFile file)
+        IReadOnlyList<IStorageFolder> folders = await storage.OpenFolderPickerAsync(new FolderPickerOpenOptions
+        {
+            Title = title,
+            AllowMultiple = multiple
+        });
+        if (folders.Count == 0)
+        {
+            return [];
+        }
+
+        ShowFeedback(CuePilot.Android.Platform.MobileText.Get("CopyingFolder"));
+        var paths = new List<string>();
+        foreach (IStorageFolder folder in folders)
+        {
+            string? path = await Task.Run(() => CopyFolderIntoAppAsync(folder));
+            if (path != null)
+            {
+                paths.Add(path);
+            }
+        }
+
+        return paths;
+    }
+
+    private const int MaxFolderFiles = 400;
+
+    private static async Task<string?> CopyFolderIntoAppAsync(IStorageFolder folder)
     {
         try
         {
-            string folder = Path.Combine(ImportsDirectory, DateTime.Now.ToString("yyyyMMdd-HHmmss") + "-" + Guid.NewGuid().ToString("N")[..6]);
-            Directory.CreateDirectory(folder);
-            string name = string.Concat(file.Name.Split(Path.GetInvalidFileNameChars()));
-            string target = Path.Combine(folder, string.IsNullOrWhiteSpace(name) ? "document" : name);
-            await using Stream source = await file.OpenReadAsync();
-            await using FileStream copy = File.Create(target);
-            await source.CopyToAsync(copy);
-            return target;
+            string root = Path.Combine(NewImportFolder(), SafeName(folder.Name, "folder"));
+            Directory.CreateDirectory(root);
+            int copied = 0;
+            var pending = new Queue<(IStorageFolder Folder, string Target)>();
+            pending.Enqueue((folder, root));
+            while (pending.Count > 0 && copied < MaxFolderFiles)
+            {
+                (IStorageFolder current, string target) = pending.Dequeue();
+                await foreach (IStorageItem item in current.GetItemsAsync())
+                {
+                    if (item.Name.StartsWith('.') || item.Name.StartsWith("~$", StringComparison.Ordinal))
+                    {
+                        continue;
+                    }
+
+                    if (item is IStorageFolder child)
+                    {
+                        string childTarget = Path.Combine(target, SafeName(child.Name, "folder"));
+                        Directory.CreateDirectory(childTarget);
+                        pending.Enqueue((child, childTarget));
+                    }
+                    else if (item is IStorageFile file && DocumentParser.IsSupported(file.Name) && copied < MaxFolderFiles)
+                    {
+                        if (await CopyFileAsync(file, Path.Combine(target, SafeName(file.Name, "document"))))
+                        {
+                            copied++;
+                        }
+                    }
+                }
+            }
+
+            return root;
         }
         catch (Exception)
         {
             return null;
         }
+    }
+
+    private static async Task<string?> CopyIntoAppAsync(IStorageFile file)
+    {
+        string target = Path.Combine(NewImportFolder(), SafeName(file.Name, "document"));
+        return await CopyFileAsync(file, target) ? target : null;
+    }
+
+    private static async Task<bool> CopyFileAsync(IStorageFile file, string target)
+    {
+        try
+        {
+            Directory.CreateDirectory(Path.GetDirectoryName(target)!);
+            await using Stream source = await file.OpenReadAsync();
+            await using FileStream copy = File.Create(target);
+            await source.CopyToAsync(copy);
+            return true;
+        }
+        catch (Exception)
+        {
+            return false;
+        }
+    }
+
+    private static string NewImportFolder() =>
+        Path.Combine(ImportsDirectory, DateTime.Now.ToString("yyyyMMdd-HHmmss") + "-" + Guid.NewGuid().ToString("N")[..6]);
+
+    private static string SafeName(string name, string fallback)
+    {
+        string safe = string.Concat(name.Split(Path.GetInvalidFileNameChars())).Trim();
+        return string.IsNullOrWhiteSpace(safe) ? fallback : safe;
     }
 
     /// <summary>The Echo palette lives in theme dictionaries (Themes/EchoPalette.axaml), so switching the variant recolors it.</summary>
