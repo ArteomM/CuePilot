@@ -36,6 +36,11 @@ jobs:
         run: |
           dotnet --version
           dotnet workload install android
+      - name: Android platform 34 and build tools
+        run: |
+          SDKMANAGER="$(ls "$ANDROID_SDK_ROOT"/cmdline-tools/*/bin/sdkmanager | sort -V | tail -1)"
+          yes | "$SDKMANAGER" --sdk_root="$ANDROID_SDK_ROOT" "platforms;android-34" "build-tools;34.0.0" "platform-tools" > /dev/null
+          ls "$ANDROID_SDK_ROOT/platforms" "$ANDROID_SDK_ROOT/build-tools"
       # Without a signing key in the secrets the APK is signed with the .NET debug key; it is cached so that
       # every build has the same key and installs over the previous one (the phone keeps its data).
       - name: Keep the debug signing key between builds
