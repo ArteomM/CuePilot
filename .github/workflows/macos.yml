@@ -5,6 +5,7 @@ on:
   push:
     paths:
       - "apps/**"
+      - "!apps/CuePilot.Android/**"
       - ".github/workflows/macos.yml"
 
 permissions:

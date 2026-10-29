@@ -1,0 +1,1033 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:controls="using:CuePilot.Avalonia.Views.Controls"
+             xmlns:views="using:CuePilot.Android.Views"
+             xmlns:platform="using:CuePilot.Android.Platform"
+             xmlns:vm="using:CuePilotDesktop.ViewModels"
+             xmlns:models="using:CuePilotDesktop.Models"
+             x:Class="CuePilot.Android.Views.MainView"
+             x:CompileBindings="False"
+             Background="{DynamicResource EchoBgBrush}"
+             Foreground="{DynamicResource EchoTextBrush}"
+             FontFamily="{StaticResource EchoFont}"
+             FontSize="15">
+    <!-- Phone layout of the Windows pages: Home (topics, sessions and a topic's tabs), a session, settings.
+         One column, bigger touch targets; colours, fonts and controls are the Echo ones of the desktop apps. -->
+    <UserControl.Styles>
+        <Style Selector="Button">
+            <Setter Property="MinHeight" Value="42" />
+        </Style>
+        <Style Selector="TextBox">
+            <Setter Property="MinHeight" Value="44" />
+            <Setter Property="FontSize" Value="15" />
+        </Style>
+        <Style Selector="TextBlock.section">
+            <Setter Property="Margin" Value="0,22,0,6" />
+            <Setter Property="FontSize" Value="13" />
+            <Setter Property="FontWeight" Value="Bold" />
+            <Setter Property="Foreground" Value="{DynamicResource EchoMutedBrush}" />
+        </Style>
+        <Style Selector="TextBlock.label">
+            <Setter Property="Margin" Value="0,12,0,6" />
+            <Setter Property="FontSize" Value="14" />
+            <Setter Property="Foreground" Value="{DynamicResource EchoSoftTextBrush}" />
+            <Setter Property="TextWrapping" Value="Wrap" />
+        </Style>
+        <Style Selector="TextBlock.hint">
+            <Setter Property="Margin" Value="0,6,0,0" />
+            <Setter Property="FontSize" Value="13" />
+            <Setter Property="LineHeight" Value="19" />
+            <Setter Property="Foreground" Value="{DynamicResource EchoMutedBrush}" />
+            <Setter Property="TextWrapping" Value="Wrap" />
+        </Style>
+        <Style Selector="Border.card">
+            <Setter Property="Background" Value="{DynamicResource EchoSurfaceBrush}" />
+            <Setter Property="BorderBrush" Value="{DynamicResource EchoBorderBrush}" />
+            <Setter Property="BorderThickness" Value="1" />
+            <Setter Property="CornerRadius" Value="16" />
+            <Setter Property="Padding" Value="14" />
+        </Style>
+        <Style Selector="Button.dangerSoft">
+            <Setter Property="Background" Value="{DynamicResource EchoDangerSoftBrush}" />
+            <Setter Property="BorderBrush" Value="{DynamicResource EchoDangerBorderBrush}" />
+            <Setter Property="Foreground" Value="{DynamicResource EchoDangerTextBrush}" />
+        </Style>
+        <Style Selector="Button.icon">
+            <Setter Property="Width" Value="44" />
+            <Setter Property="Height" Value="42" />
+            <Setter Property="Padding" Value="0" />
+        </Style>
+        <!-- Topic chips: a horizontal row instead of the desktop sidebar. -->
+        <Style Selector="ListBox#TopicChips ListBoxItem">
+            <Setter Property="Padding" Value="0" />
+            <Setter Property="Margin" Value="0,0,8,0" />
+            <Setter Property="Background" Value="Transparent" />
+        </Style>
+        <Style Selector="Border.topicChip">
+            <Setter Property="Background" Value="{DynamicResource EchoSurfaceBrush}" />
+            <Setter Property="BorderBrush" Value="{DynamicResource EchoBorderBrush}" />
+        </Style>
+        <Style Selector="ListBoxItem:selected Border.topicChip">
+            <Setter Property="Background" Value="{DynamicResource EchoSelectedTabBrush}" />
+            <Setter Property="BorderBrush" Value="{DynamicResource EchoAccentBrush}" />
+        </Style>
+        <Style Selector="ListBoxItem /template/ ContentPresenter#PART_ContentPresenter">
+            <Setter Property="Background" Value="Transparent" />
+        </Style>
+        <!-- Pill tabs of a session and of a topic. -->
+        <Style Selector="RadioButton.pill">
+            <Setter Property="Margin" Value="0,0,8,0" />
+            <Setter Property="MinHeight" Value="38" />
+            <Setter Property="Cursor" Value="Hand" />
+            <Setter Property="Template">
+                <ControlTemplate>
+                    <Border Name="Pill"
+                            Padding="14,0"
+                            MinHeight="38"
+                            CornerRadius="19"
+                            BorderThickness="1"
+                            Background="{DynamicResource EchoSurfaceAltBrush}"
+                            BorderBrush="{DynamicResource EchoBorderBrush}">
+                        <ContentPresenter VerticalAlignment="Center"
+                                          Content="{TemplateBinding Content}"
+                                          FontSize="14"
+                                          FontWeight="SemiBold"
+                                          Foreground="{DynamicResource EchoTextBrush}" />
+                    </Border>
+                </ControlTemplate>
+            </Setter>
+        </Style>
+        <Style Selector="RadioButton.pill:checked /template/ Border#Pill">
+            <Setter Property="Background" Value="{DynamicResource EchoSelectedTabBrush}" />
+            <Setter Property="BorderBrush" Value="{DynamicResource EchoAccentBrush}" />
+        </Style>
+        <!-- Hint dialog bubbles, like the overlay on the desktop. -->
+        <Style Selector="Border.bubble">
+            <Setter Property="Background" Value="{DynamicResource EchoSurfaceBrush}" />
+            <Setter Property="BorderBrush" Value="{DynamicResource EchoBorderBrush}" />
+            <Setter Property="HorizontalAlignment" Value="Left" />
+            <Setter Property="CornerRadius" Value="16,16,16,4" />
+        </Style>
+        <Style Selector="Border.bubble.user">
+            <Setter Property="Background" Value="{DynamicResource EchoUserBubbleBrush}" />
+            <Setter Property="BorderBrush" Value="{DynamicResource EchoAccentSoftBorderBrush}" />
+            <Setter Property="HorizontalAlignment" Value="Right" />
+            <Setter Property="CornerRadius" Value="16,16,4,16" />
+        </Style>
+        <Style Selector="TextBlock.role">
+            <Setter Property="Foreground" Value="{DynamicResource EchoAccentTextBrush}" />
+        </Style>
+        <Style Selector="TextBlock.role.placeholder">
+            <Setter Property="Foreground" Value="{DynamicResource EchoMutedBrush}" />
+        </Style>
+        <Style Selector="TextBlock.knowledgeStatus">
+            <Setter Property="Foreground" Value="{DynamicResource EchoMutedBrush}" />
+        </Style>
+        <Style Selector="TextBlock.knowledgeStatus.fresh, TextBlock.knowledgeStatus.changed">
+            <Setter Property="Foreground" Value="{DynamicResource EchoAccentTextBrush}" />
+        </Style>
+        <Style Selector="TextBlock.knowledgeStatus.failed">
+            <Setter Property="Foreground" Value="{DynamicResource EchoDangerTextBrush}" />
+        </Style>
+        <Style Selector="TextBlock.staleStatus">
+            <Setter Property="Foreground" Value="{DynamicResource EchoMutedBrush}" />
+        </Style>
+        <Style Selector="TextBlock.staleStatus.stale">
+            <Setter Property="Foreground" Value="{DynamicResource EchoAccentTextBrush}" />
+            <Setter Property="FontWeight" Value="SemiBold" />
+        </Style>
+        <Style Selector="Path.chevron">
+            <Setter Property="RenderTransform" Value="none" />
+        </Style>
+        <Style Selector="Path.chevron.expanded">
+            <Setter Property="RenderTransform" Value="rotate(90deg)" />
+        </Style>
+        <Style Selector="TextBlock.costLabel.total">
+            <Setter Property="Foreground" Value="{DynamicResource EchoTextBrush}" />
+            <Setter Property="FontWeight" Value="Bold" />
+        </Style>
+        <Style Selector="TextBlock.costValue.total">
+            <Setter Property="Foreground" Value="{DynamicResource EchoAccentTextBrush}" />
+            <Setter Property="FontWeight" Value="Bold" />
+        </Style>
+        <Style Selector="ProgressBar">
+            <Setter Property="Foreground" Value="{DynamicResource EchoAccentBrush}" />
+            <Setter Property="Background" Value="{DynamicResource EchoSurfaceAltBrush}" />
+            <Setter Property="MinHeight" Value="0" />
+        </Style>
+    </UserControl.Styles>
+
+    <Grid x:Name="RootGrid">
+        <Grid RowDefinitions="Auto,*">
+            <!-- Header: logo on Home, «Назад» elsewhere; theme and settings on the right. -->
+            <Border Padding="12,8"
+                    Background="{DynamicResource EchoHeaderBrush}"
+                    BorderBrush="{DynamicResource EchoBorderBrush}"
+                    BorderThickness="0,0,0,1">
+                <Grid ColumnDefinitions="Auto,*,Auto,Auto">
+                    <StackPanel Orientation="Horizontal"
+                                VerticalAlignment="Center"
+                                IsVisible="{Binding SelectedMainPage, Converter={x:Static controls:EqualsConverter.Instance}, ConverterParameter=Home}">
+                        <controls:EchoLogo Width="36" Height="36" Margin="-2,0,4,0" IsAnimating="{Binding IsCapturing}" />
+                        <TextBlock FontSize="22" FontWeight="ExtraBold" VerticalAlignment="Center" Foreground="{DynamicResource EchoTextBrush}"><Run Text="Cue" /><Run Foreground="{DynamicResource EchoAccentTextBrush}" Text="Pilot" /></TextBlock>
+                    </StackPanel>
+                    <Button x:Name="BackButton"
+                            Classes="accent"
+                            Height="40"
+                            Padding="12,0,16,0"
+                            IsVisible="False"
+                            Command="{Binding GoHomeCommand}">
+                        <StackPanel Orientation="Horizontal">
+                            <Path Width="16"
+                                  Height="14"
+                                  VerticalAlignment="Center"
+                                  Stretch="Uniform"
+                                  Stroke="{Binding $parent[Button].Foreground}"
+                                  StrokeThickness="2.2"
+                                  StrokeLineCap="Round"
+                                  StrokeJoin="Round"
+                                  Data="M 7,1 L 1,7 L 7,13 M 1,7 L 15,7" />
+                            <TextBlock Margin="8,0,0,0" VerticalAlignment="Center" FontSize="15" FontWeight="Bold" Text="{Binding L[GoBack]}" />
+                        </StackPanel>
+                    </Button>
+
+                    <Button Grid.Column="2"
+                            Classes="icon"
+                            Margin="0,0,8,0"
+                            Command="{Binding ToggleThemeCommand}">
+                        <Grid Width="18" Height="18">
+                            <Canvas Width="18" Height="18" IsVisible="{Binding IsDarkTheme}">
+                                <Ellipse Canvas.Left="5" Canvas.Top="5" Width="8" Height="8" Fill="{DynamicResource EchoTextBrush}" />
+                                <Path Stroke="{DynamicResource EchoTextBrush}" StrokeThickness="1.6" StrokeLineCap="Round"
+                                      Data="M9,1 L9,2.6 M9,15.4 L9,17 M1,9 L2.6,9 M15.4,9 L17,9 M3.3,3.3 L4.5,4.5 M13.5,13.5 L14.7,14.7 M3.3,14.7 L4.5,13.5 M13.5,4.5 L14.7,3.3" />
+                            </Canvas>
+                            <Path IsVisible="{Binding IsLightTheme}"
+                                  Fill="{DynamicResource EchoTextBrush}"
+                                  Data="M11.5,2 A7,7 0 1 0 16,12.5 A5.6,5.6 0 1 1 11.5,2 Z" />
+                        </Grid>
+                    </Button>
+                    <Button Grid.Column="3"
+                            Height="42"
+                            Padding="14,0"
+                            Command="{Binding OpenSettingsCommand}"
+                            Content="{Binding L[SettingsTab]}" />
+                </Grid>
+            </Border>
+
+            <Panel Grid.Row="1">
+                <!-- ===== Home: start a recording, topics, sessions and the tabs of a topic. ===== -->
+                <Grid x:Name="HomePage"
+                      RowDefinitions="Auto,Auto,Auto,Auto,*,Auto"
+                      IsVisible="{Binding SelectedMainPage, Converter={x:Static controls:EqualsConverter.Instance}, ConverterParameter=Home}">
+                    <Border Margin="12,12,12,0" Classes="card" Background="{DynamicResource EchoHeroBrush}">
+                        <StackPanel>
+                            <Button Classes="accent"
+                                    Height="52"
+                                    HorizontalAlignment="Stretch"
+                                    FontSize="17"
+                                    Click="StartRecording_OnClick"
+                                    IsVisible="{Binding !IsCapturing}"
+                                    Content="{Binding L[StartCuePilot]}" />
+                            <Button Classes="accent"
+                                    Height="52"
+                                    HorizontalAlignment="Stretch"
+                                    FontSize="16"
+                                    Command="{Binding OpenActiveSessionCommand}"
+                                    IsVisible="{Binding IsCapturing}">
+                                <StackPanel Orientation="Horizontal">
+                                    <controls:EchoListeningBars Margin="0,0,10,0" VerticalAlignment="Center" IsActive="{Binding IsCapturing}" />
+                                    <TextBlock VerticalAlignment="Center" Text="{Binding [Recording], Source={x:Static platform:MobileText.Instance}}" />
+                                </StackPanel>
+                            </Button>
+                            <TextBlock Classes="hint" Margin="2,10,2,0" IsVisible="{Binding !IsTopicSelected}" Text="{Binding [PhoneMicHint], Source={x:Static platform:MobileText.Instance}}" />
+                        </StackPanel>
+                    </Border>
+
+                    <!-- Topics: «Все сессии», «Без темы» and the user's topics as chips. -->
+                    <Grid Grid.Row="1" Margin="12,14,12,0" ColumnDefinitions="*,Auto">
+                        <ScrollViewer HorizontalScrollBarVisibility="Hidden" VerticalScrollBarVisibility="Disabled">
+                            <ListBox x:Name="TopicChips"
+                                     ItemsSource="{Binding TopicItems}"
+                                     SelectedItem="{Binding SelectedTopicItem, Mode=TwoWay}"
+                                     Background="Transparent"
+                                     BorderThickness="0"
+                                     ScrollViewer.HorizontalScrollBarVisibility="Disabled">
+                                <ListBox.ItemsPanel>
+                                    <ItemsPanelTemplate>
+                                        <StackPanel Orientation="Horizontal" />
+                                    </ItemsPanelTemplate>
+                                </ListBox.ItemsPanel>
+                                <ListBox.ItemTemplate>
+                                    <DataTemplate>
+                                        <Border Classes="topicChip" Height="38" Padding="14,0" CornerRadius="19" BorderThickness="1">
+                                            <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+                                                <TextBlock MaxWidth="200"
+                                                           FontSize="14"
+                                                           FontWeight="SemiBold"
+                                                           VerticalAlignment="Center"
+                                                           TextTrimming="CharacterEllipsis"
+                                                           Foreground="{DynamicResource EchoTextBrush}"
+                                                           Text="{Binding Name}" />
+                                                <Ellipse Width="7" Height="7" Margin="7,0,0,0" VerticalAlignment="Center" Fill="{DynamicResource EchoAccentBrush}" IsVisible="{Binding IsStale}" />
+                                                <TextBlock Margin="8,0,0,0" FontSize="12.5" FontWeight="SemiBold" VerticalAlignment="Center" Foreground="{DynamicResource EchoMutedBrush}" Text="{Binding SessionCount}" />
+                                            </StackPanel>
+                                        </Border>
+                                    </DataTemplate>
+                                </ListBox.ItemTemplate>
+                            </ListBox>
+                        </ScrollViewer>
+                        <Button Grid.Column="1"
+                                Classes="icon"
+                                Margin="8,0,0,0"
+                                FontSize="20"
+                                Command="{Binding CreateTopicCommand}"
+                                Content="+" />
+                    </Grid>
+
+                    <!-- Title of the list: the topic name (tap to rename), count, actions. -->
+                    <Grid Grid.Row="2" Margin="14,14,12,0" ColumnDefinitions="*,Auto">
+                        <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+                            <TextBlock x:Name="TopicTitleText"
+                                       FontSize="21"
+                                       FontWeight="ExtraBold"
+                                       VerticalAlignment="Center"
+                                       MaxWidth="210"
+                                       TextTrimming="CharacterEllipsis"
+                                       Foreground="{DynamicResource EchoTextBrush}"
+                                       IsVisible="{Binding !IsEditingTopicName}"
+                                       Text="{Binding LibraryTitle}" />
+                            <TextBox x:Name="TopicNameEditTextBox"
+                                     Width="220"
+                                     FontSize="17"
+                                     VerticalContentAlignment="Center"
+                                     Text="{Binding EditableTopicName}"
+                                     IsVisible="{Binding IsEditingTopicName}" />
+                            <Border Margin="10,0,0,0" Padding="9,3" VerticalAlignment="Center" CornerRadius="11" Background="{DynamicResource EchoSurfaceAltBrush}">
+                                <TextBlock FontSize="12.5" FontWeight="SemiBold" Foreground="{DynamicResource EchoMutedBrush}" Text="{Binding VisibleSessionsCount}" />
+                            </Border>
+                        </StackPanel>
+                        <StackPanel Grid.Column="1" Orientation="Horizontal" VerticalAlignment="Center">
+                            <Button Classes="ghost"
+                                    Padding="10,0"
+                                    Click="TopicMenu_OnClick"
+                                    IsVisible="{Binding IsTopicSelected}"
+                                    Content="⋯" />
+                            <Button Padding="12,0"
+                                    Margin="6,0,0,0"
+                                    Command="{Binding ToggleSelectionModeCommand}"
+                                    Content="{Binding L[SelectSessions]}">
+                                <Button.IsVisible>
+                                    <MultiBinding Converter="{x:Static BoolConverters.And}">
+                                        <Binding Path="ShowSessionsPanel" />
+                                        <Binding Path="!IsSelectionMode" />
+                                    </MultiBinding>
+                                </Button.IsVisible>
+                            </Button>
+                        </StackPanel>
+                    </Grid>
+
+                    <!-- Tabs of a topic. -->
+                    <ScrollViewer Grid.Row="3"
+                                  Margin="12,12,0,0"
+                                  HorizontalScrollBarVisibility="Hidden"
+                                  VerticalScrollBarVisibility="Disabled"
+                                  IsVisible="{Binding IsTopicSelected}">
+                        <StackPanel Orientation="Horizontal">
+                            <RadioButton GroupName="TopicTab" Classes="pill" IsChecked="{Binding IsTopicTabSessions, Mode=TwoWay}" Content="{Binding L[TopicTabSessions]}" />
+                            <RadioButton GroupName="TopicTab" Classes="pill" IsChecked="{Binding IsTopicTabSummary, Mode=TwoWay}" Content="{Binding L[TopicTabSummary]}" />
+                            <RadioButton GroupName="TopicTab" Classes="pill" IsChecked="{Binding IsTopicTabKnowledge, Mode=TwoWay}">
+                                <StackPanel Orientation="Horizontal">
+                                    <TextBlock Text="{Binding L[TopicTabKnowledge]}" />
+                                    <TextBlock Margin="6,0,0,0" Foreground="{DynamicResource EchoMutedBrush}" Text="{Binding KnowledgeSourcesCount}" />
+                                </StackPanel>
+                            </RadioButton>
+                            <RadioButton GroupName="TopicTab" Classes="pill" IsChecked="{Binding IsTopicTabQuestions, Mode=TwoWay}">
+                                <StackPanel Orientation="Horizontal">
+                                    <TextBlock Text="{Binding L[TopicTabQuestions]}" />
+                                    <TextBlock Margin="6,0,0,0" Foreground="{DynamicResource EchoMutedBrush}" Text="{Binding TopicQuestionsCount}" />
+                                </StackPanel>
+                            </RadioButton>
+                            <RadioButton GroupName="TopicTab" Classes="pill" Margin="0,0,12,0" IsChecked="{Binding IsTopicTabGraph, Mode=TwoWay}" Content="{Binding L[TopicTabGraph]}" />
+                        </StackPanel>
+                    </ScrollViewer>
+
+                    <Panel Grid.Row="4" Margin="12,10,12,0">
+                        <!-- «Сессии». -->
+                        <Grid IsVisible="{Binding ShowSessionsPanel}">
+                            <TextBlock Margin="2,20,2,0"
+                                       FontSize="14"
+                                       TextWrapping="Wrap"
+                                       Foreground="{DynamicResource EchoMutedBrush}"
+                                       Text="{Binding [TopicEmptyHint], Source={x:Static platform:MobileText.Instance}}"
+                                       IsVisible="{Binding VisibleSessionsCount, Converter={x:Static controls:IsZeroConverter.Instance}}" />
+                            <ListBox x:Name="SessionsList"
+                                     ItemsSource="{Binding CompletedSessionsView}"
+                                     controls:ItemContainer.Classes="plain"
+                                     ScrollViewer.HorizontalScrollBarVisibility="Disabled"
+                                     BorderThickness="0"
+                                     Background="Transparent">
+                                <ListBox.DataTemplates>
+                                    <DataTemplate DataType="vm:SessionGroupHeader">
+                                        <TextBlock Margin="2,12,0,8" FontSize="13" FontWeight="Bold" Foreground="{DynamicResource EchoMutedBrush}" Text="{Binding Name}" />
+                                    </DataTemplate>
+                                    <DataTemplate DataType="models:SessionSummary">
+                                        <Grid Margin="0,0,0,8" ColumnDefinitions="Auto,*,Auto">
+                                            <CheckBox Margin="2,0,10,0"
+                                                      VerticalAlignment="Center"
+                                                      IsChecked="{Binding IsChecked, Mode=TwoWay}"
+                                                      IsVisible="{Binding $parent[UserControl].DataContext.IsSelectionMode}" />
+                                            <Button Grid.Column="1"
+                                                    Classes="sessionCard"
+                                                    Classes.checked="{Binding IsChecked}"
+                                                    HorizontalAlignment="Stretch"
+                                                    HorizontalContentAlignment="Stretch"
+                                                    Padding="14,10"
+                                                    Click="SessionCard_OnClick">
+                                                <Grid RowDefinitions="Auto,Auto" ColumnDefinitions="*,Auto">
+                                                    <TextBlock Foreground="{DynamicResource EchoTextBrush}"
+                                                               FontSize="16"
+                                                               FontWeight="Bold"
+                                                               TextTrimming="CharacterEllipsis"
+                                                               Text="{Binding Title}" />
+                                                    <TextBlock Grid.Column="1"
+                                                               Margin="10,0,0,0"
+                                                               VerticalAlignment="Center"
+                                                               FontSize="14"
+                                                               Foreground="{DynamicResource EchoMutedBrush}"
+                                                               Text="{Binding StartedAt, StringFormat={}{0:t}}" />
+                                                    <StackPanel Grid.Row="1" Grid.ColumnSpan="2" Margin="0,6,0,0" Orientation="Horizontal">
+                                                        <Border Padding="9,2"
+                                                                CornerRadius="10"
+                                                                Background="{DynamicResource EchoSurfaceAltBrush}">
+                                                            <TextBlock FontSize="12.5" FontWeight="SemiBold" Foreground="{DynamicResource EchoMutedBrush}" Text="{Binding Usage.SessionDurationText}" />
+                                                        </Border>
+                                                        <Border Margin="8,0,0,0"
+                                                                Padding="9,2"
+                                                                CornerRadius="10"
+                                                                BorderThickness="1"
+                                                                Background="{DynamicResource EchoAccentSoftBrush}"
+                                                                BorderBrush="{DynamicResource EchoAccentSoftBorderBrush}"
+                                                                IsVisible="{Binding TopicName, Converter={x:Static StringConverters.IsNotNullOrEmpty}}">
+                                                            <TextBlock MaxWidth="170" FontSize="12" FontWeight="SemiBold" TextTrimming="CharacterEllipsis" Foreground="{DynamicResource EchoBadgeTextBrush}" Text="{Binding TopicName}" />
+                                                        </Border>
+                                                    </StackPanel>
+                                                </Grid>
+                                            </Button>
+                                            <Button Grid.Column="2"
+                                                    Classes="ghost icon"
+                                                    Margin="4,0,0,0"
+                                                    VerticalAlignment="Center"
+                                                    FontSize="18"
+                                                    Click="SessionMenu_OnClick"
+                                                    IsVisible="{Binding !$parent[UserControl].DataContext.IsSelectionMode}"
+                                                    Content="⋯" />
+                                        </Grid>
+                                    </DataTemplate>
+                                </ListBox.DataTemplates>
+                            </ListBox>
+                        </Grid>
+
+                        <!-- «Сводка». -->
+                        <Border Classes="card" IsVisible="{Binding ShowSummaryPanel}">
+                            <Grid RowDefinitions="Auto,Auto,*">
+                                <TextBlock FontSize="18" FontWeight="ExtraBold" Foreground="{DynamicResource EchoTextBrush}" Text="{Binding L[KnowledgeSummaryTitle]}" />
+                                <StackPanel Grid.Row="1" Margin="0,4,0,0">
+                                    <StackPanel Orientation="Horizontal">
+                                        <controls:EchoThinkingDots Margin="0,0,8,0" VerticalAlignment="Center" IsVisible="{Binding IsTopicBusy}" />
+                                        <TextBlock Classes="staleStatus" Classes.stale="{Binding IsTopicKnowledgeStale}" FontSize="13" TextWrapping="Wrap" Text="{Binding TopicKnowledgeStatusText}" />
+                                    </StackPanel>
+                                    <UniformGrid Margin="0,10,0,0" Columns="2">
+                                        <Button Margin="0,0,4,0" HorizontalAlignment="Stretch" Command="{Binding CopyTopicKnowledgeCommand}" Content="{Binding L[CopyText]}" />
+                                        <Button Margin="4,0,0,0" Classes="accent" HorizontalAlignment="Stretch" Command="{Binding RefreshTopicKnowledgeCommand}" Content="{Binding L[TopicRefreshKnowledge]}" />
+                                    </UniformGrid>
+                                </StackPanel>
+                                <Border Grid.Row="2" Margin="0,12,0,0" BorderBrush="{DynamicResource EchoBorderBrush}" BorderThickness="0,1,0,0">
+                                    <Grid Margin="0,10,0,0">
+                                        <controls:MarkdownDocumentView Markdown="{Binding TopicKnowledgeText}" IsVisible="{Binding HasTopicKnowledge}" />
+                                        <TextBlock Margin="0,24,0,0"
+                                                   HorizontalAlignment="Center"
+                                                   TextAlignment="Center"
+                                                   TextWrapping="Wrap"
+                                                   FontSize="14"
+                                                   Foreground="{DynamicResource EchoMutedBrush}"
+                                                   Text="{Binding L[KnowledgeSummaryEmpty]}"
+                                                   IsVisible="{Binding !HasTopicKnowledge}" />
+                                    </Grid>
+                                </Border>
+                            </Grid>
+                        </Border>
+
+                        <!-- «База знаний»: sources; a tap opens the parsed text over the page. -->
+                        <Grid RowDefinitions="Auto,Auto,*,Auto" IsVisible="{Binding ShowKnowledgePanel}">
+                            <UniformGrid Columns="3">
+                                <Button Margin="0,0,3,0" Padding="4,0" HorizontalAlignment="Stretch" FontSize="13.5" Command="{Binding AddKnowledgeFilesCommand}" Content="{Binding L[KnowledgeAddFiles]}" />
+                                <Button Margin="3,0" Padding="4,0" HorizontalAlignment="Stretch" FontSize="13.5" Command="{Binding AddKnowledgeMediaCommand}" Content="{Binding L[KnowledgeAddMedia]}" />
+                                <Button Margin="3,0,0,0" Padding="4,0" HorizontalAlignment="Stretch" FontSize="13.5" Click="AddNote_OnClick" Content="{Binding L[KnowledgeAddNote]}" />
+                            </UniformGrid>
+                            <Grid Grid.Row="1" Margin="2,10,0,4" ColumnDefinitions="*,Auto" IsVisible="{Binding HasKnowledgeSources}">
+                                <TextBlock VerticalAlignment="Center" FontSize="13" Foreground="{DynamicResource EchoMutedBrush}" Text="{Binding KnowledgeSourcesSummary}" IsVisible="{Binding !IsKnowledgeSelectionMode}" />
+                                <Button Classes="ghost" Padding="8,0" Command="{Binding SelectAllKnowledgeCommand}" Content="{Binding L[SelectAllSessions]}" IsVisible="{Binding IsKnowledgeSelectionMode}" />
+                                <Button Grid.Column="1" Classes="ghost" Padding="8,0" Command="{Binding ToggleKnowledgeSelectionModeCommand}" Content="{Binding L[SelectSessions]}" IsVisible="{Binding !IsKnowledgeSelectionMode}" />
+                                <Button Grid.Column="1" Classes="ghost" Padding="8,0" Command="{Binding ToggleKnowledgeSelectionModeCommand}" Content="{Binding L[SelectDone]}" IsVisible="{Binding IsKnowledgeSelectionMode}" />
+                            </Grid>
+                            <TextBlock Grid.Row="2" Margin="2,14,2,0" FontSize="14" TextWrapping="Wrap" Foreground="{DynamicResource EchoMutedBrush}" Text="{Binding L[KnowledgeListHint]}" IsVisible="{Binding !HasKnowledgeSources}" />
+                            <ListBox Grid.Row="2"
+                                     x:Name="KnowledgeList"
+                                     Background="Transparent"
+                                     BorderThickness="0"
+                                     ScrollViewer.HorizontalScrollBarVisibility="Disabled"
+                                     ItemsSource="{Binding KnowledgeItems}"
+                                     controls:ItemContainer.Classes="plain"
+                                     IsVisible="{Binding HasKnowledgeSources}">
+                                <ListBox.ItemTemplate>
+                                    <DataTemplate>
+                                        <Grid Margin="0,0,0,8" ColumnDefinitions="Auto,*">
+                                            <CheckBox Margin="2,0,10,0"
+                                                      VerticalAlignment="Center"
+                                                      IsChecked="{Binding IsChecked, Mode=TwoWay}"
+                                                      IsVisible="{Binding $parent[UserControl].DataContext.IsKnowledgeSelectionMode}" />
+                                            <Button Grid.Column="1"
+                                                    Classes="sessionCard"
+                                                    Classes.checked="{Binding IsChecked}"
+                                                    HorizontalAlignment="Stretch"
+                                                    HorizontalContentAlignment="Stretch"
+                                                    Padding="12,10"
+                                                    Click="KnowledgeItem_OnClick">
+                                                <Grid ColumnDefinitions="Auto,*">
+                                                    <Border Width="34" Height="34" CornerRadius="10" VerticalAlignment="Center" Background="{DynamicResource EchoSurfaceAltBrush}">
+                                                        <TextBlock HorizontalAlignment="Center" VerticalAlignment="Center" FontSize="15" Foreground="{DynamicResource EchoAccentTextBrush}" Text="{Binding KindGlyph}" />
+                                                    </Border>
+                                                    <StackPanel Grid.Column="1" Margin="10,0,0,0" VerticalAlignment="Center">
+                                                        <TextBlock FontSize="15" FontWeight="SemiBold" TextTrimming="CharacterEllipsis" Foreground="{DynamicResource EchoTextBrush}" Text="{Binding Title}" />
+                                                        <StackPanel Margin="0,2,0,0" Orientation="Horizontal">
+                                                            <controls:EchoThinkingDots Margin="0,0,6,0" VerticalAlignment="Center" IsVisible="{Binding IsBusy}" />
+                                                            <TextBlock Classes="knowledgeStatus"
+                                                                       Classes.fresh="{Binding State, Converter={x:Static controls:EqualsConverter.Instance}, ConverterParameter=New}"
+                                                                       Classes.changed="{Binding State, Converter={x:Static controls:EqualsConverter.Instance}, ConverterParameter=Changed}"
+                                                                       Classes.failed="{Binding State, Converter={x:Static controls:EqualsConverter.Instance}, ConverterParameter=Failed}"
+                                                                       FontSize="12.5"
+                                                                       TextTrimming="CharacterEllipsis"
+                                                                       Text="{Binding StatusText}" />
+                                                        </StackPanel>
+                                                    </StackPanel>
+                                                </Grid>
+                                            </Button>
+                                        </Grid>
+                                    </DataTemplate>
+                                </ListBox.ItemTemplate>
+                            </ListBox>
+                            <StackPanel Grid.Row="3" Margin="0,6,0,0">
+                                <Button Classes="accent"
+                                        HorizontalAlignment="Stretch"
+                                        Command="{Binding ParseAllKnowledgeCommand}"
+                                        Content="{Binding L[KnowledgeParseAll]}">
+                                    <Button.IsVisible>
+                                        <MultiBinding Converter="{x:Static BoolConverters.And}">
+                                            <Binding Path="HasUnparsedKnowledge" />
+                                            <Binding Path="!IsKnowledgeSelectionMode" />
+                                        </MultiBinding>
+                                    </Button.IsVisible>
+                                </Button>
+                                <Button Classes="dangerSoft"
+                                        HorizontalAlignment="Stretch"
+                                        Click="RemoveCheckedKnowledge_OnClick"
+                                        Content="{Binding RemoveCheckedKnowledgeText}"
+                                        IsVisible="{Binding IsKnowledgeSelectionMode}" />
+                            </StackPanel>
+                        </Grid>
+
+                        <!-- «Вопросы». -->
+                        <Grid RowDefinitions="Auto,Auto,*" IsVisible="{Binding ShowQuestionsPanel}">
+                            <Border Classes="card" Padding="8">
+                                <Grid ColumnDefinitions="*,Auto">
+                                    <TextBox MinHeight="44"
+                                             MaxHeight="140"
+                                             Background="Transparent"
+                                             BorderThickness="0"
+                                             AcceptsReturn="True"
+                                             TextWrapping="Wrap"
+                                             Watermark="{Binding L[TopicAskPlaceholder]}"
+                                             Text="{Binding TopicQuestionText}" />
+                                    <Button Grid.Column="1" Classes="accent" Margin="8,0,0,0" VerticalAlignment="Bottom" Command="{Binding AskTopicCommand}" Content="{Binding L[TopicAsk]}" />
+                                </Grid>
+                            </Border>
+                            <Grid Grid.Row="1" Margin="2,10,0,4" ColumnDefinitions="*,Auto" IsVisible="{Binding HasTopicQuestions}">
+                                <TextBlock VerticalAlignment="Center" FontSize="13" Foreground="{DynamicResource EchoMutedBrush}" Text="{Binding TopicQuestionsSummary}" IsVisible="{Binding !IsQuestionSelectionMode}" />
+                                <Button Classes="ghost" Padding="8,0" Command="{Binding SelectAllQuestionsCommand}" Content="{Binding L[SelectAllSessions]}" IsVisible="{Binding IsQuestionSelectionMode}" />
+                                <Button Grid.Column="1" Classes="ghost" Padding="8,0" Command="{Binding ToggleQuestionSelectionModeCommand}" Content="{Binding L[SelectSessions]}" IsVisible="{Binding !IsQuestionSelectionMode}" />
+                                <StackPanel Grid.Column="1" Orientation="Horizontal" IsVisible="{Binding IsQuestionSelectionMode}">
+                                    <Button Classes="dangerSoft" Padding="10,0" Click="RemoveCheckedQuestions_OnClick" Content="{Binding RemoveCheckedQuestionsText}" />
+                                    <Button Classes="accent" Margin="6,0,0,0" Padding="10,0" Command="{Binding ToggleQuestionSelectionModeCommand}" Content="{Binding L[SelectDone]}" />
+                                </StackPanel>
+                            </Grid>
+                            <StackPanel Grid.Row="2" Margin="0,22,0,0" IsVisible="{Binding !HasTopicQuestions}">
+                                <TextBlock HorizontalAlignment="Center" FontSize="17" FontWeight="ExtraBold" Foreground="{DynamicResource EchoTextBrush}" Text="{Binding L[QuestionsEmptyTitle]}" />
+                                <TextBlock Margin="0,8,0,16" TextAlignment="Center" TextWrapping="Wrap" FontSize="14" Foreground="{DynamicResource EchoMutedBrush}" Text="{Binding L[QuestionsEmptyHint]}" />
+                                <WrapPanel HorizontalAlignment="Center">
+                                    <Button Classes="chip" Margin="4" Command="{Binding AskTopicSuggestionCommand}" CommandParameter="{Binding L[QuestionSuggestion1]}" Content="{Binding L[QuestionSuggestion1]}" />
+                                    <Button Classes="chip" Margin="4" Command="{Binding AskTopicSuggestionCommand}" CommandParameter="{Binding L[QuestionSuggestion2]}" Content="{Binding L[QuestionSuggestion2]}" />
+                                    <Button Classes="chip" Margin="4" Command="{Binding AskTopicSuggestionCommand}" CommandParameter="{Binding L[QuestionSuggestion3]}" Content="{Binding L[QuestionSuggestion3]}" />
+                                    <Button Classes="chip" Margin="4" Command="{Binding AskTopicSuggestionCommand}" CommandParameter="{Binding L[QuestionSuggestion4]}" Content="{Binding L[QuestionSuggestion4]}" />
+                                </WrapPanel>
+                            </StackPanel>
+                            <ListBox Grid.Row="2"
+                                     ItemsSource="{Binding QuestionItems}"
+                                     controls:ItemContainer.Classes="plain"
+                                     ScrollViewer.HorizontalScrollBarVisibility="Disabled"
+                                     Background="Transparent"
+                                     BorderThickness="0"
+                                     IsVisible="{Binding HasTopicQuestions}">
+                                <ListBox.ItemTemplate>
+                                    <DataTemplate>
+                                        <Grid Margin="0,0,0,8" ColumnDefinitions="Auto,*">
+                                            <CheckBox Margin="2,16,10,0"
+                                                      VerticalAlignment="Top"
+                                                      IsChecked="{Binding IsChecked, Mode=TwoWay}"
+                                                      IsVisible="{Binding $parent[UserControl].DataContext.IsQuestionSelectionMode}" />
+                                            <Border Grid.Column="1" Classes="questionCard" Classes.checked="{Binding IsChecked}">
+                                                <StackPanel>
+                                                    <Button Classes="questionHeader"
+                                                            HorizontalContentAlignment="Stretch"
+                                                            Command="{Binding $parent[UserControl].DataContext.ToggleQuestionCommand}"
+                                                            CommandParameter="{Binding}">
+                                                        <Grid ColumnDefinitions="20,*">
+                                                            <Path Classes="chevron"
+                                                                  Classes.expanded="{Binding IsExpanded}"
+                                                                  Width="7"
+                                                                  Height="11"
+                                                                  Margin="0,5,0,0"
+                                                                  VerticalAlignment="Top"
+                                                                  Stretch="Uniform"
+                                                                  StrokeThickness="2"
+                                                                  StrokeLineCap="Round"
+                                                                  StrokeJoin="Round"
+                                                                  Data="M 1,1 L 6,5.5 L 1,10"
+                                                                  Stroke="{DynamicResource EchoAccentTextBrush}"
+                                                                  RenderTransformOrigin="0.5,0.5" />
+                                                            <StackPanel Grid.Column="1">
+                                                                <TextBlock FontSize="15" FontWeight="SemiBold" TextWrapping="Wrap" Foreground="{DynamicResource EchoTextBrush}" Text="{Binding Question}" />
+                                                                <TextBlock Margin="0,4,0,0" FontSize="12.5" Foreground="{DynamicResource EchoMutedBrush}" Text="{Binding MetaText}" />
+                                                            </StackPanel>
+                                                        </Grid>
+                                                    </Button>
+                                                    <StackPanel Margin="32,0,12,12" IsVisible="{Binding IsExpanded}">
+                                                        <StackPanel Orientation="Horizontal" IsVisible="{Binding IsPending}">
+                                                            <controls:EchoThinkingDots Margin="0,0,10,0" VerticalAlignment="Center" />
+                                                            <TextBlock FontSize="13.5" Foreground="{DynamicResource EchoMutedBrush}" Text="{Binding $parent[UserControl].DataContext.L[TopicAskBusy]}" />
+                                                        </StackPanel>
+                                                        <controls:MarkdownView Markdown="{Binding Answer}" VerticalScrollBarVisibility="Disabled" IsVisible="{Binding !IsPending}" />
+                                                        <StackPanel Margin="0,8,0,0" Orientation="Horizontal" IsVisible="{Binding !IsPending}">
+                                                            <Button Classes="ghost"
+                                                                    Padding="10,0"
+                                                                    Command="{Binding $parent[UserControl].DataContext.CopyTopicAnswerCommand}"
+                                                                    CommandParameter="{Binding}"
+                                                                    Content="{Binding $parent[UserControl].DataContext.L[CopyText]}" />
+                                                            <Button Classes="ghost"
+                                                                    Padding="10,0"
+                                                                    Click="RemoveQuestion_OnClick"
+                                                                    Content="{Binding $parent[UserControl].DataContext.L[DialogDelete]}" />
+                                                        </StackPanel>
+                                                    </StackPanel>
+                                                </StackPanel>
+                                            </Border>
+                                        </Grid>
+                                    </DataTemplate>
+                                </ListBox.ItemTemplate>
+                            </ListBox>
+                        </Grid>
+
+                        <!-- «Граф». -->
+                        <Grid RowDefinitions="Auto,Auto,*" IsVisible="{Binding ShowGraphPanel}">
+                            <Grid ColumnDefinitions="*,Auto">
+                                <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+                                    <controls:EchoThinkingDots Margin="0,0,8,0" VerticalAlignment="Center" IsVisible="{Binding IsGraphBusy}" />
+                                    <TextBlock Classes="staleStatus" Classes.stale="{Binding IsGraphStale}" FontSize="13" MaxWidth="200" TextWrapping="Wrap" Text="{Binding GraphStatusText}" />
+                                </StackPanel>
+                                <Button Grid.Column="1" Classes="accent" Padding="14,0" Command="{Binding BuildTopicGraphCommand}" Content="{Binding BuildGraphButtonText}" />
+                            </Grid>
+                            <TextBox x:Name="GraphSearchTextBox" Grid.Row="1" Margin="0,10,0,0" Watermark="{Binding L[GraphSearchPlaceholder]}" IsVisible="{Binding HasGraph}" />
+                            <Border Grid.Row="2"
+                                    Margin="0,10,0,0"
+                                    CornerRadius="16"
+                                    ClipToBounds="True"
+                                    Background="{DynamicResource EchoSurfaceBrush}"
+                                    BorderBrush="{DynamicResource EchoBorderBrush}"
+                                    BorderThickness="1">
+                                <Grid>
+                                    <controls:GraphView x:Name="TopicGraphView" Graph="{Binding CurrentGraph}" Filter="{Binding #GraphSearchTextBox.Text}" />
+                                    <StackPanel Margin="20" VerticalAlignment="Center" IsVisible="{Binding !HasGraph}">
+                                        <TextBlock HorizontalAlignment="Center" FontSize="17" FontWeight="ExtraBold" Foreground="{DynamicResource EchoTextBrush}" Text="{Binding L[GraphEmptyTitle]}" />
+                                        <TextBlock Margin="0,8,0,0" TextAlignment="Center" TextWrapping="Wrap" FontSize="14" Foreground="{DynamicResource EchoMutedBrush}" Text="{Binding L[GraphEmptyHint]}" />
+                                    </StackPanel>
+                                </Grid>
+                            </Border>
+                        </Grid>
+                    </Panel>
+
+                    <!-- Bulk actions while selecting sessions. -->
+                    <Border Grid.Row="5"
+                            Padding="12,10"
+                            Background="{DynamicResource EchoHeaderBrush}"
+                            BorderBrush="{DynamicResource EchoBorderBrush}"
+                            BorderThickness="0,1,0,0">
+                        <Border.IsVisible>
+                            <MultiBinding Converter="{x:Static BoolConverters.And}">
+                                <Binding Path="ShowSessionsPanel" />
+                                <Binding Path="IsSelectionMode" />
+                            </MultiBinding>
+                        </Border.IsVisible>
+                        <UniformGrid Columns="4">
+                            <Button Margin="0,0,3,0" Padding="4,0" HorizontalAlignment="Stretch" FontSize="13" Command="{Binding SelectAllSessionsCommand}" Content="{Binding L[SelectAllSessions]}" />
+                            <Button Margin="3,0" Padding="4,0" HorizontalAlignment="Stretch" FontSize="13" IsEnabled="{Binding HasCheckedSessions}" Click="MoveChecked_OnClick" Content="{Binding [Move], Source={x:Static platform:MobileText.Instance}}" />
+                            <Button Classes="dangerSoft" Margin="3,0" Padding="4,0" HorizontalAlignment="Stretch" FontSize="13" IsEnabled="{Binding HasCheckedSessions}" Click="DeleteChecked_OnClick" Content="{Binding L[DialogDelete]}" />
+                            <Button Classes="accent" Margin="3,0,0,0" Padding="4,0" HorizontalAlignment="Stretch" FontSize="13" Command="{Binding ToggleSelectionModeCommand}" Content="{Binding L[SelectDone]}" />
+                        </UniformGrid>
+                    </Border>
+                </Grid>
+
+                <!-- ===== A session: hints while recording, summary, transcript, email, usage. ===== -->
+                <Grid x:Name="SessionPage"
+                      RowDefinitions="Auto,Auto,Auto,*,Auto"
+                      IsVisible="{Binding SelectedMainPage, Converter={x:Static controls:EqualsConverter.Instance}, ConverterParameter=Session}">
+                    <StackPanel Margin="14,12,14,0">
+                        <TextBlock FontSize="13" Foreground="{DynamicResource EchoMutedBrush}" Text="{Binding SelectedSession.StartedAt, StringFormat='{}{0:dddd, dd MMM HH:mm}'}" />
+                        <Grid Margin="0,4,0,0" ColumnDefinitions="*,Auto">
+                            <TextBlock x:Name="SessionTitleText"
+                                       FontSize="21"
+                                       FontWeight="ExtraBold"
+                                       TextWrapping="Wrap"
+                                       MaxLines="2"
+                                       TextTrimming="CharacterEllipsis"
+                                       Foreground="{DynamicResource EchoTextBrush}"
+                                       IsVisible="{Binding !IsEditingSessionTitle}"
+                                       Text="{Binding CurrentSessionTitle}" />
+                            <TextBox x:Name="SessionTitleEditTextBox"
+                                     FontSize="17"
+                                     IsVisible="{Binding IsEditingSessionTitle}"
+                                     Text="{Binding EditableSessionTitle}" />
+                            <Button Grid.Column="1" Classes="ghost icon" Margin="6,0,0,0" FontSize="18" VerticalAlignment="Top" Click="SessionPageMenu_OnClick" Content="⋯" />
+                        </Grid>
+                        <TextBlock Margin="0,2,0,0" FontSize="13" FontWeight="SemiBold" Foreground="{DynamicResource EchoAccentTextBrush}" Text="{Binding ActionFeedbackText}" />
+                    </StackPanel>
+
+                    <!-- Recording bar: the live session only. -->
+                    <Border x:Name="RecordingBar"
+                            Grid.Row="1"
+                            Margin="12,8,12,0"
+                            Padding="12,8"
+                            CornerRadius="14"
+                            BorderThickness="1"
+                            Background="{DynamicResource EchoAccentSoftBrush}"
+                            BorderBrush="{DynamicResource EchoAccentSoftBorderBrush}"
+                            IsVisible="False">
+                        <Grid ColumnDefinitions="Auto,*,Auto">
+                            <controls:EchoListeningBars VerticalAlignment="Center" IsActive="{Binding IsCapturing}" />
+                            <TextBlock x:Name="RecordingStatusText"
+                                       Grid.Column="1"
+                                       Margin="10,0,8,0"
+                                       VerticalAlignment="Center"
+                                       FontSize="13"
+                                       FontWeight="SemiBold"
+                                       TextWrapping="Wrap"
+                                       Foreground="{DynamicResource EchoBadgeTextBrush}"
+                                       Text="{Binding [Recording], Source={x:Static platform:MobileText.Instance}}" />
+                            <Button x:Name="StopButton"
+                                    Grid.Column="2"
+                                    Classes="dangerSoft"
+                                    Padding="14,0"
+                                    Click="StopRecording_OnClick"
+                                    Content="{Binding [Stop], Source={x:Static platform:MobileText.Instance}}" />
+                        </Grid>
+                    </Border>
+
+                    <ScrollViewer Grid.Row="2"
+                                  Margin="12,10,0,0"
+                                  HorizontalScrollBarVisibility="Hidden"
+                                  VerticalScrollBarVisibility="Disabled">
+                        <StackPanel Orientation="Horizontal">
+                            <RadioButton x:Name="TabAssist" GroupName="SessionTab" Classes="pill" Tag="Assist" Click="SessionTab_OnClick" Content="{Binding [TabAssist], Source={x:Static platform:MobileText.Instance}}" />
+                            <RadioButton x:Name="TabSummary" GroupName="SessionTab" Classes="pill" Tag="Summary" Click="SessionTab_OnClick" Content="{Binding L[TabSummary]}" />
+                            <RadioButton x:Name="TabTranscript" GroupName="SessionTab" Classes="pill" Tag="Transcript" Click="SessionTab_OnClick" Content="{Binding L[TabTranscript]}" />
+                            <RadioButton x:Name="TabEmail" GroupName="SessionTab" Classes="pill" Tag="Email" Click="SessionTab_OnClick" Content="{Binding L[TabEmail]}" />
+                            <RadioButton x:Name="TabUsage" GroupName="SessionTab" Classes="pill" Margin="0,0,12,0" Tag="Usage" Click="SessionTab_OnClick" Content="{Binding L[TabUsage]}" />
+                        </StackPanel>
+                    </ScrollViewer>
+
+                    <Panel Grid.Row="3" Margin="12,10,12,0">
+                        <!-- «Подсказки»: the dialog of the desktop overlay. -->
+                        <ListBox x:Name="AssistList"
+                                 IsVisible="False"
+                                 Background="Transparent"
+                                 BorderThickness="0"
+                                 controls:ItemContainer.Classes="plain"
+                                 ScrollViewer.HorizontalScrollBarVisibility="Disabled">
+                            <ListBox.ItemTemplate>
+                                <DataTemplate DataType="views:PhoneChatItem">
+                                    <Border Classes="bubble"
+                                            Classes.user="{Binding IsUser}"
+                                            Margin="0,0,0,8"
+                                            MaxWidth="340"
+                                            Padding="12,9"
+                                            BorderThickness="1">
+                                        <StackPanel>
+                                            <TextBlock Classes="role" Classes.placeholder="{Binding IsPlaceholder}" FontSize="12" FontWeight="Bold" Text="{Binding Role}" />
+                                            <SelectableTextBlock Margin="0,3,0,0" FontSize="15" LineHeight="21" TextWrapping="Wrap" Foreground="{DynamicResource EchoTextBrush}" Text="{Binding Message}" />
+                                        </StackPanel>
+                                    </Border>
+                                </DataTemplate>
+                            </ListBox.ItemTemplate>
+                        </ListBox>
+
+                        <Grid x:Name="SummaryPanel" RowDefinitions="Auto,*" IsVisible="False">
+                            <UniformGrid Columns="3">
+                                <Button Margin="0,0,3,0" Padding="4,0" HorizontalAlignment="Stretch" FontSize="13" Command="{Binding RegenerateSummaryCommand}" Content="{Binding L[Regenerate]}" />
+                                <Button Margin="3,0" Padding="4,0" HorizontalAlignment="Stretch" FontSize="13" Click="ShareSummary_OnClick" Content="{Binding [Share], Source={x:Static platform:MobileText.Instance}}" />
+                                <Button Classes="accent" Margin="3,0,0,0" Padding="4,0" HorizontalAlignment="Stretch" FontSize="13" Command="{Binding CopySummaryCommand}" Content="{Binding L[CopyText]}" />
+                            </UniformGrid>
+                            <Border Grid.Row="1" Margin="0,10,0,0" Classes="card">
+                                <controls:MarkdownView Markdown="{Binding CurrentSessionSummary}" />
+                            </Border>
+                        </Grid>
+
+                        <Grid x:Name="TranscriptPanel" RowDefinitions="Auto,*" IsVisible="False">
+                            <Button Classes="accent" HorizontalAlignment="Right" Padding="14,0" Command="{Binding CopyTranscriptCommand}" Content="{Binding L[CopyTranscript]}" />
+                            <ListBox x:Name="TranscriptList"
+                                     Grid.Row="1"
+                                     Margin="0,8,0,0"
+                                     Background="Transparent"
+                                     BorderThickness="0"
+                                     controls:ItemContainer.Classes="plain"
+                                     ScrollViewer.HorizontalScrollBarVisibility="Disabled"
+                                     ItemsSource="{Binding SelectedSessionTranscript}">
+                                <ListBox.ItemTemplate>
+                                    <DataTemplate>
+                                        <SelectableTextBlock Margin="2,0,2,10" FontSize="15" LineHeight="21" TextWrapping="Wrap" Foreground="{DynamicResource EchoTextBrush}" Text="{Binding Text}" />
+                                    </DataTemplate>
+                                </ListBox.ItemTemplate>
+                            </ListBox>
+                        </Grid>
+
+                        <Grid x:Name="EmailPanel" RowDefinitions="Auto,Auto,*" IsVisible="False">
+                            <UniformGrid Columns="3">
+                                <Button Margin="0,0,3,0" Padding="4,0" HorizontalAlignment="Stretch" FontSize="13" Command="{Binding FollowUpEmailCommand}" Content="{Binding L[FollowUpEmailAgain]}" />
+                                <Button Margin="3,0" Padding="4,0" HorizontalAlignment="Stretch" FontSize="13" Click="ShareEmail_OnClick" IsEnabled="{Binding HasFollowUpEmail}" Content="{Binding [Share], Source={x:Static platform:MobileText.Instance}}" />
+                                <Button Classes="accent" Margin="3,0,0,0" Padding="4,0" HorizontalAlignment="Stretch" FontSize="13" Command="{Binding CopyFollowUpEmailCommand}" Content="{Binding L[CopyEmail]}" />
+                            </UniformGrid>
+                            <StackPanel Grid.Row="1" Margin="2,10,0,0" Orientation="Horizontal">
+                                <controls:EchoThinkingDots Margin="0,0,10,0" VerticalAlignment="Center" IsVisible="{Binding IsFollowUpEmailBusy}" />
+                                <Panel>
+                                    <TextBlock MaxWidth="320" FontSize="13.5" TextWrapping="Wrap" Foreground="{DynamicResource EchoMutedBrush}" Text="{Binding L[FollowUpEmailBusy]}" IsVisible="{Binding IsFollowUpEmailBusy}" />
+                                    <TextBlock MaxWidth="320" FontSize="13.5" TextWrapping="Wrap" Foreground="{DynamicResource EchoMutedBrush}" Text="{Binding L[FollowUpEmailHint]}">
+                                        <TextBlock.IsVisible>
+                                            <MultiBinding Converter="{x:Static BoolConverters.And}">
+                                                <Binding Path="!HasFollowUpEmail" />
+                                                <Binding Path="!IsFollowUpEmailBusy" />
+                                            </MultiBinding>
+                                        </TextBlock.IsVisible>
+                                    </TextBlock>
+                                </Panel>
+                            </StackPanel>
+                            <TextBox Grid.Row="2"
+                                     Margin="0,10,0,0"
+                                     Classes="readOnlyText"
+                                     IsReadOnly="True"
+                                     AcceptsReturn="True"
+                                     TextWrapping="Wrap"
+                                     VerticalContentAlignment="Top"
+                                     ScrollViewer.VerticalScrollBarVisibility="Auto"
+                                     Text="{Binding CurrentFollowUpEmail, Mode=OneWay}" />
+                        </Grid>
+
+                        <ScrollViewer x:Name="UsagePanel" IsVisible="False" HorizontalScrollBarVisibility="Disabled">
+                            <StackPanel>
+                                <TextBlock FontSize="14" TextWrapping="Wrap" Foreground="{DynamicResource EchoMutedBrush}" Text="{Binding L[SessionUsageFallback]}" IsVisible="{Binding !UsageView.HasData}" />
+                                <StackPanel IsVisible="{Binding UsageView.HasData}">
+                                    <ItemsControl ItemsSource="{Binding UsageView.Metrics}">
+                                        <ItemsControl.ItemsPanel>
+                                            <ItemsPanelTemplate>
+                                                <UniformGrid Columns="2" />
+                                            </ItemsPanelTemplate>
+                                        </ItemsControl.ItemsPanel>
+                                        <ItemsControl.ItemTemplate>
+                                            <DataTemplate>
+                                                <Border Margin="0,0,8,8" Classes="card" Padding="12,10">
+                                                    <StackPanel>
+                                                        <TextBlock FontSize="12.5" TextWrapping="Wrap" Foreground="{DynamicResource EchoMutedBrush}" Text="{Binding Label}" />
+                                                        <TextBlock Margin="0,3,0,0" FontSize="17" FontWeight="ExtraBold" Foreground="{DynamicResource EchoTextBrush}" Text="{Binding Value}" />
+                                                    </StackPanel>
+                                                </Border>
+                                            </DataTemplate>
+                                        </ItemsControl.ItemTemplate>
+                                    </ItemsControl>
+                                    <Expander Classes="echo" Margin="0,4,8,0" HorizontalAlignment="Stretch" Header="{Binding UsageView.CostHeader}">
+                                        <ItemsControl ItemsSource="{Binding UsageView.CostRows}">
+                                            <ItemsControl.ItemTemplate>
+                                                <DataTemplate>
+                                                    <Grid Margin="0,4" ColumnDefinitions="*,Auto">
+                                                        <TextBlock Classes="costLabel" Classes.total="{Binding IsTotal}" FontSize="14" TextWrapping="Wrap" Foreground="{DynamicResource EchoSoftTextBrush}" Text="{Binding Label}" />
+                                                        <TextBlock Grid.Column="1" Margin="10,0,0,0" Classes="costValue" Classes.total="{Binding IsTotal}" FontSize="14" Foreground="{DynamicResource EchoSoftTextBrush}" Text="{Binding Value}" />
+                                                    </Grid>
+                                                </DataTemplate>
+                                            </ItemsControl.ItemTemplate>
+                                        </ItemsControl>
+                                    </Expander>
+                                </StackPanel>
+                            </StackPanel>
+                        </ScrollViewer>
+                    </Panel>
+
+                    <!-- Hint buttons and the question box, as in the desktop overlay. -->
+                    <Border x:Name="AskBar"
+                            Grid.Row="4"
+                            Padding="12,10"
+                            Background="{DynamicResource EchoHeaderBrush}"
+                            BorderBrush="{DynamicResource EchoBorderBrush}"
+                            BorderThickness="0,1,0,0">
+                        <StackPanel>
+                            <ScrollViewer HorizontalScrollBarVisibility="Hidden" VerticalScrollBarVisibility="Disabled">
+                                <StackPanel Orientation="Horizontal">
+                                    <Button x:Name="WhatToSayButton" Classes="chip" Margin="0,0,6,0" Click="QuickAction_OnClick" Tag="Reply" />
+                                    <Button x:Name="WhatToAskButton" Classes="chip" Margin="0,0,6,0" Click="QuickAction_OnClick" Tag="Next" />
+                                    <Button x:Name="FollowUpButton" Classes="chip" Margin="0,0,6,0" Click="QuickAction_OnClick" Tag="FollowUp" />
+                                    <Button x:Name="RecapButton" Classes="chip" Margin="0,0,12,0" Click="QuickAction_OnClick" Tag="Recap" />
+                                </StackPanel>
+                            </ScrollViewer>
+                            <Grid Margin="0,8,0,0" ColumnDefinitions="*,Auto">
+                                <TextBox x:Name="AskTextBox"
+                                         MaxHeight="120"
+                                         AcceptsReturn="False"
+                                         TextWrapping="Wrap"
+                                         Watermark="{Binding [AskPlaceholder], Source={x:Static platform:MobileText.Instance}}" />
+                                <Button Grid.Column="1" Classes="accent" Margin="8,0,0,0" Padding="16,0" Click="Ask_OnClick" Content="{Binding L[AskPrefix]}" />
+                            </Grid>
+                        </StackPanel>
+                    </Border>
+                </Grid>
+
+                <!-- ===== Settings: what applies to the phone. ===== -->
+                <ScrollViewer x:Name="SettingsPage"
+                              HorizontalScrollBarVisibility="Disabled"
+                              VerticalScrollBarVisibility="Auto"
+                              IsVisible="{Binding SelectedMainPage, Converter={x:Static controls:EqualsConverter.Instance}, ConverterParameter=Settings}">
+                    <StackPanel Margin="16,8,16,28">
+                        <TextBlock Margin="0,8,0,0" FontSize="24" FontWeight="ExtraBold" Foreground="{DynamicResource EchoTextBrush}" Text="{Binding L[SettingsTab]}" />
+
+                        <TextBlock Classes="section" Text="{Binding L[SettingsSectionAppearance]}" />
+                        <TextBlock Classes="label" Text="{Binding L[SettingsLanguage]}" />
+                        <StackPanel Orientation="Horizontal">
+                            <RadioButton GroupName="UiLanguage" Classes="pill" IsChecked="{Binding IsRussianUi, Mode=TwoWay}" Content="Русский (RU)" />
+                            <RadioButton GroupName="UiLanguage" Classes="pill" IsChecked="{Binding IsEnglishUi, Mode=TwoWay}" Content="English (EN)" />
+                        </StackPanel>
+                        <TextBlock Classes="hint" Text="{Binding L[SettingsLanguageHint]}" />
+
+                        <TextBlock Classes="section" Text="{Binding L[SettingsSectionAi]}" />
+                        <CheckBox IsChecked="{Binding SmartModeEnabled, Mode=TwoWay}" Content="{Binding L[SmartModeToggle]}" />
+                        <TextBlock Classes="hint" Text="{Binding L[SmartModeHint]}" />
+
+                        <TextBlock Classes="section" Text="{Binding L[SettingsSectionLlm]}" />
+                        <TextBlock Classes="label" Text="{Binding L[SettingsProviderPreset]}" />
+                        <ComboBox HorizontalAlignment="Stretch" MinHeight="44" ItemsSource="{Binding ApiProviderPresets}" SelectedItem="{Binding SelectedApiPreset, Mode=TwoWay}" />
+                        <StackPanel IsVisible="{Binding ProviderFieldVisibility}">
+                            <TextBlock Classes="label" Text="{Binding L[SettingsProvider]}" />
+                            <TextBox Text="{Binding ApiProvider}" />
+                        </StackPanel>
+                        <StackPanel IsVisible="{Binding BaseUrlFieldVisibility}">
+                            <TextBlock Classes="label" Text="{Binding L[SettingsBaseUrl]}" />
+                            <TextBox Text="{Binding OpenAiBaseUrl}" />
+                        </StackPanel>
+                        <StackPanel IsVisible="{Binding EndpointPathFieldVisibility}">
+                            <TextBlock Classes="label" Text="{Binding L[SettingsEndpointPath]}" />
+                            <TextBox Text="{Binding ChatCompletionsPath}" />
+                        </StackPanel>
+                        <StackPanel IsVisible="{Binding ApiKeyHeaderFieldVisibility}">
+                            <TextBlock Classes="label" Text="{Binding L[SettingsKeyHeader]}" />
+                            <TextBox Text="{Binding ApiKeyHeaderName}" />
+                        </StackPanel>
+                        <StackPanel IsVisible="{Binding ApiKeyPrefixFieldVisibility}">
+                            <TextBlock Classes="label" Text="{Binding L[SettingsKeyPrefix]}" />
+                            <TextBox Text="{Binding ApiKeyPrefix}" />
+                        </StackPanel>
+                        <StackPanel IsVisible="{Binding ApiKeyFieldVisibility}">
+                            <TextBlock Classes="label" Text="{Binding L[SettingsApiKey]}" />
+                            <TextBox PasswordChar="•" Text="{Binding OpenAiApiKey}" />
+                        </StackPanel>
+                        <TextBlock Classes="label" Text="{Binding L[SettingsModel]}" />
+                        <controls:ModelPicker Text="{Binding OpenAiModel, Mode=TwoWay}" Options="{Binding ChatModelOptions}" Status="{Binding ChatModelsStatus}" LoadCommand="{Binding LoadChatModelsCommand}" />
+                        <TextBlock Classes="label" Text="{Binding L[SettingsAnalysisModel]}" />
+                        <controls:ModelPicker Text="{Binding AnalysisModel, Mode=TwoWay}" Options="{Binding ChatModelOptions}" Status="{Binding ChatModelsStatus}" LoadCommand="{Binding LoadChatModelsCommand}" />
+                        <TextBlock Classes="hint" Text="{Binding L[SettingsModelPickerHint]}" />
+
+                        <TextBlock Classes="section" Text="{Binding L[SettingsSttTitle]}" />
+                        <TextBlock Classes="hint" Margin="0,0,0,4" Text="{Binding [PhoneSttHint], Source={x:Static platform:MobileText.Instance}}" />
+                        <TextBlock Classes="label" Text="{Binding L[SettingsProviderPreset]}" />
+                        <ComboBox HorizontalAlignment="Stretch" MinHeight="44" ItemsSource="{Binding SttApiPresets}" SelectedItem="{Binding SelectedSttPreset, Mode=TwoWay}" />
+                        <StackPanel IsVisible="{Binding SttBaseUrlFieldVisibility}">
+                            <TextBlock Classes="label" Text="{Binding L[SettingsBaseUrl]}" />
+                            <TextBox Text="{Binding SttApiBaseUrl}" />
+                        </StackPanel>
+                        <TextBlock Classes="label" Text="{Binding L[SettingsSttApiKey]}" />
+                        <TextBox PasswordChar="•" Text="{Binding SttApiKey}" />
+                        <TextBlock Classes="hint" Text="{Binding SttKeySourceText}" />
+                        <TextBlock Classes="label" Text="{Binding L[SettingsSttModel]}" />
+                        <controls:ModelPicker Text="{Binding SttApiModel, Mode=TwoWay}" Options="{Binding SpeechModelOptions}" Status="{Binding SpeechModelsStatus}" LoadCommand="{Binding LoadSpeechModelsCommand}" />
+                        <TextBlock Classes="label" Text="{Binding L[SettingsSttGlossary]}" />
+                        <TextBox MinHeight="70" AcceptsReturn="True" TextWrapping="Wrap" Watermark="{Binding L[SettingsSttGlossaryExample]}" Text="{Binding SttGlossary}" />
+                        <TextBlock Classes="hint" Text="{Binding L[SettingsSttGlossaryHint]}" />
+
+                        <Button Classes="accent" Margin="0,24,0,0" Height="48" HorizontalAlignment="Stretch" FontSize="16" Command="{Binding SaveSettingsCommand}" Content="{Binding L[SaveSettings]}" />
+                        <TextBlock Margin="0,14,0,0" HorizontalAlignment="Center" FontSize="12.5" Foreground="{DynamicResource EchoMutedBrush}" Text="{Binding AppVersion}" />
+                    </StackPanel>
+                </ScrollViewer>
+            </Panel>
+        </Grid>
+
+        <!-- Source of the knowledge base: its parsed text and actions, over the page. -->
+        <Grid x:Name="KnowledgeSheet" RowDefinitions="Auto,Auto,*" Background="{DynamicResource EchoBgBrush}" IsVisible="False">
+            <Border Padding="12,8" Background="{DynamicResource EchoHeaderBrush}" BorderBrush="{DynamicResource EchoBorderBrush}" BorderThickness="0,0,0,1">
+                <Grid ColumnDefinitions="Auto,*">
+                    <Button Classes="accent" Height="40" Padding="12,0,16,0" Click="CloseKnowledgeSheet_OnClick">
+                        <StackPanel Orientation="Horizontal">
+                            <Path Width="16" Height="14" VerticalAlignment="Center" Stretch="Uniform" Stroke="{Binding $parent[Button].Foreground}" StrokeThickness="2.2" StrokeLineCap="Round" StrokeJoin="Round" Data="M 7,1 L 1,7 L 7,13 M 1,7 L 15,7" />
+                            <TextBlock Margin="8,0,0,0" VerticalAlignment="Center" FontSize="15" FontWeight="Bold" Text="{Binding L[GoBack]}" />
+                        </StackPanel>
+                    </Button>
+                    <TextBlock Grid.Column="1" Margin="12,0,0,0" VerticalAlignment="Center" FontSize="16" FontWeight="ExtraBold" TextTrimming="CharacterEllipsis" Foreground="{DynamicResource EchoTextBrush}" Text="{Binding SelectedKnowledgeItem.Title}" />
+                </Grid>
+            </Border>
+            <StackPanel Grid.Row="1" Margin="12,10,12,0">
+                <StackPanel Orientation="Horizontal">
+                    <controls:EchoThinkingDots Margin="0,0,8,0" VerticalAlignment="Center" IsVisible="{Binding IsTopicBusy}" />
+                    <TextBlock FontSize="13" TextWrapping="Wrap" Foreground="{DynamicResource EchoMutedBrush}" Text="{Binding KnowledgeHeaderStatus}" />
+                </StackPanel>
+                <WrapPanel Margin="0,8,0,0">
+                    <Button Classes="accent" Margin="0,0,6,6" Padding="14,0" Command="{Binding ParseKnowledgeItemCommand}" Content="{Binding SelectedKnowledgeItem.ParseButtonText}" IsVisible="{Binding !SelectedKnowledgeItem.CanStop}" />
+                    <Button Classes="dangerSoft" Margin="0,0,6,6" Padding="14,0" Command="{Binding StopKnowledgeItemCommand}" Content="{Binding L[KnowledgeStop]}" IsVisible="{Binding SelectedKnowledgeItem.CanStop}" />
+                    <Button Margin="0,0,6,6" Padding="14,0" Click="EditNote_OnClick" IsVisible="{Binding SelectedKnowledgeItem.IsNote}" Content="{Binding L[KnowledgeEditNote]}" />
+                    <Button Margin="0,0,6,6" Padding="14,0" Command="{Binding CopyKnowledgePreviewCommand}" Content="{Binding L[CopyText]}" />
+                    <Button Classes="dangerSoft" Margin="0,0,6,6" Padding="14,0" Click="RemoveKnowledgeItem_OnClick" Content="{Binding L[KnowledgeRemove]}" />
+                </WrapPanel>
+            </StackPanel>
+            <Border Grid.Row="2" Margin="12,6,12,12" Classes="card">
+                <Grid>
+                    <controls:MarkdownDocumentView Markdown="{Binding KnowledgePreviewText}" IsVisible="{Binding HasKnowledgePreview}" />
+                    <TextBlock Margin="0,30,0,0" HorizontalAlignment="Center" TextAlignment="Center" TextWrapping="Wrap" FontSize="14" Foreground="{DynamicResource EchoMutedBrush}" Text="{Binding KnowledgeEmptyText}" IsVisible="{Binding !HasKnowledgePreview}" />
+                </Grid>
+            </Border>
+        </Grid>
+
+        <!-- Dialogs and action sheets (MainView.Dialogs.cs fills them). -->
+        <Grid x:Name="DialogLayer" Background="#99000000" IsVisible="False" PointerPressed="DialogLayer_OnPointerPressed">
+            <Border x:Name="DialogCard"
+                    Margin="16"
+                    MaxWidth="460"
+                    Padding="18,16"
+                    VerticalAlignment="Center"
+                    CornerRadius="20"
+                    Background="{DynamicResource EchoPopupBrush}"
+                    BorderBrush="{DynamicResource EchoBorderBrush}"
+                    BorderThickness="1">
+                <StackPanel x:Name="DialogContent" />
+            </Border>
+        </Grid>
+    </Grid>
+</UserControl>

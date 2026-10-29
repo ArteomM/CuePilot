@@ -1,0 +1,86 @@
+name: CuePilot for Android
+
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - "apps/CuePilot.Android/**"
+      - "apps/CuePilotDesktop/Models/**"
+      - "apps/CuePilotDesktop/Services/**"
+      - "apps/CuePilotDesktop/ViewModels/**"
+      - "apps/CuePilotDesktop/Resources/**"
+      - "apps/CuePilotDesktop/Views/Controls/MarkdownBlocks.cs"
+      - "apps/CuePilot.Avalonia/Themes/**"
+      - "apps/CuePilot.Avalonia/Views/Controls/**"
+      - ".github/workflows/android.yml"
+
+permissions:
+  contents: write
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: "8.0.x"
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: "17"
+      - name: Install the .NET Android workload
+        run: dotnet workload install android
+      # Without a signing key in the secrets the APK is signed with the .NET debug key; it is cached so that
+      # every build has the same key and installs over the previous one (the phone keeps its data).
+      - name: Keep the debug signing key between builds
+        uses: actions/cache@v4
+        with:
+          path: ~/.local/share/Xamarin/Mono for Android/debug.keystore
+          key: cuepilot-android-debug-keystore
+      - name: Signing key from the secrets
+        env:
+          KEYSTORE_BASE64: ${{ secrets.ANDROID_KEYSTORE_BASE64 }}
+        run: |
+          if [ -n "$KEYSTORE_BASE64" ]; then
+            echo "$KEYSTORE_BASE64" | base64 -d > "$RUNNER_TEMP/cuepilot.keystore"
+            echo "SIGNING_ARGS=-p:AndroidKeyStore=true -p:AndroidSigningKeyStore=$RUNNER_TEMP/cuepilot.keystore -p:AndroidSigningKeyAlias=cuepilot -p:AndroidSigningStorePass=env:ANDROID_KEYSTORE_PASSWORD -p:AndroidSigningKeyPass=env:ANDROID_KEYSTORE_PASSWORD" >> "$GITHUB_ENV"
+          fi
+      - name: Build the APK
+        shell: bash -o pipefail {0}
+        env:
+          AVALONIA_TELEMETRY_OPTOUT: "1"
+          DOTNET_CLI_TELEMETRY_OPTOUT: "1"
+          ANDROID_KEYSTORE_PASSWORD: ${{ secrets.ANDROID_KEYSTORE_PASSWORD }}
+        run: |
+          VERSION="$(sed -n 's:.*<ApplicationDisplayVersion>\(.*\)</ApplicationDisplayVersion>.*:\1:p' apps/CuePilot.Android/CuePilot.Android.csproj)"
+          dotnet publish apps/CuePilot.Android/CuePilot.Android.csproj -c Release -f net8.0-android \
+            -p:AndroidSdkDirectory="$ANDROID_SDK_ROOT" $SIGNING_ARGS -o dist/android-build --nologo 2>&1 | tee build.log
+          mkdir -p dist/android
+          cp dist/android-build/*-Signed.apk "dist/android/CuePilot-$VERSION-android.apk"
+          ls -la dist/android
+      - name: Show build errors
+        if: failure()
+        run: grep -E "error|fatal" build.log | sort -u | tail -40 | sed 's/^/::error::/' || tail -40 build.log
+      - uses: actions/upload-artifact@v4
+        with:
+          name: CuePilot-android
+          path: dist/android/*.apk
+
+  release:
+    # The latest APK on the «android-latest» release page.
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          name: CuePilot-android
+          path: dist
+      - name: Publish android-latest release
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh release delete android-latest --repo "$GITHUB_REPOSITORY" --yes --cleanup-tag || true
+          gh release create android-latest dist/*.apk --repo "$GITHUB_REPOSITORY" --target "$GITHUB_SHA" \
+            --title "CuePilot для Android (последняя сборка)" --prerelease \
+            --notes "APK для телефонов на Android 8 и новее. Скачайте файл на телефон и откройте его; Android попросит разрешить установку из этого источника."

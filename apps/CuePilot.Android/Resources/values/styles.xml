@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="echo_bg">#0E1116</color>
+    <style name="CuePilotTheme" parent="@style/Theme.AppCompat.NoActionBar">
+        <item name="windowActionBar">false</item>
+        <item name="windowNoTitle">true</item>
+        <item name="android:windowBackground">@drawable/splash_screen</item>
+        <item name="android:statusBarColor">@color/echo_bg</item>
+        <item name="android:navigationBarColor">@color/echo_bg</item>
+    </style>
+</resources>

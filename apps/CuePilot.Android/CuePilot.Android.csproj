@@ -1,0 +1,82 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <!--
+    CuePilot for Android phones on Avalonia. Models, Services and ViewModels are shared with ../CuePilotDesktop,
+    the Echo theme and controls with ../CuePilot.Avalonia. Platform/ holds the phone parts: microphone capture with
+    API speech recognition (no DesktopCapture, no local whisper), file pickers and the view model hooks.
+    Views/ is a phone layout of the same pages: Home with topics, a session, settings.
+  -->
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>net8.0-android</TargetFramework>
+    <SupportedOSPlatformVersion>26</SupportedOSPlatformVersion>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <RootNamespace>CuePilot.Android</RootNamespace>
+    <!-- Same assembly name as the Mac app, so avares://CuePilot/... in the shared theme resolves. -->
+    <AssemblyName>CuePilot</AssemblyName>
+    <ApplicationId>app.cuepilot.mobile</ApplicationId>
+    <ApplicationTitle>CuePilot</ApplicationTitle>
+    <!-- ApplicationVersion must grow with every release so Android installs the APK over the previous one. -->
+    <ApplicationVersion>105</ApplicationVersion>
+    <ApplicationDisplayVersion>1.0.5</ApplicationDisplayVersion>
+    <Version>1.0.5</Version>
+    <AssemblyVersion>1.0.5.0</AssemblyVersion>
+    <FileVersion>1.0.5.0</FileVersion>
+    <InformationalVersion>1.0.5</InformationalVersion>
+    <Product>CuePilot</Product>
+    <Company>CuePilot</Company>
+    <AvaloniaUseCompiledBindingsByDefault>true</AvaloniaUseCompiledBindingsByDefault>
+
+    <AndroidManifest>Properties\AndroidManifest.xml</AndroidManifest>
+    <AndroidPackageFormat>apk</AndroidPackageFormat>
+    <RuntimeIdentifiers>android-arm64;android-arm</RuntimeIdentifiers>
+    <AndroidEnableProfiledAot>false</AndroidEnableProfiledAot>
+    <!-- Bindings and settings JSON use reflection: keep the app's own code whole, trim only the SDK. -->
+    <AndroidLinkMode>SdkOnly</AndroidLinkMode>
+    <JsonSerializerIsReflectionEnabledByDefault>true</JsonSerializerIsReflectionEnabledByDefault>
+    <UseInterpreter>false</UseInterpreter>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <TrimmerRootAssembly Include="CuePilot" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Avalonia" Version="11.3.0" />
+    <PackageReference Include="Avalonia.Android" Version="11.3.0" />
+    <PackageReference Include="Avalonia.Themes.Fluent" Version="11.3.0" />
+    <PackageReference Include="ExcelDataReader" Version="3.9.0" />
+    <PackageReference Include="ExcelDataReader.DataSet" Version="3.9.0" />
+    <PackageReference Include="OpenMcdf" Version="3.3.0" />
+    <PackageReference Include="PdfPig" Version="0.1.16" />
+  </ItemGroup>
+
+  <!-- Shared code. The capture service and diagnostics have phone versions in Platform/ (same class names). -->
+  <ItemGroup>
+    <Compile Include="..\CuePilotDesktop\Models\**\*.cs" Link="Shared\Models\%(RecursiveDir)%(Filename)%(Extension)" />
+    <Compile Include="..\CuePilotDesktop\Services\**\*.cs"
+             Exclude="..\CuePilotDesktop\Services\HotkeyManager.cs;..\CuePilotDesktop\Services\HotkeyGesture.cs;..\CuePilotDesktop\Services\ScreenShareProtection.cs;..\CuePilotDesktop\Services\VisualContextCaptureService.cs;..\CuePilotDesktop\Services\CaptureOrchestratorService.cs;..\CuePilotDesktop\Services\EnvironmentDiagnosticsService.cs;..\CuePilotDesktop\Services\MediaTranscriptionService.cs"
+             Link="Shared\Services\%(RecursiveDir)%(Filename)%(Extension)" />
+    <Compile Include="..\CuePilotDesktop\ViewModels\**\*.cs" Exclude="..\CuePilotDesktop\ViewModels\**\*.Wpf.cs"
+             Link="Shared\ViewModels\%(RecursiveDir)%(Filename)%(Extension)" />
+    <Compile Include="..\CuePilotDesktop\Views\Controls\MarkdownBlocks.cs" Link="Shared\Views\MarkdownBlocks.cs" />
+    <EmbeddedResource Include="..\CuePilotDesktop\Resources\Strings.resx" ManifestResourceName="CuePilotDesktop.Resources.Strings" Link="Shared\Resources\Strings.resx" />
+    <EmbeddedResource Include="..\CuePilotDesktop\Resources\Strings.ru.resx" ManifestResourceName="CuePilotDesktop.Resources.Strings.ru" Link="Shared\Resources\Strings.ru.resx" />
+    <AvaloniaResource Include="..\CuePilotDesktop\Assets\Fonts\*.ttf" Link="Assets\Fonts\%(Filename)%(Extension)" />
+    <AvaloniaResource Include="..\CuePilotDesktop\cuepilot-icon.png" Link="Assets\cuepilot-icon.png" />
+  </ItemGroup>
+
+  <!-- Echo theme and controls of the Mac app. -->
+  <ItemGroup>
+    <AvaloniaXaml Include="..\CuePilot.Avalonia\Themes\Echo.axaml" Link="Themes\Echo.axaml" />
+    <AvaloniaXaml Include="..\CuePilot.Avalonia\Themes\EchoPalette.axaml" Link="Themes\EchoPalette.axaml" />
+    <AvaloniaXaml Include="..\CuePilot.Avalonia\Views\Controls\ModelPicker.axaml" Link="Views\Controls\ModelPicker.axaml" />
+    <Compile Include="..\CuePilot.Avalonia\Views\Controls\ModelPicker.axaml.cs" Link="Views\Controls\ModelPicker.axaml.cs" DependentUpon="ModelPicker.axaml" />
+    <Compile Include="..\CuePilot.Avalonia\Views\Controls\EchoMotion.cs" Link="Views\Controls\EchoMotion.cs" />
+    <Compile Include="..\CuePilot.Avalonia\Views\Controls\GraphView.cs" Link="Views\Controls\GraphView.cs" />
+    <Compile Include="..\CuePilot.Avalonia\Views\Controls\Markdown.cs" Link="Views\Controls\Markdown.cs" />
+    <Compile Include="..\CuePilot.Avalonia\Views\Controls\ViewHelpers.cs" Link="Views\Controls\ViewHelpers.cs" />
+  </ItemGroup>
+
+</Project>
