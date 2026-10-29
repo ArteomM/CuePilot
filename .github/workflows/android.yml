@@ -17,6 +17,11 @@ on:
 permissions:
   contents: write
 
+# A newer push replaces a build still running, so «android-latest» always gets the newest APK.
+concurrency:
+  group: android-${{ github.ref }}
+  cancel-in-progress: true
+
 jobs:
   build:
     runs-on: ubuntu-latest
