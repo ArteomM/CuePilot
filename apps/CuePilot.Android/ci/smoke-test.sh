@@ -16,12 +16,14 @@ echo "----- logcat (app, runtime, crashes) -----"
 grep -E "FATAL EXCEPTION|AndroidRuntime|monodroid|mono-rt|DOTNET|Avalonia|CuePilot|$PACKAGE" logcat.txt | tail -200
 
 adb exec-out screencap -p > screen.png
-if command -v convert > /dev/null; then
-  convert screen.png -resize 360x -quality 55 screen.jpg
+if command -v convert > /dev/null && [ -s screen.png ]; then
+  convert screen.png -resize '360x>' -quality 55 screen.jpg
   echo "SCREENSHOT-BEGIN"
   base64 -w 0 screen.jpg
   echo
   echo "SCREENSHOT-END"
+else
+  echo "No screenshot (ImageMagick missing or screencap failed)"
 fi
 
 if [ -z "$PID" ]; then

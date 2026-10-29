@@ -183,6 +183,9 @@ public partial class MainView : UserControl
     {
         string marker = PlatformPaths.DefaultWhisperBin(dataRoot);
         bool available = LocalWhisper.IsAvailable;
+        global::Android.Util.Log.Info("CuePilot", available
+            ? "whisper.cpp: " + LocalWhisper.Description
+            : "whisper.cpp is not available: " + LocalWhisper.LoadError);
         try
         {
             if (available && !File.Exists(marker))
