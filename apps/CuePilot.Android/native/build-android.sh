@@ -9,7 +9,8 @@ set -euo pipefail
 HERE="$(cd "$(dirname "$0")" && pwd)"
 WHISPER_TAG="${WHISPER_TAG:-v1.7.4}"
 NDK="${ANDROID_NDK_ROOT:-${ANDROID_NDK_HOME:-${ANDROID_NDK_LATEST_HOME:-}}}"
-WORK="${WORK:-$HERE/build}"
+# Outside the project folder: the .NET Android build would otherwise pick up whisper.cpp's Java and C# bindings.
+WORK="${WORK:-${RUNNER_TEMP:-${TMPDIR:-/tmp}}/cuepilot-whisper}"
 OUT="$HERE/out/arm64-v8a"
 
 if [ -z "$NDK" ] || [ ! -f "$NDK/build/cmake/android.toolchain.cmake" ]; then
