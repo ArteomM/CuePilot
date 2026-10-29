@@ -50,7 +50,13 @@ public partial class MainView : UserControl
         if (!localWhisper)
         {
             _viewModel.UseApiStt = true;
+            UseApiSttBox.IsVisible = false;
+            SpeechModelsSection.IsVisible = false;
+            SttHintText.Text = MobileText.Get("PhoneApiOnlyHint");
         }
+
+        PhonePlatform.SetHiddenFromScreenCapture(!_viewModel.ShowInScreenShare);
+        UpdateHardwareText();
 
         _viewModel.PlatformPermissionCheckRequested += () => PhonePlatform.HasMicrophonePermission();
         _viewModel.ConfirmationRequested += OnConfirmationRequested;
@@ -96,7 +102,11 @@ public partial class MainView : UserControl
                     {
                         MobileText.Language = _viewModel.L.CurrentLanguageCode;
                         ApplyQuickActionLabels();
+                        UpdateHardwareText();
                     });
+                    break;
+                case nameof(MainViewModel.ShowInScreenShare):
+                    PhonePlatform.SetHiddenFromScreenCapture(!_viewModel.ShowInScreenShare);
                     break;
                 case nameof(MainViewModel.IsEditingTopicName) when _viewModel.IsEditingTopicName:
                     Dispatcher.UIThread.Post(() =>
@@ -247,6 +257,41 @@ public partial class MainView : UserControl
         BackButton.IsVisible = _viewModel.SelectedMainPage != "Home";
         KnowledgeSheet.IsVisible = false;
         UpdateSessionPanels();
+    }
+
+    private void UpdateHardwareText() => PhoneHardwareText.Text = string.Format(
+        MobileText.Get("PhoneSpeechHardware"),
+        SpeechModelCatalog.CpuCores,
+        Math.Round(SpeechModelCatalog.TotalRamGb));
+
+    private void WhatsNew_OnClick(object? sender, RoutedEventArgs e) =>
+        ShowMessage(_viewModel.WhatsNewTitle, MobileText.Get("PhoneWhatsNew"));
+
+    private void DeleteSpeechModel_OnClick(object? sender, RoutedEventArgs e)
+    {
+        if ((sender as Control)?.Tag is SpeechModelItemViewModel item)
+        {
+            RunConfirmable(() => Execute(_viewModel.DeleteSpeechModelCommand, item));
+        }
+    }
+
+    /// <summary>The copied document or recording opens in the app Android picks for its type.</summary>
+    private void OpenKnowledgeOriginal_OnClick(object? sender, RoutedEventArgs e)
+    {
+        string? path = _viewModel.SelectedKnowledgeItem?.Source.Path;
+        if (string.IsNullOrWhiteSpace(path))
+        {
+            return;
+        }
+
+        if (Directory.Exists(path))
+        {
+            ShowMessage(_viewModel.L["KnowledgeOpenOriginal"], MobileText.Get("FolderCopyHint"));
+        }
+        else if (!File.Exists(path) || !PhonePlatform.OpenFile(path))
+        {
+            ShowMessage(_viewModel.L["ErrorTitle"], MobileText.Get("CannotOpenFile"));
+        }
     }
 
     // ===== Recording =====

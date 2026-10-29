@@ -55,6 +55,8 @@ public class MainActivity : AvaloniaMainActivity<App>
         PhonePlatform.HasMicrophonePermission = () => HasMicrophonePermission;
         PhonePlatform.RequestMicrophonePermissionAsync = RequestMicrophonePermissionAsync;
         PhonePlatform.ShareText = ShareText;
+        PhonePlatform.SetHiddenFromScreenCapture = SetHiddenFromScreenCapture;
+        PhonePlatform.OpenFile = OpenFile;
         base.OnCreate(savedInstanceState);
     }
 
@@ -103,6 +105,43 @@ public class MainActivity : AvaloniaMainActivity<App>
         catch (Exception)
         {
             // No app for this link.
+        }
+    }
+
+    /// <summary>
+    /// FLAG_SECURE: Android shows a black screen instead of CuePilot in screen recordings, casting and screenshots,
+    /// the phone counterpart of hiding the windows from screen sharing on the computer.
+    /// </summary>
+    public void SetHiddenFromScreenCapture(bool hidden) => RunOnUiThread(() =>
+    {
+        if (hidden)
+        {
+            Window?.AddFlags(global::Android.Views.WindowManagerFlags.Secure);
+        }
+        else
+        {
+            Window?.ClearFlags(global::Android.Views.WindowManagerFlags.Secure);
+        }
+    });
+
+    /// <summary>Opens a file of the app (an attached document, a recording) through FileProvider in the app that handles its type.</summary>
+    public bool OpenFile(string path)
+    {
+        try
+        {
+            var file = new Java.IO.File(path);
+            global::Android.Net.Uri uri = AndroidX.Core.Content.FileProvider.GetUriForFile(this, PackageName + ".files", file)!;
+            string extension = Path.GetExtension(path).TrimStart('.').ToLowerInvariant();
+            string type = global::Android.Webkit.MimeTypeMap.Singleton?.GetMimeTypeFromExtension(extension) ?? "*/*";
+            var intent = new Intent(Intent.ActionView);
+            intent.SetDataAndType(uri, type);
+            intent.AddFlags(ActivityFlags.GrantReadUriPermission | ActivityFlags.NewTask);
+            StartActivity(Intent.CreateChooser(intent, file.Name));
+            return true;
+        }
+        catch (Exception)
+        {
+            return false;
         }
     }
 

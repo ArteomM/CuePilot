@@ -150,6 +150,53 @@
             <Setter Property="Foreground" Value="{DynamicResource EchoAccentTextBrush}" />
             <Setter Property="FontWeight" Value="Bold" />
         </Style>
+        <!-- Screen-share badge: always «Скрыт от демонстрации»; mint with a lit dot while hidden, plain with a grey dot while visible. -->
+        <Style Selector="Border#ShareBadge">
+            <Setter Property="Background" Value="{DynamicResource EchoAccentSoftBrush}" />
+            <Setter Property="BorderBrush" Value="{DynamicResource EchoAccentSoftBorderBrush}" />
+        </Style>
+        <Style Selector="Border#ShareBadge.shown">
+            <Setter Property="Background" Value="{DynamicResource EchoSurfaceBrush}" />
+            <Setter Property="BorderBrush" Value="{DynamicResource EchoBorderBrush}" />
+        </Style>
+        <Style Selector="Ellipse#ShareBadgeHalo">
+            <Setter Property="Fill" Value="{DynamicResource EchoAccentBrush}" />
+            <Style.Animations>
+                <Animation Duration="0:0:2.2" IterationCount="Infinite">
+                    <KeyFrame Cue="0%">
+                        <Setter Property="Opacity" Value="0.45" />
+                        <Setter Property="ScaleTransform.ScaleX" Value="0.6" />
+                        <Setter Property="ScaleTransform.ScaleY" Value="0.6" />
+                    </KeyFrame>
+                    <KeyFrame Cue="100%">
+                        <Setter Property="Opacity" Value="0" />
+                        <Setter Property="ScaleTransform.ScaleX" Value="1.4" />
+                        <Setter Property="ScaleTransform.ScaleY" Value="1.4" />
+                    </KeyFrame>
+                </Animation>
+            </Style.Animations>
+        </Style>
+        <Style Selector="Ellipse#ShareBadgeHalo.shown">
+            <Setter Property="IsVisible" Value="False" />
+        </Style>
+        <Style Selector="Ellipse#ShareBadgeDot">
+            <Setter Property="Fill" Value="{DynamicResource EchoAccentBrush}" />
+        </Style>
+        <Style Selector="Ellipse#ShareBadgeDot.shown">
+            <Setter Property="Fill" Value="{DynamicResource EchoMutedBrush}" />
+        </Style>
+        <Style Selector="TextBlock#ShareBadgeText">
+            <Setter Property="Foreground" Value="{DynamicResource EchoBadgeTextBrush}" />
+        </Style>
+        <Style Selector="TextBlock#ShareBadgeText.shown">
+            <Setter Property="Foreground" Value="{DynamicResource EchoSoftTextBrush}" />
+        </Style>
+        <Style Selector="ListBox#ModesList ListBoxItem TextBlock.modeCheck">
+            <Setter Property="IsVisible" Value="False" />
+        </Style>
+        <Style Selector="ListBox#ModesList ListBoxItem:selected TextBlock.modeCheck">
+            <Setter Property="IsVisible" Value="True" />
+        </Style>
         <Style Selector="ProgressBar">
             <Setter Property="Foreground" Value="{DynamicResource EchoAccentBrush}" />
             <Setter Property="Background" Value="{DynamicResource EchoSurfaceAltBrush}" />
@@ -221,6 +268,42 @@
                       IsVisible="{Binding SelectedMainPage, Converter={x:Static controls:EqualsConverter.Instance}, ConverterParameter=Home}">
                     <Border Margin="12,12,12,0" Classes="card" Background="{DynamicResource EchoHeroBrush}">
                         <StackPanel>
+                            <Grid Margin="0,0,0,10" ColumnDefinitions="Auto,*,Auto">
+                                <!-- Same badge as on the computer: lit while CuePilot is hidden from screen recording, casting and screenshots. -->
+                                <Border x:Name="ShareBadge"
+                                        Height="30"
+                                        Padding="12,0"
+                                        HorizontalAlignment="Left"
+                                        CornerRadius="15"
+                                        BorderThickness="1"
+                                        Classes.shown="{Binding ShowInScreenShare}">
+                                    <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+                                        <Grid Width="14" Height="14" VerticalAlignment="Center">
+                                            <Ellipse x:Name="ShareBadgeHalo"
+                                                     Width="14"
+                                                     Height="14"
+                                                     Opacity="0.35"
+                                                     RenderTransformOrigin="0.5,0.5"
+                                                     Classes.shown="{Binding ShowInScreenShare}">
+                                                <Ellipse.RenderTransform>
+                                                    <ScaleTransform />
+                                                </Ellipse.RenderTransform>
+                                            </Ellipse>
+                                            <Ellipse x:Name="ShareBadgeDot" Width="8" Height="8" Classes.shown="{Binding ShowInScreenShare}" />
+                                        </Grid>
+                                        <TextBlock x:Name="ShareBadgeText"
+                                                   Margin="9,0,0,0"
+                                                   VerticalAlignment="Center"
+                                                   FontSize="13"
+                                                   FontWeight="SemiBold"
+                                                   Classes.shown="{Binding ShowInScreenShare}"
+                                                   Text="{Binding L[HiddenFromShareBadge]}" />
+                                    </StackPanel>
+                                </Border>
+                                <Button Grid.Column="2" Height="30" MinHeight="30" Padding="12,0" FontSize="13" Foreground="{DynamicResource EchoSoftTextBrush}" Click="WhatsNew_OnClick">
+                                    <TextBlock FontWeight="SemiBold" Text="{Binding [WhatsNewShort], Source={x:Static platform:MobileText.Instance}}" />
+                                </Button>
+                            </Grid>
                             <Button Classes="accent"
                                     Height="52"
                                     HorizontalAlignment="Stretch"
@@ -238,6 +321,9 @@
                                     <controls:EchoListeningBars Margin="0,0,10,0" VerticalAlignment="Center" IsActive="{Binding IsCapturing}" />
                                     <TextBlock VerticalAlignment="Center" Text="{Binding [Recording], Source={x:Static platform:MobileText.Instance}}" />
                                 </StackPanel>
+                            </Button>
+                            <Button Margin="0,10,0,0" HorizontalAlignment="Stretch" Padding="12,0" Command="{Binding OpenModesCommand}">
+                                <TextBlock TextTrimming="CharacterEllipsis" FontWeight="SemiBold" Text="{Binding ModesButtonText}" />
                             </Button>
                             <TextBlock Classes="hint" Margin="2,10,2,0" IsVisible="{Binding !IsTopicSelected}" Text="{Binding [PhoneMicHint], Source={x:Static platform:MobileText.Instance}}" />
                         </StackPanel>
@@ -352,15 +438,20 @@
                     </ScrollViewer>
 
                     <Panel Grid.Row="4" Margin="12,10,12,0">
-                        <!-- «Сессии». -->
-                        <Grid IsVisible="{Binding ShowSessionsPanel}">
-                            <TextBlock Margin="2,20,2,0"
+                        <!-- «Сессии»: search like the field in the header on the computer, then the list. -->
+                        <Grid RowDefinitions="Auto,*" IsVisible="{Binding ShowSessionsPanel}">
+                            <TextBox Margin="0,0,0,8"
+                                     Watermark="{Binding [SearchPlaceholder], Source={x:Static platform:MobileText.Instance}}"
+                                     Text="{Binding SessionQuery}" />
+                            <TextBlock Grid.Row="1"
+                                       Margin="2,20,2,0"
                                        FontSize="14"
                                        TextWrapping="Wrap"
                                        Foreground="{DynamicResource EchoMutedBrush}"
                                        Text="{Binding [TopicEmptyHint], Source={x:Static platform:MobileText.Instance}}"
                                        IsVisible="{Binding VisibleSessionsCount, Converter={x:Static controls:IsZeroConverter.Instance}}" />
                             <ListBox x:Name="SessionsList"
+                                     Grid.Row="1"
                                      ItemsSource="{Binding CompletedSessionsView}"
                                      controls:ItemContainer.Classes="plain"
                                      ScrollViewer.HorizontalScrollBarVisibility="Disabled"
@@ -905,6 +996,68 @@
                     </Border>
                 </Grid>
 
+                <!-- ===== Modes: the conversation mode with its prompt, context file and notes template, as on the computer. ===== -->
+                <ScrollViewer x:Name="ModesPage"
+                              HorizontalScrollBarVisibility="Disabled"
+                              VerticalScrollBarVisibility="Auto"
+                              IsVisible="{Binding SelectedMainPage, Converter={x:Static controls:EqualsConverter.Instance}, ConverterParameter=Modes}">
+                    <StackPanel Margin="16,8,16,28">
+                        <TextBlock Margin="0,8,0,0" FontSize="24" FontWeight="ExtraBold" Foreground="{DynamicResource EchoTextBrush}" Text="{Binding [Modes], Source={x:Static platform:MobileText.Instance}}" />
+                        <Border Margin="0,14,0,0" Classes="card" Padding="8">
+                            <StackPanel>
+                                <ListBox x:Name="ModesList"
+                                         BorderThickness="0"
+                                         Background="Transparent"
+                                         ItemsSource="{Binding ModeOptions}"
+                                         SelectedItem="{Binding ModeEditorName, Mode=TwoWay}">
+                                    <ListBox.ItemTemplate>
+                                        <DataTemplate>
+                                            <Grid Margin="6,8" ColumnDefinitions="*,Auto">
+                                                <TextBlock FontSize="16" Foreground="{DynamicResource EchoTextBrush}" Text="{Binding}" />
+                                                <TextBlock Grid.Column="1"
+                                                           Classes="modeCheck"
+                                                           Margin="8,0,0,0"
+                                                           FontSize="18"
+                                                           Foreground="{DynamicResource EchoAccentTextBrush}"
+                                                           Text="✓" />
+                                            </Grid>
+                                        </DataTemplate>
+                                    </ListBox.ItemTemplate>
+                                </ListBox>
+                                <Button Margin="0,6,0,0" HorizontalAlignment="Stretch" Command="{Binding NewModeCommand}" Content="+ Новый режим" />
+                            </StackPanel>
+                        </Border>
+
+                        <Grid Margin="0,18,0,0" ColumnDefinitions="*,Auto">
+                            <TextBlock FontSize="24" FontWeight="ExtraBold" VerticalAlignment="Center" TextTrimming="CharacterEllipsis" Foreground="{DynamicResource EchoTextBrush}" Text="{Binding ModeEditorTitle}" />
+                            <Button Grid.Column="1" Classes="accent" Padding="14,0" Command="{Binding SetModeActiveCommand}" Content="{Binding ModeActionButtonText}" />
+                        </Grid>
+                        <TextBlock Classes="label" FontWeight="SemiBold" Text="Реальное время (prompt)" />
+                        <TextBox Height="210"
+                                 Padding="12,8"
+                                 AcceptsReturn="True"
+                                 TextWrapping="Wrap"
+                                 VerticalContentAlignment="Top"
+                                 ScrollViewer.VerticalScrollBarVisibility="Auto"
+                                 Text="{Binding ModeEditorRealtimePrompt, Mode=TwoWay}" />
+                        <TextBlock Classes="label" FontWeight="SemiBold" Text="Файлы контекста" />
+                        <Border Classes="card">
+                            <StackPanel>
+                                <TextBlock TextWrapping="Wrap" Foreground="{DynamicResource EchoSoftTextBrush}" Text="{Binding ModeEditorReferenceFile}" />
+                                <Button Margin="0,12,0,0" Padding="16,0" HorizontalAlignment="Left" Command="{Binding UploadModeReferenceFileCommand}" Content="Загрузить файл" />
+                            </StackPanel>
+                        </Border>
+                        <TextBlock Classes="label" FontWeight="SemiBold" Text="Шаблон заметок" />
+                        <TextBox Height="140"
+                                 Padding="12,8"
+                                 AcceptsReturn="True"
+                                 TextWrapping="Wrap"
+                                 VerticalContentAlignment="Top"
+                                 ScrollViewer.VerticalScrollBarVisibility="Auto"
+                                 Text="{Binding ModeEditorNotesTemplate, Mode=TwoWay}" />
+                    </StackPanel>
+                </ScrollViewer>
+
                 <!-- ===== Settings: what applies to the phone. ===== -->
                 <ScrollViewer x:Name="SettingsPage"
                               HorizontalScrollBarVisibility="Disabled"
@@ -914,6 +1067,11 @@
                         <TextBlock Margin="0,8,0,0" FontSize="24" FontWeight="ExtraBold" Foreground="{DynamicResource EchoTextBrush}" Text="{Binding L[SettingsTab]}" />
 
                         <TextBlock Classes="section" Text="{Binding L[SettingsSectionAppearance]}" />
+                        <TextBlock Classes="label" Text="{Binding L[SettingsTheme]}" />
+                        <StackPanel Orientation="Horizontal">
+                            <RadioButton GroupName="ThemeMode" Classes="pill" IsChecked="{Binding IsDarkTheme, Mode=TwoWay}" Content="{Binding L[ThemeDark]}" />
+                            <RadioButton GroupName="ThemeMode" Classes="pill" IsChecked="{Binding IsLightTheme, Mode=TwoWay}" Content="{Binding L[ThemeLight]}" />
+                        </StackPanel>
                         <TextBlock Classes="label" Text="{Binding L[SettingsLanguage]}" />
                         <StackPanel Orientation="Horizontal">
                             <RadioButton GroupName="UiLanguage" Classes="pill" IsChecked="{Binding IsRussianUi, Mode=TwoWay}" Content="Русский (RU)" />
@@ -921,8 +1079,18 @@
                         </StackPanel>
                         <TextBlock Classes="hint" Text="{Binding L[SettingsLanguageHint]}" />
 
+                        <!-- The computer hides its windows from screen sharing; the phone hides CuePilot from screen recording,
+                             casting and screenshots (FLAG_SECURE). Same setting. -->
+                        <TextBlock Classes="section" Text="{Binding L[SettingsSectionScreenShare]}" />
+                        <CheckBox IsChecked="{Binding ShowInScreenShare, Mode=TwoWay}">
+                            <TextBlock TextWrapping="Wrap" Text="{Binding [PhoneShowInScreenShare], Source={x:Static platform:MobileText.Instance}}" />
+                        </CheckBox>
+                        <TextBlock Classes="hint" Text="{Binding [PhoneShowInScreenShareHint], Source={x:Static platform:MobileText.Instance}}" />
+
                         <TextBlock Classes="section" Text="{Binding L[SettingsSectionAi]}" />
-                        <CheckBox IsChecked="{Binding SmartModeEnabled, Mode=TwoWay}" Content="{Binding L[SmartModeToggle]}" />
+                        <CheckBox IsChecked="{Binding SmartModeEnabled, Mode=TwoWay}">
+                            <TextBlock TextWrapping="Wrap" Text="{Binding L[SmartModeToggle]}" />
+                        </CheckBox>
                         <TextBlock Classes="hint" Text="{Binding L[SmartModeHint]}" />
 
                         <TextBlock Classes="section" Text="{Binding L[SettingsSectionLlm]}" />
@@ -959,21 +1127,70 @@
                         <TextBlock Classes="hint" Text="{Binding L[SettingsModelPickerHint]}" />
 
                         <TextBlock Classes="section" Text="{Binding L[SettingsSttTitle]}" />
-                        <TextBlock Classes="hint" Margin="0,0,0,4" Text="{Binding [PhoneSttHint], Source={x:Static platform:MobileText.Instance}}" />
-                        <TextBlock Classes="label" Text="{Binding L[SettingsProviderPreset]}" />
-                        <ComboBox HorizontalAlignment="Stretch" MinHeight="44" ItemsSource="{Binding SttApiPresets}" SelectedItem="{Binding SelectedSttPreset, Mode=TwoWay}" />
-                        <StackPanel IsVisible="{Binding SttBaseUrlFieldVisibility}">
-                            <TextBlock Classes="label" Text="{Binding L[SettingsBaseUrl]}" />
-                            <TextBox Text="{Binding SttApiBaseUrl}" />
+                        <CheckBox x:Name="UseApiSttBox" IsChecked="{Binding UseApiStt, Mode=TwoWay}">
+                            <TextBlock TextWrapping="Wrap" Text="{Binding L[SettingsUseApiStt]}" />
+                        </CheckBox>
+                        <TextBlock x:Name="SttHintText" Classes="hint" Margin="0,6,0,4" Text="{Binding [PhoneSttHint], Source={x:Static platform:MobileText.Instance}}" />
+                        <!-- Same order as for the AI model: provider, key, model. Dimmed while recognition stays on the phone. -->
+                        <StackPanel IsEnabled="{Binding UseApiStt}">
+                            <TextBlock Classes="label" Text="{Binding L[SettingsProviderPreset]}" />
+                            <ComboBox HorizontalAlignment="Stretch" MinHeight="44" ItemsSource="{Binding SttApiPresets}" SelectedItem="{Binding SelectedSttPreset, Mode=TwoWay}" />
+                            <StackPanel IsVisible="{Binding SttBaseUrlFieldVisibility}">
+                                <TextBlock Classes="label" Text="{Binding L[SettingsBaseUrl]}" />
+                                <TextBox Text="{Binding SttApiBaseUrl}" />
+                            </StackPanel>
+                            <TextBlock Classes="label" Text="{Binding L[SettingsSttApiKey]}" />
+                            <TextBox PasswordChar="•" Text="{Binding SttApiKey}" />
+                            <TextBlock Classes="hint" Text="{Binding SttKeySourceText}" />
+                            <TextBlock Classes="label" Text="{Binding L[SettingsSttModel]}" />
+                            <controls:ModelPicker Text="{Binding SttApiModel, Mode=TwoWay}" Options="{Binding SpeechModelOptions}" Status="{Binding SpeechModelsStatus}" LoadCommand="{Binding LoadSpeechModelsCommand}" />
                         </StackPanel>
-                        <TextBlock Classes="label" Text="{Binding L[SettingsSttApiKey]}" />
-                        <TextBox PasswordChar="•" Text="{Binding SttApiKey}" />
-                        <TextBlock Classes="hint" Text="{Binding SttKeySourceText}" />
-                        <TextBlock Classes="label" Text="{Binding L[SettingsSttModel]}" />
-                        <controls:ModelPicker Text="{Binding SttApiModel, Mode=TwoWay}" Options="{Binding SpeechModelOptions}" Status="{Binding SpeechModelsStatus}" LoadCommand="{Binding LoadSpeechModelsCommand}" />
+                        <TextBlock Classes="hint" Text="{Binding SttStatusText}" />
                         <TextBlock Classes="label" Text="{Binding L[SettingsSttGlossary]}" />
                         <TextBox MinHeight="70" AcceptsReturn="True" TextWrapping="Wrap" Watermark="{Binding L[SettingsSttGlossaryExample]}" Text="{Binding SttGlossary}" />
                         <TextBlock Classes="hint" Text="{Binding L[SettingsSttGlossaryHint]}" />
+
+                        <!-- whisper.cpp models for recognition on the phone, downloaded once, like on the computer. -->
+                        <StackPanel x:Name="SpeechModelsSection">
+                            <TextBlock Classes="section" Text="{Binding L[SpeechModelTitle]}" />
+                            <TextBlock Classes="hint" Margin="0,0,0,0" Text="{Binding [PhoneSpeechIntro], Source={x:Static platform:MobileText.Instance}}" />
+                            <TextBlock x:Name="PhoneHardwareText" Classes="hint" />
+                            <TextBlock Margin="0,6,0,0" FontSize="14" TextWrapping="Wrap" Foreground="{DynamicResource EchoTextBrush}" Text="{Binding SpeechModelStatusText}" />
+                            <ItemsControl Margin="0,10,0,0" ItemsSource="{Binding SpeechModels}">
+                                <ItemsControl.ItemTemplate>
+                                    <DataTemplate>
+                                        <Border Margin="0,0,0,10" Classes="card" Padding="14,12">
+                                            <StackPanel>
+                                                <Grid ColumnDefinitions="*,Auto">
+                                                    <StackPanel Orientation="Horizontal">
+                                                        <TextBlock FontSize="15.5" FontWeight="Bold" VerticalAlignment="Center" Foreground="{DynamicResource EchoTextBrush}" Text="{Binding Title}" />
+                                                        <TextBlock Margin="10,0,0,0" FontSize="13" VerticalAlignment="Center" Foreground="{DynamicResource EchoMutedBrush}" Text="{Binding SizeText}" />
+                                                    </StackPanel>
+                                                    <TextBlock Grid.Column="1" FontSize="13" FontWeight="SemiBold" VerticalAlignment="Center" Foreground="{DynamicResource EchoAccentTextBrush}" Text="{Binding StatusText}" />
+                                                </Grid>
+                                                <Border Margin="0,6,0,0"
+                                                        Padding="8,1"
+                                                        HorizontalAlignment="Left"
+                                                        CornerRadius="9"
+                                                        Background="{DynamicResource EchoAccentSoftBrush}"
+                                                        IsVisible="{Binding RecommendedVisibility}">
+                                                    <TextBlock FontSize="11.5" Foreground="{DynamicResource EchoBadgeTextBrush}" Text="{Binding $parent[UserControl].DataContext.L[SpeechModelRecommended]}" />
+                                                </Border>
+                                                <TextBlock Margin="0,6,0,0" FontSize="13.5" LineHeight="19" TextWrapping="Wrap" Foreground="{DynamicResource EchoSoftTextBrush}" Text="{Binding Info.PhoneDescription}" />
+                                                <TextBlock Margin="0,4,0,0" FontSize="13" TextWrapping="Wrap" Foreground="{DynamicResource EchoMutedBrush}" Text="{Binding Info.PhoneSuitability}" />
+                                                <ProgressBar Margin="0,8,0,0" Height="6" Maximum="100" Value="{Binding ProgressPercent, Mode=OneWay}" IsVisible="{Binding DownloadingVisibility}" />
+                                                <StackPanel Margin="0,10,0,0" Orientation="Horizontal">
+                                                    <Button Classes="accent" Padding="16,0" IsVisible="{Binding DownloadVisibility}" Command="{Binding $parent[UserControl].DataContext.DownloadSpeechModelCommand}" CommandParameter="{Binding}" Content="{Binding $parent[UserControl].DataContext.L[SpeechModelDownload]}" />
+                                                    <Button Padding="16,0" IsVisible="{Binding UseVisibility}" Command="{Binding $parent[UserControl].DataContext.UseSpeechModelCommand}" CommandParameter="{Binding}" Content="{Binding $parent[UserControl].DataContext.L[SpeechModelUse]}" />
+                                                    <Button Classes="dangerSoft" Margin="8,0,0,0" Padding="16,0" IsVisible="{Binding DeleteVisibility}" Tag="{Binding}" Click="DeleteSpeechModel_OnClick" Content="{Binding $parent[UserControl].DataContext.L[SpeechModelDelete]}" />
+                                                    <Button Padding="16,0" IsVisible="{Binding DownloadingVisibility}" Command="{Binding $parent[UserControl].DataContext.CancelSpeechModelDownloadCommand}" Content="{Binding $parent[UserControl].DataContext.L[SpeechModelCancel]}" />
+                                                </StackPanel>
+                                            </StackPanel>
+                                        </Border>
+                                    </DataTemplate>
+                                </ItemsControl.ItemTemplate>
+                            </ItemsControl>
+                        </StackPanel>
 
                         <Button Classes="accent" Margin="0,24,0,0" Height="48" HorizontalAlignment="Stretch" FontSize="16" Command="{Binding SaveSettingsCommand}" Content="{Binding L[SaveSettings]}" />
                         <TextBlock Margin="0,14,0,0" HorizontalAlignment="Center" FontSize="12.5" Foreground="{DynamicResource EchoMutedBrush}" Text="{Binding AppVersion}" />
@@ -1004,6 +1221,7 @@
                     <Button Classes="accent" Margin="0,0,6,6" Padding="14,0" Command="{Binding ParseKnowledgeItemCommand}" Content="{Binding SelectedKnowledgeItem.ParseButtonText}" IsVisible="{Binding !SelectedKnowledgeItem.CanStop}" />
                     <Button Classes="dangerSoft" Margin="0,0,6,6" Padding="14,0" Command="{Binding StopKnowledgeItemCommand}" Content="{Binding L[KnowledgeStop]}" IsVisible="{Binding SelectedKnowledgeItem.CanStop}" />
                     <Button Margin="0,0,6,6" Padding="14,0" Click="EditNote_OnClick" IsVisible="{Binding SelectedKnowledgeItem.IsNote}" Content="{Binding L[KnowledgeEditNote]}" />
+                    <Button Margin="0,0,6,6" Padding="14,0" Click="OpenKnowledgeOriginal_OnClick" IsVisible="{Binding SelectedKnowledgeItem.HasOriginal}" Content="{Binding L[KnowledgeOpenOriginal]}" />
                     <Button Margin="0,0,6,6" Padding="14,0" Command="{Binding CopyKnowledgePreviewCommand}" Content="{Binding L[CopyText]}" />
                     <Button Classes="dangerSoft" Margin="0,0,6,6" Padding="14,0" Click="RemoveKnowledgeItem_OnClick" Content="{Binding L[KnowledgeRemove]}" />
                 </WrapPanel>
