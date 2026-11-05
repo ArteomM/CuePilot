@@ -63,8 +63,12 @@ public sealed unsafe class LocalWhisper : IDisposable
         }
     }
 
-    /// <summary>Recognizes 16 kHz mono samples (-1…1). Cancelling the token stops whisper.cpp mid-piece.</summary>
-    public string Transcribe(float[] samples, string language, string prompt, CancellationToken token)
+    /// <summary>
+    /// Recognizes 16 kHz mono samples (-1…1). Cancelling the token stops whisper.cpp mid-piece.
+    /// <paramref name="shortWindow"/> sizes the encoder window to the piece instead of 30 s: several times faster
+    /// for the 5–10 s pieces of a live recording (media files keep the full window).
+    /// </summary>
+    public string Transcribe(float[] samples, string language, string prompt, CancellationToken token, bool shortWindow = false)
     {
         Api api = _api!;
         lock (_gate)
@@ -81,7 +85,7 @@ public sealed unsafe class LocalWhisper : IDisposable
                 {
                     fixed (float* audio = samples)
                     {
-                        result = api.Transcribe(_context, audio, samples.Length, (byte*)languageText, (byte*)promptText, Threads);
+                        result = api.Transcribe(_context, audio, samples.Length, (byte*)languageText, (byte*)promptText, Threads, shortWindow ? AudioContext(samples.Length) : 0);
                     }
                 }
 
@@ -99,6 +103,14 @@ public sealed unsafe class LocalWhisper : IDisposable
                 Marshal.FreeCoTaskMem(promptText);
             }
         }
+    }
+
+    /// <summary>50 encoder frames per second of audio plus 2 s, in steps of 32; 0 (full window) from 28 s on.</summary>
+    public static int AudioContext(int sampleCount)
+    {
+        int frames = ((sampleCount / 16000) + 2) * 50;
+        frames = (frames + 31) / 32 * 32;
+        return frames >= 1500 ? 0 : frames;
     }
 
     public void Dispose()
@@ -199,7 +211,7 @@ public sealed unsafe class LocalWhisper : IDisposable
     private sealed class Api
     {
         public readonly delegate* unmanaged<byte*, IntPtr> Init;
-        public readonly delegate* unmanaged<IntPtr, float*, int, byte*, byte*, int, int> Transcribe;
+        public readonly delegate* unmanaged<IntPtr, float*, int, byte*, byte*, int, int, int> Transcribe;
         public readonly delegate* unmanaged<IntPtr, IntPtr> Text;
         public readonly delegate* unmanaged<IntPtr, void> AbortFunction;
         public readonly delegate* unmanaged<IntPtr, void> Free;
@@ -208,7 +220,7 @@ public sealed unsafe class LocalWhisper : IDisposable
         public Api(IntPtr library)
         {
             Init = (delegate* unmanaged<byte*, IntPtr>)NativeLibrary.GetExport(library, "cpw_init");
-            Transcribe = (delegate* unmanaged<IntPtr, float*, int, byte*, byte*, int, int>)NativeLibrary.GetExport(library, "cpw_transcribe");
+            Transcribe = (delegate* unmanaged<IntPtr, float*, int, byte*, byte*, int, int, int>)NativeLibrary.GetExport(library, "cpw_transcribe");
             Text = (delegate* unmanaged<IntPtr, IntPtr>)NativeLibrary.GetExport(library, "cpw_text");
             AbortFunction = (delegate* unmanaged<IntPtr, void>)NativeLibrary.GetExport(library, "cpw_abort");
             Free = (delegate* unmanaged<IntPtr, void>)NativeLibrary.GetExport(library, "cpw_free");

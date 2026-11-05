@@ -20,6 +20,8 @@ public partial class MainView : UserControl
     private const int MaxChatItems = 100;
     private readonly MainViewModel _viewModel = null!;
     private readonly CaptureOrchestratorService _capture = null!;
+    private readonly RecordingMonitor _monitor = null!;
+    private CancellationTokenSource? _micTest;
     private readonly ObservableCollection<PhoneChatItem> _chat = [];
     private bool _assistTab;
     private bool _stopping;
@@ -43,6 +45,7 @@ public partial class MainView : UserControl
         bool localWhisper = PrepareLocalWhisper(dataRoot);
         var diagnostics = new DiagnosticsViewModel(new EnvironmentDiagnosticsService(dataRoot));
         _capture = new CaptureOrchestratorService();
+        _monitor = new RecordingMonitor(_capture);
         _viewModel = new MainViewModel(dataRoot, _capture, new NoVisualContextCapture(), diagnostics, settingsService, localizationService);
 
         // No screen of other apps to capture; without whisper.cpp (a 32-bit phone) speech goes through the API only.
@@ -126,6 +129,7 @@ public partial class MainView : UserControl
         };
 
         DataContext = _viewModel;
+        RecordingDetails.DataContext = _monitor;
         AssistList.ItemsSource = _chat;
         ResetChat();
         ApplyQuickActionLabels();
@@ -183,7 +187,7 @@ public partial class MainView : UserControl
     {
         string marker = PlatformPaths.DefaultWhisperBin(dataRoot);
         bool available = LocalWhisper.IsAvailable;
-        global::Android.Util.Log.Info("CuePilot", available
+        PhonePlatform.Log(available
             ? "whisper.cpp: " + LocalWhisper.Description
             : "whisper.cpp is not available: " + LocalWhisper.LoadError);
         try
@@ -310,6 +314,56 @@ public partial class MainView : UserControl
         Execute(_viewModel.StartCaptureCommand);
     }
 
+    /// <summary>Settings: 5 s from the microphone, recognized like a recording; a second tap cancels.</summary>
+    private async void MicTest_OnClick(object? sender, RoutedEventArgs e)
+    {
+        if (_micTest != null)
+        {
+            _micTest.Cancel();
+            return;
+        }
+
+        MicTestResult.IsVisible = true;
+        if (_viewModel.IsCapturing)
+        {
+            MicTestResult.Text = MobileText.Get("TestBusy");
+            return;
+        }
+
+        if (!await PhonePlatform.RequestMicrophonePermissionAsync())
+        {
+            MicTestResult.Text = MobileText.Get("MicPermissionDenied");
+            return;
+        }
+
+        using var cts = new CancellationTokenSource();
+        _micTest = cts;
+        MicTestButton.Content = MobileText.Get("TestRecording");
+        MicTestLevel.Value = 0;
+        MicTestLevel.IsVisible = true;
+        MicTestResult.Text = string.Empty;
+        try
+        {
+            string result = await MicrophoneTest.RunAsync(
+                _viewModel.BuildSpeechTestOptions(),
+                level => Dispatcher.UIThread.Post(() => MicTestLevel.Value = level),
+                () => Dispatcher.UIThread.Post(() =>
+                {
+                    MicTestButton.Content = MobileText.Get("TestRecognizing");
+                    MicTestLevel.IsVisible = false;
+                }),
+                cts.Token);
+            MicTestResult.Text = result;
+            MicTestResult.IsVisible = result.Length > 0;
+        }
+        finally
+        {
+            _micTest = null;
+            MicTestLevel.IsVisible = false;
+            MicTestButton.Content = MobileText.Get("TestMicButton");
+        }
+    }
+
     /// <summary>The last phrases are recognized before the session is closed and summarized.</summary>
     private async void StopRecording_OnClick(object? sender, RoutedEventArgs e)
     {
@@ -323,7 +377,7 @@ public partial class MainView : UserControl
         RecordingStatusText.Text = MobileText.Get("Finishing");
         try
         {
-            await _capture.StopAndDrainAsync(TimeSpan.FromSeconds(25));
+            await _capture.StopAndDrainAsync(TimeSpan.FromSeconds(45));
             Execute(_viewModel.StopCaptureCommand);
         }
         finally

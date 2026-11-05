@@ -15,4 +15,7 @@ public static class PhonePlatform
 
     /// <summary>Opens a file of the app in another app (a viewer, a player); false when none can open it.</summary>
     public static Func<string, bool> OpenFile { get; set; } = _ => false;
+
+    /// <summary>A line in the Android log (logcat, tag CuePilot); the console in previews.</summary>
+    public static Action<string> Log { get; set; } = Console.WriteLine;
 }

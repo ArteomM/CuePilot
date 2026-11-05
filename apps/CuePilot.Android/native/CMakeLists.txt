@@ -24,3 +24,10 @@ if(ANDROID)
   # 16 KB pages for Android 15+ devices; libc++ comes in statically (ANDROID_STL=c++_static in build-android.sh).
   target_link_options(cuepilot_whisper PRIVATE "-Wl,-z,max-page-size=16384")
 endif()
+
+# cpw_test: recognizes a WAV file on the computer (CI compares the full and the short encoder window).
+option(CPW_BUILD_TEST "Build the cpw_test command line program" OFF)
+if(CPW_BUILD_TEST)
+  add_executable(cpw_test test/cpw_test.c)
+  target_link_libraries(cpw_test PRIVATE cuepilot_whisper)
+endif()

@@ -124,6 +124,41 @@ jobs:
           emulator-options: -no-window -gpu swiftshader_indirect -noaudio -no-boot-anim -camera-back none
           script: bash apps/CuePilot.Android/ci/smoke-test.sh dist/CuePilot-*.apk
 
+  speech:
+    # The phone's whisper.cpp layer on the computer with real models: Russian speech (espeak-ng) recognized with the
+    # full and the short encoder window of live recording, so the log shows text and time of both.
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: espeak-ng and ffmpeg
+        run: sudo apt-get install -y --no-install-recommends espeak-ng ffmpeg > /dev/null
+      - name: Keep the speech models between builds
+        uses: actions/cache@v4
+        with:
+          path: ~/whisper-models
+          key: cuepilot-whisper-models-base-small-q8
+      - name: Speech models
+        run: |
+          mkdir -p ~/whisper-models
+          for m in base-q8_0 small-q8_0; do
+            [ -s ~/whisper-models/ggml-$m.bin ] || curl -sSfL -o ~/whisper-models/ggml-$m.bin "https://huggingface.co/ggerganov/whisper.cpp/resolve/main/ggml-$m.bin"
+          done
+      - name: Build the test program
+        run: |
+          git clone -q --depth 1 --branch v1.7.4 https://github.com/ggml-org/whisper.cpp.git "$RUNNER_TEMP/whisper"
+          cmake -S apps/CuePilot.Android/native -B "$RUNNER_TEMP/host" -DWHISPER_DIR="$RUNNER_TEMP/whisper" -DCPW_BUILD_TEST=ON -DCMAKE_BUILD_TYPE=Release > /dev/null
+          cmake --build "$RUNNER_TEMP/host" -j "$(nproc)" --target cpw_test > /dev/null
+      - name: Recognize Russian speech
+        run: |
+          espeak-ng -v ru -s 140 -w speech.wav "Добрый день. Давайте обсудим сроки поставки оборудования и стоимость проекта на следующий квартал."
+          ffmpeg -loglevel error -y -i speech.wav -ar 16000 -ac 1 -c:a pcm_s16le speech16.wav
+          for m in base-q8_0 small-q8_0; do
+            for window in 0 auto; do
+              echo "== $m, window $window"
+              "$RUNNER_TEMP/host/cpw_test" ~/whisper-models/ggml-$m.bin speech16.wav ru $window
+            done
+          done
+
   release:
     # The latest APK on the «android-latest» release page.
     needs: build

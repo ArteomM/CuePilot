@@ -50,7 +50,9 @@ CPW_API cpw_context * cpw_init(const char * model_path) {
 }
 
 // Recognizes 16 kHz mono float samples. Returns 0 on success; the text is then read with cpw_text.
-CPW_API int cpw_transcribe(cpw_context * context, const float * samples, int count, const char * language, const char * prompt, int threads) {
+// audio_ctx > 0 shortens the encoder window from 30 s to the piece (50 per second of audio): several times faster
+// on a phone for the 5-10 s pieces of a live recording; 0 keeps the full window (media files).
+CPW_API int cpw_transcribe(cpw_context * context, const float * samples, int count, const char * language, const char * prompt, int threads, int audio_ctx) {
     atomic_store(&context->abort, 0);
     free(context->text);
     context->text = NULL;
@@ -70,6 +72,7 @@ CPW_API int cpw_transcribe(cpw_context * context, const float * samples, int cou
     params.suppress_blank = true;
     params.suppress_nst = true;
     params.temperature = 0.0f;
+    params.audio_ctx = audio_ctx > 0 ? audio_ctx : 0;
     params.initial_prompt = (prompt != NULL && prompt[0] != '\0') ? prompt : NULL;
     params.abort_callback = should_abort;
     params.abort_callback_user_data = context;

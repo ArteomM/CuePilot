@@ -57,6 +57,7 @@ public class MainActivity : AvaloniaMainActivity<App>
         PhonePlatform.ShareText = ShareText;
         PhonePlatform.SetHiddenFromScreenCapture = SetHiddenFromScreenCapture;
         PhonePlatform.OpenFile = OpenFile;
+        PhonePlatform.Log = line => global::Android.Util.Log.Info("CuePilot", line);
         base.OnCreate(savedInstanceState);
     }
 

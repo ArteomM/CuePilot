@@ -91,12 +91,15 @@ public sealed class LocalWhisperRecognizer : ISpeechRecognizer
     private readonly string _modelPath;
     private readonly string _language;
     private readonly string _glossary;
+    private readonly bool _liveRecording;
     private LocalWhisper? _whisper;
     private string? _loadError;
 
-    public LocalWhisperRecognizer(string modelPath, string language, string glossary)
+    /// <param name="liveRecording">Pieces of a live recording: the short encoder window, so whisper.cpp keeps up.</param>
+    public LocalWhisperRecognizer(string modelPath, string language, string glossary, bool liveRecording = false)
     {
         _modelPath = modelPath ?? string.Empty;
+        _liveRecording = liveRecording;
         _language = string.IsNullOrWhiteSpace(language) ? "auto" : language;
         _glossary = SpeechPrompt.NormalizeGlossary(glossary);
     }
@@ -133,7 +136,7 @@ public sealed class LocalWhisperRecognizer : ISpeechRecognizer
         }
 
         string prompt = SpeechPrompt.Build("whisper.cpp", _language, _glossary, previousText);
-        return _whisper.Transcribe(audio, _language, prompt, token);
+        return _whisper.Transcribe(audio, _language, prompt, token, _liveRecording);
     }
 
     public bool IsPromptEcho(string text) => SpeechPrompt.IsEcho(text, _glossary);

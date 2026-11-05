@@ -27,6 +27,24 @@ public partial class MainViewModel
 
     private partial void SetClipboardText(string text) => _ = MainTopLevel?.Clipboard?.SetTextAsync(text);
 
+    /// <summary>The speech recognition a recording would start with now: the microphone test in Settings uses it.</summary>
+    public CaptureStartOptions BuildSpeechTestOptions()
+    {
+        (_, _, string whisperModel, _) = ResolveCaptureTools();
+        string key = UseApiStt ? ResolveSttApiKey() : string.Empty;
+        return new CaptureStartOptions
+        {
+            WhisperModel = whisperModel,
+            Language = _settings.CaptureLanguage,
+            SilenceThreshold = _settings.SttSilenceThreshold,
+            UseApiStt = UseApiStt && key.Length > 0,
+            SttApiUrl = string.IsNullOrWhiteSpace(SttApiBaseUrl) ? AppSettings.PolzaBaseUrl : SttApiBaseUrl.Trim(),
+            SttApiModel = SttApiModel.Trim(),
+            SttApiKey = key,
+            SttGlossary = SttGlossary
+        };
+    }
+
     private async partial Task<IReadOnlyList<string>> PickFilesAsync(string title, string filterName, string patterns, bool multiple)
     {
         if (MainTopLevel?.StorageProvider is not { } storage)

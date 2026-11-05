@@ -15,6 +15,9 @@ public class CaptureOrchestratorService
     private const int SampleRate = SpeechApiClient.SampleRate;
     private const int FrameSamples = SampleRate / 10;
 
+    /// <summary>Below this level (about -58 dBFS) a frame is silence whatever the background noise.</summary>
+    internal const double MinSpeechRms = 0.00125;
+
     private readonly object _gate = new();
     private CaptureRun? _run;
     private bool _heldStop;
@@ -29,6 +32,21 @@ public class CaptureOrchestratorService
     public event EventHandler<CaptureStats>? StatsUpdated;
     public event EventHandler<TranscriptLine>? TranscriptReceived;
     public event EventHandler<bool>? RunningStateChanged;
+
+    /// <summary>Phone only: every piece sent to recognition, with its time and result (the recording status on screen).</summary>
+    public event EventHandler<SpeechPieceResult>? PieceRecognized;
+
+    /// <summary>The recognizer of the current recording («whisper.cpp Small», «API whisper-1»), empty without one.</summary>
+    public string ActiveSpeechName
+    {
+        get
+        {
+            lock (_gate)
+            {
+                return _run?.SpeechName ?? string.Empty;
+            }
+        }
+    }
 
     public bool IsRunning
     {
@@ -154,6 +172,43 @@ public class CaptureOrchestratorService
 
     private void Log(string line) => LogLine?.Invoke(this, line);
 
+    /// <summary>Quiet speech (the phone across the table) raised to a normal level for recognition, at most 16 times.</summary>
+    internal static short[] Normalize(short[] samples)
+    {
+        int peak = 1;
+        foreach (short sample in samples)
+        {
+            peak = Math.Max(peak, Math.Abs((int)sample));
+        }
+
+        double gain = Math.Min(16, 0.7 * 32767 / peak);
+        if (gain <= 1.2)
+        {
+            return samples;
+        }
+
+        var louder = new short[samples.Length];
+        for (int i = 0; i < samples.Length; i++)
+        {
+            louder[i] = (short)Math.Clamp(samples[i] * gain, short.MinValue, short.MaxValue);
+        }
+
+        return louder;
+    }
+
+    /// <summary>The API when it is on and has a key, otherwise whisper.cpp with the downloaded model, otherwise none.</summary>
+    public static ISpeechRecognizer? CreateRecognizer(CaptureStartOptions options)
+    {
+        if (options.UseApiStt)
+        {
+            return new SpeechApiClient(options.SttApiUrl, options.SttApiKey, options.SttApiModel, options.Language, options.SttGlossary);
+        }
+
+        return !string.IsNullOrWhiteSpace(options.WhisperModel) && File.Exists(options.WhisperModel) && LocalWhisper.IsAvailable
+            ? new LocalWhisperRecognizer(options.WhisperModel, options.Language, options.SttGlossary, liveRecording: true)
+            : null;
+    }
+
     private void EmitTranscript(string text, DateTime timestamp)
     {
         string cleanedText = TranscriptTextPipeline.CleanRecognizedText(text);
@@ -198,23 +253,10 @@ public class CaptureOrchestratorService
             _owner = owner;
             _options = options;
             _source = source;
-            _speech = CreateRecognizer(options);
+            _speech = CaptureOrchestratorService.CreateRecognizer(options);
         }
 
         public string SpeechName => _speech?.Name ?? string.Empty;
-
-        /// <summary>The API when it is on and has a key, otherwise whisper.cpp with the downloaded model, otherwise none.</summary>
-        private static ISpeechRecognizer? CreateRecognizer(CaptureStartOptions options)
-        {
-            if (options.UseApiStt)
-            {
-                return new SpeechApiClient(options.SttApiUrl, options.SttApiKey, options.SttApiModel, options.Language, options.SttGlossary);
-            }
-
-            return !string.IsNullOrWhiteSpace(options.WhisperModel) && LocalWhisper.IsAvailable
-                ? new LocalWhisperRecognizer(options.WhisperModel, options.Language, options.SttGlossary)
-                : null;
-        }
 
         public void Start()
         {
@@ -248,7 +290,10 @@ public class CaptureOrchestratorService
             var chunk = new List<short>(SampleRate * Math.Max(_options.MaxChunkSeconds, 1));
             int minSamples = SampleRate * Math.Max(_options.ChunkSeconds, 1);
             int maxSamples = SampleRate * Math.Max(_options.MaxChunkSeconds, _options.ChunkSeconds + 1);
+            // A phone lying on the table hears a room quieter than a computer microphone: speech is a frame clearly
+            // above the background noise (tracked as a slowly rising minimum), or above the threshold of Settings.
             double threshold = _options.SilenceThreshold > 0 ? _options.SilenceThreshold : 0.004;
+            double noiseFloor = -1;
             int quietFrames = 0;
             int voicedFrames = 0;
             DateTime chunkStartedAt = DateTime.Now;
@@ -284,7 +329,8 @@ public class CaptureOrchestratorService
                         chunk.Add(frame[i]);
                     }
 
-                    bool quiet = rms < threshold;
+                    noiseFloor = noiseFloor < 0 || rms < noiseFloor ? rms : noiseFloor + ((rms - noiseFloor) * 0.002);
+                    bool quiet = rms < Math.Min(threshold, Math.Max(MinSpeechRms, noiseFloor * 3));
                     quietFrames = quiet ? quietFrames + 1 : 0;
                     if (!quiet)
                     {
@@ -395,10 +441,16 @@ public class CaptureOrchestratorService
                         continue;
                     }
 
+                    double audioSeconds = chunk.Samples.Length / (double)SampleRate;
+                    var clock = System.Diagnostics.Stopwatch.StartNew();
                     try
                     {
-                        string text = _speech.Transcribe(chunk.Samples, _previousText, _abort.Token);
-                        if (string.IsNullOrWhiteSpace(text) || !text.Any(char.IsLetterOrDigit) || _speech.IsPromptEcho(text))
+                        string text = _speech.Transcribe(Normalize(chunk.Samples), _previousText, _abort.Token);
+                        bool speech = !string.IsNullOrWhiteSpace(text) && text.Any(char.IsLetterOrDigit) && !_speech.IsPromptEcho(text);
+                        _owner.Log(string.Format(CultureInfo.InvariantCulture, "[stt] {0:0.0} s of audio recognized in {1:0.0} s{2}.",
+                            audioSeconds, clock.Elapsed.TotalSeconds, speech ? string.Empty : ", no speech"));
+                        _owner.PieceRecognized?.Invoke(_owner, new SpeechPieceResult(audioSeconds, clock.Elapsed.TotalSeconds, speech ? text : string.Empty, null));
+                        if (!speech)
                         {
                             continue;
                         }
@@ -409,6 +461,7 @@ public class CaptureOrchestratorService
                     catch (Exception ex) when (!_abort.IsCancellationRequested)
                     {
                         _owner.Log("[stt] Recognition failed: " + ex.Message);
+                        _owner.PieceRecognized?.Invoke(_owner, new SpeechPieceResult(audioSeconds, clock.Elapsed.TotalSeconds, string.Empty, ex.Message));
                     }
                 }
             }
@@ -477,6 +530,9 @@ public class CaptureOrchestratorService
         private sealed record Chunk(short[] Samples, DateTime StartedAt, DateTime EndedAt);
     }
 }
+
+/// <summary>One recognized piece: its length, how long recognition took, the text (empty: no speech) or the error.</summary>
+public sealed record SpeechPieceResult(double AudioSeconds, double RecognitionSeconds, string Text, string? Error);
 
 /// <summary>16 kHz mono 16-bit microphone samples. <see cref="Read"/> blocks until a frame is ready.</summary>
 public interface IPcmSource : IDisposable
