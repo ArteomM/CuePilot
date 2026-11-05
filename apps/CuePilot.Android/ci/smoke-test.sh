@@ -8,8 +8,10 @@ PACKAGE="app.cuepilot.mobile"
 adb install -r "$APK" || { echo "::error::The APK did not install"; exit 1; }
 adb logcat -c
 # The extra makes the app send one speech API request with a made-up key (Platform/SelfTest.cs).
-adb shell am start -a android.intent.action.MAIN -c android.intent.category.LAUNCHER -p "$PACKAGE" \
-  --es cuepilot_selftest_stt "https://polza.ai/api/v1" > /dev/null
+ACTIVITY="$(adb shell cmd package resolve-activity --brief -c android.intent.category.LAUNCHER "$PACKAGE" | tr -d '\r' | tail -1)"
+echo "Launcher activity: $ACTIVITY"
+adb shell am start -n "$ACTIVITY" --es cuepilot_selftest_stt "https://polza.ai/api/v1" \
+  || adb shell monkey -p "$PACKAGE" -c android.intent.category.LAUNCHER 1 > /dev/null
 sleep 50
 
 PID="$(adb shell pidof "$PACKAGE" | tr -d '\r')"
