@@ -49,9 +49,10 @@ public sealed class SpeechApiClient : ISpeechRecognizer
             using var request = new HttpRequestMessage(HttpMethod.Post, url);
             request.Headers.Authorization = new AuthenticationHeaderValue("Bearer", _apiKey);
             request.Content = _useJsonBody ? BuildJsonBody(wav, prompt) : BuildMultipartBody(wav, prompt);
-            using HttpResponseMessage response = SttHttpClient.Send(request, token);
-            using var reader = new StreamReader(response.Content.ReadAsStream(token), Encoding.UTF8);
-            string body = reader.ReadToEnd();
+            // Only the asynchronous calls exist on Android: HttpClient.Send there always throws
+            // PlatformNotSupportedException. Recognition runs on its own thread, so waiting here blocks nothing.
+            using HttpResponseMessage response = SttHttpClient.SendAsync(request, token).GetAwaiter().GetResult();
+            string body = response.Content.ReadAsStringAsync(token).GetAwaiter().GetResult();
             int status = (int)response.StatusCode;
             if (response.IsSuccessStatusCode)
             {

@@ -59,6 +59,12 @@ public class MainActivity : AvaloniaMainActivity<App>
         PhonePlatform.OpenFile = OpenFile;
         PhonePlatform.Log = line => global::Android.Util.Log.Info("CuePilot", line);
         base.OnCreate(savedInstanceState);
+
+        string? selfTestUrl = Intent?.GetStringExtra(SelfTest.SttExtra);
+        if (!string.IsNullOrEmpty(selfTestUrl))
+        {
+            SelfTest.RunSpeechApi(selfTestUrl);
+        }
     }
 
     public bool HasMicrophonePermission =>
