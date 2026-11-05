@@ -11,34 +11,125 @@
              Foreground="{DynamicResource EchoTextBrush}"
              FontFamily="{StaticResource EchoFont}"
              FontSize="15">
-    <!-- Phone layout of the Windows pages: Home (topics, sessions and a topic's tabs), a session, settings.
-         One column, bigger touch targets; colours, fonts and controls are the Echo ones of the desktop apps. -->
+    <!-- Phone layout of the Windows pages: Home (topics, sessions and a topic's tabs), a session, modes, settings.
+         Made for fingers: a bottom bar for the three places, a big record button, touch targets of 48 px and more,
+         text from 15 px. Colours, fonts and controls are the Echo ones of the desktop apps. -->
     <UserControl.Styles>
         <Style Selector="Button">
-            <Setter Property="MinHeight" Value="42" />
+            <Setter Property="MinHeight" Value="48" />
+            <Setter Property="FontSize" Value="15" />
+        </Style>
+        <!-- Long labels on narrow phones go to a second line instead of being cut. -->
+        <Style Selector="Button /template/ ContentPresenter#PART_ContentPresenter">
+            <Setter Property="TextWrapping" Value="Wrap" />
+            <Setter Property="TextAlignment" Value="Center" />
+        </Style>
+        <Style Selector="Button.sessionCard /template/ ContentPresenter#PART_ContentPresenter">
+            <Setter Property="TextAlignment" Value="Left" />
+        </Style>
+        <Style Selector="Button.questionHeader /template/ ContentPresenter#PART_ContentPresenter">
+            <Setter Property="TextAlignment" Value="Left" />
         </Style>
         <Style Selector="TextBox">
-            <Setter Property="MinHeight" Value="44" />
-            <Setter Property="FontSize" Value="15" />
+            <Setter Property="MinHeight" Value="48" />
+            <Setter Property="FontSize" Value="16" />
+            <Setter Property="VerticalContentAlignment" Value="Center" />
+        </Style>
+        <Style Selector="ComboBox">
+            <Setter Property="MinHeight" Value="48" />
+            <Setter Property="FontSize" Value="16" />
+        </Style>
+        <Style Selector="CheckBox">
+            <Setter Property="MinHeight" Value="48" />
+            <Setter Property="FontSize" Value="15.5" />
         </Style>
         <Style Selector="TextBlock.section">
             <Setter Property="Margin" Value="0,22,0,6" />
-            <Setter Property="FontSize" Value="13" />
-            <Setter Property="FontWeight" Value="Bold" />
-            <Setter Property="Foreground" Value="{DynamicResource EchoMutedBrush}" />
+            <Setter Property="FontSize" Value="17" />
+            <Setter Property="FontWeight" Value="ExtraBold" />
+            <Setter Property="Foreground" Value="{DynamicResource EchoTextBrush}" />
+            <Setter Property="TextWrapping" Value="Wrap" />
+        </Style>
+        <Style Selector="TextBlock.section:nth-child(1)">
+            <Setter Property="Margin" Value="0,0,0,6" />
         </Style>
         <Style Selector="TextBlock.label">
-            <Setter Property="Margin" Value="0,12,0,6" />
-            <Setter Property="FontSize" Value="14" />
+            <Setter Property="Margin" Value="0,14,0,6" />
+            <Setter Property="FontSize" Value="15" />
             <Setter Property="Foreground" Value="{DynamicResource EchoSoftTextBrush}" />
             <Setter Property="TextWrapping" Value="Wrap" />
         </Style>
         <Style Selector="TextBlock.hint">
             <Setter Property="Margin" Value="0,6,0,0" />
-            <Setter Property="FontSize" Value="13" />
-            <Setter Property="LineHeight" Value="19" />
+            <Setter Property="FontSize" Value="14" />
+            <Setter Property="LineHeight" Value="20" />
             <Setter Property="Foreground" Value="{DynamicResource EchoMutedBrush}" />
             <Setter Property="TextWrapping" Value="Wrap" />
+        </Style>
+        <Style Selector="Border.settingsCard">
+            <Setter Property="Margin" Value="0,12,0,0" />
+            <Setter Property="Padding" Value="16" />
+            <Setter Property="CornerRadius" Value="18" />
+            <Setter Property="BorderThickness" Value="1" />
+            <Setter Property="Background" Value="{DynamicResource EchoSurfaceBrush}" />
+            <Setter Property="BorderBrush" Value="{DynamicResource EchoBorderBrush}" />
+        </Style>
+        <!-- Record button over the Home list. -->
+        <Style Selector="Button.fab">
+            <Setter Property="Height" Value="60" />
+            <Setter Property="MinWidth" Value="200" />
+            <Setter Property="Padding" Value="28,0" />
+            <Setter Property="CornerRadius" Value="30" />
+            <Setter Property="BorderThickness" Value="0" />
+            <Setter Property="Background" Value="{DynamicResource EchoAccentBrush}" />
+            <Setter Property="Foreground" Value="{DynamicResource EchoAccentInkBrush}" />
+            <Setter Property="Effect">
+                <DropShadowEffect BlurRadius="18" OffsetX="0" OffsetY="5" Opacity="0.32" Color="#000000" />
+            </Setter>
+        </Style>
+        <Style Selector="Button.fab.live">
+            <Setter Property="Background" Value="{DynamicResource EchoDangerSoftBrush}" />
+            <Setter Property="Foreground" Value="{DynamicResource EchoDangerTextBrush}" />
+            <Setter Property="BorderBrush" Value="{DynamicResource EchoDangerBorderBrush}" />
+            <Setter Property="BorderThickness" Value="1" />
+        </Style>
+        <!-- Bottom bar items: icon in a pill that lights up for the open place, label under it. -->
+        <Style Selector="Button.navItem">
+            <Setter Property="Height" Value="60" />
+            <Setter Property="Padding" Value="0" />
+            <Setter Property="HorizontalAlignment" Value="Stretch" />
+            <Setter Property="Background" Value="Transparent" />
+            <Setter Property="BorderThickness" Value="0" />
+            <Setter Property="Foreground" Value="{DynamicResource EchoMutedBrush}" />
+        </Style>
+        <Style Selector="Button.navItem Border.navIcon">
+            <Setter Property="Width" Value="60" />
+            <Setter Property="Height" Value="32" />
+            <Setter Property="CornerRadius" Value="16" />
+            <Setter Property="HorizontalAlignment" Value="Center" />
+            <Setter Property="Background" Value="Transparent" />
+        </Style>
+        <Style Selector="Button.navItem.active Border.navIcon">
+            <Setter Property="Background" Value="{DynamicResource EchoAccentSoftBrush}" />
+        </Style>
+        <Style Selector="Button.navItem Path">
+            <Setter Property="Stroke" Value="{DynamicResource EchoMutedBrush}" />
+            <Setter Property="HorizontalAlignment" Value="Center" />
+            <Setter Property="VerticalAlignment" Value="Center" />
+        </Style>
+        <Style Selector="Button.navItem.active Path">
+            <Setter Property="Stroke" Value="{DynamicResource EchoAccentTextBrush}" />
+        </Style>
+        <Style Selector="TextBlock.navLabel">
+            <Setter Property="Margin" Value="0,3,0,0" />
+            <Setter Property="HorizontalAlignment" Value="Center" />
+            <Setter Property="FontSize" Value="12.5" />
+            <Setter Property="FontWeight" Value="SemiBold" />
+            <Setter Property="Foreground" Value="{DynamicResource EchoMutedBrush}" />
+        </Style>
+        <Style Selector="Button.navItem.active TextBlock.navLabel">
+            <Setter Property="Foreground" Value="{DynamicResource EchoTextBrush}" />
+            <Setter Property="FontWeight" Value="Bold" />
         </Style>
         <Style Selector="Border.card">
             <Setter Property="Background" Value="{DynamicResource EchoSurfaceBrush}" />
@@ -53,9 +144,18 @@
             <Setter Property="Foreground" Value="{DynamicResource EchoDangerTextBrush}" />
         </Style>
         <Style Selector="Button.icon">
-            <Setter Property="Width" Value="44" />
-            <Setter Property="Height" Value="42" />
+            <Setter Property="Width" Value="48" />
+            <Setter Property="Height" Value="48" />
             <Setter Property="Padding" Value="0" />
+        </Style>
+        <Style Selector="Button.graphZoom">
+            <Setter Property="Width" Value="44" />
+            <Setter Property="Height" Value="44" />
+            <Setter Property="MinHeight" Value="44" />
+            <Setter Property="CornerRadius" Value="22" />
+            <Setter Property="Background" Value="{DynamicResource EchoHeaderBrush}" />
+            <Setter Property="BorderBrush" Value="{DynamicResource EchoBorderBrush}" />
+            <Setter Property="BorderThickness" Value="1" />
         </Style>
         <!-- Topic chips: a horizontal row instead of the desktop sidebar. -->
         <Style Selector="ListBox#TopicChips ListBoxItem">
@@ -77,20 +177,20 @@
         <!-- Pill tabs of a session and of a topic. -->
         <Style Selector="RadioButton.pill">
             <Setter Property="Margin" Value="0,0,8,0" />
-            <Setter Property="MinHeight" Value="38" />
+            <Setter Property="MinHeight" Value="44" />
             <Setter Property="Cursor" Value="Hand" />
             <Setter Property="Template">
                 <ControlTemplate>
                     <Border Name="Pill"
-                            Padding="14,0"
-                            MinHeight="38"
-                            CornerRadius="19"
+                            Padding="16,0"
+                            MinHeight="44"
+                            CornerRadius="22"
                             BorderThickness="1"
                             Background="{DynamicResource EchoSurfaceAltBrush}"
                             BorderBrush="{DynamicResource EchoBorderBrush}">
                         <ContentPresenter VerticalAlignment="Center"
                                           Content="{TemplateBinding Content}"
-                                          FontSize="14"
+                                          FontSize="15"
                                           FontWeight="SemiBold"
                                           Foreground="{DynamicResource EchoTextBrush}" />
                     </Border>
@@ -197,6 +297,16 @@
         <Style Selector="ListBox#ModesList ListBoxItem:selected TextBlock.modeCheck">
             <Setter Property="IsVisible" Value="True" />
         </Style>
+        <Style Selector="Button.chip">
+            <Setter Property="Height" Value="44" />
+            <Setter Property="FontSize" Value="15" />
+        </Style>
+        <Style Selector="Button.quick">
+            <Setter Property="Height" Value="48" />
+            <Setter Property="Padding" Value="6,0" />
+            <Setter Property="HorizontalAlignment" Value="Stretch" />
+            <Setter Property="FontSize" Value="15" />
+        </Style>
         <Style Selector="TextBlock.monitor">
             <Setter Property="Foreground" Value="{DynamicResource EchoBadgeTextBrush}" />
         </Style>
@@ -211,132 +321,92 @@
     </UserControl.Styles>
 
     <Grid x:Name="RootGrid">
-        <Grid RowDefinitions="Auto,*">
-            <!-- Header: logo on Home, «Назад» elsewhere; theme and settings on the right. -->
-            <Border Padding="12,8"
+        <Grid RowDefinitions="Auto,*,Auto">
+            <!-- App bar: the logo and the screen-share badge on Home; elsewhere a back arrow and the page name. -->
+            <Border Height="60"
+                    Padding="6,0,12,0"
                     Background="{DynamicResource EchoHeaderBrush}"
                     BorderBrush="{DynamicResource EchoBorderBrush}"
                     BorderThickness="0,0,0,1">
-                <Grid ColumnDefinitions="Auto,*,Auto,Auto">
+                <Grid ColumnDefinitions="Auto,*,Auto">
                     <StackPanel Orientation="Horizontal"
+                                Margin="8,0,0,0"
                                 VerticalAlignment="Center"
                                 IsVisible="{Binding SelectedMainPage, Converter={x:Static controls:EqualsConverter.Instance}, ConverterParameter=Home}">
-                        <controls:EchoLogo Width="36" Height="36" Margin="-2,0,4,0" IsAnimating="{Binding IsCapturing}" />
-                        <TextBlock FontSize="22" FontWeight="ExtraBold" VerticalAlignment="Center" Foreground="{DynamicResource EchoTextBrush}"><Run Text="Cue" /><Run Foreground="{DynamicResource EchoAccentTextBrush}" Text="Pilot" /></TextBlock>
+                        <controls:EchoLogo Width="34" Height="34" Margin="-2,0,6,0" IsAnimating="{Binding IsCapturing}" />
+                        <TextBlock FontSize="21" FontWeight="ExtraBold" VerticalAlignment="Center" Foreground="{DynamicResource EchoTextBrush}"><Run Text="Cue" /><Run Foreground="{DynamicResource EchoAccentTextBrush}" Text="Pilot" /></TextBlock>
                     </StackPanel>
                     <Button x:Name="BackButton"
-                            Classes="accent"
-                            Height="40"
-                            Padding="12,0,16,0"
+                            Classes="ghost icon"
                             IsVisible="False"
-                            Command="{Binding GoHomeCommand}">
-                        <StackPanel Orientation="Horizontal">
-                            <Path Width="16"
-                                  Height="14"
-                                  VerticalAlignment="Center"
-                                  Stretch="Uniform"
-                                  Stroke="{Binding $parent[Button].Foreground}"
-                                  StrokeThickness="2.2"
-                                  StrokeLineCap="Round"
-                                  StrokeJoin="Round"
-                                  Data="M 7,1 L 1,7 L 7,13 M 1,7 L 15,7" />
-                            <TextBlock Margin="8,0,0,0" VerticalAlignment="Center" FontSize="15" FontWeight="Bold" Text="{Binding L[GoBack]}" />
-                        </StackPanel>
+                            Click="Back_OnClick">
+                        <Path Width="20"
+                              Height="18"
+                              Stretch="Uniform"
+                              Stroke="{DynamicResource EchoTextBrush}"
+                              StrokeThickness="2.4"
+                              StrokeLineCap="Round"
+                              StrokeJoin="Round"
+                              Data="M 8,1 L 1,8 L 8,15 M 1,8 L 19,8" />
                     </Button>
+                    <TextBlock x:Name="PageTitleText"
+                               Grid.Column="1"
+                               Margin="6,0,8,0"
+                               VerticalAlignment="Center"
+                               FontSize="19"
+                               FontWeight="ExtraBold"
+                               TextTrimming="CharacterEllipsis"
+                               Foreground="{DynamicResource EchoTextBrush}" />
 
+                    <!-- Same badge as on the computer: lit while CuePilot is hidden from screen recording, casting and screenshots. -->
+                    <Border x:Name="ShareBadge"
+                            Grid.Column="2"
+                            Height="32"
+                            Padding="10,0"
+                            VerticalAlignment="Center"
+                            CornerRadius="16"
+                            BorderThickness="1"
+                            Classes.shown="{Binding ShowInScreenShare}"
+                            IsVisible="{Binding SelectedMainPage, Converter={x:Static controls:EqualsConverter.Instance}, ConverterParameter=Home}">
+                        <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+                            <Grid Width="14" Height="14" VerticalAlignment="Center">
+                                <Ellipse x:Name="ShareBadgeHalo"
+                                         Width="14"
+                                         Height="14"
+                                         Opacity="0.35"
+                                         RenderTransformOrigin="0.5,0.5"
+                                         Classes.shown="{Binding ShowInScreenShare}">
+                                    <Ellipse.RenderTransform>
+                                        <ScaleTransform />
+                                    </Ellipse.RenderTransform>
+                                </Ellipse>
+                                <Ellipse x:Name="ShareBadgeDot" Width="8" Height="8" Classes.shown="{Binding ShowInScreenShare}" />
+                            </Grid>
+                            <TextBlock x:Name="ShareBadgeText"
+                                       Margin="8,0,0,0"
+                                       VerticalAlignment="Center"
+                                       FontSize="12.5"
+                                       FontWeight="SemiBold"
+                                       Classes.shown="{Binding ShowInScreenShare}"
+                                       Text="{Binding L[HiddenFromShareBadge]}" />
+                        </StackPanel>
+                    </Border>
                     <Button Grid.Column="2"
-                            Classes="icon"
-                            Margin="0,0,8,0"
-                            Command="{Binding ToggleThemeCommand}">
-                        <Grid Width="18" Height="18">
-                            <Canvas Width="18" Height="18" IsVisible="{Binding IsDarkTheme}">
-                                <Ellipse Canvas.Left="5" Canvas.Top="5" Width="8" Height="8" Fill="{DynamicResource EchoTextBrush}" />
-                                <Path Stroke="{DynamicResource EchoTextBrush}" StrokeThickness="1.6" StrokeLineCap="Round"
-                                      Data="M9,1 L9,2.6 M9,15.4 L9,17 M1,9 L2.6,9 M15.4,9 L17,9 M3.3,3.3 L4.5,4.5 M13.5,13.5 L14.7,14.7 M3.3,14.7 L4.5,13.5 M13.5,4.5 L14.7,3.3" />
-                            </Canvas>
-                            <Path IsVisible="{Binding IsLightTheme}"
-                                  Fill="{DynamicResource EchoTextBrush}"
-                                  Data="M11.5,2 A7,7 0 1 0 16,12.5 A5.6,5.6 0 1 1 11.5,2 Z" />
-                        </Grid>
+                            Classes="ghost icon"
+                            Click="SessionPageMenu_OnClick"
+                            IsVisible="{Binding SelectedMainPage, Converter={x:Static controls:EqualsConverter.Instance}, ConverterParameter=Session}">
+                        <TextBlock FontSize="22" FontWeight="Bold" Text="⋯" />
                     </Button>
-                    <Button Grid.Column="3"
-                            Height="42"
-                            Padding="14,0"
-                            Command="{Binding OpenSettingsCommand}"
-                            Content="{Binding L[SettingsTab]}" />
                 </Grid>
             </Border>
 
             <Panel Grid.Row="1">
                 <!-- ===== Home: start a recording, topics, sessions and the tabs of a topic. ===== -->
                 <Grid x:Name="HomePage"
-                      RowDefinitions="Auto,Auto,Auto,Auto,*,Auto"
+                      RowDefinitions="Auto,Auto,Auto,*,Auto"
                       IsVisible="{Binding SelectedMainPage, Converter={x:Static controls:EqualsConverter.Instance}, ConverterParameter=Home}">
-                    <Border Margin="12,12,12,0" Classes="card" Background="{DynamicResource EchoHeroBrush}">
-                        <StackPanel>
-                            <Grid Margin="0,0,0,10" ColumnDefinitions="Auto,*,Auto">
-                                <!-- Same badge as on the computer: lit while CuePilot is hidden from screen recording, casting and screenshots. -->
-                                <Border x:Name="ShareBadge"
-                                        Height="30"
-                                        Padding="12,0"
-                                        HorizontalAlignment="Left"
-                                        CornerRadius="15"
-                                        BorderThickness="1"
-                                        Classes.shown="{Binding ShowInScreenShare}">
-                                    <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
-                                        <Grid Width="14" Height="14" VerticalAlignment="Center">
-                                            <Ellipse x:Name="ShareBadgeHalo"
-                                                     Width="14"
-                                                     Height="14"
-                                                     Opacity="0.35"
-                                                     RenderTransformOrigin="0.5,0.5"
-                                                     Classes.shown="{Binding ShowInScreenShare}">
-                                                <Ellipse.RenderTransform>
-                                                    <ScaleTransform />
-                                                </Ellipse.RenderTransform>
-                                            </Ellipse>
-                                            <Ellipse x:Name="ShareBadgeDot" Width="8" Height="8" Classes.shown="{Binding ShowInScreenShare}" />
-                                        </Grid>
-                                        <TextBlock x:Name="ShareBadgeText"
-                                                   Margin="9,0,0,0"
-                                                   VerticalAlignment="Center"
-                                                   FontSize="13"
-                                                   FontWeight="SemiBold"
-                                                   Classes.shown="{Binding ShowInScreenShare}"
-                                                   Text="{Binding L[HiddenFromShareBadge]}" />
-                                    </StackPanel>
-                                </Border>
-                                <Button Grid.Column="2" Height="30" MinHeight="30" Padding="12,0" FontSize="13" Foreground="{DynamicResource EchoSoftTextBrush}" Click="WhatsNew_OnClick">
-                                    <TextBlock FontWeight="SemiBold" Text="{Binding [WhatsNewShort], Source={x:Static platform:MobileText.Instance}}" />
-                                </Button>
-                            </Grid>
-                            <Button Classes="accent"
-                                    Height="52"
-                                    HorizontalAlignment="Stretch"
-                                    FontSize="17"
-                                    Click="StartRecording_OnClick"
-                                    IsVisible="{Binding !IsCapturing}"
-                                    Content="{Binding L[StartCuePilot]}" />
-                            <Button Classes="accent"
-                                    Height="52"
-                                    HorizontalAlignment="Stretch"
-                                    FontSize="16"
-                                    Command="{Binding OpenActiveSessionCommand}"
-                                    IsVisible="{Binding IsCapturing}">
-                                <StackPanel Orientation="Horizontal">
-                                    <controls:EchoListeningBars Margin="0,0,10,0" VerticalAlignment="Center" IsActive="{Binding IsCapturing}" />
-                                    <TextBlock VerticalAlignment="Center" Text="{Binding [Recording], Source={x:Static platform:MobileText.Instance}}" />
-                                </StackPanel>
-                            </Button>
-                            <Button Margin="0,10,0,0" HorizontalAlignment="Stretch" Padding="12,0" Command="{Binding OpenModesCommand}">
-                                <TextBlock TextTrimming="CharacterEllipsis" FontWeight="SemiBold" Text="{Binding ModesButtonText}" />
-                            </Button>
-                            <TextBlock Classes="hint" Margin="2,10,2,0" IsVisible="{Binding !IsTopicSelected}" Text="{Binding [PhoneMicHint], Source={x:Static platform:MobileText.Instance}}" />
-                        </StackPanel>
-                    </Border>
-
                     <!-- Topics: «Все сессии», «Без темы» and the user's topics as chips. -->
-                    <Grid Grid.Row="1" Margin="12,14,12,0" ColumnDefinitions="*,Auto">
+                    <Grid Margin="12,12,12,0" ColumnDefinitions="*,Auto">
                         <ScrollViewer HorizontalScrollBarVisibility="Hidden" VerticalScrollBarVisibility="Disabled">
                             <ListBox x:Name="TopicChips"
                                      ItemsSource="{Binding TopicItems}"
@@ -351,10 +421,10 @@
                                 </ListBox.ItemsPanel>
                                 <ListBox.ItemTemplate>
                                     <DataTemplate>
-                                        <Border Classes="topicChip" Height="38" Padding="14,0" CornerRadius="19" BorderThickness="1">
+                                        <Border Classes="topicChip" Height="44" Padding="16,0" CornerRadius="22" BorderThickness="1">
                                             <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
                                                 <TextBlock MaxWidth="200"
-                                                           FontSize="14"
+                                                           FontSize="15"
                                                            FontWeight="SemiBold"
                                                            VerticalAlignment="Center"
                                                            TextTrimming="CharacterEllipsis"
@@ -377,7 +447,7 @@
                     </Grid>
 
                     <!-- Title of the list: the topic name (tap to rename), count, actions. -->
-                    <Grid Grid.Row="2" Margin="14,14,12,0" ColumnDefinitions="*,Auto">
+                    <Grid Grid.Row="1" Margin="16,12,12,0" ColumnDefinitions="*,Auto">
                         <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
                             <TextBlock x:Name="TopicTitleText"
                                        FontSize="21"
@@ -419,8 +489,8 @@
                     </Grid>
 
                     <!-- Tabs of a topic. -->
-                    <ScrollViewer Grid.Row="3"
-                                  Margin="12,12,0,0"
+                    <ScrollViewer Grid.Row="2"
+                                  Margin="12,10,0,0"
                                   HorizontalScrollBarVisibility="Hidden"
                                   VerticalScrollBarVisibility="Disabled"
                                   IsVisible="{Binding IsTopicSelected}">
@@ -443,7 +513,7 @@
                         </StackPanel>
                     </ScrollViewer>
 
-                    <Panel Grid.Row="4" Margin="12,10,12,0">
+                    <Panel Grid.Row="3" Margin="12,10,12,0">
                         <!-- «Сессии»: search like the field in the header on the computer, then the list. -->
                         <Grid RowDefinitions="Auto,*" IsVisible="{Binding ShowSessionsPanel}">
                             <TextBox Margin="0,0,0,8"
@@ -456,8 +526,17 @@
                                        Foreground="{DynamicResource EchoMutedBrush}"
                                        Text="{Binding [TopicEmptyHint], Source={x:Static platform:MobileText.Instance}}"
                                        IsVisible="{Binding VisibleSessionsCount, Converter={x:Static controls:IsZeroConverter.Instance}}" />
+                            <TextBlock Grid.Row="1"
+                                       Margin="2,96,2,0"
+                                       FontSize="14"
+                                       LineHeight="20"
+                                       TextWrapping="Wrap"
+                                       Foreground="{DynamicResource EchoMutedBrush}"
+                                       Text="{Binding [PhoneMicHint], Source={x:Static platform:MobileText.Instance}}"
+                                       IsVisible="{Binding VisibleSessionsCount, Converter={x:Static controls:IsZeroConverter.Instance}}" />
                             <ListBox x:Name="SessionsList"
                                      Grid.Row="1"
+                                     Padding="0,0,0,90"
                                      ItemsSource="{Binding CompletedSessionsView}"
                                      controls:ItemContainer.Classes="plain"
                                      ScrollViewer.HorizontalScrollBarVisibility="Disabled"
@@ -525,18 +604,18 @@
                         </Grid>
 
                         <!-- «Сводка». -->
-                        <Border Classes="card" IsVisible="{Binding ShowSummaryPanel}">
+                        <Border Classes="card" Margin="0,0,0,84" IsVisible="{Binding ShowSummaryPanel}">
                             <Grid RowDefinitions="Auto,Auto,*">
                                 <TextBlock FontSize="18" FontWeight="ExtraBold" Foreground="{DynamicResource EchoTextBrush}" Text="{Binding L[KnowledgeSummaryTitle]}" />
                                 <StackPanel Grid.Row="1" Margin="0,4,0,0">
-                                    <StackPanel Orientation="Horizontal">
+                                    <Grid ColumnDefinitions="Auto,*">
                                         <controls:EchoThinkingDots Margin="0,0,8,0" VerticalAlignment="Center" IsVisible="{Binding IsTopicBusy}" />
-                                        <TextBlock Classes="staleStatus" Classes.stale="{Binding IsTopicKnowledgeStale}" FontSize="13" TextWrapping="Wrap" Text="{Binding TopicKnowledgeStatusText}" />
-                                    </StackPanel>
-                                    <UniformGrid Margin="0,10,0,0" Columns="2">
-                                        <Button Margin="0,0,4,0" HorizontalAlignment="Stretch" Command="{Binding CopyTopicKnowledgeCommand}" Content="{Binding L[CopyText]}" />
-                                        <Button Margin="4,0,0,0" Classes="accent" HorizontalAlignment="Stretch" Command="{Binding RefreshTopicKnowledgeCommand}" Content="{Binding L[TopicRefreshKnowledge]}" />
-                                    </UniformGrid>
+                                        <TextBlock Grid.Column="1" Classes="staleStatus" Classes.stale="{Binding IsTopicKnowledgeStale}" FontSize="14" TextWrapping="Wrap" Text="{Binding TopicKnowledgeStatusText}" />
+                                    </Grid>
+                                    <Grid Margin="0,12,0,0" ColumnDefinitions="*,Auto">
+                                        <Button Classes="accent" HorizontalAlignment="Stretch" Command="{Binding RefreshTopicKnowledgeCommand}" Content="{Binding L[TopicRefreshKnowledge]}" />
+                                        <Button Grid.Column="1" Margin="8,0,0,0" Padding="14,0" Command="{Binding CopyTopicKnowledgeCommand}" Content="{Binding L[CopyText]}" />
+                                    </Grid>
                                 </StackPanel>
                                 <Border Grid.Row="2" Margin="0,12,0,0" BorderBrush="{DynamicResource EchoBorderBrush}" BorderThickness="0,1,0,0">
                                     <Grid Margin="0,10,0,0">
@@ -558,10 +637,10 @@
                         <Grid RowDefinitions="Auto,Auto,*,Auto" IsVisible="{Binding ShowKnowledgePanel}">
                             <!-- Same four buttons as on the computer: documents and pictures, a folder, recordings, own text. -->
                             <UniformGrid Columns="2">
-                                <Button Margin="0,0,3,3" Padding="4,0" HorizontalAlignment="Stretch" FontSize="13.5" Command="{Binding AddKnowledgeFilesCommand}" Content="{Binding L[KnowledgeAddFiles]}" />
-                                <Button Margin="3,0,0,3" Padding="4,0" HorizontalAlignment="Stretch" FontSize="13.5" Command="{Binding AddKnowledgeFolderCommand}" Content="{Binding L[KnowledgeAddFolder]}" />
-                                <Button Margin="0,3,3,0" Padding="4,0" HorizontalAlignment="Stretch" FontSize="13.5" Command="{Binding AddKnowledgeMediaCommand}" Content="{Binding L[KnowledgeAddMedia]}" />
-                                <Button Margin="3,3,0,0" Padding="4,0" HorizontalAlignment="Stretch" FontSize="13.5" Click="AddNote_OnClick" Content="{Binding L[KnowledgeAddNote]}" />
+                                <Button Margin="0,0,3,3" Padding="4,0" HorizontalAlignment="Stretch" FontSize="15" Command="{Binding AddKnowledgeFilesCommand}" Content="{Binding L[KnowledgeAddFiles]}" />
+                                <Button Margin="3,0,0,3" Padding="4,0" HorizontalAlignment="Stretch" FontSize="15" Command="{Binding AddKnowledgeFolderCommand}" Content="{Binding L[KnowledgeAddFolder]}" />
+                                <Button Margin="0,3,3,0" Padding="4,0" HorizontalAlignment="Stretch" FontSize="15" Command="{Binding AddKnowledgeMediaCommand}" Content="{Binding L[KnowledgeAddMedia]}" />
+                                <Button Margin="3,3,0,0" Padding="4,0" HorizontalAlignment="Stretch" FontSize="15" Click="AddNote_OnClick" Content="{Binding L[KnowledgeAddNote]}" />
                             </UniformGrid>
                             <Grid Grid.Row="1" Margin="2,10,0,4" ColumnDefinitions="*,Auto" IsVisible="{Binding HasKnowledgeSources}">
                                 <TextBlock VerticalAlignment="Center" FontSize="13" Foreground="{DynamicResource EchoMutedBrush}" Text="{Binding KnowledgeSourcesSummary}" IsVisible="{Binding !IsKnowledgeSelectionMode}" />
@@ -572,6 +651,7 @@
                             <TextBlock Grid.Row="2" Margin="2,14,2,0" FontSize="14" TextWrapping="Wrap" Foreground="{DynamicResource EchoMutedBrush}" Text="{Binding L[KnowledgeListHint]}" IsVisible="{Binding !HasKnowledgeSources}" />
                             <ListBox Grid.Row="2"
                                      x:Name="KnowledgeList"
+                                     Padding="0,0,0,90"
                                      Background="Transparent"
                                      BorderThickness="0"
                                      ScrollViewer.HorizontalScrollBarVisibility="Disabled"
@@ -659,7 +739,8 @@
                                     <Button Classes="accent" Margin="6,0,0,0" Padding="10,0" Command="{Binding ToggleQuestionSelectionModeCommand}" Content="{Binding L[SelectDone]}" />
                                 </StackPanel>
                             </Grid>
-                            <StackPanel Grid.Row="2" Margin="0,22,0,0" IsVisible="{Binding !HasTopicQuestions}">
+                            <ScrollViewer Grid.Row="2" HorizontalScrollBarVisibility="Disabled" IsVisible="{Binding !HasTopicQuestions}">
+                            <StackPanel Margin="0,22,0,96">
                                 <TextBlock HorizontalAlignment="Center" FontSize="17" FontWeight="ExtraBold" Foreground="{DynamicResource EchoTextBrush}" Text="{Binding L[QuestionsEmptyTitle]}" />
                                 <TextBlock Margin="0,8,0,16" TextAlignment="Center" TextWrapping="Wrap" FontSize="14" Foreground="{DynamicResource EchoMutedBrush}" Text="{Binding L[QuestionsEmptyHint]}" />
                                 <WrapPanel HorizontalAlignment="Center">
@@ -669,7 +750,9 @@
                                     <Button Classes="chip" Margin="4" Command="{Binding AskTopicSuggestionCommand}" CommandParameter="{Binding L[QuestionSuggestion4]}" Content="{Binding L[QuestionSuggestion4]}" />
                                 </WrapPanel>
                             </StackPanel>
+                            </ScrollViewer>
                             <ListBox Grid.Row="2"
+                                     Padding="0,0,0,90"
                                      ItemsSource="{Binding QuestionItems}"
                                      controls:ItemContainer.Classes="plain"
                                      ScrollViewer.HorizontalScrollBarVisibility="Disabled"
@@ -746,7 +829,7 @@
                             </Grid>
                             <TextBox x:Name="GraphSearchTextBox" Grid.Row="1" Margin="0,10,0,0" Watermark="{Binding L[GraphSearchPlaceholder]}" IsVisible="{Binding HasGraph}" />
                             <Border Grid.Row="2"
-                                    Margin="0,10,0,0"
+                                    Margin="0,10,0,84"
                                     CornerRadius="16"
                                     ClipToBounds="True"
                                     Background="{DynamicResource EchoSurfaceBrush}"
@@ -754,6 +837,15 @@
                                     BorderThickness="1">
                                 <Grid>
                                     <controls:GraphView x:Name="TopicGraphView" Graph="{Binding CurrentGraph}" Filter="{Binding #GraphSearchTextBox.Text}" />
+                                    <!-- A touch screen has no wheel: zoom with buttons; a double tap fits the whole graph. -->
+                                    <StackPanel Margin="8" HorizontalAlignment="Right" VerticalAlignment="Top" Spacing="8" IsVisible="{Binding HasGraph}">
+                                        <Button x:Name="GraphZoomInButton" Classes="icon graphZoom" FontSize="22" Click="GraphZoomIn_OnClick" Content="+" />
+                                        <Button Classes="icon graphZoom" FontSize="22" Click="GraphZoomOut_OnClick" Content="−" />
+                                        <Button Classes="icon graphZoom" Click="GraphFit_OnClick">
+                                            <Path Width="18" Height="18" Stretch="Uniform" Stroke="{Binding $parent[Button].Foreground}" StrokeThickness="2" StrokeLineCap="Round"
+                                                  Data="M 1,6 L 1,1 L 6,1 M 12,1 L 17,1 L 17,6 M 17,12 L 17,17 L 12,17 M 6,17 L 1,17 L 1,12" />
+                                        </Button>
+                                    </StackPanel>
                                     <StackPanel Margin="20" VerticalAlignment="Center" IsVisible="{Binding !HasGraph}">
                                         <TextBlock HorizontalAlignment="Center" FontSize="17" FontWeight="ExtraBold" Foreground="{DynamicResource EchoTextBrush}" Text="{Binding L[GraphEmptyTitle]}" />
                                         <TextBlock Margin="0,8,0,0" TextAlignment="Center" TextWrapping="Wrap" FontSize="14" Foreground="{DynamicResource EchoMutedBrush}" Text="{Binding L[GraphEmptyHint]}" />
@@ -764,7 +856,7 @@
                     </Panel>
 
                     <!-- Bulk actions while selecting sessions. -->
-                    <Border Grid.Row="5"
+                    <Border Grid.Row="4"
                             Padding="12,10"
                             Background="{DynamicResource EchoHeaderBrush}"
                             BorderBrush="{DynamicResource EchoBorderBrush}"
@@ -775,12 +867,16 @@
                                 <Binding Path="IsSelectionMode" />
                             </MultiBinding>
                         </Border.IsVisible>
-                        <UniformGrid Columns="4">
-                            <Button Margin="0,0,3,0" Padding="4,0" HorizontalAlignment="Stretch" FontSize="13" Command="{Binding SelectAllSessionsCommand}" Content="{Binding L[SelectAllSessions]}" />
-                            <Button Margin="3,0" Padding="4,0" HorizontalAlignment="Stretch" FontSize="13" IsEnabled="{Binding HasCheckedSessions}" Click="MoveChecked_OnClick" Content="{Binding [Move], Source={x:Static platform:MobileText.Instance}}" />
-                            <Button Classes="dangerSoft" Margin="3,0" Padding="4,0" HorizontalAlignment="Stretch" FontSize="13" IsEnabled="{Binding HasCheckedSessions}" Click="DeleteChecked_OnClick" Content="{Binding L[DialogDelete]}" />
-                            <Button Classes="accent" Margin="3,0,0,0" Padding="4,0" HorizontalAlignment="Stretch" FontSize="13" Command="{Binding ToggleSelectionModeCommand}" Content="{Binding L[SelectDone]}" />
-                        </UniformGrid>
+                        <StackPanel Spacing="8">
+                            <Grid ColumnDefinitions="Auto,*,Auto">
+                                <Button Classes="ghost" Padding="10,0" Command="{Binding SelectAllSessionsCommand}" Content="{Binding L[SelectAllSessions]}" />
+                                <Button Grid.Column="2" Classes="accent" Padding="18,0" Command="{Binding ToggleSelectionModeCommand}" Content="{Binding L[SelectDone]}" />
+                            </Grid>
+                            <UniformGrid Columns="2">
+                                <Button Margin="0,0,4,0" HorizontalAlignment="Stretch" IsEnabled="{Binding HasCheckedSessions}" Click="MoveChecked_OnClick" Content="{Binding [Move], Source={x:Static platform:MobileText.Instance}}" />
+                                <Button Classes="dangerSoft" Margin="4,0,0,0" HorizontalAlignment="Stretch" IsEnabled="{Binding HasCheckedSessions}" Click="DeleteChecked_OnClick" Content="{Binding DeleteCheckedText}" />
+                            </UniformGrid>
+                        </StackPanel>
                     </Border>
                 </Grid>
 
@@ -804,44 +900,50 @@
                                      FontSize="17"
                                      IsVisible="{Binding IsEditingSessionTitle}"
                                      Text="{Binding EditableSessionTitle}" />
-                            <Button Grid.Column="1" Classes="ghost icon" Margin="6,0,0,0" FontSize="18" VerticalAlignment="Top" Click="SessionPageMenu_OnClick" Content="⋯" />
                         </Grid>
                     </StackPanel>
 
-                    <!-- Recording bar: the live session only. -->
+                    <!-- Recording card: the live session only. Level, what happens to the speech, a big stop button. -->
                     <Border x:Name="RecordingBar"
                             Grid.Row="1"
-                            Margin="12,8,12,0"
-                            Padding="12,8"
-                            CornerRadius="14"
+                            Margin="12,10,12,0"
+                            Padding="14,12"
+                            CornerRadius="18"
                             BorderThickness="1"
                             Background="{DynamicResource EchoAccentSoftBrush}"
                             BorderBrush="{DynamicResource EchoAccentSoftBorderBrush}"
                             IsVisible="False">
-                        <Grid ColumnDefinitions="Auto,*,Auto" RowDefinitions="Auto,Auto">
-                            <controls:EchoListeningBars VerticalAlignment="Center" IsActive="{Binding IsCapturing}" />
-                            <TextBlock x:Name="RecordingStatusText"
-                                       Grid.Column="1"
-                                       Margin="10,0,8,0"
-                                       VerticalAlignment="Center"
-                                       FontSize="13"
-                                       FontWeight="SemiBold"
-                                       TextWrapping="Wrap"
-                                       Foreground="{DynamicResource EchoBadgeTextBrush}"
-                                       Text="{Binding [Recording], Source={x:Static platform:MobileText.Instance}}" />
-                            <Button x:Name="StopButton"
-                                    Grid.Column="2"
-                                    Classes="dangerSoft"
-                                    Padding="14,0"
-                                    Click="StopRecording_OnClick"
-                                    Content="{Binding [Stop], Source={x:Static platform:MobileText.Instance}}" />
-                            <!-- What happens to the speech: the level of the microphone and, in words, recognition progress or the problem. -->
-                            <StackPanel x:Name="RecordingDetails" Grid.Row="1" Grid.ColumnSpan="3" Margin="0,8,0,0" x:DataType="platform:RecordingMonitor">
-                                <ProgressBar Height="6" CornerRadius="3" Minimum="0" Maximum="1" Value="{Binding Level}" />
-                                <TextBlock Margin="0,6,0,0" FontSize="13" TextWrapping="Wrap" Foreground="{DynamicResource EchoSoftTextBrush}" Text="{Binding EngineText}" IsVisible="{Binding EngineText, Converter={x:Static StringConverters.IsNotNullOrEmpty}}" />
-                                <TextBlock Classes="monitor" Classes.problem="{Binding IsProblem}" Margin="0,3,0,0" FontSize="13.5" FontWeight="SemiBold" TextWrapping="Wrap" Text="{Binding StatusText}" />
+                        <StackPanel>
+                            <StackPanel Orientation="Horizontal">
+                                <controls:EchoListeningBars VerticalAlignment="Center" IsActive="{Binding IsCapturing}" />
+                                <TextBlock x:Name="RecordingStatusText"
+                                           Margin="10,0,0,0"
+                                           VerticalAlignment="Center"
+                                           FontSize="16"
+                                           FontWeight="Bold"
+                                           Foreground="{DynamicResource EchoBadgeTextBrush}"
+                                           Text="{Binding [Recording], Source={x:Static platform:MobileText.Instance}}" />
                             </StackPanel>
-                        </Grid>
+                            <!-- What happens to the speech: the level of the microphone and, in words, recognition progress or the problem. -->
+                            <StackPanel x:Name="RecordingDetails" Margin="0,10,0,0" x:DataType="platform:RecordingMonitor">
+                                <ProgressBar Height="8" CornerRadius="4" Minimum="0" Maximum="1" Value="{Binding Level}" />
+                                <TextBlock Margin="0,8,0,0" FontSize="14" TextWrapping="Wrap" Foreground="{DynamicResource EchoSoftTextBrush}" Text="{Binding EngineText}" IsVisible="{Binding EngineText, Converter={x:Static StringConverters.IsNotNullOrEmpty}}" />
+                                <TextBlock Classes="monitor" Classes.problem="{Binding IsProblem}" Margin="0,4,0,0" FontSize="14.5" LineHeight="20" FontWeight="SemiBold" TextWrapping="Wrap" Text="{Binding StatusText}" />
+                            </StackPanel>
+                            <Button x:Name="StopButton"
+                                    Classes="dangerSoft"
+                                    Margin="0,12,0,0"
+                                    Height="52"
+                                    HorizontalAlignment="Stretch"
+                                    FontSize="16"
+                                    FontWeight="Bold"
+                                    Click="StopRecording_OnClick">
+                                <StackPanel Orientation="Horizontal">
+                                    <Border Width="14" Height="14" CornerRadius="3" VerticalAlignment="Center" Background="{DynamicResource EchoDangerTextBrush}" />
+                                    <TextBlock Margin="10,0,0,0" VerticalAlignment="Center" Text="{Binding [Stop], Source={x:Static platform:MobileText.Instance}}" />
+                                </StackPanel>
+                            </Button>
+                        </StackPanel>
                     </Border>
 
                     <ScrollViewer Grid.Row="2"
@@ -884,9 +986,9 @@
 
                         <Grid x:Name="SummaryPanel" RowDefinitions="Auto,*" IsVisible="False">
                             <UniformGrid Columns="3">
-                                <Button Margin="0,0,3,0" Padding="4,0" HorizontalAlignment="Stretch" FontSize="13" Command="{Binding RegenerateSummaryCommand}" Content="{Binding L[Regenerate]}" />
-                                <Button Margin="3,0" Padding="4,0" HorizontalAlignment="Stretch" FontSize="13" Click="ShareSummary_OnClick" Content="{Binding [Share], Source={x:Static platform:MobileText.Instance}}" />
-                                <Button Classes="accent" Margin="3,0,0,0" Padding="4,0" HorizontalAlignment="Stretch" FontSize="13" Command="{Binding CopySummaryCommand}" Content="{Binding L[CopyText]}" />
+                                <Button Margin="0,0,3,0" Padding="4,0" HorizontalAlignment="Stretch" FontSize="14.5" Command="{Binding RegenerateSummaryCommand}" Content="{Binding L[Regenerate]}" />
+                                <Button Margin="3,0" Padding="4,0" HorizontalAlignment="Stretch" FontSize="14.5" Click="ShareSummary_OnClick" Content="{Binding [Share], Source={x:Static platform:MobileText.Instance}}" />
+                                <Button Classes="accent" Margin="3,0,0,0" Padding="4,0" HorizontalAlignment="Stretch" FontSize="14.5" Command="{Binding CopySummaryCommand}" Content="{Binding L[CopyText]}" />
                             </UniformGrid>
                             <Border Grid.Row="1" Margin="0,10,0,0" Classes="card">
                                 <controls:MarkdownView Markdown="{Binding CurrentSessionSummary}" />
@@ -913,9 +1015,9 @@
 
                         <Grid x:Name="EmailPanel" RowDefinitions="Auto,Auto,*" IsVisible="False">
                             <UniformGrid Columns="3">
-                                <Button Margin="0,0,3,0" Padding="4,0" HorizontalAlignment="Stretch" FontSize="13" Command="{Binding FollowUpEmailCommand}" Content="{Binding L[FollowUpEmailAgain]}" />
-                                <Button Margin="3,0" Padding="4,0" HorizontalAlignment="Stretch" FontSize="13" Click="ShareEmail_OnClick" IsEnabled="{Binding HasFollowUpEmail}" Content="{Binding [Share], Source={x:Static platform:MobileText.Instance}}" />
-                                <Button Classes="accent" Margin="3,0,0,0" Padding="4,0" HorizontalAlignment="Stretch" FontSize="13" Command="{Binding CopyFollowUpEmailCommand}" Content="{Binding L[CopyEmail]}" />
+                                <Button Margin="0,0,3,0" Padding="4,0" HorizontalAlignment="Stretch" FontSize="14.5" Command="{Binding FollowUpEmailCommand}" Content="{Binding L[FollowUpEmailAgain]}" />
+                                <Button Margin="3,0" Padding="4,0" HorizontalAlignment="Stretch" FontSize="14.5" Click="ShareEmail_OnClick" IsEnabled="{Binding HasFollowUpEmail}" Content="{Binding [Share], Source={x:Static platform:MobileText.Instance}}" />
+                                <Button Classes="accent" Margin="3,0,0,0" Padding="4,0" HorizontalAlignment="Stretch" FontSize="14.5" Command="{Binding CopyFollowUpEmailCommand}" Content="{Binding L[CopyEmail]}" />
                             </UniformGrid>
                             <StackPanel Grid.Row="1" Margin="2,10,0,0" Orientation="Horizontal">
                                 <controls:EchoThinkingDots Margin="0,0,10,0" VerticalAlignment="Center" IsVisible="{Binding IsFollowUpEmailBusy}" />
@@ -988,21 +1090,19 @@
                             BorderBrush="{DynamicResource EchoBorderBrush}"
                             BorderThickness="0,1,0,0">
                         <StackPanel>
-                            <ScrollViewer HorizontalScrollBarVisibility="Hidden" VerticalScrollBarVisibility="Disabled">
-                                <StackPanel Orientation="Horizontal">
-                                    <Button x:Name="WhatToSayButton" Classes="chip" Margin="0,0,6,0" Click="QuickAction_OnClick" Tag="Reply" />
-                                    <Button x:Name="WhatToAskButton" Classes="chip" Margin="0,0,6,0" Click="QuickAction_OnClick" Tag="Next" />
-                                    <Button x:Name="FollowUpButton" Classes="chip" Margin="0,0,6,0" Click="QuickAction_OnClick" Tag="FollowUp" />
-                                    <Button x:Name="RecapButton" Classes="chip" Margin="0,0,12,0" Click="QuickAction_OnClick" Tag="Recap" />
-                                </StackPanel>
-                            </ScrollViewer>
-                            <Grid Margin="0,8,0,0" ColumnDefinitions="*,Auto">
+                            <UniformGrid Columns="2">
+                                <Button x:Name="WhatToSayButton" Classes="quick" Margin="0,0,4,8" Click="QuickAction_OnClick" Tag="Reply" />
+                                <Button x:Name="WhatToAskButton" Classes="quick" Margin="4,0,0,8" Click="QuickAction_OnClick" Tag="Next" />
+                                <Button x:Name="FollowUpButton" Classes="quick" Margin="0,0,4,0" Click="QuickAction_OnClick" Tag="FollowUp" />
+                                <Button x:Name="RecapButton" Classes="quick" Margin="4,0,0,0" Click="QuickAction_OnClick" Tag="Recap" />
+                            </UniformGrid>
+                            <Grid Margin="0,10,0,0" ColumnDefinitions="*,Auto">
                                 <TextBox x:Name="AskTextBox"
                                          MaxHeight="120"
                                          AcceptsReturn="False"
                                          TextWrapping="Wrap"
                                          Watermark="{Binding [AskPlaceholder], Source={x:Static platform:MobileText.Instance}}" />
-                                <Button Grid.Column="1" Classes="accent" Margin="8,0,0,0" Padding="16,0" Click="Ask_OnClick" Content="{Binding L[AskPrefix]}" />
+                                <Button Grid.Column="1" Classes="accent" Margin="8,0,0,0" Height="48" Padding="18,0" VerticalAlignment="Bottom" Click="Ask_OnClick" Content="{Binding L[AskPrefix]}" />
                             </Grid>
                         </StackPanel>
                     </Border>
@@ -1014,8 +1114,7 @@
                               VerticalScrollBarVisibility="Auto"
                               IsVisible="{Binding SelectedMainPage, Converter={x:Static controls:EqualsConverter.Instance}, ConverterParameter=Modes}">
                     <StackPanel Margin="16,8,16,28">
-                        <TextBlock Margin="0,8,0,0" FontSize="24" FontWeight="ExtraBold" Foreground="{DynamicResource EchoTextBrush}" Text="{Binding [Modes], Source={x:Static platform:MobileText.Instance}}" />
-                        <Border Margin="0,14,0,0" Classes="card" Padding="8">
+                        <Border Margin="0,6,0,0" Classes="card" Padding="8">
                             <StackPanel>
                                 <ListBox x:Name="ModesList"
                                          BorderThickness="0"
@@ -1070,158 +1169,257 @@
                     </StackPanel>
                 </ScrollViewer>
 
-                <!-- ===== Settings: what applies to the phone. ===== -->
-                <ScrollViewer x:Name="SettingsPage"
-                              HorizontalScrollBarVisibility="Disabled"
-                              VerticalScrollBarVisibility="Auto"
-                              IsVisible="{Binding SelectedMainPage, Converter={x:Static controls:EqualsConverter.Instance}, ConverterParameter=Settings}">
-                    <StackPanel Margin="16,8,16,28">
-                        <TextBlock Margin="0,8,0,0" FontSize="24" FontWeight="ExtraBold" Foreground="{DynamicResource EchoTextBrush}" Text="{Binding L[SettingsTab]}" />
-
-                        <TextBlock Classes="section" Text="{Binding L[SettingsSectionAppearance]}" />
-                        <TextBlock Classes="label" Text="{Binding L[SettingsTheme]}" />
-                        <StackPanel Orientation="Horizontal">
-                            <RadioButton GroupName="ThemeMode" Classes="pill" IsChecked="{Binding IsDarkTheme, Mode=TwoWay}" Content="{Binding L[ThemeDark]}" />
-                            <RadioButton GroupName="ThemeMode" Classes="pill" IsChecked="{Binding IsLightTheme, Mode=TwoWay}" Content="{Binding L[ThemeLight]}" />
+                <!-- ===== Settings: cards from what matters most on the phone (recording) to the look; «Сохранить» stays at the bottom. ===== -->
+                <Grid x:Name="SettingsPage"
+                      RowDefinitions="*,Auto"
+                      IsVisible="{Binding SelectedMainPage, Converter={x:Static controls:EqualsConverter.Instance}, ConverterParameter=Settings}">
+                    <ScrollViewer x:Name="SettingsScroll" HorizontalScrollBarVisibility="Disabled" VerticalScrollBarVisibility="Auto">
+                        <StackPanel Margin="12,0,12,24">
+                            <Border Classes="settingsCard">
+                                <StackPanel>
+                                    <!-- Recording check: a few seconds from the microphone recognized with the engine of a recording. -->
+                                    <TextBlock Classes="section" Text="{Binding [TestMicTitle], Source={x:Static platform:MobileText.Instance}}" />
+                                    <TextBlock Classes="hint" Margin="0,0,0,8" Text="{Binding [TestMicHint], Source={x:Static platform:MobileText.Instance}}" />
+                                    <Button x:Name="MicTestButton"
+                                            Classes="accent"
+                                            Height="52"
+                                            HorizontalAlignment="Stretch"
+                                            FontSize="16"
+                                            Click="MicTest_OnClick"
+                                            Content="{Binding [TestMicButton], Source={x:Static platform:MobileText.Instance}}" />
+                                    <ProgressBar x:Name="MicTestLevel" Margin="0,10,0,0" Height="8" CornerRadius="4" Minimum="0" Maximum="1" IsVisible="False" />
+                                    <TextBlock x:Name="MicTestResult" Margin="0,10,0,0" FontSize="14.5" LineHeight="21" TextWrapping="Wrap" Foreground="{DynamicResource EchoTextBrush}" IsVisible="False" />
+                                    <TextBlock Classes="section" Text="{Binding L[SettingsSttTitle]}" />
+                                    <CheckBox x:Name="UseApiSttBox" IsChecked="{Binding UseApiStt, Mode=TwoWay}">
+                                        <TextBlock TextWrapping="Wrap" Text="{Binding L[SettingsUseApiStt]}" />
+                                    </CheckBox>
+                                    <TextBlock x:Name="SttHintText" Classes="hint" Margin="0,6,0,4" Text="{Binding [PhoneSttHint], Source={x:Static platform:MobileText.Instance}}" />
+                                    <!-- Same order as for the AI model: provider, key, model. Dimmed while recognition stays on the phone. -->
+                                    <StackPanel IsEnabled="{Binding UseApiStt}">
+                                        <TextBlock Classes="label" Text="{Binding L[SettingsProviderPreset]}" />
+                                        <ComboBox HorizontalAlignment="Stretch" MinHeight="44" ItemsSource="{Binding SttApiPresets}" SelectedItem="{Binding SelectedSttPreset, Mode=TwoWay}" />
+                                        <StackPanel IsVisible="{Binding SttBaseUrlFieldVisibility}">
+                                            <TextBlock Classes="label" Text="{Binding L[SettingsBaseUrl]}" />
+                                            <TextBox Text="{Binding SttApiBaseUrl}" />
+                                        </StackPanel>
+                                        <TextBlock Classes="label" Text="{Binding L[SettingsSttApiKey]}" />
+                                        <TextBox PasswordChar="•" Text="{Binding SttApiKey}" />
+                                        <TextBlock Classes="hint" Text="{Binding SttKeySourceText}" />
+                                        <TextBlock Classes="label" Text="{Binding L[SettingsSttModel]}" />
+                                        <controls:ModelPicker Text="{Binding SttApiModel, Mode=TwoWay}" Options="{Binding SpeechModelOptions}" Status="{Binding SpeechModelsStatus}" LoadCommand="{Binding LoadSpeechModelsCommand}" />
+                                    </StackPanel>
+                                    <TextBlock Classes="hint" Text="{Binding SttStatusText}" />
+                                    <TextBlock Classes="label" Text="{Binding L[SettingsSttGlossary]}" />
+                                    <TextBox MinHeight="70" AcceptsReturn="True" TextWrapping="Wrap" Watermark="{Binding L[SettingsSttGlossaryExample]}" Text="{Binding SttGlossary}" />
+                                    <TextBlock Classes="hint" Text="{Binding L[SettingsSttGlossaryHint]}" />
+                                </StackPanel>
+                            </Border>
+                            <Border Classes="settingsCard">
+                                <StackPanel>
+                                    <!-- whisper.cpp models for recognition on the phone, downloaded once, like on the computer. -->
+                                    <StackPanel x:Name="SpeechModelsSection">
+                                        <TextBlock Classes="section" Text="{Binding L[SpeechModelTitle]}" />
+                                        <TextBlock Classes="hint" Margin="0,0,0,0" Text="{Binding [PhoneSpeechIntro], Source={x:Static platform:MobileText.Instance}}" />
+                                        <TextBlock x:Name="PhoneHardwareText" Classes="hint" />
+                                        <TextBlock Margin="0,6,0,0" FontSize="14" TextWrapping="Wrap" Foreground="{DynamicResource EchoTextBrush}" Text="{Binding SpeechModelStatusText}" />
+                                        <ItemsControl Margin="0,10,0,0" ItemsSource="{Binding SpeechModels}">
+                                            <ItemsControl.ItemTemplate>
+                                                <DataTemplate>
+                                                    <Border Margin="0,0,0,10" Classes="card" Padding="14,12">
+                                                        <StackPanel>
+                                                            <Grid ColumnDefinitions="*,Auto">
+                                                                <StackPanel Orientation="Horizontal">
+                                                                    <TextBlock FontSize="15.5" FontWeight="Bold" VerticalAlignment="Center" Foreground="{DynamicResource EchoTextBrush}" Text="{Binding Title}" />
+                                                                    <TextBlock Margin="10,0,0,0" FontSize="13" VerticalAlignment="Center" Foreground="{DynamicResource EchoMutedBrush}" Text="{Binding SizeText}" />
+                                                                </StackPanel>
+                                                                <TextBlock Grid.Column="1" FontSize="13" FontWeight="SemiBold" VerticalAlignment="Center" Foreground="{DynamicResource EchoAccentTextBrush}" Text="{Binding StatusText}" />
+                                                            </Grid>
+                                                            <Border Margin="0,6,0,0"
+                                                                    Padding="8,1"
+                                                                    HorizontalAlignment="Left"
+                                                                    CornerRadius="9"
+                                                                    Background="{DynamicResource EchoAccentSoftBrush}"
+                                                                    IsVisible="{Binding RecommendedVisibility}">
+                                                                <TextBlock FontSize="11.5" Foreground="{DynamicResource EchoBadgeTextBrush}" Text="{Binding $parent[UserControl].DataContext.L[SpeechModelRecommended]}" />
+                                                            </Border>
+                                                            <TextBlock Margin="0,6,0,0" FontSize="13.5" LineHeight="19" TextWrapping="Wrap" Foreground="{DynamicResource EchoSoftTextBrush}" Text="{Binding Info.PhoneDescription}" />
+                                                            <TextBlock Margin="0,4,0,0" FontSize="13" TextWrapping="Wrap" Foreground="{DynamicResource EchoMutedBrush}" Text="{Binding Info.PhoneSuitability}" />
+                                                            <ProgressBar Margin="0,8,0,0" Height="6" Maximum="100" Value="{Binding ProgressPercent, Mode=OneWay}" IsVisible="{Binding DownloadingVisibility}" />
+                                                            <StackPanel Margin="0,10,0,0" Orientation="Horizontal">
+                                                                <Button Classes="accent" Padding="16,0" IsVisible="{Binding DownloadVisibility}" Command="{Binding $parent[UserControl].DataContext.DownloadSpeechModelCommand}" CommandParameter="{Binding}" Content="{Binding $parent[UserControl].DataContext.L[SpeechModelDownload]}" />
+                                                                <Button Padding="16,0" IsVisible="{Binding UseVisibility}" Command="{Binding $parent[UserControl].DataContext.UseSpeechModelCommand}" CommandParameter="{Binding}" Content="{Binding $parent[UserControl].DataContext.L[SpeechModelUse]}" />
+                                                                <Button Classes="dangerSoft" Margin="8,0,0,0" Padding="16,0" IsVisible="{Binding DeleteVisibility}" Tag="{Binding}" Click="DeleteSpeechModel_OnClick" Content="{Binding $parent[UserControl].DataContext.L[SpeechModelDelete]}" />
+                                                                <Button Padding="16,0" IsVisible="{Binding DownloadingVisibility}" Command="{Binding $parent[UserControl].DataContext.CancelSpeechModelDownloadCommand}" Content="{Binding $parent[UserControl].DataContext.L[SpeechModelCancel]}" />
+                                                            </StackPanel>
+                                                        </StackPanel>
+                                                    </Border>
+                                                </DataTemplate>
+                                            </ItemsControl.ItemTemplate>
+                                        </ItemsControl>
+                                    </StackPanel>
+                                </StackPanel>
+                            </Border>
+                            <Border Classes="settingsCard">
+                                <StackPanel>
+                                    <TextBlock Classes="section" Text="{Binding L[SettingsSectionLlm]}" />
+                                    <TextBlock Classes="label" Text="{Binding L[SettingsProviderPreset]}" />
+                                    <ComboBox HorizontalAlignment="Stretch" MinHeight="44" ItemsSource="{Binding ApiProviderPresets}" SelectedItem="{Binding SelectedApiPreset, Mode=TwoWay}" />
+                                    <StackPanel IsVisible="{Binding ProviderFieldVisibility}">
+                                        <TextBlock Classes="label" Text="{Binding L[SettingsProvider]}" />
+                                        <TextBox Text="{Binding ApiProvider}" />
+                                    </StackPanel>
+                                    <StackPanel IsVisible="{Binding BaseUrlFieldVisibility}">
+                                        <TextBlock Classes="label" Text="{Binding L[SettingsBaseUrl]}" />
+                                        <TextBox Text="{Binding OpenAiBaseUrl}" />
+                                    </StackPanel>
+                                    <StackPanel IsVisible="{Binding EndpointPathFieldVisibility}">
+                                        <TextBlock Classes="label" Text="{Binding L[SettingsEndpointPath]}" />
+                                        <TextBox Text="{Binding ChatCompletionsPath}" />
+                                    </StackPanel>
+                                    <StackPanel IsVisible="{Binding ApiKeyHeaderFieldVisibility}">
+                                        <TextBlock Classes="label" Text="{Binding L[SettingsKeyHeader]}" />
+                                        <TextBox Text="{Binding ApiKeyHeaderName}" />
+                                    </StackPanel>
+                                    <StackPanel IsVisible="{Binding ApiKeyPrefixFieldVisibility}">
+                                        <TextBlock Classes="label" Text="{Binding L[SettingsKeyPrefix]}" />
+                                        <TextBox Text="{Binding ApiKeyPrefix}" />
+                                    </StackPanel>
+                                    <StackPanel IsVisible="{Binding ApiKeyFieldVisibility}">
+                                        <TextBlock Classes="label" Text="{Binding L[SettingsApiKey]}" />
+                                        <TextBox PasswordChar="•" Text="{Binding OpenAiApiKey}" />
+                                    </StackPanel>
+                                    <TextBlock Classes="label" Text="{Binding L[SettingsModel]}" />
+                                    <controls:ModelPicker Text="{Binding OpenAiModel, Mode=TwoWay}" Options="{Binding ChatModelOptions}" Status="{Binding ChatModelsStatus}" LoadCommand="{Binding LoadChatModelsCommand}" />
+                                    <TextBlock Classes="label" Text="{Binding L[SettingsAnalysisModel]}" />
+                                    <controls:ModelPicker Text="{Binding AnalysisModel, Mode=TwoWay}" Options="{Binding ChatModelOptions}" Status="{Binding ChatModelsStatus}" LoadCommand="{Binding LoadChatModelsCommand}" />
+                                    <TextBlock Classes="hint" Text="{Binding L[SettingsModelPickerHint]}" />
+                                    <TextBlock Classes="section" Text="{Binding L[SettingsSectionAi]}" />
+                                    <CheckBox IsChecked="{Binding SmartModeEnabled, Mode=TwoWay}">
+                                        <TextBlock TextWrapping="Wrap" Text="{Binding L[SmartModeToggle]}" />
+                                    </CheckBox>
+                                    <TextBlock Classes="hint" Text="{Binding L[SmartModeHint]}" />
+                                </StackPanel>
+                            </Border>
+                            <Border Classes="settingsCard">
+                                <StackPanel>
+                                    <TextBlock Classes="section" Text="{Binding L[SettingsSectionAppearance]}" />
+                                    <TextBlock Classes="label" Text="{Binding L[SettingsTheme]}" />
+                                    <StackPanel Orientation="Horizontal">
+                                        <RadioButton GroupName="ThemeMode" Classes="pill" IsChecked="{Binding IsDarkTheme, Mode=TwoWay}" Content="{Binding L[ThemeDark]}" />
+                                        <RadioButton GroupName="ThemeMode" Classes="pill" IsChecked="{Binding IsLightTheme, Mode=TwoWay}" Content="{Binding L[ThemeLight]}" />
+                                    </StackPanel>
+                                    <TextBlock Classes="label" Text="{Binding L[SettingsLanguage]}" />
+                                    <StackPanel Orientation="Horizontal">
+                                        <RadioButton GroupName="UiLanguage" Classes="pill" IsChecked="{Binding IsRussianUi, Mode=TwoWay}" Content="Русский (RU)" />
+                                        <RadioButton GroupName="UiLanguage" Classes="pill" IsChecked="{Binding IsEnglishUi, Mode=TwoWay}" Content="English (EN)" />
+                                    </StackPanel>
+                                    <TextBlock Classes="hint" Text="{Binding L[SettingsLanguageHint]}" />
+                                </StackPanel>
+                            </Border>
+                            <Border Classes="settingsCard">
+                                <StackPanel>
+                                    <!-- The computer hides its windows from screen sharing; the phone hides CuePilot from screen recording,
+                                         casting and screenshots (FLAG_SECURE). Same setting. -->
+                                    <TextBlock Classes="section" Text="{Binding L[SettingsSectionScreenShare]}" />
+                                    <CheckBox IsChecked="{Binding ShowInScreenShare, Mode=TwoWay}">
+                                        <TextBlock TextWrapping="Wrap" Text="{Binding [PhoneShowInScreenShare], Source={x:Static platform:MobileText.Instance}}" />
+                                    </CheckBox>
+                                    <TextBlock Classes="hint" Text="{Binding [PhoneShowInScreenShareHint], Source={x:Static platform:MobileText.Instance}}" />
+                                </StackPanel>
+                            </Border>
+                            <Button Margin="0,16,0,0" HorizontalAlignment="Stretch" Click="WhatsNew_OnClick" Content="{Binding [WhatsNewShort], Source={x:Static platform:MobileText.Instance}}" />
+                            <TextBlock Margin="0,12,0,0" HorizontalAlignment="Center" FontSize="13" Foreground="{DynamicResource EchoMutedBrush}" Text="{Binding AppVersion}" />
                         </StackPanel>
-                        <TextBlock Classes="label" Text="{Binding L[SettingsLanguage]}" />
-                        <StackPanel Orientation="Horizontal">
-                            <RadioButton GroupName="UiLanguage" Classes="pill" IsChecked="{Binding IsRussianUi, Mode=TwoWay}" Content="Русский (RU)" />
-                            <RadioButton GroupName="UiLanguage" Classes="pill" IsChecked="{Binding IsEnglishUi, Mode=TwoWay}" Content="English (EN)" />
-                        </StackPanel>
-                        <TextBlock Classes="hint" Text="{Binding L[SettingsLanguageHint]}" />
-
-                        <!-- The computer hides its windows from screen sharing; the phone hides CuePilot from screen recording,
-                             casting and screenshots (FLAG_SECURE). Same setting. -->
-                        <TextBlock Classes="section" Text="{Binding L[SettingsSectionScreenShare]}" />
-                        <CheckBox IsChecked="{Binding ShowInScreenShare, Mode=TwoWay}">
-                            <TextBlock TextWrapping="Wrap" Text="{Binding [PhoneShowInScreenShare], Source={x:Static platform:MobileText.Instance}}" />
-                        </CheckBox>
-                        <TextBlock Classes="hint" Text="{Binding [PhoneShowInScreenShareHint], Source={x:Static platform:MobileText.Instance}}" />
-
-                        <TextBlock Classes="section" Text="{Binding L[SettingsSectionAi]}" />
-                        <CheckBox IsChecked="{Binding SmartModeEnabled, Mode=TwoWay}">
-                            <TextBlock TextWrapping="Wrap" Text="{Binding L[SmartModeToggle]}" />
-                        </CheckBox>
-                        <TextBlock Classes="hint" Text="{Binding L[SmartModeHint]}" />
-
-                        <TextBlock Classes="section" Text="{Binding L[SettingsSectionLlm]}" />
-                        <TextBlock Classes="label" Text="{Binding L[SettingsProviderPreset]}" />
-                        <ComboBox HorizontalAlignment="Stretch" MinHeight="44" ItemsSource="{Binding ApiProviderPresets}" SelectedItem="{Binding SelectedApiPreset, Mode=TwoWay}" />
-                        <StackPanel IsVisible="{Binding ProviderFieldVisibility}">
-                            <TextBlock Classes="label" Text="{Binding L[SettingsProvider]}" />
-                            <TextBox Text="{Binding ApiProvider}" />
-                        </StackPanel>
-                        <StackPanel IsVisible="{Binding BaseUrlFieldVisibility}">
-                            <TextBlock Classes="label" Text="{Binding L[SettingsBaseUrl]}" />
-                            <TextBox Text="{Binding OpenAiBaseUrl}" />
-                        </StackPanel>
-                        <StackPanel IsVisible="{Binding EndpointPathFieldVisibility}">
-                            <TextBlock Classes="label" Text="{Binding L[SettingsEndpointPath]}" />
-                            <TextBox Text="{Binding ChatCompletionsPath}" />
-                        </StackPanel>
-                        <StackPanel IsVisible="{Binding ApiKeyHeaderFieldVisibility}">
-                            <TextBlock Classes="label" Text="{Binding L[SettingsKeyHeader]}" />
-                            <TextBox Text="{Binding ApiKeyHeaderName}" />
-                        </StackPanel>
-                        <StackPanel IsVisible="{Binding ApiKeyPrefixFieldVisibility}">
-                            <TextBlock Classes="label" Text="{Binding L[SettingsKeyPrefix]}" />
-                            <TextBox Text="{Binding ApiKeyPrefix}" />
-                        </StackPanel>
-                        <StackPanel IsVisible="{Binding ApiKeyFieldVisibility}">
-                            <TextBlock Classes="label" Text="{Binding L[SettingsApiKey]}" />
-                            <TextBox PasswordChar="•" Text="{Binding OpenAiApiKey}" />
-                        </StackPanel>
-                        <TextBlock Classes="label" Text="{Binding L[SettingsModel]}" />
-                        <controls:ModelPicker Text="{Binding OpenAiModel, Mode=TwoWay}" Options="{Binding ChatModelOptions}" Status="{Binding ChatModelsStatus}" LoadCommand="{Binding LoadChatModelsCommand}" />
-                        <TextBlock Classes="label" Text="{Binding L[SettingsAnalysisModel]}" />
-                        <controls:ModelPicker Text="{Binding AnalysisModel, Mode=TwoWay}" Options="{Binding ChatModelOptions}" Status="{Binding ChatModelsStatus}" LoadCommand="{Binding LoadChatModelsCommand}" />
-                        <TextBlock Classes="hint" Text="{Binding L[SettingsModelPickerHint]}" />
-
-                        <!-- Recording check: a few seconds from the microphone recognized with the engine of a recording. -->
-                        <TextBlock Classes="section" Text="{Binding [TestMicTitle], Source={x:Static platform:MobileText.Instance}}" />
-                        <TextBlock Classes="hint" Margin="0,0,0,8" Text="{Binding [TestMicHint], Source={x:Static platform:MobileText.Instance}}" />
-                        <Button x:Name="MicTestButton"
-                                Classes="accent"
-                                Height="52"
-                                HorizontalAlignment="Stretch"
-                                FontSize="16"
-                                Click="MicTest_OnClick"
-                                Content="{Binding [TestMicButton], Source={x:Static platform:MobileText.Instance}}" />
-                        <ProgressBar x:Name="MicTestLevel" Margin="0,10,0,0" Height="8" CornerRadius="4" Minimum="0" Maximum="1" IsVisible="False" />
-                        <TextBlock x:Name="MicTestResult" Margin="0,10,0,0" FontSize="14.5" LineHeight="21" TextWrapping="Wrap" Foreground="{DynamicResource EchoTextBrush}" IsVisible="False" />
-
-                        <TextBlock Classes="section" Text="{Binding L[SettingsSttTitle]}" />
-                        <CheckBox x:Name="UseApiSttBox" IsChecked="{Binding UseApiStt, Mode=TwoWay}">
-                            <TextBlock TextWrapping="Wrap" Text="{Binding L[SettingsUseApiStt]}" />
-                        </CheckBox>
-                        <TextBlock x:Name="SttHintText" Classes="hint" Margin="0,6,0,4" Text="{Binding [PhoneSttHint], Source={x:Static platform:MobileText.Instance}}" />
-                        <!-- Same order as for the AI model: provider, key, model. Dimmed while recognition stays on the phone. -->
-                        <StackPanel IsEnabled="{Binding UseApiStt}">
-                            <TextBlock Classes="label" Text="{Binding L[SettingsProviderPreset]}" />
-                            <ComboBox HorizontalAlignment="Stretch" MinHeight="44" ItemsSource="{Binding SttApiPresets}" SelectedItem="{Binding SelectedSttPreset, Mode=TwoWay}" />
-                            <StackPanel IsVisible="{Binding SttBaseUrlFieldVisibility}">
-                                <TextBlock Classes="label" Text="{Binding L[SettingsBaseUrl]}" />
-                                <TextBox Text="{Binding SttApiBaseUrl}" />
-                            </StackPanel>
-                            <TextBlock Classes="label" Text="{Binding L[SettingsSttApiKey]}" />
-                            <TextBox PasswordChar="•" Text="{Binding SttApiKey}" />
-                            <TextBlock Classes="hint" Text="{Binding SttKeySourceText}" />
-                            <TextBlock Classes="label" Text="{Binding L[SettingsSttModel]}" />
-                            <controls:ModelPicker Text="{Binding SttApiModel, Mode=TwoWay}" Options="{Binding SpeechModelOptions}" Status="{Binding SpeechModelsStatus}" LoadCommand="{Binding LoadSpeechModelsCommand}" />
-                        </StackPanel>
-                        <TextBlock Classes="hint" Text="{Binding SttStatusText}" />
-                        <TextBlock Classes="label" Text="{Binding L[SettingsSttGlossary]}" />
-                        <TextBox MinHeight="70" AcceptsReturn="True" TextWrapping="Wrap" Watermark="{Binding L[SettingsSttGlossaryExample]}" Text="{Binding SttGlossary}" />
-                        <TextBlock Classes="hint" Text="{Binding L[SettingsSttGlossaryHint]}" />
-
-                        <!-- whisper.cpp models for recognition on the phone, downloaded once, like on the computer. -->
-                        <StackPanel x:Name="SpeechModelsSection">
-                            <TextBlock Classes="section" Text="{Binding L[SpeechModelTitle]}" />
-                            <TextBlock Classes="hint" Margin="0,0,0,0" Text="{Binding [PhoneSpeechIntro], Source={x:Static platform:MobileText.Instance}}" />
-                            <TextBlock x:Name="PhoneHardwareText" Classes="hint" />
-                            <TextBlock Margin="0,6,0,0" FontSize="14" TextWrapping="Wrap" Foreground="{DynamicResource EchoTextBrush}" Text="{Binding SpeechModelStatusText}" />
-                            <ItemsControl Margin="0,10,0,0" ItemsSource="{Binding SpeechModels}">
-                                <ItemsControl.ItemTemplate>
-                                    <DataTemplate>
-                                        <Border Margin="0,0,0,10" Classes="card" Padding="14,12">
-                                            <StackPanel>
-                                                <Grid ColumnDefinitions="*,Auto">
-                                                    <StackPanel Orientation="Horizontal">
-                                                        <TextBlock FontSize="15.5" FontWeight="Bold" VerticalAlignment="Center" Foreground="{DynamicResource EchoTextBrush}" Text="{Binding Title}" />
-                                                        <TextBlock Margin="10,0,0,0" FontSize="13" VerticalAlignment="Center" Foreground="{DynamicResource EchoMutedBrush}" Text="{Binding SizeText}" />
-                                                    </StackPanel>
-                                                    <TextBlock Grid.Column="1" FontSize="13" FontWeight="SemiBold" VerticalAlignment="Center" Foreground="{DynamicResource EchoAccentTextBrush}" Text="{Binding StatusText}" />
-                                                </Grid>
-                                                <Border Margin="0,6,0,0"
-                                                        Padding="8,1"
-                                                        HorizontalAlignment="Left"
-                                                        CornerRadius="9"
-                                                        Background="{DynamicResource EchoAccentSoftBrush}"
-                                                        IsVisible="{Binding RecommendedVisibility}">
-                                                    <TextBlock FontSize="11.5" Foreground="{DynamicResource EchoBadgeTextBrush}" Text="{Binding $parent[UserControl].DataContext.L[SpeechModelRecommended]}" />
-                                                </Border>
-                                                <TextBlock Margin="0,6,0,0" FontSize="13.5" LineHeight="19" TextWrapping="Wrap" Foreground="{DynamicResource EchoSoftTextBrush}" Text="{Binding Info.PhoneDescription}" />
-                                                <TextBlock Margin="0,4,0,0" FontSize="13" TextWrapping="Wrap" Foreground="{DynamicResource EchoMutedBrush}" Text="{Binding Info.PhoneSuitability}" />
-                                                <ProgressBar Margin="0,8,0,0" Height="6" Maximum="100" Value="{Binding ProgressPercent, Mode=OneWay}" IsVisible="{Binding DownloadingVisibility}" />
-                                                <StackPanel Margin="0,10,0,0" Orientation="Horizontal">
-                                                    <Button Classes="accent" Padding="16,0" IsVisible="{Binding DownloadVisibility}" Command="{Binding $parent[UserControl].DataContext.DownloadSpeechModelCommand}" CommandParameter="{Binding}" Content="{Binding $parent[UserControl].DataContext.L[SpeechModelDownload]}" />
-                                                    <Button Padding="16,0" IsVisible="{Binding UseVisibility}" Command="{Binding $parent[UserControl].DataContext.UseSpeechModelCommand}" CommandParameter="{Binding}" Content="{Binding $parent[UserControl].DataContext.L[SpeechModelUse]}" />
-                                                    <Button Classes="dangerSoft" Margin="8,0,0,0" Padding="16,0" IsVisible="{Binding DeleteVisibility}" Tag="{Binding}" Click="DeleteSpeechModel_OnClick" Content="{Binding $parent[UserControl].DataContext.L[SpeechModelDelete]}" />
-                                                    <Button Padding="16,0" IsVisible="{Binding DownloadingVisibility}" Command="{Binding $parent[UserControl].DataContext.CancelSpeechModelDownloadCommand}" Content="{Binding $parent[UserControl].DataContext.L[SpeechModelCancel]}" />
-                                                </StackPanel>
-                                            </StackPanel>
-                                        </Border>
-                                    </DataTemplate>
-                                </ItemsControl.ItemTemplate>
-                            </ItemsControl>
-                        </StackPanel>
-
-                        <Button Classes="accent" Margin="0,24,0,0" Height="48" HorizontalAlignment="Stretch" FontSize="16" Command="{Binding SaveSettingsCommand}" Content="{Binding L[SaveSettings]}" />
-                        <TextBlock Margin="0,14,0,0" HorizontalAlignment="Center" FontSize="12.5" Foreground="{DynamicResource EchoMutedBrush}" Text="{Binding AppVersion}" />
-                    </StackPanel>
-                </ScrollViewer>
+                    </ScrollViewer>
+                    <Border Grid.Row="1"
+                            Padding="12,8"
+                            Background="{DynamicResource EchoHeaderBrush}"
+                            BorderBrush="{DynamicResource EchoBorderBrush}"
+                            BorderThickness="0,1,0,0">
+                        <Button Classes="accent" Height="52" HorizontalAlignment="Stretch" FontSize="16" Command="{Binding SaveSettingsCommand}" Content="{Binding L[SaveSettings]}" />
+                    </Border>
+                </Grid>
             </Panel>
+
+            <!-- Big record button above the bottom bar on Home: thumb reach, the first thing to tap. While recording it
+                 shows the live state and opens the live session (stopping is on the session page, never by accident). -->
+            <Button x:Name="RecordFab"
+                    Grid.Row="1"
+                    Classes="fab"
+                    Classes.live="{Binding IsCapturing}"
+                    Margin="0,0,0,16"
+                    HorizontalAlignment="Center"
+                    VerticalAlignment="Bottom"
+                    Click="RecordFab_OnClick">
+                <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+                    <Path Width="18"
+                          Height="24"
+                          VerticalAlignment="Center"
+                          Stretch="Uniform"
+                          Stroke="{Binding $parent[Button].Foreground}"
+                          StrokeThickness="2.2"
+                          StrokeLineCap="Round"
+                          IsVisible="{Binding !IsCapturing}"
+                          Data="M 9,1 C 11,1 12,2.5 12,4 L 12,11 C 12,13 10.5,14 9,14 C 7.5,14 6,13 6,11 L 6,4 C 6,2.5 7,1 9,1 Z M 2,10 C 2,14.5 5,18 9,18 C 13,18 16,14.5 16,10 M 9,18 L 9,22 M 5.5,22.5 L 12.5,22.5" />
+                    <controls:EchoListeningBars VerticalAlignment="Center" IsActive="{Binding IsCapturing}" IsVisible="{Binding IsCapturing}" />
+                    <TextBlock Margin="10,0,0,0"
+                               VerticalAlignment="Center"
+                               FontSize="17"
+                               FontWeight="Bold"
+                               Text="{Binding [RecordStart], Source={x:Static platform:MobileText.Instance}}"
+                               IsVisible="{Binding !IsCapturing}" />
+                    <TextBlock Margin="10,0,0,0"
+                               VerticalAlignment="Center"
+                               FontSize="17"
+                               FontWeight="Bold"
+                               Text="{Binding [RecordOpen], Source={x:Static platform:MobileText.Instance}}"
+                               IsVisible="{Binding IsCapturing}" />
+                </StackPanel>
+            </Button>
+
+            <!-- Bottom bar: the three places of the app, as in Android apps. -->
+            <Border x:Name="BottomNav"
+                    Grid.Row="2"
+                    Padding="4,6,4,8"
+                    Background="{DynamicResource EchoHeaderBrush}"
+                    BorderBrush="{DynamicResource EchoBorderBrush}"
+                    BorderThickness="0,1,0,0">
+                <UniformGrid Columns="3">
+                    <Button Classes="navItem"
+                            Classes.active="{Binding SelectedMainPage, Converter={x:Static controls:EqualsConverter.Instance}, ConverterParameter=Home}"
+                            Command="{Binding GoHomeCommand}">
+                        <StackPanel>
+                            <Border Classes="navIcon">
+                                <Path Width="22" Height="22" Stretch="Uniform" StrokeThickness="2" StrokeLineCap="Round" StrokeJoin="Round"
+                                      Data="M 2,10 L 11,2.5 L 20,10 M 4.5,8 L 4.5,19.5 L 9,19.5 L 9,13.5 L 13,13.5 L 13,19.5 L 17.5,19.5 L 17.5,8" />
+                            </Border>
+                            <TextBlock Classes="navLabel" Text="{Binding [NavHome], Source={x:Static platform:MobileText.Instance}}" />
+                        </StackPanel>
+                    </Button>
+                    <Button Classes="navItem"
+                            Classes.active="{Binding SelectedMainPage, Converter={x:Static controls:EqualsConverter.Instance}, ConverterParameter=Modes}"
+                            Command="{Binding OpenModesCommand}">
+                        <StackPanel>
+                            <Border Classes="navIcon">
+                                <Path Width="22" Height="22" Stretch="Uniform" StrokeThickness="2" StrokeLineCap="Round" StrokeJoin="Round"
+                                      Data="M 2,5 L 20,5 M 2,11 L 20,11 M 2,17 L 20,17 M 7,2.5 L 7,7.5 M 15,8.5 L 15,13.5 M 9,14.5 L 9,19.5" />
+                            </Border>
+                            <TextBlock Classes="navLabel" Text="{Binding [Modes], Source={x:Static platform:MobileText.Instance}}" />
+                        </StackPanel>
+                    </Button>
+                    <Button Classes="navItem"
+                            Classes.active="{Binding SelectedMainPage, Converter={x:Static controls:EqualsConverter.Instance}, ConverterParameter=Settings}"
+                            Command="{Binding OpenSettingsCommand}">
+                        <StackPanel>
+                            <Border Classes="navIcon">
+                                <Path Width="22" Height="22" Stretch="Uniform" StrokeThickness="2" StrokeLineCap="Round" StrokeJoin="Round"
+                                      Data="M 11,7.5 C 13,7.5 14.5,9 14.5,11 C 14.5,13 13,14.5 11,14.5 C 9,14.5 7.5,13 7.5,11 C 7.5,9 9,7.5 11,7.5 Z M 11,1.5 L 11,4 M 11,18 L 11,20.5 M 1.5,11 L 4,11 M 18,11 L 20.5,11 M 4.3,4.3 L 6,6 M 16,16 L 17.7,17.7 M 4.3,17.7 L 6,16 M 16,6 L 17.7,4.3" />
+                            </Border>
+                            <TextBlock Classes="navLabel" Text="{Binding L[SettingsTab]}" />
+                        </StackPanel>
+                    </Button>
+                </UniformGrid>
+            </Border>
         </Grid>
 
         <!-- Source of the knowledge base: its parsed text and actions, over the page. -->

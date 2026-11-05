@@ -60,6 +60,7 @@ public partial class MainView : UserControl
 
         PhonePlatform.SetHiddenFromScreenCapture(!_viewModel.ShowInScreenShare);
         UpdateHardwareText();
+        SetUpGraph();
 
         _viewModel.PlatformPermissionCheckRequested += () => PhonePlatform.HasMicrophonePermission();
         _viewModel.ConfirmationRequested += OnConfirmationRequested;
@@ -100,12 +101,18 @@ public partial class MainView : UserControl
                 case nameof(MainViewModel.SelectedSession):
                     OnUi(UpdateSessionPanels);
                     break;
+                case nameof(MainViewModel.IsSelectionMode):
+                case nameof(MainViewModel.ShowSessionsPanel):
+                    OnUi(UpdateRecordButton);
+                    break;
                 case nameof(MainViewModel.SelectedUiLanguage):
                     OnUi(() =>
                     {
                         MobileText.Language = _viewModel.L.CurrentLanguageCode;
+                        UpdatePage();
                         ApplyQuickActionLabels();
                         UpdateHardwareText();
+                        UpdateGraphTypeNames();
                     });
                     break;
                 case nameof(MainViewModel.ShowInScreenShare):
@@ -261,9 +268,44 @@ public partial class MainView : UserControl
 
     private void UpdatePage()
     {
-        BackButton.IsVisible = _viewModel.SelectedMainPage != "Home";
+        string page = _viewModel.SelectedMainPage;
+        // A session is a page inside Home: back arrow, no bottom bar (its own question bar is at the bottom).
+        BackButton.IsVisible = page == "Session";
+        BottomNav.IsVisible = page != "Session";
+        PageTitleText.Text = page switch
+        {
+            "Session" => MobileText.Get("SessionTitle"),
+            "Modes" => MobileText.Get("Modes"),
+            "Settings" => _viewModel.L["SettingsTab"],
+            _ => string.Empty
+        };
+        UpdateRecordButton();
         KnowledgeSheet.IsVisible = false;
         UpdateSessionPanels();
+    }
+
+    /// <summary>The record button floats over Home only, and not while sessions are being selected (their action bar is there).</summary>
+    private void UpdateRecordButton() =>
+        RecordFab.IsVisible = _viewModel.SelectedMainPage == "Home" && !(_viewModel.IsSelectionMode && _viewModel.ShowSessionsPanel);
+
+    private void Back_OnClick(object? sender, RoutedEventArgs e) => HandleBack();
+
+    private void GraphZoomIn_OnClick(object? sender, RoutedEventArgs e) => TopicGraphView.ZoomBy(1.3);
+
+    private void GraphZoomOut_OnClick(object? sender, RoutedEventArgs e) => TopicGraphView.ZoomBy(1 / 1.3);
+
+    private void GraphFit_OnClick(object? sender, RoutedEventArgs e) => TopicGraphView.FitToView();
+
+    private void RecordFab_OnClick(object? sender, RoutedEventArgs e)
+    {
+        if (_viewModel.IsCapturing)
+        {
+            Execute(_viewModel.OpenActiveSessionCommand);
+        }
+        else
+        {
+            StartRecording_OnClick(sender, e);
+        }
     }
 
     private void UpdateHardwareText() => PhoneHardwareText.Text = string.Format(

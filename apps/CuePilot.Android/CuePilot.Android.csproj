@@ -21,7 +21,7 @@
     <ApplicationId>app.cuepilot.mobile</ApplicationId>
     <ApplicationTitle>CuePilot</ApplicationTitle>
     <!-- ApplicationVersion must grow with every release so Android installs the APK over the previous one. -->
-    <ApplicationVersion>106</ApplicationVersion>
+    <ApplicationVersion>107</ApplicationVersion>
     <ApplicationDisplayVersion>1.0.5</ApplicationDisplayVersion>
     <Version>1.0.5</Version>
     <AssemblyVersion>1.0.5.0</AssemblyVersion>
@@ -63,7 +63,7 @@
   <ItemGroup>
     <Compile Include="..\CuePilotDesktop\Models\**\*.cs" Link="Shared\Models\%(RecursiveDir)%(Filename)%(Extension)" />
     <Compile Include="..\CuePilotDesktop\Services\**\*.cs"
-             Exclude="..\CuePilotDesktop\Services\HotkeyManager.cs;..\CuePilotDesktop\Services\HotkeyGesture.cs;..\CuePilotDesktop\Services\ScreenShareProtection.cs;..\CuePilotDesktop\Services\VisualContextCaptureService.cs;..\CuePilotDesktop\Services\CaptureOrchestratorService.cs;..\CuePilotDesktop\Services\EnvironmentDiagnosticsService.cs;..\CuePilotDesktop\Services\MediaTranscriptionService.cs;..\CuePilotDesktop\Services\SpeechModelCatalog.cs"
+             Exclude="..\CuePilotDesktop\Services\HotkeyManager.cs;..\CuePilotDesktop\Services\HotkeyGesture.cs;..\CuePilotDesktop\Services\ScreenShareProtection.cs;..\CuePilotDesktop\Services\VisualContextCaptureService.cs;..\CuePilotDesktop\Services\CaptureOrchestratorService.cs;..\CuePilotDesktop\Services\EnvironmentDiagnosticsService.cs;..\CuePilotDesktop\Services\MediaTranscriptionService.cs;..\CuePilotDesktop\Services\SpeechModelCatalog.cs;..\CuePilotDesktop\Services\LocalizationService.cs"
              Link="Shared\Services\%(RecursiveDir)%(Filename)%(Extension)" />
     <Compile Include="..\CuePilotDesktop\ViewModels\**\*.cs" Exclude="..\CuePilotDesktop\ViewModels\**\*.Wpf.cs"
              Link="Shared\ViewModels\%(RecursiveDir)%(Filename)%(Extension)" />

@@ -67,7 +67,7 @@ public sealed class MobileText : System.ComponentModel.INotifyPropertyChanged
         ["Move"] = ("Перенести", "Move"),
         ["ChooseTopic"] = ("Перенести в тему", "Move to topic"),
         ["SessionActions"] = ("Сессия", "Session"),
-        ["TopicEmptyHint"] = ("Здесь пока нет сессий. Нажмите «Запустить CuePilot», чтобы записать разговор. Перенести сессию в тему можно кнопкой «⋯» на её карточке.", "No sessions here yet. Tap «Start CuePilot» to record a conversation. Move a session to a topic with «⋯» on its card."),
+        ["TopicEmptyHint"] = ("Здесь пока нет сессий. Нажмите «Записать» внизу экрана, чтобы записать разговор. Перенести сессию в тему можно кнопкой «⋯» на её карточке.", "No sessions here yet. Tap «Record» at the bottom to record a conversation. Move a session to a topic with «⋯» on its card."),
         ["AskPlaceholder"] = ("Спросите о разговоре", "Ask about the conversation"),
         ["FolderCopyHint"] = ("Документы папки скопированы в CuePilot: их разобранный текст виден ниже. Чтобы добавить изменённые файлы, прикрепите папку заново.", "The folder's documents were copied into CuePilot: their parsed text is shown below. To add changed files, attach the folder again."),
         ["CannotOpenFile"] = ("Не удалось открыть файл: на телефоне нет приложения для этого типа файлов.", "Could not open the file: no app on the phone opens this type of file."),
@@ -81,7 +81,7 @@ public sealed class MobileText : System.ComponentModel.INotifyPropertyChanged
         ["MonitorHearing"] = ("Слышу речь, распознаю…", "Speech heard, recognizing…"),
         ["MonitorListening"] = ("Слушаю…", "Listening…"),
         ["TestMicTitle"] = ("Проверка записи", "Recording check"),
-        ["TestMicButton"] = ("Проверить микрофон и распознавание", "Check the microphone and recognition"),
+        ["TestMicButton"] = ("Начать проверку (5 с)", "Start the check (5 s)"),
         ["TestMicHint"] = ("Нажмите и говорите 5 секунд: CuePilot запишет фразу, распознает её так же, как при записи разговора, и скажет, что работает, а что нет.", "Tap and speak for 5 seconds: CuePilot records the phrase, recognizes it as during a recording and says what works and what does not."),
         ["TestRecording"] = ("Говорите… 5 секунд", "Speak… 5 seconds"),
         ["TestRecognizing"] = ("Распознаю…", "Recognizing…"),
@@ -96,8 +96,25 @@ public sealed class MobileText : System.ComponentModel.INotifyPropertyChanged
         ["TestNotRecognized"] = ("{0} не разобрал слов ({1:0.0} с). Говорите громче или ближе к телефону.", "{0} recognized no words ({1:0.0} s). Speak louder or closer to the phone."),
         ["TestSlow"] = ("Телефон распознаёт медленнее, чем идёт речь (в первый раз сюда входит загрузка модели). Если повторная проверка так же медленна, для живой записи выберите модель base или распознавание через API.", "The phone recognizes slower than real time (the first time includes loading the model). If a second check is as slow, choose the base model or the API for live recording."),
         ["TestRecognitionFailed"] = ("{0}: ошибка распознавания: {1}", "{0}: recognition error: {1}"),
+        ["RecordStart"] = ("Записать", "Record"),
+        ["RecordOpen"] = ("Идёт запись", "Recording"),
+        ["NavHome"] = ("Главная", "Home"),
+        ["SessionTitle"] = ("Сессия", "Session"),
         ["CopyingFolder"] = ("Копирую документы из папки…", "Copying the folder's documents…"),
     };
+
+    /// <summary>Phone wording for shared texts that speak of dragging, Ctrl+V or the mouse (see LocalizationService).</summary>
+    private static readonly Dictionary<string, (string Ru, string En)> SharedOverrides = new()
+    {
+        ["TopicNoSessions"] = ("В теме пока нет сессий. Запишите разговор кнопкой «Записать» или перенесите сессию в тему кнопкой «⋯» на её карточке.", "No sessions in this topic yet. Record a conversation with «Record» or move a session here with «⋯» on its card."),
+        ["KnowledgeListHint"] = ("Добавьте документы, аудио, видео, папку или свой текст кнопками выше. CuePilot разберёт их в Markdown (речь из аудио и видео станет текстом) и будет использовать в сводке, ответах и графе.", "Add documents, audio, video, a folder or your own text with the buttons above. CuePilot turns them into Markdown (speech in audio and video becomes text) and uses them in the summary, answers and graph."),
+    };
+
+    /// <summary>The phone's own text for a shared key, or null to use Strings.resx.</summary>
+    public static string? Override(string key, string language) =>
+        SharedOverrides.TryGetValue(key, out (string Ru, string En) text)
+            ? (string.Equals(language, "ru", StringComparison.OrdinalIgnoreCase) ? text.Ru : text.En)
+            : null;
 
     public static string Get(string key) =>
         Texts.TryGetValue(key, out (string Ru, string En) text)

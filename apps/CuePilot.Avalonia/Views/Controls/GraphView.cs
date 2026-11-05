@@ -570,6 +570,16 @@ public class GraphView : Control
         }
     }
 
+    /// <summary>Zooms around the centre of the view: the phone's «+» and «−» buttons (a touch screen has no wheel).</summary>
+    public void ZoomBy(double factor)
+    {
+        var center = new Point(ActualWidth / 2, ActualHeight / 2);
+        Point world = ToWorld(center);
+        _zoom = Math.Clamp(_zoom * factor, 0.15, 4);
+        _offset = new Vector(center.X - world.X * _zoom, center.Y - world.Y * _zoom);
+        InvalidateVisual();
+    }
+
     protected override void OnPointerWheelChanged(PointerWheelEventArgs e)
     {
         base.OnPointerWheelChanged(e);
