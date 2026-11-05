@@ -16,10 +16,12 @@ public static class SelfTest
     {
         if (!apiUrl.StartsWith("https://", StringComparison.OrdinalIgnoreCase))
         {
+            PhonePlatform.Log("[selftest] Skipped: not an https address.");
             return;
         }
 
-        Task.Run(() =>
+        PhonePlatform.Log("[selftest] Speech API request to " + apiUrl + " starts.");
+        new Thread(() =>
         {
             var samples = new short[SpeechApiClient.SampleRate * 3 / 2];
             for (int i = 0; i < samples.Length; i++)
@@ -58,6 +60,6 @@ public static class SelfTest
             {
                 PhonePlatform.Log("[selftest] STT API FAILED: " + ex.GetType().Name + ": " + ex.Message);
             }
-        });
+        }) { IsBackground = true, Name = "CuePilot self-test" }.Start();
     }
 }

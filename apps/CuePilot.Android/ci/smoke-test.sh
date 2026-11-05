@@ -18,6 +18,8 @@ PID="$(adb shell pidof "$PACKAGE" | tr -d '\r')"
 adb logcat -d > logcat.txt
 echo "----- logcat (app, runtime, crashes) -----"
 grep -E "FATAL EXCEPTION|AndroidRuntime|monodroid|mono-rt|DOTNET|Avalonia|CuePilot|$PACKAGE" logcat.txt | tail -200
+echo "----- self-test -----"
+grep -F "[selftest]" logcat.txt || echo "(no self-test lines)"
 
 adb exec-out screencap -p > screen.png
 if command -v convert > /dev/null && [ -s screen.png ]; then
