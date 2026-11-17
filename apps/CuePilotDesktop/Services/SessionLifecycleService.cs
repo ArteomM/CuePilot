@@ -216,7 +216,31 @@ public sealed class SessionLifecycleService : IDisposable
             return;
         }
 
-        Mutate(sessionId, session => session.Title = title.Trim());
+        Mutate(sessionId, session =>
+        {
+            string next = title.Trim();
+            if (session.Title != next)
+            {
+                // Named by the user: the app no longer renames it.
+                session.Title = next;
+                session.AutoTitle = null;
+            }
+        });
+    }
+
+    /// <summary>A name the app gave: <paramref name="title"/> as shown, <paramref name="core"/> without the topic prefix.</summary>
+    public void SetAutoTitle(string sessionId, string title, string core)
+    {
+        if (string.IsNullOrWhiteSpace(title))
+        {
+            return;
+        }
+
+        Mutate(sessionId, session =>
+        {
+            session.Title = title.Trim();
+            session.AutoTitle = core.Trim();
+        });
     }
 
     public bool DeleteSession(string sessionId)

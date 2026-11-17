@@ -1,0 +1,32 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <!--
+    cuepilot: command line and MCP access to CuePilot sessions for local AI agents (Claude Code, Codex, Cursor…).
+    Reads %AppData%\CuePilot (sessions, topics, screenshots) and never changes it; exports go to a folder of their own.
+    Published next to CuePilot.exe by build\build-installer.cmd.
+  -->
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>net8.0</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <RootNamespace>CuePilotCli</RootNamespace>
+    <AssemblyName>cuepilot</AssemblyName>
+    <InvariantGlobalization>false</InvariantGlobalization>
+    <Version>1.0.7</Version>
+    <AssemblyVersion>1.0.7.0</AssemblyVersion>
+    <FileVersion>1.0.7.0</FileVersion>
+    <Product>CuePilot</Product>
+  </PropertyGroup>
+
+  <!-- The same session and topic classes the app saves, so the files are read exactly as the app wrote them. -->
+  <ItemGroup>
+    <Compile Include="..\CuePilotDesktop\Models\SessionModels.cs" Link="Shared\SessionModels.cs" />
+    <Compile Include="..\CuePilotDesktop\Services\AppSettings.cs" Link="Shared\AppSettings.cs" />
+    <Compile Include="..\CuePilotDesktop\ViewModels\ObservableObject.cs" Link="Shared\ObservableObject.cs" />
+    <Compile Include="..\CuePilotDesktop\Services\SpeechModelCatalog.cs" Link="Shared\SpeechModelCatalog.cs" />
+    <Compile Include="..\CuePilotDesktop\Services\SessionScreenshots.cs" Link="Shared\SessionScreenshots.cs" />
+    <Compile Include="..\CuePilotDesktop\Services\AgentGuide.cs" Link="Shared\AgentGuide.cs" />
+  </ItemGroup>
+
+</Project>

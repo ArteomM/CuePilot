@@ -26,6 +26,8 @@ public partial class MainWindow : Window
     private HotkeyManager? _hotkeyManager;
     private string _reportedHotkeyFailures = string.Empty;
     private DateTime _deactivatedAt = DateTime.MinValue;
+    private DateTime _auxPressAt = DateTime.MinValue;
+    private bool _inFrontAtAuxPress;
     private bool _auxWindowsPositioned;
 
     public MainWindow()
@@ -117,7 +119,16 @@ public partial class MainWindow : Window
         _viewModel.OverlayQuestionAsked += text => Dispatcher.Invoke(() => _assistOverlayWindow.AddUserQuestion(text));
         _viewModel.OverlayAnswerFailed += () => Dispatcher.Invoke(() => _assistOverlayWindow.HideThinking());
         _viewModel.OverlayStatsChanged += text => Dispatcher.Invoke(() => _assistOverlayWindow.SetStats(text));
-        _viewModel.OverlayNoticeRequested += text => Dispatcher.Invoke(() => _assistOverlayWindow.ShowNotice(text));
+        _viewModel.OverlayNoticeRequested += text => Dispatcher.Invoke(() =>
+        {
+            _assistOverlayWindow.ShowNotice(text);
+            if (!_assistOverlayWindow.IsVisible)
+            {
+                // During a call the overlay is usually hidden: the recording indicator shows the message instead.
+                _indicatorWindow.ShowNotice(text);
+            }
+        });
+        _viewModel.SnapshotStageChanged += (stage, number) => Dispatcher.Invoke(() => _indicatorWindow.SetSnapshotStage(stage, number));
         _viewModel.MainWindowAttentionRequested += FocusMainWindowAfterAsk;
         _viewModel.PropertyChanged += (_, e) =>
         {
@@ -144,6 +155,11 @@ public partial class MainWindow : Window
 
         _indicatorWindow.HideRequested += HideAssistOverlay;
         _indicatorWindow.AskRequested += ShowAssistOverlay;
+        // A press on a floating window takes the focus from this one: remember first whether this window was in front.
+        _indicatorWindow.PreviewMouseLeftButtonDown += (_, _) => RememberFrontStateAtAuxPress();
+        _assistOverlayWindow.PreviewMouseLeftButtonDown += (_, _) => RememberFrontStateAtAuxPress();
+        // «Спросить»/«Скрыть» follows the overlay itself, however it was shown or hidden.
+        _assistOverlayWindow.IsVisibleChanged += (_, _) => _indicatorWindow.SetOverlayHidden(!_assistOverlayWindow.IsVisible);
         _indicatorWindow.ToggleCaptureRequested += () =>
         {
             if (_viewModel.ToggleCaptureCommand.CanExecute(null))
@@ -151,13 +167,9 @@ public partial class MainWindow : Window
                 _viewModel.ToggleCaptureCommand.Execute(null);
             }
         };
-        _indicatorWindow.SnapshotRequested += () =>
-        {
-            if (_viewModel.CaptureSnapshotCommand.CanExecute(null))
-            {
-                _viewModel.CaptureSnapshotCommand.Execute(null);
-            }
-        };
+        // Not through the command: with screenshots off it cannot run and the button would stay silent.
+        _indicatorWindow.SnapshotRequested += _viewModel.TakeSnapshot;
+        _indicatorWindow.OverlayShown = () => _assistOverlayWindow.IsVisible;
         _indicatorWindow.OpenMainRequested += OpenMainHome;
 
         DataContext = _viewModel;
@@ -339,11 +351,8 @@ public partial class MainWindow : Window
 
     private void ShowAssistOverlay()
     {
-        if (_assistOverlayWindow.Owner == null)
-        {
-            _assistOverlayWindow.Owner = this;
-        }
-
+        // No owner on purpose: an owned overlay disappeared and came back with the main window, so opening the
+        // transcript also opened «Что спросить» and folding the main window hid it.
         if (!_assistOverlayWindow.IsVisible)
         {
             _assistOverlayWindow.Show();
@@ -439,19 +448,30 @@ public partial class MainWindow : Window
 
     /// <summary>
     /// The CuePilot icon of the floating windows works as a switch: a second click folds the window it opened.
-    /// The click itself takes the focus from this window, so «in front» also means «was active a moment ago».
+    /// The click itself takes the focus from this window, so «in front» means «was active when the button was pressed»,
+    /// remembered at the press (<see cref="RememberFrontStateAtAuxPress"/>). A fixed «active a moment ago» window used to
+    /// fold the main window when the user had just clicked the overlay, so the button had to be pressed twice.
     /// </summary>
     private bool FoldIfInFront()
     {
+        bool pressedJustNow = DateTime.UtcNow - _auxPressAt < TimeSpan.FromSeconds(3);
         bool inFront = IsVisible &&
             WindowState != WindowState.Minimized &&
-            (IsActive || DateTime.UtcNow - _deactivatedAt < TimeSpan.FromSeconds(1.5));
+            (IsActive || (pressedJustNow && _inFrontAtAuxPress));
         if (inFront)
         {
             WindowState = WindowState.Minimized;
         }
 
         return inFront;
+    }
+
+    private void RememberFrontStateAtAuxPress()
+    {
+        _auxPressAt = DateTime.UtcNow;
+        _inFrontAtAuxPress = IsVisible &&
+            WindowState != WindowState.Minimized &&
+            (IsActive || DateTime.UtcNow - _deactivatedAt < TimeSpan.FromMilliseconds(400));
     }
 
     private void OpenMainHome()

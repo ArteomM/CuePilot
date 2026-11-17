@@ -13,9 +13,9 @@
     <RootNamespace>SetupCuePilot</RootNamespace>
     <ApplicationIcon>..\..\apps\CuePilotDesktop\cuepilot-favicon.ico</ApplicationIcon>
     <ApplicationManifest>app.manifest</ApplicationManifest>
-    <Version>1.0.6</Version>
-    <AssemblyVersion>1.0.6.0</AssemblyVersion>
-    <FileVersion>1.0.6.0</FileVersion>
+    <Version>1.0.7</Version>
+    <AssemblyVersion>1.0.7.0</AssemblyVersion>
+    <FileVersion>1.0.7.0</FileVersion>
     <Product>CuePilot</Product>
     <AssemblyTitle>CuePilot Setup</AssemblyTitle>
   </PropertyGroup>

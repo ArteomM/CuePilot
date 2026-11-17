@@ -1,0 +1,101 @@
+using System.IO;
+using System.Text;
+
+namespace CuePilotDesktop.Services;
+
+/// <summary>
+/// How a local AI agent (Claude Code, Codex, Cursor…) finds CuePilot sessions: the app keeps
+/// %AppData%\CuePilot\AGENTS.md up to date with the path of the «cuepilot» command and the data layout,
+/// and «cuepilot guide» prints the same text.
+/// </summary>
+public static class AgentGuide
+{
+    public const string FileName = "AGENTS.md";
+
+    public static string DataRoot =>
+        Environment.GetEnvironmentVariable("CUEPILOT_DATA") is { Length: > 0 } custom
+            ? custom
+            : Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "CuePilot");
+
+    public static string CliFileName => OperatingSystem.IsWindows() ? "cuepilot.exe" : "cuepilot";
+
+    /// <summary>The command next to the running app, or empty when this build has none.</summary>
+    public static string FindCli()
+    {
+        string path = Path.Combine(AppContext.BaseDirectory, CliFileName);
+        return File.Exists(path) ? path : string.Empty;
+    }
+
+    public static string Text(string cliPath)
+    {
+        string cli = string.IsNullOrWhiteSpace(cliPath) ? CliFileName : cliPath;
+        string quoted = cli.Contains(' ') ? "\"" + cli + "\"" : cli;
+        string root = DataRoot;
+        var text = new StringBuilder();
+        text.AppendLine("# CuePilot: sessions for AI agents")
+            .AppendLine()
+            .AppendLine("CuePilot records meetings (transcript, AI summary, screenshots) on this computer. " +
+                        "Use the `cuepilot` command to find a session by name or time and read or export it. " +
+                        "It only reads CuePilot data; nothing is changed or sent anywhere.")
+            .AppendLine()
+            .AppendLine("Command: `" + cli + "`" + (string.IsNullOrWhiteSpace(cliPath) ? " (not found next to the app; install CuePilot 1.0.7 or newer)" : string.Empty))
+            .AppendLine()
+            .AppendLine("## Commands")
+            .AppendLine()
+            .AppendLine("```")
+            .AppendLine(quoted + " list [--query TEXT] [--topic NAME] [--from DATE] [--to DATE] [--limit N] [--json]")
+            .AppendLine(quoted + " show SESSION [--no-transcript] [--json]      # summary, transcript, screenshot paths as Markdown")
+            .AppendLine(quoted + " export SESSION [--out DIR] [--json]          # folder with session.md, summary.md, transcript.md, screenshots/, session.json")
+            .AppendLine(quoted + " topics [--json]")
+            .AppendLine(quoted + " topic NAME [--json]                          # topic overview, its sessions and knowledge files")
+            .AppendLine(quoted + " where [--json]                               # data folders")
+            .AppendLine(quoted + " mcp                                          # MCP server over stdio")
+            .AppendLine("```")
+            .AppendLine()
+            .AppendLine("SESSION is any of: `last` (newest), `last-2` (the one before), a session id (or its first 6+ characters), " +
+                        "a time such as `2026-11-17 14:05`, `17.11.2026 14:05`, `14:05` (today) or `2026-11-17` (that day), " +
+                        "or words of the title, e.g. `\"KEGOC разбор DEMO5\"`. Add `--topic NAME` to look only inside a topic. " +
+                        "When several sessions match, the command lists them and exits with code 2: pick one by id.")
+            .AppendLine()
+            .AppendLine("`--json` gives machine-readable output. Exit codes: 0 ok, 1 error, 2 more than one match, 3 nothing found.")
+            .AppendLine()
+            .AppendLine("## MCP")
+            .AppendLine()
+            .AppendLine("`" + quoted + " mcp` is an MCP server (stdio) with tools list_sessions, get_session, export_session, " +
+                        "get_screenshot, list_topics, get_topic. For Claude Code: `claude mcp add cuepilot -- " + quoted + " mcp`.")
+            .AppendLine()
+            .AppendLine("## Data layout (read-only for agents)")
+            .AppendLine()
+            .AppendLine("- Sessions: `" + Path.Combine(root, "sessions") + "` — one `<id>.json` per session " +
+                        "(Title, StartedAt, EndedAt, TopicId, SummaryText in Markdown, Transcript[], Screenshots[]).")
+            .AppendLine("- Screenshots: `" + Path.Combine(root, "visual-context", "<sessionId>", "screenshots") + "` (JPEG).")
+            .AppendLine("- Topics: `" + Path.Combine(root, "topics.json") + "` (Name, KnowledgeText = topic overview, Sources[]).")
+            .AppendLine("- Parsed topic documents: `" + Path.Combine(root, "knowledge", "<topicId>", "<sourceId>.md") + "`.")
+            .AppendLine("- Exports: `" + Path.Combine(root, "exports") + "` unless `--out` is given.")
+            .AppendLine()
+            .AppendLine("A session whose recording is still running has Status 0 (Active) and grows while you read it.");
+        return text.ToString();
+    }
+
+    /// <summary>Writes AGENTS.md into the data folder when its text changed. Never throws.</summary>
+    public static void WriteIfChanged(string cliPath)
+    {
+        try
+        {
+            string root = DataRoot;
+            Directory.CreateDirectory(root);
+            string path = Path.Combine(root, FileName);
+            string text = Text(cliPath);
+            if (File.Exists(path) && File.ReadAllText(path, Encoding.UTF8) == text)
+            {
+                return;
+            }
+
+            File.WriteAllText(path, text, new UTF8Encoding(false));
+        }
+        catch (Exception)
+        {
+            // Only a convenience for agents: the app works without it.
+        }
+    }
+}

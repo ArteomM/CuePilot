@@ -46,7 +46,8 @@ internal static class Installer
     private static readonly string[] AppProcessNames = { "CuePilotDesktop", "DesktopCapture" };
 
     // Speech recognition started by DesktopCapture: it can outlive a killed DesktopCapture and keeps ggml-*.dll locked.
-    private static readonly string[] SpeechProcessNames = { "whisper-server", "whisper-cli" };
+    // «cuepilot mcp» started by an AI agent (Claude, Cursor…) keeps cuepilot.exe and the runtime locked the same way.
+    private static readonly string[] SpeechProcessNames = { "whisper-server", "whisper-cli", "cuepilot" };
 
     public static string Version
     {
@@ -168,6 +169,7 @@ internal static class Installer
         }
 
         progress(99, "Регистрация в «Приложениях»…");
+        AddToUserPath(targetDir);
         string uninstallScript = WriteUninstallScript(targetDir);
         RegisterUninstall(targetDir, exePath, uninstallScript);
         RemoveLegacyInstall();
@@ -177,6 +179,48 @@ internal static class Installer
 
     [DllImport("shell32.dll")]
     private static extern void SHChangeNotify(int eventId, uint flags, IntPtr item1, IntPtr item2);
+
+    [DllImport("user32.dll", SetLastError = true, CharSet = CharSet.Unicode)]
+    private static extern IntPtr SendMessageTimeout(IntPtr window, int message, IntPtr wParam, string lParam, int flags, int timeout, out IntPtr result);
+
+    /// <summary>
+    /// The install folder goes into the user's PATH, so an AI agent can run «cuepilot list» from any terminal.
+    /// The value keeps its registry kind (expandable entries like %USERPROFILE% stay expandable). Never fails the install.
+    /// </summary>
+    private static void AddToUserPath(string targetDir)
+    {
+        try
+        {
+            using RegistryKey? key = Registry.CurrentUser.OpenSubKey("Environment", writable: true);
+            if (key == null)
+            {
+                return;
+            }
+
+            string current = key.GetValue("Path", string.Empty, RegistryValueOptions.DoNotExpandEnvironmentNames) as string ?? string.Empty;
+            string folder = targetDir.TrimEnd('\\');
+            bool present = current.Split(';').Any(entry =>
+                string.Equals(Environment.ExpandEnvironmentVariables(entry.Trim()).TrimEnd('\\'), folder, StringComparison.OrdinalIgnoreCase));
+            if (present)
+            {
+                return;
+            }
+
+            RegistryValueKind kind = current.Length == 0 ? RegistryValueKind.ExpandString : key.GetValueKind("Path");
+            string next = current.Length == 0 ? folder : current.TrimEnd(';') + ";" + folder;
+            key.SetValue("Path", next, kind == RegistryValueKind.String ? RegistryValueKind.String : RegistryValueKind.ExpandString);
+
+            // New terminals see the change without signing out.
+            const int HwndBroadcast = 0xffff;
+            const int WmSettingChange = 0x001A;
+            const int SmtoAbortIfHung = 0x0002;
+            SendMessageTimeout((IntPtr)HwndBroadcast, WmSettingChange, IntPtr.Zero, "Environment", SmtoAbortIfHung, 3000, out _);
+        }
+        catch (Exception)
+        {
+            // Agents can still use the full path from %AppData%\CuePilot\AGENTS.md.
+        }
+    }
 
     /// <summary>Explorer caches icons per path: without this, shortcuts keep showing the previous version's icon.</summary>
     private static void RefreshShellIcons()
@@ -371,12 +415,18 @@ internal static class Installer
         script.AppendLine("@echo off");
         script.AppendLine("taskkill /IM CuePilotDesktop.exe /F >nul 2>nul");
         script.AppendLine("taskkill /IM DesktopCapture.exe /F >nul 2>nul");
+        script.AppendLine("taskkill /IM cuepilot.exe /F >nul 2>nul");
         string psFolder = targetDir.Replace("'", "''");
         script.AppendLine("powershell -NoProfile -Command \"Get-Process whisper-server,whisper-cli -ErrorAction SilentlyContinue | " +
             $"Where-Object {{ $_.Path -like '{psFolder}\\*' }} | Stop-Process -Force\" >nul 2>nul");
         script.AppendLine($"del /f /q \"{DesktopShortcutPath}\" >nul 2>nul");
         script.AppendLine($"del /f /q \"{StartMenuShortcutPath}\" >nul 2>nul");
         script.AppendLine($"reg delete \"HKCU\\{UninstallKeyPath}\" /f >nul 2>nul");
+        // Take the folder out of the user's PATH again, keeping every other entry and the value's kind.
+        script.AppendLine("powershell -NoProfile -Command \"$k=[Microsoft.Win32.Registry]::CurrentUser.OpenSubKey('Environment',$true); " +
+            "if ($k) { $p=$k.GetValue('Path','',[Microsoft.Win32.RegistryValueOptions]::DoNotExpandEnvironmentNames); " +
+            $"$n=($p -split ';' | Where-Object {{ $_ -and ([Environment]::ExpandEnvironmentVariables($_).TrimEnd('\\') -ne '{psFolder.TrimEnd('\\')}') }}) -join ';'; " +
+            "if ($n -ne $p) { $k.SetValue('Path',$n,$k.GetValueKind('Path')) } }\" >nul 2>nul");
         script.AppendLine("cd /d \"%TEMP%\"");
         script.AppendLine($"(goto) 2>nul & rd /s /q \"{targetDir}\"");
 
@@ -946,11 +996,18 @@ internal sealed class SetupForm : Form
     private void OnInstalled(bool launch)
     {
         _installed = true;
-        SetStatus("CuePilot установлен. Ярлык: рабочий стол и меню «Пуск».");
+        // The wait cursor and the full bar made the finished window look as if it was still installing.
+        UseWaitCursor = false;
+        Cursor = Cursors.Default;
+        _progressBar.Visible = false;
+        SetStatus(_desktopShortcutCheck.Checked
+            ? "✓ CuePilot установлен. Ярлыки: рабочий стол и меню «Пуск»."
+            : "✓ CuePilot установлен. Ярлык в меню «Пуск».");
         _installButton.Text = "Готово";
         _installButton.Enabled = true;
         _cancelButton.Visible = false;
         _closeButton.Enabled = true;
+        _installButton.Focus();
         if (launch)
         {
             try

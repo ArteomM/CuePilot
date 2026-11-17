@@ -108,6 +108,12 @@ public class SessionSummary : ObservableObject
 
     public string Id { get; set; } = Guid.NewGuid().ToString("N");
     public string Title { get; set; } = "Untitled session";
+    /// <summary>
+    /// The name the app made from the summary, without the topic prefix; empty once the user names the session.
+    /// While set, a new summary or a move to another topic updates the title.
+    /// </summary>
+    [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
+    public string? AutoTitle { get; set; }
     /// <summary>Topic the session is grouped into; empty when it has none.</summary>
     public string TopicId { get; set; } = string.Empty;
     /// <summary>Last generated follow-up email draft.</summary>

@@ -67,6 +67,7 @@
                     Height="34"
                     Name="CaptureButton"
                     Style="{StaticResource IndicatorButtonStyle}"
+                    Padding="0"
                     Content="📷"
                     Click="CaptureButton_OnClick" />
         </Grid>

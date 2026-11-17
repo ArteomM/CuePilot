@@ -487,8 +487,21 @@ public partial class MainViewModel
             return;
         }
 
+        string oldName = topic.Name;
         topic.Name = name;
         SaveTopics();
+        bool retitled = false;
+        foreach (SessionSummary session in CompletedSessions.Where(s => s.TopicId == topic.Id).ToList())
+        {
+            retitled |= RetitleForTopic(session.Id, oldName, name);
+        }
+
+        if (retitled)
+        {
+            _sessionLifecycleService.Flush();
+            RefreshSessionList();
+        }
+
         RebuildTopicItems();
         AppendLog("[topics] Topic renamed.");
     }
@@ -514,10 +527,11 @@ public partial class MainViewModel
             return;
         }
 
-        // Sessions stay in the history: they only lose the topic.
-        foreach (SessionSummary session in CompletedSessions.Where(s => s.TopicId == topic.Id))
+        // Sessions stay in the history: they only lose the topic (and its name in front of an automatic title).
+        foreach (SessionSummary session in CompletedSessions.Where(s => s.TopicId == topic.Id).ToList())
         {
             _sessionLifecycleService.SetTopic(session.Id, string.Empty);
+            RetitleForTopic(session.Id, topic.Name, string.Empty);
         }
 
         _sessionLifecycleService.Flush();
@@ -534,6 +548,7 @@ public partial class MainViewModel
         SaveTopics();
         _selectedTopicItem = null;
         RebuildTopicItems();
+        RefreshSessionList();
         _completedSessionsView.Refresh();
         AppendLog("[topics] Topic deleted.");
     }
@@ -548,7 +563,8 @@ public partial class MainViewModel
 
         string topicId = target?.Topic?.Id ?? string.Empty;
         int moved = 0;
-        foreach (string sessionId in sessionIds.Distinct())
+        bool retitled = false;
+        foreach (string sessionId in sessionIds.Distinct().ToList())
         {
             SessionSummary? session = CompletedSessions.FirstOrDefault(s => s.Id == sessionId);
             if (session == null || session.TopicId == topicId)
@@ -556,7 +572,10 @@ public partial class MainViewModel
                 continue;
             }
 
+            string oldTopicName = TopicNameOf(session);
             _sessionLifecycleService.SetTopic(sessionId, topicId);
+            // «KEGOC. Название» follows the session into its new topic, if the app gave the name.
+            retitled |= RetitleForTopic(sessionId, oldTopicName, target?.Topic?.Name ?? string.Empty);
             moved++;
         }
 
@@ -566,6 +585,11 @@ public partial class MainViewModel
         }
 
         _sessionLifecycleService.Flush();
+        if (retitled)
+        {
+            RefreshSessionList();
+        }
+
         RefreshTopicStats();
         _completedSessionsView.Refresh();
         ShowFeedback(string.Format(L["SessionsMovedFeedback"], moved, target?.Name ?? L["TopicUnsorted"]));

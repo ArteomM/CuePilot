@@ -29,6 +29,8 @@ public partial class MainWindow : Window
     private TrayIcon? _trayIcon;
     private bool _allowRealClose;
     private DateTime _deactivatedAt = DateTime.MinValue;
+    private DateTime _auxPressAt = DateTime.MinValue;
+    private bool _inFrontAtAuxPress;
     private bool _auxWindowsPositioned;
     private string _shownPage = string.Empty;
 
@@ -92,7 +94,16 @@ public partial class MainWindow : Window
         _viewModel.OverlayQuestionAsked += text => OnUi(() => _assistOverlayWindow.AddUserQuestion(text));
         _viewModel.OverlayAnswerFailed += () => OnUi(() => _assistOverlayWindow.HideThinking());
         _viewModel.OverlayStatsChanged += text => OnUi(() => _assistOverlayWindow.SetStats(text));
-        _viewModel.OverlayNoticeRequested += text => OnUi(() => _assistOverlayWindow.ShowNotice(text));
+        _viewModel.OverlayNoticeRequested += text => OnUi(() =>
+        {
+            _assistOverlayWindow.ShowNotice(text);
+            if (!_assistOverlayWindow.IsVisible)
+            {
+                // During a call the overlay is usually hidden: the recording indicator shows the message instead.
+                _indicatorWindow.ShowNotice(text);
+            }
+        });
+        _viewModel.SnapshotStageChanged += (stage, number) => OnUi(() => _indicatorWindow.SetSnapshotStage(stage, number));
         _viewModel.MainWindowAttentionRequested += FocusMainWindowAfterAsk;
         _viewModel.PropertyChanged += (_, e) =>
         {
@@ -131,8 +142,13 @@ public partial class MainWindow : Window
         _indicatorWindow.HideRequested += HideAssistOverlay;
         _indicatorWindow.AskRequested += ShowAssistOverlay;
         _indicatorWindow.ToggleCaptureRequested += () => Execute(_viewModel.ToggleCaptureCommand);
-        _indicatorWindow.SnapshotRequested += () => Execute(_viewModel.CaptureSnapshotCommand);
+        // Not through the command: with screenshots off it cannot run and the button would stay silent.
+        _indicatorWindow.SnapshotRequested += _viewModel.TakeSnapshot;
+        _indicatorWindow.OverlayShown = () => _assistOverlayWindow.IsVisible;
         _indicatorWindow.OpenMainRequested += OpenMainHome;
+        // A press on a floating window takes the focus from this one: remember first whether this window was in front.
+        _indicatorWindow.AddHandler(PointerPressedEvent, (_, _) => RememberFrontStateAtAuxPress(), RoutingStrategies.Tunnel, handledEventsToo: true);
+        _assistOverlayWindow.AddHandler(PointerPressedEvent, (_, _) => RememberFrontStateAtAuxPress(), RoutingStrategies.Tunnel, handledEventsToo: true);
 
         DataContext = _viewModel;
         _shownPage = _viewModel.SelectedMainPage;
@@ -398,19 +414,30 @@ public partial class MainWindow : Window
 
     /// <summary>
     /// The CuePilot icon of the floating windows works as a switch: a second click folds the window it opened.
-    /// The click itself takes the focus from this window, so «in front» also means «was active a moment ago».
+    /// The click itself takes the focus from this window, so «in front» means «was active when the button was pressed»,
+    /// remembered at the press. A fixed «active a moment ago» window folded the main window right after a click on the
+    /// overlay, so the button had to be pressed twice.
     /// </summary>
     private bool FoldIfInFront()
     {
+        bool pressedJustNow = DateTime.UtcNow - _auxPressAt < TimeSpan.FromSeconds(3);
         bool inFront = IsVisible &&
             WindowState != WindowState.Minimized &&
-            (IsActive || DateTime.UtcNow - _deactivatedAt < TimeSpan.FromSeconds(1.5));
+            (IsActive || (pressedJustNow && _inFrontAtAuxPress));
         if (inFront)
         {
             WindowState = WindowState.Minimized;
         }
 
         return inFront;
+    }
+
+    private void RememberFrontStateAtAuxPress()
+    {
+        _auxPressAt = DateTime.UtcNow;
+        _inFrontAtAuxPress = IsVisible &&
+            WindowState != WindowState.Minimized &&
+            (IsActive || DateTime.UtcNow - _deactivatedAt < TimeSpan.FromMilliseconds(400));
     }
 
     private void OpenMainHome()

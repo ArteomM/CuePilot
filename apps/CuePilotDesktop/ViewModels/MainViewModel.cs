@@ -341,6 +341,8 @@ public partial class MainViewModel : ObservableObject
         InitializeScreenshots();
         RefreshSessionList();
         CleanupVisualContextInBackground();
+        // %AppData%\CuePilot\AGENTS.md tells a local AI agent where the «cuepilot» command and the sessions are.
+        _ = Task.Run(() => AgentGuide.WriteIfChanged(AgentGuide.FindCli()));
     }
 
     public event Action? ToggleOverlayRequested;
@@ -1814,7 +1816,7 @@ public partial class MainViewModel : ObservableObject
         {
             _sessionLifecycleService.CompleteActiveIfAny(L["SessionSummaryFallback"]);
             SessionSummary session = _sessionLifecycleService.StartNew(
-                BuildSessionTitle(),
+                NewSessionTitle(DateTime.Now),
                 SelectedModeName,
                 ActiveModeRealtimePrompt,
                 ActiveModeNotesTemplate);
@@ -1898,6 +1900,8 @@ public partial class MainViewModel : ObservableObject
             _currentSessionSummary = sessionSummary;
             RefreshSessionList();
             CurrentSessionSummary = _currentSessionSummary;
+            // Not named during the call: the name comes from the summary, in the background.
+            _ = AutoTitleSessionAsync(sessionId, sessionSummary);
         }
         SelectedSessionTab = "Summary";
         SelectedMainPage = "Home";
@@ -2447,10 +2451,6 @@ public partial class MainViewModel : ObservableObject
         _ = Task.Run(() => _visualContextCapture.CleanupOrphans(frames, sessionIds));
     }
 
-    private static string BuildSessionTitle()
-    {
-        return $"Session {DateTime.Now:yyyy-MM-dd HH:mm}";
-    }
 
     private string BuildSummaryText(SessionSummary? session)
     {
@@ -2729,6 +2729,10 @@ public partial class MainViewModel : ObservableObject
                 CurrentSessionSummary = summary;
                 OverlaySuggestionChanged?.Invoke(CurrentSessionSummary);
                 _sessionLifecycleService.UpdateSummary(session.Id, CurrentSessionSummary);
+                if (session.Status == SessionStatus.Completed)
+                {
+                    _ = AutoTitleSessionAsync(session.Id, summary);
+                }
             },
             $"[assist] Summary regenerated (smart={SmartModeEnabled}).");
     }
