@@ -338,6 +338,7 @@ public partial class MainViewModel : ObservableObject
         RebuildLocalizedCollections();
         InitializeModelCatalog();
         InitializeLibrary();
+        InitializeScreenshots();
         RefreshSessionList();
         CleanupVisualContextInBackground();
     }
@@ -1185,6 +1186,7 @@ public partial class MainViewModel : ObservableObject
             SelectedSessionTranscript = value == null
                 ? []
                 : new ObservableCollection<SessionTranscriptItem>(value.Transcript);
+            RefreshSelectedSessionScreenshots(value);
             OnPropertyChanged();
             OnFollowUpEmailChanged();
             _startRenameSessionCommand.RaiseCanExecuteChanged();
@@ -1816,6 +1818,13 @@ public partial class MainViewModel : ObservableObject
                 SelectedModeName,
                 ActiveModeRealtimePrompt,
                 ActiveModeNotesTemplate);
+            if (SelectedTopic is { } selectedTopic)
+            {
+                // A recording started while a topic is open belongs to that topic.
+                _sessionLifecycleService.SetTopic(session.Id, selectedTopic.Id);
+                AppendLog("[topics] New session attached to the selected topic.");
+            }
+
             _currentSessionId = session.Id;
             SelectedSession = session;
             CurrentSessionTitle = session.Title;
@@ -1827,6 +1836,10 @@ public partial class MainViewModel : ObservableObject
             SelectedMainPage = "Session";
             SelectedSessionTab = "Transcript";
             ShowOverlayRequested?.Invoke();
+            if (SelectedTopic is { } recordingTopic)
+            {
+                OverlayNoticeRequested?.Invoke(string.Format(L["RecordingInTopicNotice"], recordingTopic.Name));
+            }
 
             _captureOrchestrator.Start(new CaptureStartOptions
             {
@@ -1899,6 +1912,9 @@ public partial class MainViewModel : ObservableObject
         {
             return fallback;
         }
+
+        // Without the AI summary the screenshots are still listed with their links.
+        fallback = SessionScreenshots.ApplyToSummary(fallback, session.Screenshots);
 
         if (!CanGenerateSummaryAutomatically())
         {
@@ -2172,6 +2188,7 @@ public partial class MainViewModel : ObservableObject
             RebuildLocalizedCollections();
             OnPropertyChanged(nameof(OnboardingStepTitle));
             OnPropertyChanged(nameof(OnboardingStepText));
+            RefreshSelectedSessionScreenshots(SelectedSession);
         }
     }
 
@@ -2741,6 +2758,13 @@ public partial class MainViewModel : ObservableObject
         foreach (SessionTranscriptItem item in items)
         {
             text.Append('[').Append(item.Timestamp.ToString("HH:mm:ss", CultureInfo.InvariantCulture)).Append("] ");
+            if (item.IsScreenshot)
+            {
+                // «[14:05:31] Снимок 2 · 14:05:31 — Excel: file:///…» — the address opens the picture when pasted into a browser or note.
+                text.Append(item.Text.Trim()).Append(": ").AppendLine(SessionScreenshots.FileLink(item.ScreenshotPath!));
+                continue;
+            }
+
             if (!string.IsNullOrWhiteSpace(item.SpeakerName))
             {
                 text.Append(item.SpeakerName.Trim()).Append(": ");
@@ -2900,7 +2924,7 @@ public partial class MainViewModel : ObservableObject
         try
         {
             AppendAssistDialog(session.Id, action, "User", userDialogText);
-            AssistResult result = await request(session, BuildAssistOptions());
+            AssistResult result = await request(session, BuildAssistOptions(BuildTopicHintContext(session)));
             RecordAssistUsage(session, action, result);
 
             string text = string.IsNullOrWhiteSpace(result.Text) ? fallback(session) : result.Text.Trim();
@@ -3042,7 +3066,7 @@ public partial class MainViewModel : ObservableObject
         _settings.OpenAiBaseUrl = OpenAiBaseUrl;
     }
 
-    private AssistOptions BuildAssistOptions()
+    private AssistOptions BuildAssistOptions(string topicContext = "")
     {
         ApplyAssistProviderSettings();
         return new AssistOptions
@@ -3058,7 +3082,8 @@ public partial class MainViewModel : ObservableObject
             FastModel = OpenAiModel.Trim(),
             AnalysisModel = AnalysisModel?.Trim() ?? string.Empty,
             SmartModeEnabled = SmartModeEnabled,
-            Settings = _settings
+            Settings = _settings,
+            TopicContext = topicContext
         };
     }
 
@@ -3368,25 +3393,6 @@ public partial class MainViewModel : ObservableObject
         {
             UpdateUsageText(updated);
         }
-    }
-
-    private void CaptureSnapshotNow()
-    {
-        if (!IsCapturing || !CaptureScreenContextEnabled || string.IsNullOrWhiteSpace(_currentSessionId))
-        {
-            return;
-        }
-
-        if (_visualContextCapture.CaptureSnapshot("manual", true, out SessionVisualFrame? frame) && frame != null)
-        {
-            OnVisualFrameCaptured(frame);
-            OverlayNoticeRequested?.Invoke(L["SnapshotTakenNotice"]);
-            AppendLog("[visual] Manual snapshot captured.");
-            return;
-        }
-
-        OverlayNoticeRequested?.Invoke(L["SnapshotSkippedNotice"]);
-        AppendLog("[visual] Manual snapshot skipped.");
     }
 
     private void RecordAssistUsage(SessionSummary session, string action, AssistResult result)

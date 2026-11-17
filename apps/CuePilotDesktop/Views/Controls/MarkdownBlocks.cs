@@ -238,8 +238,9 @@ public static class MarkdownLinks
             {
                 Start(uri.AbsoluteUri);
             }
-            else if (uri.IsFile && File.Exists(uri.LocalPath) && MediaTranscriptionService.IsMedia(uri.LocalPath))
+            else if (uri.IsFile && File.Exists(uri.LocalPath) && (MediaTranscriptionService.IsMedia(uri.LocalPath) || IsImage(uri.LocalPath)))
             {
+                // Recordings and session screenshots open in the default player or picture viewer.
                 Start(uri.LocalPath);
             }
             else if (uri.IsFile && Path.GetDirectoryName(uri.LocalPath) is { } folder && Directory.Exists(folder))
@@ -252,6 +253,10 @@ public static class MarkdownLinks
             // No program for the file: the link just does nothing.
         }
     }
+
+    private static readonly string[] ImageExtensions = [".jpg", ".jpeg", ".png", ".bmp", ".gif", ".webp"];
+
+    public static bool IsImage(string path) => ImageExtensions.Contains(Path.GetExtension(path), StringComparer.OrdinalIgnoreCase);
 
     private static void Start(string target) => Process.Start(new ProcessStartInfo(target) { UseShellExecute = true })?.Dispose();
 }

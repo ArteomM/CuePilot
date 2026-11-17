@@ -17,7 +17,8 @@ public partial class ConversationAssistService
     [
         ("## Action Items", SummaryActionItemsHeading),
         ("## Conversation Highlights", SummaryHighlightsHeading),
-        ("## Participant Notes", SummaryParticipantsHeading)
+        ("## Participant Notes", SummaryParticipantsHeading),
+        (SessionScreenshots.SummaryHeadingEnglish, SessionScreenshots.SummaryHeading)
     ];
 
     private readonly OpenAiAssistClient _openAiClient;
@@ -53,6 +54,7 @@ public partial class ConversationAssistService
             $"Session mode: {session.ModeName}\n" +
             $"User request: {userPrompt}\n" +
             $"Transcript context:\n{transcriptContext}\n\n" +
+            TopicHintContext.PromptBlock(options.TopicContext) +
             $"Visual context:\n{visualContext}\n\n" +
             $"Web context:\n{webContext}\n\n" +
             "Rules: 2-4 short sentences max, answer only in Russian, no markdown, no hallucinations. " +
@@ -82,6 +84,7 @@ public partial class ConversationAssistService
             $"Session title: {session.Title}\n" +
             $"User is speaker \"{settings.MicParticipantName}\" (MIC), the other side is \"{settings.SystemParticipantName}\" (SYSTEM).\n" +
             $"Transcript context (latest lines last):\n{transcriptContext}\n\n" +
+            TopicHintContext.PromptBlock(options.TopicContext) +
             $"Visual context:\n{visualContext}\n\n" +
             "Task: react to the latest remarks of the other side and give the user a reply to say out loud now. " +
             "Return 1-2 short variants in Russian, each on its own line starting with \"- \", " +
@@ -111,9 +114,11 @@ public partial class ConversationAssistService
         string fullPrompt =
             $"Session title: {session.Title}\n" +
             $"Transcript context:\n{transcriptContext}\n\n" +
+            TopicHintContext.PromptBlock(options.TopicContext) +
             $"Visual context:\n{visualContext}\n\n" +
             $"Web context:\n{webContext}\n\n" +
-            "Return exactly one question in Russian, no markdown.";
+            "Return exactly one question in Russian, no markdown. " +
+            "Do not ask about what the topic context already settles; prefer open points from earlier meetings when they fit.";
 
         LlmResponse response = await CompleteAsync(options, AssistModelTier.Fast, systemPrompt, fullPrompt, images, cancellationToken);
         return AssistResult.From(response, NormalizeSingleQuestion(response.Text));
@@ -139,6 +144,7 @@ public partial class ConversationAssistService
             $"Session title: {session.Title}\n" +
             $"Current request: {userPrompt}\n" +
             $"Recent transcript context:\n{transcriptContext}\n\n" +
+            TopicHintContext.PromptBlock(options.TopicContext) +
             $"Visual context:\n{visualContext}\n\n" +
             "Output exactly 3 to 5 questions. No answers. No markdown headers.";
 
@@ -221,6 +227,11 @@ public partial class ConversationAssistService
             "- Preserve proper nouns and specific terminology as they appear in the transcript.\n" +
             "- If the transcript contains nonsensical or unintelligible sections, note this briefly in the highlights (e.g., \"Некоторая часть реплик была бессвязной\").\n" +
             "- If no explicit action items are found, write \"*Нет явных действий*\" under the \"" + SummaryActionItemsHeading + "\" section.\n" +
+            (session.Screenshots.Count > 0
+                ? "- Transcript lines that start with a marker like [снимок 2] are screenshots the user took at that moment. " +
+                  "When a bullet is about what was on the screen then, end that bullet with the same marker, e.g. \"[снимок 2]\". " +
+                  "Use only markers that appear in the transcript; do not add a separate screenshots section.\n"
+                : string.Empty) +
             $"- Mode note: {smartHint}\n\n" +
             $"Visual context:\n{visualContext}\n\n" +
             "Transcript:\n" +
@@ -228,7 +239,7 @@ public partial class ConversationAssistService
             "Generate only the formatted summary; do not add any explanations or pre-amble.";
 
         LlmResponse response = await CompleteAsync(options, AssistModelTier.Analysis, systemPrompt, fullPrompt, images, cancellationToken);
-        return AssistResult.From(response, EnsureSummaryStructure(response.Text));
+        return AssistResult.From(response, SessionScreenshots.ApplyToSummary(EnsureSummaryStructure(response.Text), session.Screenshots));
     }
 
     public async Task<AssistResult> BuildFollowUpEmailAsync(
@@ -241,7 +252,7 @@ public partial class ConversationAssistService
 
         string summary = string.IsNullOrWhiteSpace(session.SummaryText)
             ? BuildTranscriptContext(session)
-            : session.SummaryText;
+            : SessionScreenshots.StripLinks(session.SummaryText);
         string visualContext = BuildVisualContext(session, settings, out List<AssistImageInput> images);
         string systemPrompt = ResolveModeSystemPrompt(
             session,
@@ -763,6 +774,8 @@ public sealed class AssistOptions
     public string AnalysisModel { get; init; } = string.Empty;
     public bool SmartModeEnabled { get; init; }
     public required AppSettings Settings { get; init; }
+    /// <summary>Overview and earlier summaries of the session's topic for the live hints; empty without a topic.</summary>
+    public string TopicContext { get; init; } = string.Empty;
 }
 
 public sealed class AssistResult

@@ -18,6 +18,35 @@
         <BooleanToVisibilityConverter x:Key="BoolToVisibility" />
         <controls:InverseBoolToVisibilityConverter x:Key="InverseBoolToVisibility" />
 
+        <!-- Screenshot of a session: a card with a thumbnail; a click opens the picture in the default viewer. -->
+        <Style x:Key="ScreenshotCardStyle" TargetType="Button">
+            <Setter Property="Cursor" Value="Hand" />
+            <Setter Property="Background" Value="{DynamicResource EchoSurfaceBrush}" />
+            <Setter Property="BorderBrush" Value="{DynamicResource EchoBorderBrush}" />
+            <Setter Property="Padding" Value="8" />
+            <Setter Property="HorizontalContentAlignment" Value="Stretch" />
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border x:Name="Card"
+                                Background="{TemplateBinding Background}"
+                                BorderBrush="{TemplateBinding BorderBrush}"
+                                BorderThickness="1"
+                                CornerRadius="10"
+                                Padding="{TemplateBinding Padding}">
+                            <ContentPresenter HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}" />
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter TargetName="Card" Property="BorderBrush" Value="{DynamicResource EchoAccentBrush}" />
+                                <Setter TargetName="Card" Property="Background" Value="{DynamicResource EchoHoverBrush}" />
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
         <!-- Tabs inside a topic: text with an accent underline when selected. -->
         <Style x:Key="TopicTabStyle" TargetType="RadioButton">
             <Setter Property="Foreground" Value="{DynamicResource EchoMutedBrush}" />
@@ -2062,18 +2091,11 @@
                                     <TextBlock Foreground="{Binding PrimaryTextBrush}" FontSize="26" FontWeight="ExtraBold" Text="{Binding L[SummaryDiscussionTitle]}" />
                                     <Button Grid.Column="1" Height="34" Padding="16,0" FontSize="14" VerticalAlignment="Center" Style="{StaticResource EchoAccentButtonStyle}" Command="{Binding CopySummaryCommand}" ToolTip="{Binding L[TipCopySummary]}" Content="{Binding L[CopySummary]}" />
                                 </Grid>
-                                <TextBox Grid.Row="1"
-                                         Margin="0,18,0,0"
-                                         Foreground="{Binding PrimaryTextBrush}"
-                                         Background="Transparent"
-                                         BorderThickness="0"
-                                         FontSize="17"
-                                         IsReadOnly="True"
-                                         TextWrapping="Wrap"
-                                         AcceptsReturn="True"
-                                         VerticalScrollBarVisibility="Auto"
-                                         HorizontalScrollBarVisibility="Disabled"
-                                         Text="{Binding CurrentSessionSummary, Mode=OneWay}" />
+                                <controls:MarkdownView Grid.Row="1"
+                                                       Margin="0,18,0,0"
+                                                       FontSize="16"
+                                                       VerticalScrollBarVisibility="Auto"
+                                                       Markdown="{Binding CurrentSessionSummary, Mode=OneWay}" />
                             </Grid>
                         </TabItem>
                         <TabItem Tag="Transcript" Header="{Binding L[TabTranscript]}" ToolTip="{Binding L[TipTabTranscript]}">
@@ -2097,13 +2119,80 @@
                                          VirtualizingPanel.VirtualizationMode="Recycling">
                                     <ListBox.ItemTemplate>
                                         <DataTemplate>
-                                            <TextBlock Margin="0,0,0,10"
-                                                       Foreground="{Binding DataContext.PrimaryTextBrush, RelativeSource={RelativeSource AncestorType=Window}}"
-                                                       FontSize="16"
-                                                       Text="{Binding Text}" />
+                                            <Grid>
+                                                <TextBlock Margin="0,0,0,10"
+                                                           Foreground="{Binding DataContext.PrimaryTextBrush, RelativeSource={RelativeSource AncestorType=Window}}"
+                                                           FontSize="16"
+                                                           Text="{Binding Text}"
+                                                           Visibility="{Binding IsScreenshot, Converter={StaticResource InverseBoolToVisibility}}" />
+                                                <Button Margin="0,2,0,12"
+                                                        Padding="6"
+                                                        HorizontalAlignment="Left"
+                                                        Style="{StaticResource ScreenshotCardStyle}"
+                                                        Visibility="{Binding IsScreenshot, Converter={StaticResource BoolToVisibility}}"
+                                                        Command="{Binding DataContext.OpenScreenshotCommand, RelativeSource={RelativeSource AncestorType=Window}}"
+                                                        CommandParameter="{Binding}"
+                                                        ToolTip="{Binding DataContext.L[TipOpenScreenshot], RelativeSource={RelativeSource AncestorType=Window}}">
+                                                    <StackPanel Orientation="Horizontal">
+                                                        <controls:ThumbnailImage Width="128" Height="72" Path="{Binding ScreenshotPath}" />
+                                                        <TextBlock Margin="12,0,8,0"
+                                                                   VerticalAlignment="Center"
+                                                                   FontSize="15"
+                                                                   TextDecorations="Underline"
+                                                                   Foreground="{DynamicResource EchoAccentBrush}"
+                                                                   Text="{Binding Text}" />
+                                                    </StackPanel>
+                                                </Button>
+                                            </Grid>
                                         </DataTemplate>
                                     </ListBox.ItemTemplate>
                                 </ListBox>
+                            </Grid>
+                        </TabItem>
+                        <TabItem Tag="Screenshots"
+                                 Header="{Binding L[TabScreenshots]}"
+                                 ToolTip="{Binding L[TipTabScreenshots]}"
+                                 Visibility="{Binding HasSelectedSessionScreenshots, Converter={StaticResource BoolToVisibility}}">
+                            <Grid Margin="10">
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="Auto" />
+                                    <RowDefinition Height="Auto" />
+                                    <RowDefinition Height="*" />
+                                </Grid.RowDefinitions>
+                                <Grid>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="*" />
+                                        <ColumnDefinition Width="Auto" />
+                                    </Grid.ColumnDefinitions>
+                                    <TextBlock Foreground="{Binding PrimaryTextBrush}" FontSize="26" FontWeight="ExtraBold" Text="{Binding L[TabScreenshots]}" />
+                                    <TextBlock Grid.Column="1" VerticalAlignment="Center" FontSize="14" Foreground="{DynamicResource EchoMutedBrush}" Text="{Binding SelectedSessionScreenshotsTitle}" />
+                                </Grid>
+                                <TextBlock Grid.Row="1" Margin="0,8,0,0" FontSize="14" TextWrapping="Wrap" Foreground="{DynamicResource EchoMutedBrush}" Text="{Binding L[ScreenshotsHint]}" />
+                                <ScrollViewer Grid.Row="2" Margin="0,16,0,0" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
+                                    <ItemsControl ItemsSource="{Binding SelectedSessionScreenshots}">
+                                        <ItemsControl.ItemsPanel>
+                                            <ItemsPanelTemplate>
+                                                <WrapPanel />
+                                            </ItemsPanelTemplate>
+                                        </ItemsControl.ItemsPanel>
+                                        <ItemsControl.ItemTemplate>
+                                            <DataTemplate>
+                                                <Button Width="300"
+                                                        Margin="0,0,14,14"
+                                                        Style="{StaticResource ScreenshotCardStyle}"
+                                                        Command="{Binding DataContext.OpenScreenshotCommand, RelativeSource={RelativeSource AncestorType=Window}}"
+                                                        CommandParameter="{Binding}"
+                                                        ToolTip="{Binding DataContext.L[TipOpenScreenshot], RelativeSource={RelativeSource AncestorType=Window}}">
+                                                    <StackPanel>
+                                                        <controls:ThumbnailImage Height="160" Path="{Binding FilePath}" />
+                                                        <TextBlock Margin="2,8,2,0" FontSize="14" FontWeight="SemiBold" Foreground="{DynamicResource EchoTextBrush}" Text="{Binding Caption}" />
+                                                        <TextBlock Margin="2,2,2,0" FontSize="12.5" TextTrimming="CharacterEllipsis" Foreground="{DynamicResource EchoMutedBrush}" Text="{Binding WindowTitle}" />
+                                                    </StackPanel>
+                                                </Button>
+                                            </DataTemplate>
+                                        </ItemsControl.ItemTemplate>
+                                    </ItemsControl>
+                                </ScrollViewer>
                             </Grid>
                         </TabItem>
                         <TabItem Tag="Email" Header="{Binding L[TabEmail]}" ToolTip="{Binding L[TipTabEmail]}">

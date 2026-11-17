@@ -230,6 +230,24 @@ public sealed class VisualContextCaptureService : IVisualContextCapture, IDispos
         _lastHash = hash;
         SaveDownscaledJpeg(bitmap, path, quality: 55L);
 
+        // A manual snapshot is also kept at full size for the user: the session's «Снимки», transcript and summary link to it.
+        string fullImagePath = string.Empty;
+        if (force && string.Equals(source, "manual", StringComparison.OrdinalIgnoreCase))
+        {
+            try
+            {
+                string keptDir = SessionScreenshots.Folder(_storageRoot, _sessionId);
+                Directory.CreateDirectory(keptDir);
+                fullImagePath = Path.Combine(keptDir, fileName);
+                SaveJpeg(bitmap, fullImagePath, quality: 90L);
+            }
+            catch (Exception ex)
+            {
+                fullImagePath = string.Empty;
+                LogLine?.Invoke(this, "[visual] Full-size screenshot not saved: " + ex.Message);
+            }
+        }
+
         (string windowTitle, string textSignal) = CaptureForegroundWindowSignals();
         frame = new SessionVisualFrame
         {
@@ -239,7 +257,8 @@ public sealed class VisualContextCaptureService : IVisualContextCapture, IDispos
             ChangeReason = force ? "manual_snapshot" : "keyframe_change_detected",
             DifferenceScore = diffScore,
             WindowTitle = windowTitle,
-            OcrText = textSignal
+            OcrText = textSignal,
+            FullImagePath = fullImagePath
         };
         return true;
     }

@@ -94,7 +94,7 @@ public sealed class SessionLifecycleService : IDisposable
             }
 
             session.Transcript.Add(item);
-            session.Usage.TranscriptItemsCount = session.Transcript.Count;
+            session.Usage.TranscriptItemsCount = session.Transcript.Count(line => !line.IsScreenshot);
             session.Usage.SessionDurationMinutes = Math.Max(0.1, (DateTime.Now - session.StartedAt).TotalMinutes);
             MarkDirty(sessionId);
             return item;
@@ -168,6 +168,29 @@ public sealed class SessionLifecycleService : IDisposable
 
             MarkDirty(sessionId);
             return removed;
+        }
+    }
+
+    /// <summary>
+    /// Keeps a screenshot with the session: numbers it, adds it to <see cref="SessionSummary.Screenshots"/> and adds
+    /// the transcript line built by <paramref name="buildLine"/>. Returns that line, or null when the session is gone.
+    /// </summary>
+    public SessionTranscriptItem? AddScreenshot(string sessionId, SessionScreenshot shot, Func<SessionScreenshot, SessionTranscriptItem> buildLine)
+    {
+        lock (_sync)
+        {
+            SessionSummary? session = Find(sessionId);
+            if (session == null)
+            {
+                return null;
+            }
+
+            shot.Number = session.Screenshots.Count == 0 ? 1 : session.Screenshots.Max(s => s.Number) + 1;
+            session.Screenshots.Add(shot);
+            SessionTranscriptItem line = buildLine(shot);
+            session.Transcript.Add(line);
+            MarkDirty(sessionId);
+            return line;
         }
     }
 

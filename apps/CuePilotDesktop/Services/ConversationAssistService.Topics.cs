@@ -52,7 +52,7 @@ public partial class ConversationAssistService
         {
             string body = string.IsNullOrWhiteSpace(session.SummaryText)
                 ? BuildTranscriptContext(session, null, 120)
-                : session.SummaryText;
+                : SessionScreenshots.StripLinks(session.SummaryText);
             context.Append("### ").Append(session.Title).Append(" (").Append(session.StartedAt.ToString("yyyy-MM-dd HH:mm")).AppendLine(")");
             context.AppendLine(Cap(body.Trim(), maxCharsPerSession));
             context.AppendLine();
@@ -120,7 +120,7 @@ public partial class ConversationAssistService
                 .Append(" (").Append(session.StartedAt.ToString("yyyy-MM-dd HH:mm")).AppendLine(")");
             if (!string.IsNullOrWhiteSpace(session.SummaryText))
             {
-                context.AppendLine("Summary:").AppendLine(Cap(session.SummaryText.Trim(), maxCharsPerSummary));
+                context.AppendLine("Summary:").AppendLine(Cap(SessionScreenshots.StripLinks(session.SummaryText), maxCharsPerSummary));
             }
 
             if (recent || linked || string.IsNullOrWhiteSpace(session.SummaryText))
@@ -192,7 +192,7 @@ public partial class ConversationAssistService
         {
             string body = string.IsNullOrWhiteSpace(session.SummaryText)
                 ? BuildTranscriptContext(session, null, 60)
-                : session.SummaryText;
+                : SessionScreenshots.StripLinks(session.SummaryText);
             context.Append("### Session: ").Append(session.Title).Append(" (").Append(session.StartedAt.ToString("yyyy-MM-dd")).AppendLine(")");
             context.AppendLine(Cap(body.Trim(), 4000)).AppendLine();
             if (context.Length > 45000)

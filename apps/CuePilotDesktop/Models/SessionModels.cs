@@ -26,6 +26,13 @@ public class SessionTranscriptItem
     public string Text { get; set; } = string.Empty;
     public string FormattedText { get; set; } = string.Empty;
     public string SummaryReadyText { get; set; } = string.Empty;
+
+    /// <summary>Saved screenshot this line stands for (a «📷» line of the transcript); null for speech.</summary>
+    [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
+    public string? ScreenshotPath { get; set; }
+
+    [JsonIgnore]
+    public bool IsScreenshot => !string.IsNullOrEmpty(ScreenshotPath);
 }
 
 public class SessionUsage
@@ -76,6 +83,22 @@ public class SessionVisualFrame
     public int DifferenceScore { get; set; }
     public string WindowTitle { get; set; } = string.Empty;
     public string OcrText { get; set; } = string.Empty;
+    /// <summary>Full-size copy of a manual snapshot kept for the user; empty for automatic frames.</summary>
+    public string FullImagePath { get; set; } = string.Empty;
+}
+
+/// <summary>A screenshot the user took with «Снимок» during a recording: kept with the session and linked from its transcript and summary.</summary>
+public class SessionScreenshot
+{
+    /// <summary>1, 2, 3… in the order they were taken; «[снимок N]» in the summary points here.</summary>
+    public int Number { get; set; }
+    public DateTime Timestamp { get; set; } = DateTime.Now;
+    public string FilePath { get; set; } = string.Empty;
+    public string WindowTitle { get; set; } = string.Empty;
+
+    /// <summary>«Снимок 2 · 14:05:31» for the gallery; not saved.</summary>
+    [JsonIgnore]
+    public string Caption { get; set; } = string.Empty;
 }
 
 public class SessionSummary : ObservableObject
@@ -99,6 +122,8 @@ public class SessionSummary : ObservableObject
     public List<SessionTranscriptItem> Transcript { get; set; } = [];
     public List<SessionAssistMessage> AssistDialog { get; set; } = [];
     public List<SessionVisualFrame> VisualFrames { get; set; } = [];
+    /// <summary>Screenshots taken with «Снимок»; unlike <see cref="VisualFrames"/> they are never trimmed.</summary>
+    public List<SessionScreenshot> Screenshots { get; set; } = [];
     public SessionUsage Usage { get; set; } = new();
 
     /// <summary>Topic name shown on the history card; filled from the topic list, not saved.</summary>
