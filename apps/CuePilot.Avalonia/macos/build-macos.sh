@@ -79,5 +79,16 @@ rm -rf "$DMG_ROOT" "$DMG"
 mkdir -p "$DMG_ROOT"
 cp -R "$APP" "$DMG_ROOT/"
 ln -s /Applications "$DMG_ROOT/Applications"
-hdiutil create -volname "CuePilot $VERSION" -srcfolder "$DMG_ROOT" -fs HFS+ -format UDZO -ov "$DMG" >/dev/null
+# hdiutil sometimes fails with "Resource busy" while the system still scans the fresh files; retry a few times.
+for attempt in 1 2 3 4 5; do
+  if hdiutil create -volname "CuePilot $VERSION" -srcfolder "$DMG_ROOT" -fs HFS+ -format UDZO -ov "$DMG" >/dev/null; then
+    break
+  fi
+  if [ "$attempt" -eq 5 ]; then
+    echo "[build] hdiutil create failed 5 times" >&2
+    exit 1
+  fi
+  echo "[build] hdiutil create failed (attempt $attempt), retrying in $((attempt * 10)) s"
+  sleep $((attempt * 10))
+done
 echo "[build] done: $ZIP, $DMG"
