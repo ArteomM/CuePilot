@@ -17,10 +17,10 @@ jobs:
       matrix:
         include:
           - arch: arm64
-            runner: macos-14
-          # Intel builds are cross-compiled on Apple Silicon: the Intel macos-13 runners are retired.
+            runner: macos-15
+          # Intel builds are cross-compiled on Apple Silicon: the Intel macos-13 and the macos-14 runners are retired.
           - arch: x64
-            runner: macos-14
+            runner: macos-15
     runs-on: ${{ matrix.runner }}
     steps:
       - uses: actions/checkout@v4
