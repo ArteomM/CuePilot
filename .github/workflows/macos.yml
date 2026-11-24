@@ -42,7 +42,9 @@ jobs:
 
   release:
     # The latest installers on the «mac-latest» release page: one .dmg per Mac type, no nested zips.
+    # Only main publishes: work branches build but never replace the tester's release.
     needs: build
+    if: github.ref == 'refs/heads/main'
     runs-on: ubuntu-latest
     steps:
       - uses: actions/download-artifact@v4
