@@ -1,4 +1,4 @@
-# CuePilot Stealth Overlay UI/UX Specification
+# Replio Stealth Overlay UI/UX Specification
 
 ## Figma Input and Interpretation
 
@@ -9,7 +9,7 @@ Observed visual baseline from source:
 - minimal composition with strong hierarchy and restrained effects;
 - non-noisy, editorial feel with one focal visual layer.
 
-How it is applied to CuePilot:
+How it is applied to Replio:
 - keep restrained premium tone and low-noise layout language;
 - replace "cover-style composition" with utility-first desktop interaction model;
 - prioritize tactical real-time assistance and keyboard ergonomics.
@@ -20,7 +20,7 @@ Reference: [Figma source node](https://www.figma.com/design/ymLSnQfYNaL2x5bKvzcZ
 
 ## 1. Product Design Concept
 
-`CuePilot` is a desktop-native "stealth overlay assistant" for live meetings.
+`Replio` is a desktop-native "stealth overlay assistant" for live meetings.
 
 Core concept:
 - primary UI is a compact movable command overlay, always near the user workflow;

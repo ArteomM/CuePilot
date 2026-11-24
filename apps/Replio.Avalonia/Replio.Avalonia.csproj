@@ -1,0 +1,53 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <!--
+    Replio for macOS (and later possibly Windows) on Avalonia.
+    Services, Models and ViewModels are shared with ../ReplioDesktop; *.Wpf.cs files there are the WPF-only parts,
+    and Platform/ here holds the Avalonia/macOS counterparts.
+  -->
+  <PropertyGroup>
+    <OutputType>WinExe</OutputType>
+    <TargetFramework>net8.0</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <RootNamespace>Replio.Avalonia</RootNamespace>
+    <AssemblyName>Replio</AssemblyName>
+    <ApplicationIcon>..\ReplioDesktop\replio-favicon.ico</ApplicationIcon>
+    <AvaloniaUseCompiledBindingsByDefault>true</AvaloniaUseCompiledBindingsByDefault>
+    <Version>1.0.7</Version>
+    <AssemblyVersion>1.0.7.0</AssemblyVersion>
+    <FileVersion>1.0.7.0</FileVersion>
+    <InformationalVersion>1.0.7</InformationalVersion>
+    <Product>Replio</Product>
+    <Company>Replio</Company>
+    <CFBundleName>Replio</CFBundleName>
+    <CFBundleIdentifier>app.replio.desktop</CFBundleIdentifier>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Avalonia" Version="11.3.0" />
+    <PackageReference Include="Avalonia.Desktop" Version="11.3.0" />
+    <PackageReference Include="Avalonia.Themes.Fluent" Version="11.3.0" />
+    <PackageReference Include="Avalonia.Headless" Version="11.3.0" />
+    <PackageReference Include="ExcelDataReader" Version="3.9.0" />
+    <PackageReference Include="ExcelDataReader.DataSet" Version="3.9.0" />
+    <PackageReference Include="OpenMcdf" Version="3.3.0" />
+    <PackageReference Include="PdfPig" Version="0.1.16" />
+  </ItemGroup>
+
+  <!-- Shared code from the WPF app. Windows-only services are left out and get Mac implementations later. -->
+  <ItemGroup>
+    <Compile Include="..\ReplioDesktop\Models\**\*.cs" Link="Shared\Models\%(RecursiveDir)%(Filename)%(Extension)" />
+    <Compile Include="..\ReplioDesktop\Services\**\*.cs"
+             Exclude="..\ReplioDesktop\Services\HotkeyManager.cs;..\ReplioDesktop\Services\HotkeyGesture.cs;..\ReplioDesktop\Services\ScreenShareProtection.cs;..\ReplioDesktop\Services\VisualContextCaptureService.cs"
+             Link="Shared\Services\%(RecursiveDir)%(Filename)%(Extension)" />
+    <Compile Include="..\ReplioDesktop\ViewModels\**\*.cs" Exclude="..\ReplioDesktop\ViewModels\**\*.Wpf.cs"
+             Link="Shared\ViewModels\%(RecursiveDir)%(Filename)%(Extension)" />
+    <Compile Include="..\ReplioDesktop\Views\Controls\MarkdownBlocks.cs" Link="Shared\Views\MarkdownBlocks.cs" />
+    <EmbeddedResource Include="..\ReplioDesktop\Resources\Strings.resx" ManifestResourceName="ReplioDesktop.Resources.Strings" Link="Shared\Resources\Strings.resx" />
+    <EmbeddedResource Include="..\ReplioDesktop\Resources\Strings.ru.resx" ManifestResourceName="ReplioDesktop.Resources.Strings.ru" Link="Shared\Resources\Strings.ru.resx" />
+    <AvaloniaResource Include="..\ReplioDesktop\Assets\Fonts\*.ttf" Link="Assets\Fonts\%(Filename)%(Extension)" />
+    <AvaloniaResource Include="..\ReplioDesktop\replio-icon.png" Link="Assets\replio-icon.png" />
+  </ItemGroup>
+
+</Project>

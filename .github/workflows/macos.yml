@@ -1,4 +1,4 @@
-name: CuePilot for macOS
+name: Replio for macOS
 
 on:
   workflow_dispatch:
@@ -27,15 +27,15 @@ jobs:
       - uses: actions/setup-dotnet@v4
         with:
           dotnet-version: "8.0.x"
-      - name: Build CuePilot.app
-        run: bash apps/CuePilot.Avalonia/macos/build-macos.sh ${{ matrix.arch }} 2>&1 | tee build.log
+      - name: Build Replio.app
+        run: bash apps/Replio.Avalonia/macos/build-macos.sh ${{ matrix.arch }} 2>&1 | tee build.log
         shell: bash -o pipefail {0}
       - name: Show build errors
         if: failure()
         run: grep -iE "error|fatal|failed" build.log | tail -30 | sed 's/^/::error::/' || tail -30 build.log | sed 's/^/::error::/'
       - uses: actions/upload-artifact@v4
         with:
-          name: CuePilot-mac-${{ matrix.arch }}
+          name: Replio-mac-${{ matrix.arch }}
           path: |
             dist/macos/*.zip
             dist/macos/*.dmg
@@ -55,5 +55,5 @@ jobs:
         run: |
           gh release delete mac-latest --repo "$GITHUB_REPOSITORY" --yes --cleanup-tag || true
           gh release create mac-latest dist/*.dmg --repo "$GITHUB_REPOSITORY" --target "$GITHUB_SHA" \
-            --title "CuePilot для macOS (последняя сборка)" --prerelease \
-            --notes "arm64 — Mac на Apple Silicon (M1–M4), x64 — Mac на Intel. Как установить: apps/CuePilot.Avalonia/macos/README-tester.md"
+            --title "Replio для macOS (последняя сборка)" --prerelease \
+            --notes "arm64 — Mac на Apple Silicon (M1–M4), x64 — Mac на Intel. Как установить: apps/Replio.Avalonia/macos/README-tester.md"

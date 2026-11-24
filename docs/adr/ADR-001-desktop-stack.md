@@ -2,11 +2,11 @@
 
 - Status: Accepted
 - Date: 2026-04-22
-- Decision Owners: CuePilot Core Team
+- Decision Owners: Replio Core Team
 - Related: `docs/prd/PRD-v1.md`, `docs/architecture/technical-architecture-v1.md`
 
 ## Context
-CuePilot must deliver low-latency live assistance with desktop-level capabilities:
+Replio must deliver low-latency live assistance with desktop-level capabilities:
 - audio capture from system loopback + microphone,
 - always-on-top overlay behavior,
 - global hotkeys,

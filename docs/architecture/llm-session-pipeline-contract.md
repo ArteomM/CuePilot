@@ -1,7 +1,7 @@
 # LLM Session Pipeline Contract
 
 ## Purpose
-Define a stable contract for how CuePilot invokes LLM generation for a selected session, so UI, orchestration, and API layers remain aligned as UX evolves.
+Define a stable contract for how Replio invokes LLM generation for a selected session, so UI, orchestration, and API layers remain aligned as UX evolves.
 
 ## Scope
 This contract covers:

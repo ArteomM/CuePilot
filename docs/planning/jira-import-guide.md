@@ -25,4 +25,4 @@ When Jira asks to map CSV fields, map:
 ## Notes
 - `Dependencies` and `Acceptance Criteria` are provided as explicit text columns to keep implementation constraints visible.
 - If your Jira workflow requires `Story` instead of `Task`, map `Issue Type` values during import.
-- If `Sprint` cannot be imported directly, use a saved filter (`labels = cuepilot AND Sprint is EMPTY`) and bulk-assign after import.
+- If `Sprint` cannot be imported directly, use a saved filter (`labels = replio AND Sprint is EMPTY`) and bulk-assign after import.

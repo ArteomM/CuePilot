@@ -11,7 +11,7 @@ namespace DesktopCapture
 {
     /// <summary>
     /// The two audio streams DesktopCapture records. Windows: WASAPI loopback and the default microphone.
-    /// macOS: the cuepilot-audio helper (ScreenCaptureKit for system audio, AVAudioEngine for the microphone),
+    /// macOS: the replio-audio helper (ScreenCaptureKit for system audio, AVAudioEngine for the microphone),
     /// which sits next to DesktopCapture and streams raw 32-bit float mono PCM to stdout.
     /// </summary>
     internal static class AudioSources
@@ -59,12 +59,12 @@ namespace DesktopCapture
     }
 
     /// <summary>
-    /// One stream of the macOS helper: «cuepilot-audio system» or «cuepilot-audio mic».
+    /// One stream of the macOS helper: «replio-audio system» or «replio-audio mic».
     /// The helper writes 48 kHz mono float32 to stdout and stops when its stdin closes.
     /// </summary>
     internal sealed class HelperProcessCapture : IWaveIn
     {
-        public const string HelperName = "cuepilot-audio";
+        public const string HelperName = "replio-audio";
         private const int SampleRate = 48000;
 
         private readonly string _source;

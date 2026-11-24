@@ -1,4 +1,4 @@
-# CuePilot Jira Backlog v1 (Windows-first MVP)
+# Replio Jira Backlog v1 (Windows-first MVP)
 
 ## Usage
 This document is structured for direct transfer into Jira:

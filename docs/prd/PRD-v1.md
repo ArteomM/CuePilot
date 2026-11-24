@@ -1,10 +1,10 @@
-# CuePilot PRD v1 (Windows-first MVP)
+# Replio PRD v1 (Windows-first MVP)
 
 ## 1) Product Vision
-CuePilot is a desktop AI prompter for Russian-speaking meetings that runs locally on the user's device, without joining calls as a bot participant. It listens to system audio and microphone, builds live context, and surfaces short, actionable prompts in an overlay visible only to the user.
+Replio is a desktop AI prompter for Russian-speaking meetings that runs locally on the user's device, without joining calls as a bot participant. It listens to system audio and microphone, builds live context, and surfaces short, actionable prompts in an overlay visible only to the user.
 
 ## 2) Problem Statement
-Users in interviews, sales calls, and working meetings lose response quality under time pressure. Existing assistants often require a bot in the call or produce long outputs that are hard to use live. CuePilot should provide sub-second guidance with minimal UI noise while preserving privacy and call UX.
+Users in interviews, sales calls, and working meetings lose response quality under time pressure. Existing assistants often require a bot in the call or produce long outputs that are hard to use live. Replio should provide sub-second guidance with minimal UI noise while preserving privacy and call UX.
 
 ## 3) Goals and Non-Goals
 ### Goals (MVP)
@@ -34,7 +34,7 @@ Users in interviews, sales calls, and working meetings lose response quality und
 ## 6) Core User Scenarios
 ### Meeting Mode
 - User starts session before/at meeting start.
-- CuePilot captures audio streams and shows concise prompts.
+- Replio captures audio streams and shows concise prompts.
 - User expands overlay only when needed.
 
 ### Sales Mode

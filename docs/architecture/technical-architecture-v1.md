@@ -1,7 +1,7 @@
-# CuePilot Technical Architecture v1 (Windows-first MVP)
+# Replio Technical Architecture v1 (Windows-first MVP)
 
 ## 1. System Overview
-CuePilot is a local-first desktop copilot. The application captures local audio sources, transcribes speech in near real time, assembles short-lived context, generates ranked suggestions, and renders them in a low-latency overlay.
+Replio is a local-first desktop copilot. The application captures local audio sources, transcribes speech in near real time, assembles short-lived context, generates ranked suggestions, and renders them in a low-latency overlay.
 
 ## 2. Architectural Layers
 1. **Desktop Shell**

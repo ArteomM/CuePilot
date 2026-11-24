@@ -1,4 +1,4 @@
-# CuePilot Sprint 0-1 Execution Plan (Windows-first)
+# Replio Sprint 0-1 Execution Plan (Windows-first)
 
 ## Scope
 This plan operationalizes the approved artifacts into two first sprints:

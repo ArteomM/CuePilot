@@ -1,7 +1,7 @@
-# CuePilot AI Prompt Pack v1
+# Replio AI Prompt Pack v1
 
 ## Purpose
-This pack standardizes how AI assistants receive scoped tasks and produce verifiable engineering outputs for CuePilot.
+This pack standardizes how AI assistants receive scoped tasks and produce verifiable engineering outputs for Replio.
 
 ## Global Prompt Rules (for all roles)
 1. Work only within provided scope and constraints.

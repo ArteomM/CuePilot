@@ -13,7 +13,7 @@ using System.Threading;
 using System.Windows.Forms;
 using Microsoft.Win32;
 
-namespace SetupCuePilot;
+namespace SetupReplio;
 
 internal static class Program
 {
@@ -39,15 +39,15 @@ internal static class Program
 /// <summary>Per-user install: files, shortcuts, uninstall entry. No administrator rights required.</summary>
 internal static class Installer
 {
-    public const string AppName = "CuePilot";
-    public const string AppExe = "CuePilotDesktop.exe";
-    private const string UninstallKeyPath = @"Software\Microsoft\Windows\CurrentVersion\Uninstall\CuePilot";
+    public const string AppName = "Replio";
+    public const string AppExe = "ReplioDesktop.exe";
+    private const string UninstallKeyPath = @"Software\Microsoft\Windows\CurrentVersion\Uninstall\Replio";
     private const string UninstallScriptName = "uninstall.cmd";
-    private static readonly string[] AppProcessNames = { "CuePilotDesktop", "DesktopCapture" };
+    private static readonly string[] AppProcessNames = { "ReplioDesktop", "DesktopCapture" };
 
     // Speech recognition started by DesktopCapture: it can outlive a killed DesktopCapture and keeps ggml-*.dll locked.
-    // «cuepilot mcp» started by an AI agent (Claude, Cursor…) keeps cuepilot.exe and the runtime locked the same way.
-    private static readonly string[] SpeechProcessNames = { "whisper-server", "whisper-cli", "cuepilot" };
+    // «replio mcp» started by an AI agent (Claude, Cursor…) keeps replio.exe and the runtime locked the same way.
+    private static readonly string[] SpeechProcessNames = { "whisper-server", "whisper-cli", "replio" };
 
     public static string Version
     {
@@ -81,7 +81,7 @@ internal static class Installer
 
     public static Process[] FindRunningApp()
     {
-        // Only whisper copies from CuePilot's own folders: a whisper run from elsewhere locks none of our files.
+        // Only whisper copies from Replio's own folders: a whisper run from elsewhere locks none of our files.
         IEnumerable<Process> speech = SpeechProcessNames.SelectMany(Process.GetProcessesByName).Where(RunsFromInstallFolder);
         return AppProcessNames.SelectMany(Process.GetProcessesByName).Concat(speech).ToArray();
     }
@@ -184,7 +184,7 @@ internal static class Installer
     private static extern IntPtr SendMessageTimeout(IntPtr window, int message, IntPtr wParam, string lParam, int flags, int timeout, out IntPtr result);
 
     /// <summary>
-    /// The install folder goes into the user's PATH, so an AI agent can run «cuepilot list» from any terminal.
+    /// The install folder goes into the user's PATH, so an AI agent can run «replio list» from any terminal.
     /// The value keeps its registry kind (expandable entries like %USERPROFILE% stay expandable). Never fails the install.
     /// </summary>
     private static void AddToUserPath(string targetDir)
@@ -218,7 +218,7 @@ internal static class Installer
         }
         catch (Exception)
         {
-            // Agents can still use the full path from %AppData%\CuePilot\AGENTS.md.
+            // Agents can still use the full path from %AppData%\Replio\AGENTS.md.
         }
     }
 
@@ -332,7 +332,7 @@ internal static class Installer
             {
                 throw new IOException(
                     "Файл занят другой программой:\n" + path +
-                    "\n\nЗакройте CuePilot, завершите whisper-server.exe и whisper-cli.exe в Диспетчере задач " +
+                    "\n\nЗакройте Replio, завершите whisper-server.exe и whisper-cli.exe в Диспетчере задач " +
                     "(или перезагрузите компьютер) и запустите установку снова.",
                     ex);
             }
@@ -395,7 +395,7 @@ internal static class Installer
             shortcut.TargetPath = exePath;
             shortcut.WorkingDirectory = workingDirectory;
             shortcut.IconLocation = exePath + ",0";
-            shortcut.Description = "CuePilot — AI-суфлёр для звонков и встреч";
+            shortcut.Description = "Replio — AI-суфлёр для звонков и встреч";
             shortcut.Save();
         }
         finally
@@ -405,7 +405,7 @@ internal static class Installer
     }
 
     /// <summary>
-    /// Uninstall removes the app folder and shortcuts. Sessions and settings in %AppData%\CuePilot are kept.
+    /// Uninstall removes the app folder and shortcuts. Sessions and settings in %AppData%\Replio are kept.
     /// "(goto) 2>nul" lets the script delete the folder it lives in.
     /// </summary>
     private static string WriteUninstallScript(string targetDir)
@@ -413,9 +413,9 @@ internal static class Installer
         string scriptPath = Path.Combine(targetDir, UninstallScriptName);
         var script = new StringBuilder();
         script.AppendLine("@echo off");
-        script.AppendLine("taskkill /IM CuePilotDesktop.exe /F >nul 2>nul");
+        script.AppendLine("taskkill /IM ReplioDesktop.exe /F >nul 2>nul");
         script.AppendLine("taskkill /IM DesktopCapture.exe /F >nul 2>nul");
-        script.AppendLine("taskkill /IM cuepilot.exe /F >nul 2>nul");
+        script.AppendLine("taskkill /IM replio.exe /F >nul 2>nul");
         string psFolder = targetDir.Replace("'", "''");
         script.AppendLine("powershell -NoProfile -Command \"Get-Process whisper-server,whisper-cli -ErrorAction SilentlyContinue | " +
             $"Where-Object {{ $_.Path -like '{psFolder}\\*' }} | Stop-Process -Force\" >nul 2>nul");
@@ -456,7 +456,7 @@ internal static class Installer
         return new DirectoryInfo(directory).EnumerateFiles("*", SearchOption.AllDirectories).Sum(file => file.Length) / 1024;
     }
 
-    /// <summary>Earlier installers put only the UI into %LocalAppData%\CuePilot\app; that copy cannot capture audio.</summary>
+    /// <summary>Earlier installers put only the UI into %LocalAppData%\Replio\app; that copy cannot capture audio.</summary>
     private static void RemoveLegacyInstall()
     {
         try
@@ -826,7 +826,7 @@ internal sealed class SetupForm : Form
 
         _closeButton = new EchoButton { Text = "✕", Bounds = new Rectangle(S(512), S(14), S(32), S(30)) };
         _desktopShortcutCheck = new EchoCheckBox { Text = "Создать ярлык на рабочем столе", Bounds = new Rectangle(S(28), S(148), S(500), S(28)) };
-        _launchCheck = new EchoCheckBox { Text = "Запустить CuePilot после установки", Bounds = new Rectangle(S(28), S(180), S(500), S(28)) };
+        _launchCheck = new EchoCheckBox { Text = "Запустить Replio после установки", Bounds = new Rectangle(S(28), S(180), S(500), S(28)) };
         _progressBar = new EchoProgress { Bounds = new Rectangle(S(28), S(226), S(504), S(8)) };
         _installButton = new EchoButton { Text = "Установить", Accent = true, Bounds = new Rectangle(S(272), S(274), S(148), S(40)) };
         _cancelButton = new EchoButton { Text = "Отмена", Bounds = new Rectangle(S(428), S(274), S(104), S(40)), DialogResult = DialogResult.Cancel };
@@ -949,7 +949,7 @@ internal sealed class SetupForm : Form
         if (Installer.FindRunningApp().Length > 0)
         {
             DialogResult answer = MessageBox.Show(
-                "CuePilot сейчас запущен. Закрыть его и продолжить установку?",
+                "Replio сейчас запущен. Закрыть его и продолжить установку?",
                 Installer.Title,
                 MessageBoxButtons.OKCancel,
                 MessageBoxIcon.Question);
@@ -979,7 +979,7 @@ internal sealed class SetupForm : Form
         })
         {
             IsBackground = true,
-            Name = "CuePilot setup"
+            Name = "Replio setup"
         };
         worker.Start();
     }
@@ -1001,8 +1001,8 @@ internal sealed class SetupForm : Form
         Cursor = Cursors.Default;
         _progressBar.Visible = false;
         SetStatus(_desktopShortcutCheck.Checked
-            ? "✓ CuePilot установлен. Ярлыки: рабочий стол и меню «Пуск»."
-            : "✓ CuePilot установлен. Ярлык в меню «Пуск».");
+            ? "✓ Replio установлен. Ярлыки: рабочий стол и меню «Пуск»."
+            : "✓ Replio установлен. Ярлык в меню «Пуск».");
         _installButton.Text = "Готово";
         _installButton.Enabled = true;
         _cancelButton.Visible = false;
@@ -1016,7 +1016,7 @@ internal sealed class SetupForm : Form
             }
             catch (Exception ex)
             {
-                MessageBox.Show("CuePilot установлен, но не запустился:\n" + ex.Message, Installer.Title, MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                MessageBox.Show("Replio установлен, но не запустился:\n" + ex.Message, Installer.Title, MessageBoxButtons.OK, MessageBoxIcon.Warning);
             }
         }
     }

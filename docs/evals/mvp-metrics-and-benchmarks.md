@@ -1,7 +1,7 @@
-# CuePilot MVP Metrics and Benchmarks
+# Replio MVP Metrics and Benchmarks
 
 ## 1) Purpose
-Define a measurable framework for evaluating CuePilot core-loop quality:
+Define a measurable framework for evaluating Replio core-loop quality:
 - speech -> transcript -> context -> suggestion -> user action.
 
 This document is the source of truth for MVP quality gates and beta progression.

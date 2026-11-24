@@ -2,11 +2,11 @@
 
 - Status: Accepted
 - Date: 2026-04-22
-- Decision Owners: CuePilot Core Team
+- Decision Owners: Replio Core Team
 - Related: `docs/prd/PRD-v1.md`, `docs/architecture/technical-architecture-v1.md`
 
 ## Context
-CuePilot depends on platform-specific behavior for:
+Replio depends on platform-specific behavior for:
 - system audio capture,
 - overlay rendering and focus management,
 - capture exclusion/stealth controls,

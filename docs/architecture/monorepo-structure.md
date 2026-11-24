@@ -1,8 +1,8 @@
-# CuePilot Monorepo Structure v1
+# Replio Monorepo Structure v1
 
 ## 1) Repository Layout
 ```text
-CuePilot/
+Replio/
   apps/
     desktop/                 # Tauri + React/TS desktop client
     backend/                 # Minimal API (auth/flags/metering)

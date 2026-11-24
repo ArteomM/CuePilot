@@ -22,7 +22,7 @@ namespace DesktopCapture
     {
         private const int WhisperTargetSampleRate = 16000;
         private const int VadFrameSamples = 480; // 30 ms at 16 kHz
-        private const string SttApiKeyEnvironmentVariable = "CUEPILOT_STT_API_KEY";
+        private const string SttApiKeyEnvironmentVariable = "REPLIO_STT_API_KEY";
 
         private static readonly HttpClient SttHttpClient = new HttpClient { Timeout = TimeSpan.FromSeconds(30) };
         private static readonly HttpClient LocalWhisperHttpClient = new HttpClient { Timeout = TimeSpan.FromSeconds(120) };
@@ -38,7 +38,7 @@ namespace DesktopCapture
 
             if (!RuntimeInformation.IsOSPlatform(OSPlatform.Windows) && !RuntimeInformation.IsOSPlatform(OSPlatform.OSX))
             {
-                Console.WriteLine("DesktopCapture supports Windows (WASAPI loopback) and macOS (cuepilot-audio helper) only.");
+                Console.WriteLine("DesktopCapture supports Windows (WASAPI loopback) and macOS (replio-audio helper) only.");
                 return;
             }
 
@@ -249,7 +249,7 @@ namespace DesktopCapture
                     };
                 }
 
-                Console.WriteLine("CuePilot DesktopCapture prototype started.");
+                Console.WriteLine("Replio DesktopCapture prototype started.");
                 Console.WriteLine("Capturing SYSTEM audio using WASAPI loopback + default microphone.");
                 if (options.SoakMinutes > 0)
                 {
@@ -871,7 +871,7 @@ namespace DesktopCapture
         /// </summary>
         private static void TieToThisProcess(Process child)
         {
-            // Job objects are Windows-only; on macOS the cuepilot-audio helpers and whisper-server are stopped by ProcessExit.
+            // Job objects are Windows-only; on macOS the replio-audio helpers and whisper-server are stopped by ProcessExit.
             if (!OperatingSystem.IsWindows())
             {
                 return;

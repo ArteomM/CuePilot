@@ -13,7 +13,7 @@ namespace DesktopCapture
     /// <summary>
     /// The sound of an audio or video file as 16 kHz mono samples, read block by block so an hours-long file never
     /// sits in memory. Windows: Media Foundation (mp3, m4a, aac, wav, wma, mp4, mov, wmv, avi; mkv and flac on
-    /// Windows 10+). macOS: AVFoundation through the bundled cuepilot-audio helper (mp3, m4a, aac, wav, aiff, mp4, mov).
+    /// Windows 10+). macOS: AVFoundation through the bundled replio-audio helper (mp3, m4a, aac, wav, aiff, mp4, mov).
     /// What these cannot open goes through ffmpeg when it is installed; macOS without ffmpeg falls back to the
     /// built-in afconvert (audio files, m4a and mp4).
     /// </summary>

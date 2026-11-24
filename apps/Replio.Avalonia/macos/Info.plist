@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+    <key>CFBundleName</key>
+    <string>Replio</string>
+    <key>CFBundleDisplayName</key>
+    <string>Replio</string>
+    <key>CFBundleIdentifier</key>
+    <string>app.replio.desktop</string>
+    <key>CFBundleExecutable</key>
+    <string>Replio</string>
+    <key>CFBundleIconFile</key>
+    <string>Replio</string>
+    <key>CFBundlePackageType</key>
+    <string>APPL</string>
+    <key>CFBundleVersion</key>
+    <string>__VERSION__</string>
+    <key>CFBundleShortVersionString</key>
+    <string>__VERSION__</string>
+    <key>LSMinimumSystemVersion</key>
+    <string>13.0</string>
+    <key>NSHighResolutionCapable</key>
+    <true/>
+    <key>NSPrincipalClass</key>
+    <string>NSApplication</string>
+    <key>NSMicrophoneUsageDescription</key>
+    <string>Replio записывает ваш голос во время встречи, чтобы расшифровать разговор и подсказывать ответы.</string>
+    <key>NSAudioCaptureUsageDescription</key>
+    <string>Replio записывает звук собеседников во время встречи, чтобы расшифровать разговор и подсказывать ответы.</string>
+</dict>
+</plist>

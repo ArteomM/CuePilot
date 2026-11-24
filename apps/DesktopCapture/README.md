@@ -1,7 +1,7 @@
 # DesktopCapture (Windows system + mic prototype)
 
 ## Purpose
-First implementation increment for CuePilot audio pipeline:
+First implementation increment for Replio audio pipeline:
 - launchable app
 - system audio interception on Windows (WASAPI loopback)
 - default microphone interception on Windows (WASAPI capture endpoint)
@@ -32,31 +32,31 @@ When output path is provided, app writes:
 Run with `whisper.cpp` transcription enabled:
 
 ```powershell
-dotnet run -- --chunk-seconds 5 --stt-dir ".\stt-chunks" --whisper-bin "D:\AI\CuePilot\tools\whisper.cpp\Release\whisper-cli.exe" --whisper-model "D:\AI\CuePilot\models\ggml-base.bin" --lang ru
+dotnet run -- --chunk-seconds 5 --stt-dir ".\stt-chunks" --whisper-bin "D:\AI\Replio\tools\whisper.cpp\Release\whisper-cli.exe" --whisper-model "D:\AI\Replio\models\ggml-base.bin" --lang ru
 ```
 
 Optional combined run (recording + transcription):
 
 ```powershell
-dotnet run -- ".\captures\system-audio.wav" --chunk-seconds 5 --whisper-bin "D:\AI\CuePilot\tools\whisper.cpp\Release\whisper-cli.exe" --whisper-model "D:\AI\CuePilot\models\ggml-base.bin" --lang ru
+dotnet run -- ".\captures\system-audio.wav" --chunk-seconds 5 --whisper-bin "D:\AI\Replio\tools\whisper.cpp\Release\whisper-cli.exe" --whisper-model "D:\AI\Replio\models\ggml-base.bin" --lang ru
 ```
 
 Run soak test for 10 minutes with automatic PASS/FAIL:
 
 ```powershell
-dotnet run -- --chunk-seconds 5 --soak-minutes 10 --stt-dir ".\stt-chunks" --whisper-bin "D:\AI\CuePilot\tools\whisper.cpp\Release\whisper-cli.exe" --whisper-model "D:\AI\CuePilot\models\ggml-base.bin" --lang ru
+dotnet run -- --chunk-seconds 5 --soak-minutes 10 --stt-dir ".\stt-chunks" --whisper-bin "D:\AI\Replio\tools\whisper.cpp\Release\whisper-cli.exe" --whisper-model "D:\AI\Replio\models\ggml-base.bin" --lang ru
 ```
 
 Run soak test with formal JSON report for QA:
 
 ```powershell
-dotnet run -- --chunk-seconds 5 --soak-minutes 10 --soak-report ".\qa\soak-report.json" --stt-dir ".\stt-chunks" --whisper-bin "D:\AI\CuePilot\tools\whisper.cpp\Release\whisper-cli.exe" --whisper-model "D:\AI\CuePilot\models\ggml-base.bin" --lang ru
+dotnet run -- --chunk-seconds 5 --soak-minutes 10 --soak-report ".\qa\soak-report.json" --stt-dir ".\stt-chunks" --whisper-bin "D:\AI\Replio\tools\whisper.cpp\Release\whisper-cli.exe" --whisper-model "D:\AI\Replio\models\ggml-base.bin" --lang ru
 ```
 
 Run with transcription through an OpenAI-compatible API (Polza.ai) instead of local whisper:
 
 ```powershell
-$env:CUEPILOT_STT_API_KEY = "<key>"   # the key is passed only through the environment
+$env:REPLIO_STT_API_KEY = "<key>"   # the key is passed only through the environment
 dotnet run -- --chunk-seconds 5 --stt-provider api --stt-api-url "https://polza.ai/api/v1" --stt-api-model "openai/gpt-4o-mini-transcribe" --lang ru
 ```
 
@@ -107,7 +107,7 @@ Press `Enter` to stop recording.
   - no system/mic/stt runtime errors,
   - no output endpoint state change (device, volume, mute, mix format).
 - `--soak-report` writes structured JSON for regressions (`soak`, `capture`, `stt`, `deviceCheck` blocks).
-- It is a bootstrap step aligned with CuePilot `Windows-first` docs.
+- It is a bootstrap step aligned with Replio `Windows-first` docs.
 - Next increment should add:
   1) explicit source-tagged event stream (`system` vs `mic`),
   2) ring buffer + chunk emission for STT bridge,
