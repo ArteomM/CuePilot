@@ -99,8 +99,10 @@ public partial class App : Application
         splash.Show();
         // The outcome is written into %AppData%\Replio\imported-from-cuepilot.txt.
         await Task.Run(Services.LegacyDataImport.Run);
-        new MainWindow().Show();
+
+        // Closed first: the main window may show a message at start (busy hotkeys), which must not sit behind it.
         splash.Close();
+        new MainWindow().Show();
         ShutdownMode = previousMode;
     }
 

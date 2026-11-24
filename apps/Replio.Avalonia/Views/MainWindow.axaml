@@ -2056,7 +2056,7 @@
                         </Grid>
                         <Grid Classes="row" ColumnDefinitions="230,*" ToolTip.Tip="{Binding L[TipApiKey]}" IsVisible="{Binding ApiKeyFieldVisibility}">
                             <TextBlock Foreground="{Binding SecondaryTextBrush}" VerticalAlignment="Center" Text="{Binding L[SettingsApiKey]}" />
-                            <TextBox Grid.Column="1" Text="{Binding OpenAiApiKey}" />
+                            <TextBox PasswordChar="●" Grid.Column="1" Text="{Binding OpenAiApiKey}" />
                         </Grid>
                         <Grid Classes="row" ColumnDefinitions="230,*" ToolTip.Tip="{Binding L[TipModel]}">
                             <TextBlock Foreground="{Binding SecondaryTextBrush}" VerticalAlignment="Center" Text="{Binding L[SettingsModel]}" />
@@ -2104,7 +2104,7 @@
                             </Grid>
                             <Grid Classes="row" ColumnDefinitions="230,*" ToolTip.Tip="{Binding L[TipSttApiKey]}">
                                 <TextBlock Foreground="{Binding SecondaryTextBrush}" VerticalAlignment="Center" Text="{Binding L[SettingsSttApiKey]}" />
-                                <TextBox Grid.Column="1" Text="{Binding SttApiKey}" />
+                                <TextBox PasswordChar="●" Grid.Column="1" Text="{Binding SttApiKey}" />
                             </Grid>
                             <TextBlock Margin="0,6,0,0" Foreground="{Binding SecondaryTextBrush}" TextWrapping="Wrap" Text="{Binding SttKeySourceText}" />
                             <TextBlock Margin="0,4,0,0" Foreground="{Binding SecondaryTextBrush}" TextWrapping="Wrap" Text="{Binding L[SettingsSttHint]}" />
