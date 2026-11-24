@@ -285,7 +285,6 @@
             <Setter Property="BorderBrush" Value="{DynamicResource EchoBorderBrush}" />
             <Setter Property="BorderThickness" Value="1" />
             <Setter Property="Padding" Value="12,0" />
-            <Setter Property="MinHeight" Value="36" />
             <Setter Property="VerticalContentAlignment" Value="Center" />
             <Setter Property="CaretBrush" Value="{DynamicResource EchoAccentTextBrush}" />
             <Setter Property="SelectionBrush" Value="{DynamicResource EchoAccentBrush}" />
