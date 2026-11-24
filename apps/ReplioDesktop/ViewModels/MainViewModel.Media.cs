@@ -66,8 +66,17 @@ public partial class MainViewModel
     private async Task<string> TranscribeMediaSourceAsync(KnowledgeItemViewModel item, KnowledgeSource source)
     {
         (string captureDir, string whisperBin, string whisperModel, string sttDir) = await Task.Run(ResolveCaptureTools);
-        bool useApi = UseApiStt;
-        string apiKey = useApi ? ResolveSttApiKey() : string.Empty;
+        if (!CanUseLocalStt)
+        {
+            whisperBin = whisperModel = string.Empty;
+        }
+        bool useApi = EffectiveUseApiStt;
+        (string apiUrl, string apiModel, string apiKey, string apiHeaders) = useApi ? ResolveSttApi(null) : (string.Empty, string.Empty, string.Empty, string.Empty);
+        if (useApi && IsManagedAi && !IsSignedIn)
+        {
+            throw new InvalidOperationException(L["AccountSignInRequired"]);
+        }
+
         if (useApi && string.IsNullOrWhiteSpace(apiKey))
         {
             useApi = false;
@@ -81,7 +90,7 @@ public partial class MainViewModel
         }
 
         string engine = useApi
-            ? string.Format(L["MediaEngineApi"], SttApiModel.Trim())
+            ? string.Format(L["MediaEngineApi"], IsManagedAi ? "Replio" : apiModel)
             : string.Format(L["MediaEngineLocal"], Path.GetFileNameWithoutExtension(whisperModel));
         var request = new MediaTranscriptionRequest
         {
@@ -94,9 +103,10 @@ public partial class MainViewModel
             SilenceThreshold = _settings.SttSilenceThreshold,
             SttGlossary = SttGlossary,
             UseApiStt = useApi,
-            SttApiUrl = string.IsNullOrWhiteSpace(SttApiBaseUrl) ? AppSettings.PolzaBaseUrl : SttApiBaseUrl.Trim(),
-            SttApiModel = SttApiModel.Trim(),
-            SttApiKey = apiKey
+            SttApiUrl = apiUrl,
+            SttApiModel = apiModel,
+            SttApiKey = apiKey,
+            SttExtraHeaders = apiHeaders
         };
 
         // Progress arrives on the UI thread (Progress<T> captures it), so the row and the header can be updated directly.

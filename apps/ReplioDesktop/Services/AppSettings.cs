@@ -81,4 +81,21 @@ public class AppSettings
     public double SttSilenceThreshold { get; set; } = 0.004;
     public int SttMaxLagSeconds { get; set; } = 60;
     public bool KeepAudioChunks { get; set; }
+
+    /// <summary>
+    /// Opens every setting without a Replio account: own providers and keys, local whisper. Not shown in the UI;
+    /// set for development and for data brought over from CuePilot, where the user had own keys.
+    /// </summary>
+    public bool DeveloperMode { get; set; }
+
+    /// <summary>This installation's id for the Replio gateway (X-Replio-Device), created on first start.</summary>
+    public string ReplioDeviceId { get; set; } = string.Empty;
+
+    /// <summary>Last GET /account answer, so the plan is known before the network answers.</summary>
+    public string ReplioAccountJson { get; set; } = string.Empty;
+
+    /// <summary>Prepared models chosen on plans with a model choice; empty = the plan's default.</summary>
+    public string ReplioFastModel { get; set; } = string.Empty;
+    public string ReplioAnalysisModel { get; set; } = string.Empty;
+    public string ReplioSttModel { get; set; } = string.Empty;
 }

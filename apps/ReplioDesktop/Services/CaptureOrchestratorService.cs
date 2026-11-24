@@ -75,6 +75,7 @@ public class CaptureOrchestratorService
         {
             // Passed through the environment so the key never shows up in the process command line.
             _process.StartInfo.Environment[SttApiKeyEnvironmentVariable] = options.SttApiKey;
+            _process.StartInfo.Environment["REPLIO_STT_HEADERS"] = options.SttExtraHeaders;
         }
         LogLine?.Invoke(this, useBuiltExecutable
             ? "[service] Starting DesktopCapture executable."
@@ -305,6 +306,9 @@ public class CaptureStartOptions
     public string SttApiUrl { get; set; } = string.Empty;
     public string SttApiModel { get; set; } = string.Empty;
     public string SttApiKey { get; set; } = string.Empty;
+
+    /// <summary>«Name=Value;Name=Value» headers for the Replio gateway (device, app, session).</summary>
+    public string SttExtraHeaders { get; set; } = string.Empty;
     public string SttGlossary { get; set; } = string.Empty;
 }
 

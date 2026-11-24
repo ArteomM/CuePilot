@@ -344,6 +344,8 @@ public partial class MainViewModel : ObservableObject
         ApplyTheme();
         RebuildLocalizedCollections();
         InitializeModelCatalog();
+        InitializeAccount();
+        OpenAiAssistClient.ReplioRefused += ex => OnReplioRefusal(ex);
         InitializeLibrary();
         InitializeScreenshots();
         RefreshSessionList();
@@ -1809,9 +1811,22 @@ public partial class MainViewModel : ObservableObject
         }
 
         (string desktopCaptureDir, string whisperBin, string whisperModel, string sttDir) = ResolveCaptureTools();
+        if (!CanUseLocalStt)
+        {
+            // Plans without local recognition: no local whisper, not even as a fallback when the API fails.
+            whisperBin = whisperModel = string.Empty;
+        }
 
-        bool useApiStt = UseApiStt;
-        string sttApiKey = useApiStt ? ResolveSttApiKey() : string.Empty;
+        bool useApiStt = EffectiveUseApiStt;
+        (string sttApiUrl, string sttApiModel, string sttApiKey, string _) = useApiStt ? ResolveSttApi(null) : (string.Empty, string.Empty, string.Empty, string.Empty);
+        if (useApiStt && IsManagedAi && !IsSignedIn)
+        {
+            // Without local whisper and without an account nothing could transcribe the call.
+            NotificationRequested?.Invoke(L["WarningDiagnosticsTitle"], L["AccountSignInRequired"], false);
+            SelectedMainPage = "Settings";
+            return;
+        }
+
         if (useApiStt && string.IsNullOrWhiteSpace(sttApiKey))
         {
             useApiStt = false;
@@ -1863,15 +1878,16 @@ public partial class MainViewModel : ObservableObject
                 MaxSttLagSeconds = _settings.SttMaxLagSeconds,
                 KeepChunks = _settings.KeepAudioChunks,
                 UseApiStt = useApiStt,
-                SttApiUrl = string.IsNullOrWhiteSpace(SttApiBaseUrl) ? AppSettings.PolzaBaseUrl : SttApiBaseUrl.Trim(),
-                SttApiModel = SttApiModel.Trim(),
+                SttApiUrl = sttApiUrl,
+                SttApiModel = sttApiModel,
                 SttApiKey = sttApiKey,
+                SttExtraHeaders = useApiStt && IsManagedAi ? ReplioApi.HeadersLine(_settings.ReplioDeviceId, session.Id) : string.Empty,
                 SttGlossary = SttGlossary
             });
             _lastSttCostSeen = 0;
             _detectedSpeechLanguages.Clear();
             SttStatusText = useApiStt
-                ? string.Format(L["SttStatusApi"], SttApiModel.Trim())
+                ? (IsManagedAi ? L["SttStatusReplio"] : string.Format(L["SttStatusApi"], sttApiModel))
                 : L["SttStatusLocal"];
             AppendLog("[ui] Capture started. " + SttStatusText);
             StartVisualContextIfEnabled(session.Id);
@@ -1915,6 +1931,12 @@ public partial class MainViewModel : ObservableObject
         SelectedMainPage = "Home";
         HideOverlayRequested?.Invoke();
         AppendLog("[ui] Stop requested.");
+
+        // The recording used minutes of the plan: show what is left.
+        if (IsManagedAi && IsSignedIn)
+        {
+            _ = RefreshAccountAsync();
+        }
     }
 
     private async Task<string> BuildFinalSessionSummaryAsync(SessionSummary? session)
@@ -1955,6 +1977,11 @@ public partial class MainViewModel : ObservableObject
 
     private bool CanGenerateSummaryAutomatically()
     {
+        if (IsManagedAi)
+        {
+            return IsSignedIn;
+        }
+
         if ((IsApiKeyRequired() && string.IsNullOrWhiteSpace(ResolveLlmApiKey())) ||
             string.IsNullOrWhiteSpace(OpenAiModel) ||
             string.IsNullOrWhiteSpace(OpenAiBaseUrl))
@@ -3013,6 +3040,13 @@ public partial class MainViewModel : ObservableObject
 
     private bool TryValidateAssistSettings(out string errorMessage)
     {
+        // Through Replio only the sign-in matters: the gateway knows the models and the provider.
+        if (IsManagedAi)
+        {
+            errorMessage = IsSignedIn ? string.Empty : L["AccountSignInRequired"];
+            return IsSignedIn;
+        }
+
         if (IsApiKeyRequired() && string.IsNullOrWhiteSpace(ResolveLlmApiKey()))
         {
             errorMessage = L["OpenAiKeyMissing"];
@@ -3083,16 +3117,9 @@ public partial class MainViewModel : ObservableObject
         ApplyAssistProviderSettings();
         return new AssistOptions
         {
-            Endpoint = new LlmEndpoint
-            {
-                BaseUrl = OpenAiBaseUrl.Trim(),
-                ApiKey = ResolveLlmApiKey(),
-                EndpointPath = ChatCompletionsPath,
-                ApiKeyHeaderName = ApiKeyHeaderName,
-                ApiKeyPrefix = ApiKeyPrefix
-            },
-            FastModel = OpenAiModel.Trim(),
-            AnalysisModel = AnalysisModel?.Trim() ?? string.Empty,
+            Endpoint = BuildLlmEndpoint(),
+            FastModel = EffectiveFastModel,
+            AnalysisModel = EffectiveAnalysisModel,
             SmartModeEnabled = SmartModeEnabled,
             Settings = _settings,
             TopicContext = topicContext

@@ -38,7 +38,7 @@ public static class AgentGuide
                         "Use the `replio` command to find a session by name or time and read or export it. " +
                         "It only reads Replio data; nothing is changed or sent anywhere.")
             .AppendLine()
-            .AppendLine("Command: `" + cli + "`" + (string.IsNullOrWhiteSpace(cliPath) ? " (not found next to the app; install Replio 1.0.7 or newer)" : string.Empty))
+            .AppendLine("Command: `" + cli + "`" + (string.IsNullOrWhiteSpace(cliPath) ? " (not found next to the app; install Replio 1.1.0 or newer)" : string.Empty))
             .AppendLine()
             .AppendLine("## Commands")
             .AppendLine()

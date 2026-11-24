@@ -27,6 +27,7 @@ public sealed class MediaTranscriptionRequest
     public string SttApiUrl { get; init; } = string.Empty;
     public string SttApiModel { get; init; } = string.Empty;
     public string SttApiKey { get; init; } = string.Empty;
+    public string SttExtraHeaders { get; init; } = string.Empty;
 }
 
 public sealed class MediaTranscriptionResult
@@ -107,6 +108,7 @@ public static class MediaTranscriptionService
         {
             // Passed through the environment so the key never shows up in the process command line.
             process.StartInfo.Environment[SttApiKeyEnvironmentVariable] = request.SttApiKey;
+            process.StartInfo.Environment["REPLIO_STT_HEADERS"] = request.SttExtraHeaders;
         }
 
         var result = new MediaTranscriptionResult();

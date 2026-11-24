@@ -2550,6 +2550,58 @@
                 <Grid Margin="24">
                     <StackPanel>
                         <TextBlock Foreground="{Binding PrimaryTextBrush}" FontSize="30" FontWeight="ExtraBold" Text="{Binding L[SettingsTab]}" />
+                        <!-- Replio account: sign-in on replio.ru, the plan and, on plans with a choice, the prepared models. -->
+                        <StackPanel Visibility="{Binding ShowAccountSection, Converter={StaticResource BoolToVisibility}}">
+                        <TextBlock Margin="0,16,0,0" Foreground="{Binding PrimaryTextBrush}" FontWeight="SemiBold" Text="{Binding L[AccountTitle]}" />
+                        <TextBlock Margin="0,6,0,0" Foreground="{Binding PrimaryTextBrush}" TextWrapping="Wrap" Text="{Binding AccountPlanText}"
+                                   Visibility="{Binding IsSignedIn, Converter={StaticResource BoolToVisibility}}" />
+                        <TextBlock Margin="0,6,0,0" Foreground="{Binding SecondaryTextBrush}" TextWrapping="Wrap" Text="{Binding AccountStatusText}" />
+                        <StackPanel Margin="0,10,0,0" Orientation="Horizontal" Visibility="{Binding IsSignedOut, Converter={StaticResource BoolToVisibility}}">
+                            <Button Height="36" Padding="18,0" FontSize="14" Style="{StaticResource EchoAccentButtonStyle}"
+                                    Command="{Binding SignInCommand}" ToolTip="{Binding L[TipAccountSignIn]}" Content="{Binding L[AccountSignIn]}" />
+                        </StackPanel>
+                        <StackPanel Margin="0,10,0,0" Orientation="Horizontal" Visibility="{Binding IsSigningIn, Converter={StaticResource BoolToVisibility}}">
+                            <controls:EchoThinkingDots Margin="0,0,10,0" VerticalAlignment="Center" />
+                            <Border Padding="12,6" CornerRadius="8" Background="{DynamicResource EchoSurfaceBrush}" BorderBrush="{DynamicResource EchoBorderBrush}" BorderThickness="1">
+                                <TextBlock FontSize="18" FontWeight="Bold" Foreground="{DynamicResource EchoTextBrush}" Text="{Binding SignInCode}" />
+                            </Border>
+                            <Button Height="34" Margin="10,0,0,0" Padding="14,0" Command="{Binding OpenSignInPageCommand}" ToolTip="{Binding L[TipAccountOpenPage]}" Content="{Binding L[AccountOpenPage]}" />
+                            <Button Height="34" Margin="8,0,0,0" Padding="14,0" Command="{Binding CancelSignInCommand}" Content="{Binding L[AccountCancel]}" />
+                        </StackPanel>
+                        <StackPanel Margin="0,10,0,0" Orientation="Horizontal" Visibility="{Binding IsSignedIn, Converter={StaticResource BoolToVisibility}}">
+                            <Button Height="34" Padding="14,0" Command="{Binding RefreshAccountCommand}" ToolTip="{Binding L[TipAccountRefresh]}" Content="{Binding L[AccountRefresh]}" />
+                            <Button Height="34" Margin="8,0,0,0" Padding="14,0" Command="{Binding OpenUpgradeCommand}" ToolTip="{Binding L[TipAccountUpgrade]}" Content="{Binding L[AccountUpgrade]}" />
+                            <Button Height="34" Margin="8,0,0,0" Padding="14,0" Command="{Binding SignOutCommand}" ToolTip="{Binding L[TipAccountSignOut]}" Content="{Binding L[AccountSignOut]}" />
+                        </StackPanel>
+                        <TextBlock Margin="0,8,0,0" Foreground="{Binding SecondaryTextBrush}" TextWrapping="Wrap" Text="{Binding ReplioModelSummaryText}"
+                                   Visibility="{Binding ShowReplioModelSummary, Converter={StaticResource BoolToVisibility}}" />
+                        <StackPanel Visibility="{Binding ShowReplioModelChoice, Converter={StaticResource BoolToVisibility}}">
+                            <Grid ToolTip="{Binding L[TipReplioFastModel]}" Background="Transparent" Margin="0,10,0,0">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="230" />
+                                <ColumnDefinition Width="*" />
+                            </Grid.ColumnDefinitions>
+                                <TextBlock Foreground="{Binding SecondaryTextBrush}" VerticalAlignment="Center" Text="{Binding L[SettingsModel]}" />
+                                <ComboBox Grid.Column="1" ItemsSource="{Binding ReplioFastModels}" DisplayMemberPath="Display" SelectedItem="{Binding SelectedReplioFastModel, Mode=TwoWay}" />
+                            </Grid>
+                            <Grid ToolTip="{Binding L[TipReplioAnalysisModel]}" Background="Transparent" Margin="0,10,0,0">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="230" />
+                                <ColumnDefinition Width="*" />
+                            </Grid.ColumnDefinitions>
+                                <TextBlock Foreground="{Binding SecondaryTextBrush}" VerticalAlignment="Center" Text="{Binding L[SettingsAnalysisModel]}" />
+                                <ComboBox Grid.Column="1" ItemsSource="{Binding ReplioAnalysisModels}" DisplayMemberPath="Display" SelectedItem="{Binding SelectedReplioAnalysisModel, Mode=TwoWay}" />
+                            </Grid>
+                            <Grid ToolTip="{Binding L[TipReplioSttModel]}" Background="Transparent" Margin="0,10,0,0">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="230" />
+                                <ColumnDefinition Width="*" />
+                            </Grid.ColumnDefinitions>
+                                <TextBlock Foreground="{Binding SecondaryTextBrush}" VerticalAlignment="Center" Text="{Binding L[SettingsSttModel]}" />
+                                <ComboBox Grid.Column="1" ItemsSource="{Binding ReplioSttModels}" DisplayMemberPath="Display" SelectedItem="{Binding SelectedReplioSttModel, Mode=TwoWay}" />
+                            </Grid>
+                        </StackPanel>
+                        </StackPanel>
                         <TextBlock Margin="0,16,0,0" Foreground="{Binding PrimaryTextBrush}" FontWeight="SemiBold" Text="{Binding L[SettingsSectionAppearance]}" />
                         <Grid ToolTip="{Binding L[TipToggleTheme]}" Background="Transparent" Margin="0,10,0,0">
                             <Grid.ColumnDefinitions>
@@ -2626,6 +2678,8 @@
                         </StackPanel>
                         <TextBlock Margin="0,6,0,0" Foreground="{Binding SecondaryTextBrush}" TextWrapping="Wrap" Text="{Binding L[SettingsSnapshotsHint]}" />
                         <TextBlock Margin="0,4,0,0" Foreground="{Binding SecondaryTextBrush}" Text="{Binding VisualContextStatusText}" />
+                        <!-- Own providers and keys: only «Приватный» plan or developer mode. -->
+                        <StackPanel Visibility="{Binding ShowOwnProviderSettings, Converter={StaticResource BoolToVisibility}}">
                         <TextBlock Margin="0,16,0,0" Foreground="{Binding PrimaryTextBrush}" FontWeight="SemiBold" Text="{Binding L[SettingsSectionLlm]}" />
                         <!-- Provider first, then what it needs: its own address for «Custom», the key, the models. -->
                         <Grid ToolTip="{Binding L[TipProviderPreset]}" Background="Transparent" Margin="0,10,0,0">
@@ -2711,6 +2765,7 @@
                                                   LoadCommand="{Binding LoadChatModelsCommand}" />
                         </Grid>
                         <TextBlock Margin="0,6,0,0" Foreground="{Binding SecondaryTextBrush}" TextWrapping="Wrap" Text="{Binding L[SettingsModelPickerHint]}" />
+                        </StackPanel>
                         <TextBlock Margin="0,16,0,0" Foreground="{Binding PrimaryTextBrush}" FontWeight="SemiBold" Text="{Binding L[SettingsSttTitle]}" />
                         <Grid ToolTip="{Binding L[TipSpeechLanguage]}" Background="Transparent" Margin="0,10,0,0">
                             <Grid.ColumnDefinitions>
@@ -2725,11 +2780,13 @@
                         </Grid>
                         <CheckBox Margin="0,8,0,0"
                                   Style="{StaticResource ModernCheckBoxStyle}"
+                                  Visibility="{Binding ShowLocalSttSettings, Converter={StaticResource BoolToVisibility}}"
                                   IsChecked="{Binding UseApiStt, Mode=TwoWay}"
                                   ToolTip="{Binding L[SettingsSttHint]}"
                                   Content="{Binding L[SettingsUseApiStt]}" />
                         <!-- Same order as for the AI model: provider, key, model. Dimmed while recognition stays local. -->
-                        <StackPanel IsEnabled="{Binding UseApiStt}" Style="{StaticResource DependentSettingsStyle}">
+                        <StackPanel IsEnabled="{Binding UseApiStt}" Style="{StaticResource DependentSettingsStyle}"
+                                    Visibility="{Binding ShowOwnProviderSettings, Converter={StaticResource BoolToVisibility}}">
                             <Grid ToolTip="{Binding L[TipSttProvider]}" Background="Transparent" Margin="0,10,0,0">
                                 <Grid.ColumnDefinitions>
                                     <ColumnDefinition Width="230" />
@@ -2805,6 +2862,8 @@
                             </TextBlock>
                         </Grid>
                         <TextBlock Margin="0,4,0,0" Foreground="{Binding SecondaryTextBrush}" TextWrapping="Wrap" Text="{Binding L[SettingsSttGlossaryHint]}" />
+                        <!-- Local whisper models: only plans with local recognition. -->
+                        <StackPanel Visibility="{Binding ShowLocalSttSettings, Converter={StaticResource BoolToVisibility}}">
                         <TextBlock Margin="0,16,0,0" Foreground="{Binding PrimaryTextBrush}" FontWeight="SemiBold" Text="{Binding L[SpeechModelTitle]}" />
                         <TextBlock Margin="0,6,0,0" Foreground="{Binding SecondaryTextBrush}" TextWrapping="Wrap" Text="{Binding L[SpeechModelIntro]}" />
                         <TextBlock Margin="0,4,0,0" Foreground="{Binding SecondaryTextBrush}" TextWrapping="Wrap" Text="{Binding SpeechModelHardwareText}" />
@@ -2889,6 +2948,7 @@
                                 </DataTemplate>
                             </ItemsControl.ItemTemplate>
                         </ItemsControl>
+                        </StackPanel>
                         <TextBlock Margin="0,16,0,0" Foreground="{Binding PrimaryTextBrush}" FontWeight="SemiBold" Text="{Binding L[HotkeysTitle]}" />
                         <Grid ToolTip="{Binding L[TipHotkeyShowHide]}" Background="Transparent" Margin="0,8,0,0">
                             <Grid.ColumnDefinitions>

@@ -13,9 +13,9 @@
     <RootNamespace>ReplioCli</RootNamespace>
     <AssemblyName>replio</AssemblyName>
     <InvariantGlobalization>false</InvariantGlobalization>
-    <Version>1.0.7</Version>
-    <AssemblyVersion>1.0.7.0</AssemblyVersion>
-    <FileVersion>1.0.7.0</FileVersion>
+    <Version>1.1.0</Version>
+    <AssemblyVersion>1.1.0.0</AssemblyVersion>
+    <FileVersion>1.1.0.0</FileVersion>
     <Product>Replio</Product>
   </PropertyGroup>
 
@@ -25,6 +25,7 @@
     <Compile Include="..\ReplioDesktop\Services\AppSettings.cs" Link="Shared\AppSettings.cs" />
     <Compile Include="..\ReplioDesktop\ViewModels\ObservableObject.cs" Link="Shared\ObservableObject.cs" />
     <Compile Include="..\ReplioDesktop\Services\SpeechModelCatalog.cs" Link="Shared\SpeechModelCatalog.cs" />
+    <Compile Include="..\ReplioDesktop\Services\LegacyDataImport.cs" Link="Shared\LegacyDataImport.cs" />
     <Compile Include="..\ReplioDesktop\Services\SessionScreenshots.cs" Link="Shared\SessionScreenshots.cs" />
     <Compile Include="..\ReplioDesktop\Services\AgentGuide.cs" Link="Shared\AgentGuide.cs" />
   </ItemGroup>

@@ -13,6 +13,9 @@ namespace ReplioDesktop.Services;
 /// </summary>
 public class OpenAiAssistClient
 {
+    /// <summary>The Replio gateway refused a request (plan, quota, revoked key): the app re-reads the account.</summary>
+    public static event Action<ReplioApiException>? ReplioRefused;
+
     private const int MaxErrorBodyLength = 600;
 
     private readonly HttpClient _httpClient;
@@ -40,6 +43,11 @@ public class OpenAiAssistClient
             string json = BuildPayload(request, userContent, sendReasoning);
             using var httpRequest = new HttpRequestMessage(HttpMethod.Post, url);
             AddApiKeyHeader(httpRequest, endpoint.ApiKey, endpoint.ApiKeyHeaderName, endpoint.ApiKeyPrefix);
+            foreach ((string name, string value) in endpoint.ExtraHeaders)
+            {
+                httpRequest.Headers.TryAddWithoutValidation(name, value);
+            }
+
             httpRequest.Content = new StringContent(json, Encoding.UTF8, "application/json");
 
             HttpResponseMessage response;
@@ -73,6 +81,13 @@ public class OpenAiAssistClient
                 {
                     await Task.Delay(TimeSpan.FromSeconds(1.5), cancellationToken);
                     continue;
+                }
+
+                // The Replio gateway explains refusals (quota, plan, revoked key) in Russian: show its words as they are.
+                if (ReplioApiException.TryParse((int)response.StatusCode, body) is { } replioError)
+                {
+                    ReplioRefused?.Invoke(replioError);
+                    throw replioError;
                 }
 
                 throw new InvalidOperationException(
@@ -308,6 +323,9 @@ public sealed class LlmEndpoint
     public string EndpointPath { get; init; } = "/chat/completions";
     public string ApiKeyHeaderName { get; init; } = "Authorization";
     public string ApiKeyPrefix { get; init; } = "Bearer";
+
+    /// <summary>Extra request headers (the Replio gateway: device, app version, recording session).</summary>
+    public IReadOnlyList<(string Name, string Value)> ExtraHeaders { get; init; } = [];
 
     /// <summary>Polza.ai and OpenRouter accept the unified "reasoning": { effort } block.</summary>
     public bool SupportsReasoningObject =>

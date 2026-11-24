@@ -1032,6 +1032,18 @@ namespace DesktopCapture
             }
         }
 
+        /// <summary>
+        /// REPLIO_STT_HEADERS = «Name=Value;Name=Value»: the Replio gateway wants the device, the app version and the
+        /// recording session with each request. Passed through the environment like the key.
+        /// </summary>
+        private static readonly KeyValuePair<string, string>[] ExtraSttHeaders =
+            (Environment.GetEnvironmentVariable("REPLIO_STT_HEADERS") ?? string.Empty)
+                .Split(new[] { ';' }, StringSplitOptions.RemoveEmptyEntries)
+                .Select(pair => pair.Split(new[] { '=' }, 2))
+                .Where(parts => parts.Length == 2 && parts[0].Trim().Length > 0)
+                .Select(parts => new KeyValuePair<string, string>(parts[0].Trim(), parts[1].Trim()))
+                .ToArray();
+
         private static string TranscribeViaApi(string wavPath, RuntimeOptions options, string previousText)
         {
             string url = options.SttApiUrl.TrimEnd('/') + "/audio/transcriptions";
@@ -1043,6 +1055,11 @@ namespace DesktopCapture
                 using (var request = new HttpRequestMessage(HttpMethod.Post, url))
                 {
                     request.Headers.Authorization = new AuthenticationHeaderValue("Bearer", options.SttApiKey);
+                    foreach (var header in ExtraSttHeaders)
+                    {
+                        request.Headers.TryAddWithoutValidation(header.Key, header.Value);
+                    }
+
                     request.Content = SttApiUsesJsonBody
                         ? BuildJsonTranscriptionBody(audio, options, prompt)
                         : BuildMultipartTranscriptionBody(audio, Path.GetFileName(wavPath), options, prompt);
