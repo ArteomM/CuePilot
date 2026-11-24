@@ -16,6 +16,9 @@ public partial class App : Application
         {
             // Closing the main window hides Replio into the menu bar; «Выход» there quits.
             desktop.ShutdownMode = ShutdownMode.OnExplicitShutdown;
+
+            // First start after CuePilot became Replio: copy the old data (never overwrites, runs once).
+            ReplioDesktop.Services.LegacyDataImport.Run();
             desktop.MainWindow = new MainWindow(MainWindow.ResolveProjectRoot());
         }
 

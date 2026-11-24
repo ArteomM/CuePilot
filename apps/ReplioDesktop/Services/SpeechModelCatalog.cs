@@ -55,6 +55,13 @@ public static class SpeechModelCatalog
             return userPath;
         }
 
+        // Models downloaded while the app was still called CuePilot are used where they are.
+        string legacyPath = Path.Combine(LegacyDataImport.LegacyLocalRoot, "models", fileName);
+        if (File.Exists(legacyPath))
+        {
+            return legacyPath;
+        }
+
         string appPath = Path.Combine(projectRoot, "models", fileName);
         return File.Exists(appPath) ? appPath : null;
     }

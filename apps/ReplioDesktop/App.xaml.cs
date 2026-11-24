@@ -57,8 +57,51 @@ public partial class App : Application
         listener.Start();
         base.OnStartup(e);
 
+        if (Services.LegacyDataImport.IsNeeded())
+        {
+            ImportCuePilotDataThenStart();
+            return;
+        }
+
         // Created here rather than through StartupUri, so a second copy never builds a window it would close at once.
         new MainWindow().Show();
+    }
+
+    /// <summary>
+    /// First start after CuePilot became Replio: the old sessions, topics and settings are copied in the background
+    /// behind a small «Переношу данные» window, then the main window opens with them.
+    /// </summary>
+    private async void ImportCuePilotDataThenStart()
+    {
+        ShutdownMode previousMode = ShutdownMode;
+        ShutdownMode = ShutdownMode.OnExplicitShutdown;
+        bool russian = !System.Globalization.CultureInfo.CurrentUICulture.TwoLetterISOLanguageName.Equals("en", StringComparison.OrdinalIgnoreCase);
+        var splash = new Window
+        {
+            Title = "Replio",
+            Width = 380,
+            Height = 120,
+            WindowStartupLocation = WindowStartupLocation.CenterScreen,
+            ResizeMode = ResizeMode.NoResize,
+            WindowStyle = WindowStyle.ToolWindow,
+            Background = TryFindResource("EchoBgBrush") as Brush ?? Brushes.Black,
+            Content = new TextBlock
+            {
+                Margin = new Thickness(20),
+                TextWrapping = TextWrapping.Wrap,
+                VerticalAlignment = VerticalAlignment.Center,
+                Foreground = TryFindResource("EchoTextBrush") as Brush ?? Brushes.White,
+                Text = russian
+                    ? "Переношу ваши сессии, темы и настройки из CuePilot в Replio. Это один раз."
+                    : "Moving your CuePilot sessions, topics and settings to Replio. This happens once."
+            }
+        };
+        splash.Show();
+        // The outcome is written into %AppData%\Replio\imported-from-cuepilot.txt.
+        await Task.Run(Services.LegacyDataImport.Run);
+        new MainWindow().Show();
+        splash.Close();
+        ShutdownMode = previousMode;
     }
 
     /// <summary>Hints show up after the cursor has rested on an element for 2 seconds, for every element.</summary>
