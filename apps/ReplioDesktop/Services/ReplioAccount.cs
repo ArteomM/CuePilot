@@ -16,7 +16,7 @@ namespace ReplioDesktop.Services;
 /// </summary>
 public static class ReplioApi
 {
-    public const string DefaultBaseUrl = "https://api.replio.ru/v1";
+    public const string DefaultBaseUrl = "https://replio.ru/api/v1";
 
     /// <summary>REPLIO_API_BASE overrides the address (a test gateway).</summary>
     public static string BaseUrl

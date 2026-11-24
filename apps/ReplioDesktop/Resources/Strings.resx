@@ -696,7 +696,7 @@
   <data name="SpeechLanguageDetected" xml:space="preserve"><value>language: {0}</value></data>
   <data name="AccountTitle" xml:space="preserve"><value>Replio account</value></data>
   <data name="AccountSignIn" xml:space="preserve"><value>Sign in on replio.ru</value></data>
-  <data name="TipAccountSignIn" xml:space="preserve"><value>Opens replio.ru in the browser: sign in there with Yandex ID, VK ID or an e-mail code and confirm this computer. The app gets its own key automatically</value></data>
+  <data name="TipAccountSignIn" xml:space="preserve"><value>Opens replio.ru in the browser: sign in there with Yandex ID or VK ID and confirm this computer. The app gets its own key automatically</value></data>
   <data name="AccountSignedOutHint" xml:space="preserve"><value>Sign in to use Replio: hints, summaries and speech recognition run on your plan.</value></data>
   <data name="AccountDeveloperMode" xml:space="preserve"><value>Developer mode: own providers and keys, no account needed.</value></data>
   <data name="AccountSignInWaiting" xml:space="preserve"><value>Confirm the sign-in in the browser. If the site asks for a code, enter {0}.</value></data>

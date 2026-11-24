@@ -696,7 +696,7 @@
   <data name="SpeechLanguageDetected" xml:space="preserve"><value>язык: {0}</value></data>
   <data name="AccountTitle" xml:space="preserve"><value>Аккаунт Replio</value></data>
   <data name="AccountSignIn" xml:space="preserve"><value>Войти через replio.ru</value></data>
-  <data name="TipAccountSignIn" xml:space="preserve"><value>Откроет replio.ru в браузере: войдите там через Яндекс ID, VK ID или код на почту и подтвердите этот компьютер. Ключ приложение получит само</value></data>
+  <data name="TipAccountSignIn" xml:space="preserve"><value>Откроет replio.ru в браузере: войдите там через Яндекс ID или VK ID и подтвердите этот компьютер. Ключ приложение получит само</value></data>
   <data name="AccountSignedOutHint" xml:space="preserve"><value>Войдите, чтобы пользоваться Replio: подсказки, итоги и распознавание речи идут по вашему тарифу.</value></data>
   <data name="AccountDeveloperMode" xml:space="preserve"><value>Режим разработчика: свои провайдеры и ключи, аккаунт не нужен.</value></data>
   <data name="AccountSignInWaiting" xml:space="preserve"><value>Подтвердите вход в браузере. Если сайт спросит код, введите {0}.</value></data>
