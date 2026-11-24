@@ -391,7 +391,7 @@
   <data name="SelectSessions" xml:space="preserve"><value>Выбрать</value></data>
   <data name="SessionsDeletedFeedback" xml:space="preserve"><value>Удалено сессий: {0}</value></data>
   <data name="SessionsMovedFeedback" xml:space="preserve"><value>Перемещено: {0} → «{1}»</value></data>
-  <data name="SettingsLanguageHint" xml:space="preserve"><value>English: интерфейс, распознавание речи и ответы ИИ на английском. Язык распознавания меняется со следующей записи. Выбор темы и языка сохраняется сразу.</value></data>
+  <data name="SettingsLanguageHint" xml:space="preserve"><value>English: интерфейс и ответы ИИ на английском; выбранный вручную язык речи тоже станет английским («Автоопределение» не меняется). Действует со следующей записи.</value></data>
   <data name="SettingsSectionAppearance" xml:space="preserve"><value>Оформление и язык</value></data>
   <data name="SettingsTheme" xml:space="preserve"><value>Тема оформления</value></data>
   <data name="TabEmail" xml:space="preserve"><value>Письмо</value></data>
@@ -414,7 +414,7 @@
   <data name="TipGoHome" xml:space="preserve"><value>На главный экран со списком сессий</value></data>
   <data name="TipIndicatorAsk" xml:space="preserve"><value>Показать оверлей с подсказками</value></data>
   <data name="TipIndicatorHide" xml:space="preserve"><value>Скрыть оверлей с подсказками</value></data>
-  <data name="TipLanguageEn" xml:space="preserve"><value>Интерфейс на английском, распознавание речи и ответы ИИ — на английском</value></data>
+  <data name="TipLanguageEn" xml:space="preserve"><value>Интерфейс и ответы ИИ — на английском</value></data>
   <data name="TipLanguageRu" xml:space="preserve"><value>Интерфейс на русском, распознавание речи и ответы ИИ — на русском</value></data>
   <data name="TipModes" xml:space="preserve"><value>Режимы: свой промпт и шаблон заметок для разных типов встреч</value></data>
   <data name="TipMoveChecked" xml:space="preserve"><value>Перенести отмеченные сессии в тему. Можно и перетащить их на тему слева</value></data>
@@ -690,4 +690,8 @@
   <data name="TopicActualizeGraph" xml:space="preserve"><value>Строю граф…</value></data>
   <data name="TopicActualizeDone" xml:space="preserve"><value>Тема актуальна: сводка и граф обновлены</value></data>
   <data name="TipTopicActualize" xml:space="preserve"><value>Разбирает новые и изменившиеся материалы, пересобирает «Сводку» по всем сессиям и материалам темы, затем граф. Точка на кнопке: с прошлой актуализации что-то изменилось</value></data>
+  <data name="SpeechLanguageAuto" xml:space="preserve"><value>Автоопределение</value></data>
+  <data name="SettingsSpeechLanguage" xml:space="preserve"><value>Язык речи</value></data>
+  <data name="TipSpeechLanguage" xml:space="preserve"><value>Автоопределение: Replio узнаёт язык каждой стороны (вас и собеседника) по первым фразам и держит его до конца записи. Выберите язык, если разговор всегда на нём</value></data>
+  <data name="SpeechLanguageDetected" xml:space="preserve"><value>язык: {0}</value></data>
 </root>

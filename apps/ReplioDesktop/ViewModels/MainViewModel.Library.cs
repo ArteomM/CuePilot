@@ -752,7 +752,12 @@ public partial class MainViewModel
     {
         bool english = language == "en";
         _settings.UiLanguage = language;
-        _settings.CaptureLanguage = english ? "en" : "ru";
+        // A fixed speech language follows the interface; «Автоопределение» stays as it is.
+        if (NormalizeSpeechLanguage(_settings.CaptureLanguage) != "auto")
+        {
+            _settings.CaptureLanguage = english ? "en" : "ru";
+        }
+
         _settings.OutputLanguage = english ? "en" : "ru";
         _selectedOutputLanguage = _settings.OutputLanguage;
         OnPropertyChanged(nameof(SelectedOutputLanguage));
@@ -784,6 +789,7 @@ public partial class MainViewModel
         OnPropertyChanged(nameof(KnowledgeSourcesSummary));
         OnPropertyChanged(nameof(RemoveCheckedKnowledgeText));
         RebuildTopicItems();
+        OnSpeechLanguageTitlesChanged();
         _completedSessionsView.Refresh();
         AppendLog($"[settings] Interface language: {language}, capture language: {_settings.CaptureLanguage}.");
     }

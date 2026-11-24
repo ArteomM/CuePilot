@@ -325,7 +325,14 @@ public partial class MainViewModel : ObservableObject
         UploadModeReferenceFileCommand = _uploadModeReferenceFileCommand;
         NewModeCommand = _newModeCommand;
 
-        _captureOrchestrator.LogLine += (_, line) => RunOnUi(() => AppendLog(line));
+        _captureOrchestrator.LogLine += (_, line) => RunOnUi(() =>
+        {
+            AppendLog(line);
+            if (line.StartsWith("[stt-lang]", StringComparison.Ordinal))
+            {
+                OnSpeechLanguageDetected(line);
+            }
+        });
         _captureOrchestrator.StatsUpdated += (_, stats) => RunOnUi(() => OnStatsUpdated(stats));
         _captureOrchestrator.TranscriptReceived += (_, transcript) => RunOnUi(() => OnTranscriptReceived(transcript));
         _captureOrchestrator.RunningStateChanged += (_, running) => RunOnUi(() => OnRunningStateChanged(running));
@@ -1862,6 +1869,7 @@ public partial class MainViewModel : ObservableObject
                 SttGlossary = SttGlossary
             });
             _lastSttCostSeen = 0;
+            _detectedSpeechLanguages.Clear();
             SttStatusText = useApiStt
                 ? string.Format(L["SttStatusApi"], SttApiModel.Trim())
                 : L["SttStatusLocal"];

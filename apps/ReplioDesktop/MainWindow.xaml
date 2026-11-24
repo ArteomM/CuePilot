@@ -2712,6 +2712,17 @@
                         </Grid>
                         <TextBlock Margin="0,6,0,0" Foreground="{Binding SecondaryTextBrush}" TextWrapping="Wrap" Text="{Binding L[SettingsModelPickerHint]}" />
                         <TextBlock Margin="0,16,0,0" Foreground="{Binding PrimaryTextBrush}" FontWeight="SemiBold" Text="{Binding L[SettingsSttTitle]}" />
+                        <Grid ToolTip="{Binding L[TipSpeechLanguage]}" Background="Transparent" Margin="0,10,0,0">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="230" />
+                                <ColumnDefinition Width="*" />
+                            </Grid.ColumnDefinitions>
+                            <TextBlock Foreground="{Binding SecondaryTextBrush}" VerticalAlignment="Center" Text="{Binding L[SettingsSpeechLanguage]}" />
+                            <ComboBox Grid.Column="1"
+                                      ItemsSource="{Binding SpeechLanguageOptions}"
+                                      DisplayMemberPath="Title"
+                                      SelectedItem="{Binding SelectedSpeechLanguage, Mode=TwoWay}" />
+                        </Grid>
                         <CheckBox Margin="0,8,0,0"
                                   Style="{StaticResource ModernCheckBoxStyle}"
                                   IsChecked="{Binding UseApiStt, Mode=TwoWay}"

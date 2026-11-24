@@ -730,7 +730,35 @@ namespace DesktopCapture
             }
         }
 
+        /// <summary>
+        /// With --lang auto every source (system sound, microphone, a file) starts with automatic language detection
+        /// and locks onto the language once it is clear (see AutoLanguage.cs): per-chunk detection on short chunks
+        /// flips between close languages such as Russian and Ukrainian, a locked language does not.
+        /// </summary>
         private static string Transcribe(SttJob job, RuntimeOptions options, string previousText)
+        {
+            if (!AutoLanguage.IsAuto(options.Language))
+            {
+                return TranscribeWithEngine(job, options, previousText);
+            }
+
+            string locked = AutoLanguage.LockedFor(job.Source);
+            RuntimeOptions effective = options.WithLanguage(locked ?? AutoLanguage.Auto);
+            AutoLanguage.LastDetected = null;
+            string text = TranscribeWithEngine(job, effective, previousText);
+            if (locked == null)
+            {
+                string language = AutoLanguage.Vote(job.Source, AutoLanguage.LastDetected ?? AutoLanguage.FromText(text));
+                if (language != null)
+                {
+                    Console.WriteLine("[stt-lang][" + job.Source + "] " + language);
+                }
+            }
+
+            return text;
+        }
+
+        private static string TranscribeWithEngine(SttJob job, RuntimeOptions options, string previousText)
         {
             if (!options.UseApiStt)
             {
@@ -982,7 +1010,8 @@ namespace DesktopCapture
                 file.Headers.ContentType = new MediaTypeHeaderValue("audio/wav");
                 content.Add(file, "file", Path.GetFileName(wavPath));
                 content.Add(new StringContent("0.0"), "temperature");
-                content.Add(new StringContent("json"), "response_format");
+                // verbose_json also names the detected language, which auto mode needs to lock onto it.
+                content.Add(new StringContent(AutoLanguage.IsAuto(options.Language) ? "verbose_json" : "json"), "response_format");
                 content.Add(new StringContent(options.Language), "language");
                 string prompt = BuildContinuityPrompt("whisper.cpp", options, previousText);
                 if (prompt.Length > 0)
@@ -1115,6 +1144,11 @@ namespace DesktopCapture
                     Metrics.AddCost(cost.GetDouble());
                 }
 
+                if (root.TryGetProperty("language", out JsonElement detected) && detected.ValueKind == JsonValueKind.String)
+                {
+                    AutoLanguage.LastDetected = AutoLanguage.Normalize(detected.GetString());
+                }
+
                 return root.TryGetProperty("text", out JsonElement text) && text.ValueKind == JsonValueKind.String
                     ? (text.GetString() ?? string.Empty).Trim()
                     : string.Empty;
@@ -1224,6 +1258,9 @@ namespace DesktopCapture
                     throw new InvalidOperationException(
                         "whisper.cpp exit code " + process.ExitCode + ". stderr: " + Truncate(stderr, 300));
                 }
+
+                // «auto-detected language: ru (p = 0.97)»
+                AutoLanguage.LastDetected = AutoLanguage.FromWhisperLog(stderr) ?? AutoLanguage.LastDetected;
 
                 string txtPath = outPrefix + ".txt";
                 if (File.Exists(txtPath))
@@ -1340,10 +1377,9 @@ namespace DesktopCapture
                         break;
                     case "--lang":
                         i++;
-                        // Auto-detect flips between Russian and Ukrainian on short chunks, so it is not supported.
-                        options.Language = i < args.Length && !string.IsNullOrWhiteSpace(args[i]) &&
-                            !string.Equals(args[i], "auto", StringComparison.OrdinalIgnoreCase)
-                            ? args[i]
+                        // «auto» detects the language per source and then locks onto it (AutoLanguage.cs).
+                        options.Language = i < args.Length && !string.IsNullOrWhiteSpace(args[i])
+                            ? args[i].Trim().ToLowerInvariant()
                             : "ru";
                         break;
                     case "--stt-dir":
@@ -1755,6 +1791,14 @@ namespace DesktopCapture
 
             /// <summary>Audio or video file to transcribe instead of recording (see FileTranscription.cs).</summary>
             public string TranscribeFilePath;
+
+            /// <summary>The same options with another recognition language (auto mode locks per source).</summary>
+            public RuntimeOptions WithLanguage(string language)
+            {
+                var copy = (RuntimeOptions)MemberwiseClone();
+                copy.Language = language;
+                return copy;
+            }
 
             public bool WhisperEnabled
             {

@@ -43,11 +43,10 @@ public class JsonSettingsService : ISettingsService
             }
         }
 
-        // Auto-detect mixes Russian and Ukrainian in the transcript: recognition always uses a fixed language.
-        if (string.IsNullOrWhiteSpace(settings.CaptureLanguage) ||
-            string.Equals(settings.CaptureLanguage, "auto", StringComparison.OrdinalIgnoreCase))
+        // «auto»: DesktopCapture detects the language per source and locks onto it after the first phrases.
+        if (string.IsNullOrWhiteSpace(settings.CaptureLanguage))
         {
-            settings.CaptureLanguage = "ru";
+            settings.CaptureLanguage = "auto";
         }
 
         if (settings.SettingsVersion < AppSettings.CurrentSettingsVersion)

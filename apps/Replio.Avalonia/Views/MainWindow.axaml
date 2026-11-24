@@ -2036,6 +2036,13 @@
                         </Grid>
                         <TextBlock Margin="0,6,0,0" Foreground="{Binding SecondaryTextBrush}" TextWrapping="Wrap" Text="{Binding L[SettingsModelPickerHint]}" />
                         <TextBlock Margin="0,16,0,0" Foreground="{Binding PrimaryTextBrush}" FontWeight="SemiBold" Text="{Binding L[SettingsSttTitle]}" />
+                        <Grid Classes="row" ColumnDefinitions="230,*" ToolTip.Tip="{Binding L[TipSpeechLanguage]}">
+                            <TextBlock Foreground="{Binding SecondaryTextBrush}" VerticalAlignment="Center" Text="{Binding L[SettingsSpeechLanguage]}" />
+                            <ComboBox Grid.Column="1"
+                                      HorizontalAlignment="Stretch"
+                                      ItemsSource="{Binding SpeechLanguageOptions}"
+                                      SelectedItem="{Binding SelectedSpeechLanguage, Mode=TwoWay}" />
+                        </Grid>
                         <CheckBox Margin="0,8,0,0"
                                   IsChecked="{Binding UseApiStt, Mode=TwoWay}"
                                   ToolTip.Tip="{Binding L[SettingsSttHint]}"

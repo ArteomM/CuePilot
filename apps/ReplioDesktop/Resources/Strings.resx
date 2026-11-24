@@ -391,7 +391,7 @@
   <data name="SelectSessions" xml:space="preserve"><value>Select</value></data>
   <data name="SessionsDeletedFeedback" xml:space="preserve"><value>Sessions deleted: {0}</value></data>
   <data name="SessionsMovedFeedback" xml:space="preserve"><value>Moved: {0} → "{1}"</value></data>
-  <data name="SettingsLanguageHint" xml:space="preserve"><value>Russian: interface, speech recognition and AI answers in Russian. The recognition language changes from the next recording. Theme and language are saved at once.</value></data>
+  <data name="SettingsLanguageHint" xml:space="preserve"><value>English: interface and AI answers in English; a fixed speech language switches to English too («Auto-detect» stays). Applies from the next recording.</value></data>
   <data name="SettingsSectionAppearance" xml:space="preserve"><value>Appearance and language</value></data>
   <data name="SettingsTheme" xml:space="preserve"><value>Theme</value></data>
   <data name="TabEmail" xml:space="preserve"><value>Email</value></data>
@@ -414,7 +414,7 @@
   <data name="TipGoHome" xml:space="preserve"><value>Back to the home screen with your sessions</value></data>
   <data name="TipIndicatorAsk" xml:space="preserve"><value>Show the hints overlay</value></data>
   <data name="TipIndicatorHide" xml:space="preserve"><value>Hide the hints overlay</value></data>
-  <data name="TipLanguageEn" xml:space="preserve"><value>English interface; speech recognition and AI answers in English</value></data>
+  <data name="TipLanguageEn" xml:space="preserve"><value>Interface and AI answers in English</value></data>
   <data name="TipLanguageRu" xml:space="preserve"><value>Russian interface; speech recognition and AI answers in Russian</value></data>
   <data name="TipModes" xml:space="preserve"><value>Modes: your own prompt and notes template for different kinds of meetings</value></data>
   <data name="TipMoveChecked" xml:space="preserve"><value>Move the checked sessions to a topic. You can also drag them onto a topic on the left</value></data>
@@ -690,4 +690,8 @@
   <data name="TopicActualizeGraph" xml:space="preserve"><value>Building the graph…</value></data>
   <data name="TopicActualizeDone" xml:space="preserve"><value>The topic is up to date: summary and graph rebuilt</value></data>
   <data name="TipTopicActualize" xml:space="preserve"><value>Reads new and changed materials, rebuilds the «Summary» from all sessions and materials of the topic, then the graph. The dot means something changed since the last update</value></data>
+  <data name="SpeechLanguageAuto" xml:space="preserve"><value>Auto-detect</value></data>
+  <data name="SettingsSpeechLanguage" xml:space="preserve"><value>Speech language</value></data>
+  <data name="TipSpeechLanguage" xml:space="preserve"><value>Auto-detect: Replio recognises the language of each side (you and the other party) during the first phrases and keeps it until the end of the recording. Pick a language if the call is always in it</value></data>
+  <data name="SpeechLanguageDetected" xml:space="preserve"><value>language: {0}</value></data>
 </root>

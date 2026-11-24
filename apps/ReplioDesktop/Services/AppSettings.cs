@@ -19,7 +19,8 @@ public class AppSettings
 
     public string UiLanguage { get; set; } = "ru";
     public string ThemeMode { get; set; } = "dark";
-    public string CaptureLanguage { get; set; } = "ru";
+    /// <summary>Speech language: «auto» (detected per source, then locked) or a code such as «ru», «en».</summary>
+    public string CaptureLanguage { get; set; } = "auto";
     public string OutputLanguage { get; set; } = "ru";
     public string MicParticipantName { get; set; } = "Я";
     public string SystemParticipantName { get; set; } = "Собеседник";
