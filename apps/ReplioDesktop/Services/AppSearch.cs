@@ -258,6 +258,10 @@ public sealed class AppSearch
         flat = Regex.Replace(flat, @"\[[ xX]\]", " ");
         flat = Regex.Replace(flat, @"(^|\n)[ \t]*(?:[-+•]|\d+[.)])[ \t]+", "$1");
         flat = Regex.Replace(flat, @"[#*_`>|]+", " ");
-        return Regex.Replace(flat, @"\s+", " ").Trim();
+        // A heading and the item under it stay apart: «Задачи · Черновики трёх кейсов».
+        flat = Regex.Replace(flat, @"[ \t]*\r?\n\s*", " · ");
+        flat = Regex.Replace(flat, @"\s+", " ");
+        flat = Regex.Replace(flat, @"(?: · )+", " · ");
+        return flat.Trim().Trim('·').Trim();
     }
 }

@@ -336,7 +336,7 @@
                                         MaxHeight="{TemplateBinding MaxDropDownHeight}"
                                         Padding="4"
                                         CornerRadius="12"
-                                        Background="{DynamicResource EchoPopupBrush}"
+                                        Background="{DynamicResource EchoSurfaceBrush}"
                                         BorderBrush="{DynamicResource EchoBorderBrush}"
                                         BorderThickness="1">
                                     <ScrollViewer>
