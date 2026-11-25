@@ -1152,6 +1152,10 @@ public partial class MainViewModel : ObservableObject
 
             _selectedMainPage = value;
             OnPropertyChanged();
+            if (value == "Settings")
+            {
+                RefreshAccountIfStale();
+            }
             // «Назад» only makes sense away from the home screen.
             _goHomeCommand?.RaiseCanExecuteChanged();
         }

@@ -113,6 +113,8 @@ public partial class MainWindow : Window
         _viewModel.ShowOverlayRequested += ShowAssistOverlay;
         _viewModel.HideOverlayRequested += HideAssistOverlay;
         _viewModel.WindowModeRequested += ApplyWindowMode;
+        // Back from the personal account in the browser: pick up a new plan without waiting for the timer.
+        Activated += (_, _) => _viewModel.RefreshAccountIfStale(120);
         _viewModel.HotkeysChanged += RegisterHotkeys;
         _viewModel.ExitForUpdateRequested += () => Dispatcher.BeginInvoke(new Action(ExitFromTray));
         _viewModel.RestartRequested += () => Dispatcher.BeginInvoke(new Action(RestartApp));

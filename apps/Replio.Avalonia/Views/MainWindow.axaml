@@ -331,9 +331,9 @@
                 <Border Background="{DynamicResource EchoHeroBrush}" BorderBrush="{DynamicResource EchoBorderBrush}" BorderThickness="0,0,0,1">
                     <Grid Margin="24,12,28,12" ColumnDefinitions="Auto,Auto,Auto,*,Auto">
                         <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
-                            <controls:EchoLogo Width="42"
-                                               Height="42"
-                                               Margin="-4,0,4,0"
+                            <controls:EchoLogo Width="50"
+                                               Height="50"
+                                               Margin="-10,0,2,0"
                                                IsAnimating="{Binding IsCapturing}" />
                             <TextBlock FontSize="26" FontWeight="ExtraBold" VerticalAlignment="Center" Foreground="{DynamicResource EchoTextBrush}"><Run Text="Repl" /><Run Foreground="{DynamicResource EchoAccentTextBrush}" Text="io" /></TextBlock>
                         </StackPanel>

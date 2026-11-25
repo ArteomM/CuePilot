@@ -68,13 +68,14 @@ public abstract class EchoAnimatedControl : Control
     protected static double EaseOutCubic(double t) => 1 - Math.Pow(1 - t, 3);
 }
 
-/// <summary>Logo: an «R» with a mint dot and echo rings that spread out while Replio is listening.</summary>
+/// <summary>Logo: the mint sound-wave tile of the site, with echo rings that spread out while Replio is listening.</summary>
 public class EchoLogo : EchoAnimatedControl
 {
     public static readonly StyledProperty<bool> IsAnimatingProperty =
         AvaloniaProperty.Register<EchoLogo, bool>(nameof(IsAnimating));
 
-    private static readonly Geometry Letter = Geometry.Parse("M44,82 L44,38 L57,38 A11.5,11.5 0 0 1 57,61 L44,61 M55,61 L69,82");
+    private static readonly (double X, double Y, double H)[] Bars = [(7, 13, 6), (11.4, 9, 14), (15.8, 6, 20), (20.2, 10.5, 11), (24.6, 14, 4)];
+    private static readonly IBrush Ink = new SolidColorBrush(Color.FromRgb(0x06, 0x2A, 0x1F));
 
     static EchoLogo()
     {
@@ -92,7 +93,6 @@ public class EchoLogo : EchoAnimatedControl
 
     public EchoLogo()
     {
-        // The «R» follows the day/night palette, so redraw when the theme changes.
         ActualThemeVariantChanged += (_, _) => InvalidateVisual();
     }
 
@@ -131,11 +131,13 @@ public class EchoLogo : EchoAnimatedControl
                 }
             }
 
-            IBrush letterBrush = this.TryFindResource("EchoTextBrush", ActualThemeVariant, out object? brush) && brush is IBrush b
-                ? b
-                : Brushes.White;
-            context.DrawGeometry(null, new Pen(letterBrush, 9, lineCap: PenLineCap.Round, lineJoin: PenLineJoin.Round), Letter);
-            context.DrawEllipse(EchoMotion.AccentBrush, null, new Point(81, 60), 6, 6);
+            // The site's mark: a mint tile with a sound wave (favicon.svg, 32×32) scaled into the 72×72 middle.
+            const double k = 72 / 32.0;
+            context.DrawRectangle(EchoMotion.AccentBrush, null, new RoundedRect(new Rect(24, 24, 72, 72), 9 * k));
+            foreach ((double x, double y, double h) in Bars)
+            {
+                context.DrawRectangle(Ink, null, new RoundedRect(new Rect(24 + x * k, 24 + y * k, 2.6 * k, h * k), 1.3 * k));
+            }
         }
     }
 }

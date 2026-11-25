@@ -206,9 +206,36 @@ public partial class MainViewModel
         {
             _ = RefreshAccountAsync();
         }
+
+        StartAccountAutoRefresh();
     }
 
-    /// <summary>Re-reads the plan: at start, after a recording and after a gateway refusal (402/403).</summary>
+    private static readonly TimeSpan AccountRefreshInterval = TimeSpan.FromMinutes(10);
+    private DateTime _accountRefreshedAt = DateTime.MinValue;
+    private UiTimer? _accountTimer;
+
+    /// <summary>
+    /// A change of plan in the personal account reaches the app within 10 minutes, at once when Settings open or the
+    /// window comes back (if the last check is older than 30 s / 2 min). Limits themselves are checked by the gateway on
+    /// every request, so they apply immediately anyway; this keeps the visible options and the balance current.
+    /// </summary>
+    private void StartAccountAutoRefresh()
+    {
+        _accountTimer = new UiTimer { Interval = AccountRefreshInterval };
+        _accountTimer.Tick += async (_, _) => await RefreshAccountAsync();
+        _accountTimer.Start();
+    }
+
+    /// <summary>Settings opened or the window activated: refresh unless it was just done.</summary>
+    public void RefreshAccountIfStale(int olderThanSeconds = 30)
+    {
+        if (IsSignedIn && DateTime.UtcNow - _accountRefreshedAt > TimeSpan.FromSeconds(olderThanSeconds))
+        {
+            _ = RefreshAccountAsync();
+        }
+    }
+
+    /// <summary>Re-reads the plan: at start, every 10 minutes, on opening Settings, after a recording and after a gateway refusal (402/403).</summary>
     private async Task RefreshAccountAsync()
     {
         if (!IsSignedIn || _isAccountRefreshing)
@@ -216,6 +243,7 @@ public partial class MainViewModel
             return;
         }
 
+        _accountRefreshedAt = DateTime.UtcNow;
         _isAccountRefreshing = true;
         OnAccountChanged();
         try

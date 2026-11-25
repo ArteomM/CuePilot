@@ -24,7 +24,7 @@ internal static class EchoMotion
 }
 
 /// <summary>
-/// Logo: an «R» with a mint dot and echo rings that spread out while Replio is listening.
+/// Logo: the mint sound-wave tile of the site and echo rings that spread out while Replio is listening.
 /// </summary>
 public class EchoLogo : UserControl
 {
@@ -60,21 +60,20 @@ public class EchoLogo : UserControl
             AddRingAnimation(ring, TimeSpan.FromSeconds(0.8 * i));
         }
 
-        var letter = new Path
+        // The site's mark: a mint tile with a sound wave (favicon.svg, 32×32) scaled into the 72×72 middle.
+        const double k = 72 / 32.0;
+        var tile = new Rectangle { Width = 72, Height = 72, RadiusX = 9 * k, RadiusY = 9 * k, Fill = EchoMotion.Brush(EchoMotion.Accent) };
+        Canvas.SetLeft(tile, 24);
+        Canvas.SetTop(tile, 24);
+        canvas.Children.Add(tile);
+        var ink = EchoMotion.Brush(Color.FromRgb(0x06, 0x2A, 0x1F));
+        foreach ((double x, double y, double h) in new[] { (7.0, 13.0, 6.0), (11.4, 9.0, 14.0), (15.8, 6.0, 20.0), (20.2, 10.5, 11.0), (24.6, 14.0, 4.0) })
         {
-            Data = Geometry.Parse("M44,82 L44,38 L57,38 A11.5,11.5 0 0 1 57,61 L44,61 M55,61 L69,82"),
-            StrokeThickness = 9,
-            StrokeStartLineCap = PenLineCap.Round,
-            StrokeEndLineCap = PenLineCap.Round,
-            StrokeLineJoin = PenLineJoin.Round
-        };
-        // The «R» follows the day/night palette.
-        letter.SetResourceReference(Shape.StrokeProperty, "EchoTextBrush");
-        canvas.Children.Add(letter);
-        var dot = new Ellipse { Width = 12, Height = 12, Fill = EchoMotion.Brush(EchoMotion.Accent) };
-        Canvas.SetLeft(dot, 75);
-        Canvas.SetTop(dot, 54);
-        canvas.Children.Add(dot);
+            var bar = new Rectangle { Width = 2.6 * k, Height = h * k, RadiusX = 1.3 * k, RadiusY = 1.3 * k, Fill = ink };
+            Canvas.SetLeft(bar, 24 + x * k);
+            Canvas.SetTop(bar, 24 + y * k);
+            canvas.Children.Add(bar);
+        }
 
         Content = new Viewbox { Child = canvas, Stretch = Stretch.Uniform };
         Loaded += (_, _) => UpdateAnimation();

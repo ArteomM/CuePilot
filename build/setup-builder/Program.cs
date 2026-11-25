@@ -949,30 +949,29 @@ internal sealed class SetupForm : Form
         EchoTheme.DrawText(g, _status, _smallFont, new RectangleF(S(28), S(240), S(504), S(24)), EchoTheme.Muted);
     }
 
-    /// <summary>The app logo: an «R» with a mint dot and one echo ring, like the app's EchoLogo.</summary>
+    /// <summary>The app logo: the site's mint tile with a sound wave (favicon.svg, 32×32) and one echo ring.</summary>
     private static void DrawLogo(Graphics g, RectangleF rect)
     {
         float unit = rect.Width / 120f;
-        PointF P(float x, float y) => new PointF(rect.X + x * unit, rect.Y + y * unit);
         using (var ring = new Pen(Color.FromArgb(90, EchoTheme.Accent), 2 * unit))
         {
             g.DrawEllipse(ring, rect.X + 14 * unit, rect.Y + 14 * unit, 92 * unit, 92 * unit);
         }
 
-        using (var stroke = new Pen(EchoTheme.Text, 9 * unit) { StartCap = LineCap.Round, EndCap = LineCap.Round, LineJoin = LineJoin.Round })
-        using (var letter = new GraphicsPath())
+        float k = 72f / 32f * unit;
+        float left = rect.X + 24 * unit, top = rect.Y + 24 * unit;
+        using (var tile = EchoTheme.Rounded(new RectangleF(left, top, 72 * unit, 72 * unit), 9 * k))
+        using (var accent = new SolidBrush(EchoTheme.Accent))
         {
-            // Same path as EchoLogo: M44,82 L44,38 L57,38 A11.5,11.5 0 0 1 57,61 L44,61 M55,61 L69,82
-            letter.AddLines(new[] { P(44, 82), P(44, 38), P(57, 38) });
-            letter.AddArc(rect.X + 45.5f * unit, rect.Y + 38 * unit, 23 * unit, 23 * unit, 270, 180);
-            letter.AddLine(P(57, 61), P(44, 61));
-            letter.StartFigure();
-            letter.AddLine(P(55, 61), P(69, 82));
-            g.DrawPath(stroke, letter);
+            g.FillPath(accent, tile);
         }
 
-        using var dot = new SolidBrush(EchoTheme.Accent);
-        g.FillEllipse(dot, rect.X + 75 * unit, rect.Y + 54 * unit, 12 * unit, 12 * unit);
+        using var ink = new SolidBrush(Color.FromArgb(0x06, 0x2A, 0x1F));
+        foreach ((float x, float y, float h) in new[] { (7f, 13f, 6f), (11.4f, 9f, 14f), (15.8f, 6f, 20f), (20.2f, 10.5f, 11f), (24.6f, 14f, 4f) })
+        {
+            using GraphicsPath bar = EchoTheme.Rounded(new RectangleF(left + x * k, top + y * k, 2.6f * k, h * k), 1.3f * k);
+            g.FillPath(ink, bar);
+        }
     }
 
     private void SetStatus(string status)
