@@ -150,6 +150,7 @@
                         Content="↗"
                         Click="OpenMainButton_OnClick" />
                 <TextBlock Grid.Column="3"
+                           Name="HotkeyHintText"
                            VerticalAlignment="Center"
                            Foreground="#9AA5B5"
                            Text="Ctrl+/" />
@@ -167,7 +168,7 @@
                              Padding="12,8"
                              Foreground="#E9EEF5"
                              CaretBrush="#5EF0C1"
-                             Text="Ask anything about your conversation"
+                             Text=""
                              MouseEnter="OverlayPromptText_OnMouseEnter"
                              GotKeyboardFocus="OverlayPromptText_OnGotKeyboardFocus"
                              KeyDown="OverlayPromptText_OnKeyDown"

@@ -115,7 +115,7 @@
                              Padding="12,8"
                              Foreground="#E9EEF5"
                              CaretBrush="#5EF0C1"
-                             Text="Ask anything about your conversation"
+                             Text=""
                              VerticalContentAlignment="Center" />
                 </Border>
                 <StackPanel Grid.Column="1" Orientation="Horizontal" Margin="8,0,0,0">

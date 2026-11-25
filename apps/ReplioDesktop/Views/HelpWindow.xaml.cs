@@ -90,6 +90,7 @@ public partial class HelpWindow : Window
         }
 
         ImageFrame.Visibility = TopicImage.Source == null ? Visibility.Collapsed : Visibility.Visible;
+        HideZoom();
         TopicText.ScrollToHome();
     }
 
@@ -97,7 +98,15 @@ public partial class HelpWindow : Window
     {
         if (e.Key == Key.Escape)
         {
-            Close();
+            if (ZoomLayer.Visibility == Visibility.Visible)
+            {
+                HideZoom();
+            }
+            else
+            {
+                Close();
+            }
+
             e.Handled = true;
         }
         else if (e.Key is Key.Right or Key.PageDown && _viewModel.NextHelpTopicCommand.CanExecute(null))
@@ -110,6 +119,31 @@ public partial class HelpWindow : Window
             _viewModel.PreviousHelpTopicCommand.Execute(null);
             e.Handled = true;
         }
+    }
+
+    /// <summary>The mini screenshot is small in the card: a click shows it over the whole window.</summary>
+    private void ImageFrame_OnMouseLeftButtonUp(object sender, MouseButtonEventArgs e)
+    {
+        if (TopicImage.Source == null)
+        {
+            return;
+        }
+
+        ZoomImage.Source = TopicImage.Source;
+        ZoomLayer.Visibility = Visibility.Visible;
+        e.Handled = true;
+    }
+
+    private void ZoomLayer_OnMouseLeftButtonUp(object sender, MouseButtonEventArgs e)
+    {
+        HideZoom();
+        e.Handled = true;
+    }
+
+    private void HideZoom()
+    {
+        ZoomLayer.Visibility = Visibility.Collapsed;
+        ZoomImage.Source = null;
     }
 
     private void CloseButton_OnClick(object sender, RoutedEventArgs e) => Close();

@@ -136,6 +136,7 @@ public partial class MainWindow : Window
         void ShowLimitOnIndicator() => _indicatorWindow.SetLimit(_viewModel.IsLimitLow, _viewModel.LimitLeftPercent, _viewModel.LimitBarColorOnDark, _viewModel.LimitBarTooltip);
         _viewModel.LimitChanged += () => Dispatcher.Invoke(ShowLimitOnIndicator);
         ShowLimitOnIndicator();
+        _assistOverlayWindow.HotkeyHint = _viewModel.ToggleOverlayHotkeyText;
         _viewModel.MainWindowAttentionRequested += FocusMainWindowAfterAsk;
         _viewModel.PropertyChanged += (_, e) =>
         {
@@ -147,6 +148,11 @@ public partial class MainWindow : Window
             if (e.PropertyName == nameof(MainViewModel.SmartModeEnabled))
             {
                 Dispatcher.Invoke(() => _assistOverlayWindow.SetSmartMode(_viewModel.SmartModeEnabled));
+            }
+
+            if (e.PropertyName == nameof(MainViewModel.ToggleOverlayHotkeyText))
+            {
+                Dispatcher.Invoke(() => _assistOverlayWindow.HotkeyHint = _viewModel.ToggleOverlayHotkeyText);
             }
 
             if (e.PropertyName == nameof(MainViewModel.ShowInScreenShare))

@@ -40,7 +40,28 @@ public partial class HelpWindow : Window
             _open = null;
         };
         KeyDown += OnKeyDown;
+        // The mini screenshot is small in the card: a click shows it over the whole window.
+        ImageFrame.PointerReleased += (_, e) =>
+        {
+            if (TopicImage.Source != null)
+            {
+                ZoomImage.Source = TopicImage.Source;
+                ZoomLayer.IsVisible = true;
+                e.Handled = true;
+            }
+        };
+        ZoomLayer.PointerReleased += (_, e) =>
+        {
+            HideZoom();
+            e.Handled = true;
+        };
         ShowTopicImage();
+    }
+
+    private void HideZoom()
+    {
+        ZoomLayer.IsVisible = false;
+        ZoomImage.Source = null;
     }
 
     /// <summary>Opens the help window, or brings the open one forward.</summary>
@@ -101,6 +122,7 @@ public partial class HelpWindow : Window
             }
         }
 
+        HideZoom();
         var previous = TopicImage.Source as IDisposable;
         TopicImage.Source = image;
         previous?.Dispose();
@@ -116,7 +138,15 @@ public partial class HelpWindow : Window
 
         if (e.Key == Key.Escape)
         {
-            Close();
+            if (ZoomLayer.IsVisible)
+            {
+                HideZoom();
+            }
+            else
+            {
+                Close();
+            }
+
             e.Handled = true;
         }
         else if (e.Key is Key.Right or Key.PageDown && _viewModel.NextHelpTopicCommand.CanExecute(null))

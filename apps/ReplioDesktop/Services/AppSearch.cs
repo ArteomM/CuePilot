@@ -253,7 +253,11 @@ public sealed class AppSearch
 
     private static string Clean(string text)
     {
-        string flat = Regex.Replace(text, @"[#*_`>|]+", " ");
+        // Links keep their text; checkboxes «- [ ]» and list marks go, then the remaining Markdown marks.
+        string flat = Regex.Replace(text, @"!?\[([^\]]*)\]\([^)]*\)", "$1");
+        flat = Regex.Replace(flat, @"\[[ xX]\]", " ");
+        flat = Regex.Replace(flat, @"(^|\n)[ \t]*(?:[-+•]|\d+[.)])[ \t]+", "$1");
+        flat = Regex.Replace(flat, @"[#*_`>|]+", " ");
         return Regex.Replace(flat, @"\s+", " ").Trim();
     }
 }

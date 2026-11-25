@@ -877,4 +877,6 @@
   <data name="LimitMinutesOnly" xml:space="preserve"><value>{0} мин</value></data>
   <data name="LimitUnlimited" xml:space="preserve"><value>Без лимита</value></data>
   <data name="LimitTipUnlimited" xml:space="preserve"><value>Лимиты тарифа к вашему аккаунту не применяются.</value></data>
+  <data name="HelpZoomHint" xml:space="preserve"><value>Нажмите, чтобы увеличить</value></data>
+  <data name="HelpZoomClose" xml:space="preserve"><value>Нажмите или Esc, чтобы вернуться</value></data>
 </root>

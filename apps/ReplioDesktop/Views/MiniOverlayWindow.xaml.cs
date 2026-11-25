@@ -118,6 +118,13 @@ public partial class MiniOverlayWindow : Window
         set => OverlayPromptText.Text = value;
     }
 
+    /// <summary>Shown next to the title: the hotkey that shows and hides the overlay (from Settings).</summary>
+    public string HotkeyHint
+    {
+        get => HotkeyHintText.Text;
+        set => HotkeyHintText.Text = value;
+    }
+
     public void ConfigureActions(
         Action openSessionAction,
         Action suggestNextQuestionAction,

@@ -126,6 +126,9 @@
                             Margin="0,12,0,0"
                             Padding="6"
                             HorizontalAlignment="Left"
+                            Cursor="Hand"
+                            ToolTip="{Binding L[HelpZoomHint]}"
+                            MouseLeftButtonUp="ImageFrame_OnMouseLeftButtonUp"
                             CornerRadius="12"
                             Background="{DynamicResource EchoSurfaceAltBrush}"
                             BorderBrush="{DynamicResource EchoCardBorderBrush}"
@@ -164,6 +167,22 @@
                             Command="{Binding NextHelpTopicCommand}" Content="{Binding L[HelpNext]}" />
                 </StackPanel>
             </Grid>
+
+            <!-- The picture enlarged over the whole window: a click or Esc closes it. -->
+            <Border x:Name="ZoomLayer"
+                    Grid.RowSpan="3"
+                    CornerRadius="18"
+                    Padding="14"
+                    Cursor="Hand"
+                    Visibility="Collapsed"
+                    Background="{DynamicResource EchoSurfaceBrush}"
+                    ToolTip="{Binding L[HelpZoomClose]}"
+                    MouseLeftButtonUp="ZoomLayer_OnMouseLeftButtonUp">
+                <Image x:Name="ZoomImage"
+                       Stretch="Uniform"
+                       StretchDirection="DownOnly"
+                       RenderOptions.BitmapScalingMode="HighQuality" />
+            </Border>
         </Grid>
     </Border>
 </Window>

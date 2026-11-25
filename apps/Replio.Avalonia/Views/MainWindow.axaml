@@ -670,9 +670,10 @@
                                 BorderBrush="{DynamicResource EchoBorderBrush}"
                                 BorderThickness="0,0,0,1"
                                 IsVisible="{Binding IsTopicSelected}">
-                            <DockPanel LastChildFill="False">
+                            <!-- Tabs wrap to a second line in a narrow window instead of going under the button. -->
+                            <Grid ColumnDefinitions="*,Auto">
                             <!-- One «Актуализировать тему» for the whole topic: materials, summary and graph. -->
-                            <Button DockPanel.Dock="Right"
+                            <Button Grid.Column="1"
                                     Height="34"
                                     Margin="12,0,0,6"
                                     Padding="16,0"
@@ -691,7 +692,7 @@
                                              IsVisible="{Binding IsTopicOutdated}" />
                                 </StackPanel>
                             </Button>
-                            <StackPanel DockPanel.Dock="Left" Orientation="Horizontal">
+                            <WrapPanel Grid.Column="0" Orientation="Horizontal">
                                 <RadioButton GroupName="TopicTab" Classes="topicTab" IsChecked="{Binding IsTopicTabSessions, Mode=TwoWay}" ToolTip.Tip="{Binding L[TipTopicTabSessions]}">
                                     <StackPanel Orientation="Horizontal">
                                         <TextBlock Text="{Binding L[TopicTabSessions]}" />
@@ -741,8 +742,8 @@
                                 <RadioButton GroupName="TopicTab" Classes="topicTab" IsChecked="{Binding IsTopicTabMeetings, Mode=TwoWay}" ToolTip.Tip="{Binding L[TipTopicTabMeetings]}">
                                     <TextBlock Text="{Binding L[TopicTabMeetings]}" />
                                 </RadioButton>
-                            </StackPanel>
-                            </DockPanel>
+                            </WrapPanel>
+                            </Grid>
                         </Border>
 
                         <!-- «Сессии»: the session list (also the whole view for «Все сессии» and «Без темы»). -->
