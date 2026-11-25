@@ -875,4 +875,6 @@
   <data name="LimitHours" xml:space="preserve"><value>{0} h</value></data>
   <data name="LimitHoursMinutes" xml:space="preserve"><value>{0} h {1} min</value></data>
   <data name="LimitMinutesOnly" xml:space="preserve"><value>{0} min</value></data>
+  <data name="LimitUnlimited" xml:space="preserve"><value>No limit</value></data>
+  <data name="LimitTipUnlimited" xml:space="preserve"><value>Plan limits do not apply to your account.</value></data>
 </root>

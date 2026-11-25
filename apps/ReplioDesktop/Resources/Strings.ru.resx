@@ -875,4 +875,6 @@
   <data name="LimitHours" xml:space="preserve"><value>{0} ч</value></data>
   <data name="LimitHoursMinutes" xml:space="preserve"><value>{0} ч {1} мин</value></data>
   <data name="LimitMinutesOnly" xml:space="preserve"><value>{0} мин</value></data>
+  <data name="LimitUnlimited" xml:space="preserve"><value>Без лимита</value></data>
+  <data name="LimitTipUnlimited" xml:space="preserve"><value>Лимиты тарифа к вашему аккаунту не применяются.</value></data>
 </root>

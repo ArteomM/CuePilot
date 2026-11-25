@@ -8,7 +8,7 @@ namespace ReplioDesktop.ViewModels;
 /// remainder of the plan: today's limit (a fifth of the month's AI budget), the month's AI budget and, on plans with
 /// hours, the minutes of meetings. Values come from GET /account (quota) and, between those reads, from the
 /// X-Replio-*-Left headers of every AI answer. Mint above 20 %, yellow at 20 % and below, red at 5 % and below;
-/// hidden for unlimited accounts and on plans with own providers. A click opens the personal account on replio.ru.
+/// «Без лимита» for unlimited accounts, hidden on plans with own providers. A click opens the personal account on replio.ru.
 /// The recording indicator shows a thin line of the same colour once the remainder is 20 % or less.
 /// </summary>
 public partial class MainViewModel
@@ -104,11 +104,12 @@ public partial class MainViewModel
         }
     }
 
-    public bool ShowLimitBar => IsManagedAi && IsSignedIn && !_limitUnlimited && TightestLimit != null;
+    /// <summary>Unlimited accounts (the owner of the service) see «Без лимита» with a full bar.</summary>
+    public bool ShowLimitBar => IsManagedAi && IsSignedIn && (_limitUnlimited || TightestLimit != null);
 
-    public int LimitLeftPercent => TightestLimit?.Percent ?? 100;
+    public int LimitLeftPercent => _limitUnlimited ? 100 : TightestLimit?.Percent ?? 100;
 
-    public bool IsLimitLow => ShowLimitBar && LimitLeftPercent <= LimitWarnPercent;
+    public bool IsLimitLow => ShowLimitBar && !_limitUnlimited && LimitLeftPercent <= LimitWarnPercent;
 
     public double LimitBarWidth => LimitLeftPercent <= 0 ? 0 : Math.Max(3, LimitTrackWidth * LimitLeftPercent / 100.0);
 
@@ -143,6 +144,11 @@ public partial class MainViewModel
     {
         get
         {
+            if (_limitUnlimited)
+            {
+                return L["LimitUnlimited"];
+            }
+
             if (TightestLimit is not { } tight)
             {
                 return string.Empty;
@@ -163,6 +169,11 @@ public partial class MainViewModel
         get
         {
             var lines = new List<string>();
+            if (_limitUnlimited)
+            {
+                return L["LimitTipUnlimited"] + "\n" + L["LimitTipClick"];
+            }
+
             if (_limitDay is int day)
             {
                 lines.Add(string.Format(L["LimitTipDay"], Math.Clamp(day, 0, 100), DescribeReset(_limitDayResetsAt)));
