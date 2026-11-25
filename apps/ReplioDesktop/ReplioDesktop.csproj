@@ -7,14 +7,14 @@
     <ImplicitUsings>enable</ImplicitUsings>
     <UseWPF>true</UseWPF>
     <ApplicationIcon>replio-favicon.ico</ApplicationIcon>
-    <Version>1.1.1</Version>
+    <Version>1.1.2</Version>
     <Company>ИП Макаров Артём Павлович</Company>
     <Copyright>© 2026 ИП Макаров Артём Павлович</Copyright>
     <Description>Replio — ИИ-помощник для встреч</Description>
     <AssemblyTitle>Replio — ИИ-помощник для встреч</AssemblyTitle>
-    <AssemblyVersion>1.1.1.0</AssemblyVersion>
-    <FileVersion>1.1.1.0</FileVersion>
-    <InformationalVersion>1.1.1</InformationalVersion>
+    <AssemblyVersion>1.1.2.0</AssemblyVersion>
+    <FileVersion>1.1.2.0</FileVersion>
+    <InformationalVersion>1.1.2</InformationalVersion>
     <Product>Replio</Product>
   </PropertyGroup>
 
