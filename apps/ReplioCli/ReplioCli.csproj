@@ -17,6 +17,7 @@
     <Company>ИП Макаров Артём Павлович</Company>
     <Copyright>© 2026 ИП Макаров Артём Павлович</Copyright>
     <Description>Replio — команда для ИИ-агентов</Description>
+    <AssemblyTitle>Replio — команда для ИИ-агентов</AssemblyTitle>
     <AssemblyVersion>1.1.0.0</AssemblyVersion>
     <FileVersion>1.1.0.0</FileVersion>
     <Product>Replio</Product>

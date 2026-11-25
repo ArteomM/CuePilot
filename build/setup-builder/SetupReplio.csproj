@@ -17,10 +17,10 @@
     <Company>ИП Макаров Артём Павлович</Company>
     <Copyright>© 2026 ИП Макаров Артём Павлович</Copyright>
     <Description>Установщик Replio</Description>
+    <AssemblyTitle>Установщик Replio</AssemblyTitle>
     <AssemblyVersion>1.1.0.0</AssemblyVersion>
     <FileVersion>1.1.0.0</FileVersion>
     <Product>Replio</Product>
-    <AssemblyTitle>Replio Setup</AssemblyTitle>
   </PropertyGroup>
 
   <ItemGroup>
