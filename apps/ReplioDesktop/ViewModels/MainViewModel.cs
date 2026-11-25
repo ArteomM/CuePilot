@@ -319,6 +319,7 @@ public partial class MainViewModel : ObservableObject
         OpenAiAssistClient.ReplioRefused += ex => OnReplioRefusal(ex);
         InitializeLibrary();
         InitializeScreenshots();
+        InitializeSettingsLayout();
         RefreshSessionList();
         CleanupVisualContextInBackground();
         // %AppData%\Replio\AGENTS.md tells a local AI agent where the «replio» command and the sessions are.
@@ -763,6 +764,7 @@ public partial class MainViewModel : ObservableObject
             _useApiStt = value;
             OnPropertyChanged();
             OnPropertyChanged(nameof(SttKeySourceText));
+            OnSettingsLayoutPlanChanged();
         }
     }
 
@@ -811,11 +813,12 @@ public partial class MainViewModel : ObservableObject
             string? path = SpeechModelCatalog.ResolveActiveModelPath(_settings, _projectRoot);
             if (path == null)
             {
-                return L["SpeechModelMissingStatus"];
+                return L[CanUseOwnProviders ? "SpeechModelMissingStatusOwn" : "SpeechModelMissingStatus"];
             }
 
             string fileName = Path.GetFileName(path);
-            string title = SpeechModelCatalog.Find(fileName)?.Title ?? fileName;
+            SpeechModelInfo? info = SpeechModelCatalog.Find(fileName);
+            string title = info != null ? L[info.NameKey] : fileName;
             return string.Format(L["SpeechModelActiveStatus"], title);
         }
     }
@@ -902,6 +905,7 @@ public partial class MainViewModel : ObservableObject
 
             _showInScreenShare = value;
             OnPropertyChanged();
+            OnPropertyChanged(nameof(HideInScreenShare));
         }
     }
 
@@ -1506,6 +1510,8 @@ public partial class MainViewModel : ObservableObject
 
     public void Shutdown()
     {
+        FlushSettingsAutoSave();
+        FlushTopicGlossary();
         _captureOrchestrator.Kill();
         _visualContextCapture.Stop();
         _sessionLifecycleService.Dispose();
@@ -1666,7 +1672,7 @@ public partial class MainViewModel : ObservableObject
                 SttApiModel = sttApiModel,
                 SttApiKey = sttApiKey,
                 SttExtraHeaders = useApiStt && IsManagedAi ? ReplioApi.HeadersLine(_settings.ReplioDeviceId, session.Id) : string.Empty,
-                SttGlossary = SttGlossary
+                SttGlossary = SttGlossaryFor(SelectedTopic)
             });
             _lastSttCostSeen = 0;
             _detectedSpeechLanguages.Clear();
@@ -1823,62 +1829,6 @@ public partial class MainViewModel : ObservableObject
         AppendLog("[context] Session context reset.");
     }
 
-    private void SaveSettings()
-    {
-        if (!ValidateHotkeys(out List<string> errors))
-        {
-            NotificationRequested?.Invoke(L["ErrorTitle"], string.Join(Environment.NewLine, errors), true);
-            return;
-        }
-
-        _settings.UiLanguage = SelectedUiLanguage;
-        _settings.ThemeMode = SelectedThemeMode;
-        _settings.ToggleOverlayHotkey = NormalizeSlashHotkey(ToggleOverlayHotkeyText, "Ctrl+/");
-        _settings.ToggleCaptureHotkey = NormalizeSlashHotkey(ToggleCaptureHotkeyText, "Ctrl+Shift+/");
-        _settings.AskHotkey = AskHotkeyText;
-        _settings.ClearChatHotkey = ClearChatHotkeyText;
-        _settings.MoveLeftHotkey = MoveLeftHotkeyText;
-        _settings.MoveRightHotkey = MoveRightHotkeyText;
-        _settings.MoveUpHotkey = MoveUpHotkeyText;
-        _settings.MoveDownHotkey = MoveDownHotkeyText;
-        _settings.ScrollUpHotkey = ScrollUpHotkeyText;
-        _settings.ScrollDownHotkey = ScrollDownHotkeyText;
-        _settings.SnapshotHotkey = SnapshotHotkeyText;
-        _settings.SmartModeEnabled = SmartModeEnabled;
-        _settings.ApiPresetName = SelectedApiPreset;
-        _settings.ApiProvider = ApiProvider;
-        _settings.ApiKeyHeaderName = ApiKeyHeaderName;
-        _settings.ApiKeyPrefix = ApiKeyPrefix;
-        _settings.ChatCompletionsPath = ChatCompletionsPath;
-        _settings.OpenAiApiKey = OpenAiApiKey;
-        _settings.OpenAiModel = OpenAiModel;
-        _settings.AnalysisModel = AnalysisModel;
-        _settings.OpenAiBaseUrl = OpenAiBaseUrl;
-        _settings.SttProvider = UseApiStt ? AppSettings.SttProviderApi : AppSettings.SttProviderLocal;
-        _settings.SttApiPresetName = SelectedSttPreset;
-        _settings.SttApiBaseUrl = string.IsNullOrWhiteSpace(SttApiBaseUrl) ? AppSettings.PolzaBaseUrl : SttApiBaseUrl.Trim();
-        _settings.SttApiModel = SttApiModel;
-        _settings.SttApiKey = SttApiKey;
-        _settings.SttGlossary = SttGlossary;
-        _settings.ShowInScreenShare = ShowInScreenShare;
-        _settings.ShowInTaskbar = ShowInTaskbar;
-        _settings.InvisibilityModeEnabled = InvisibilityModeEnabled;
-        _settings.AutoLaunchEnabled = AutoLaunchEnabled;
-        _settings.PermissionsConfirmed = _permissionsConfirmed;
-        _settings.CaptureScreenContextEnabled = CaptureScreenContextEnabled;
-        _settings.SelectedMonitor = SelectedMonitor;
-        _settings.OutputLanguage = SelectedOutputLanguage;
-        _settings.VideoContextEnabled = VideoContextEnabled;
-        _settings.VideoContextIntervalMs = VideoContextIntervalMs;
-        _settings.VisualContextMaxFrames = VisualContextMaxFrames;
-        _settings.VisualContextMaxImagesPerRequest = VisualContextMaxImagesPerRequest;
-
-        _settingsService.Save(_settings);
-        ApplyTheme();
-        AppendLog("[settings] Saved.");
-        HotkeysChanged?.Invoke();
-    }
-
     private void OnStatsUpdated(CaptureStats stats)
     {
         SystemStatsText = $"{L["StatsAvgShort"]} {stats.SystemAverageKb:0.0} KB/s, {L["StatsPeakShort"]} {stats.SystemPeak:0.000}";
@@ -2015,6 +1965,7 @@ public partial class MainViewModel : ObservableObject
             }
 
             OnLocalizationChangedForMeetingStyles();
+            OnSettingsLayoutLocalized();
             OnLimitChanged();
             if (InstallUpdateCommand != null)
             {
@@ -2071,6 +2022,7 @@ public partial class MainViewModel : ObservableObject
         }
 
         OnPropertyChanged(nameof(SpeechModelStatusText));
+        OnPropertyChanged(nameof(IsSpeechModelMissing));
     }
 
     private async void DownloadSpeechModel(object? parameter)
@@ -2122,7 +2074,7 @@ public partial class MainViewModel : ObservableObject
         catch (Exception ex)
         {
             AppendLog("[stt] Speech model download failed: " + ex.Message);
-            NotificationRequested?.Invoke(L["ErrorTitle"], string.Format(L["SpeechModelDownloadFailed"], item.Info.Title, ex.Message), true);
+            NotificationRequested?.Invoke(L["ErrorTitle"], string.Format(L["SpeechModelDownloadFailed"], item.Title, ex.Message), true);
         }
         finally
         {
@@ -2152,7 +2104,7 @@ public partial class MainViewModel : ObservableObject
 
         bool confirmed = ConfirmationRequested?.Invoke(
             L["SpeechModelDeleteTitle"],
-            string.Format(L["SpeechModelDeleteConfirm"], item.Info.Title)) ?? true;
+            string.Format(L["SpeechModelDeleteConfirm"], item.Title)) ?? true;
         if (!confirmed)
         {
             return;
@@ -2900,7 +2852,9 @@ public partial class MainViewModel : ObservableObject
             Endpoint = BuildLlmEndpoint(),
             FastModel = EffectiveFastModel,
             AnalysisModel = EffectiveAnalysisModel,
-            SmartModeEnabled = SmartModeEnabled,
+            // «Глубокий режим» is gone (Arteom 2026-11-25): through replio.ru it changed nothing, so every request
+            // uses the plan's models with the usual thinking; an old "SmartModeEnabled": true in settings.json is ignored.
+            SmartModeEnabled = false,
             Settings = _settings,
             TopicContext = topicContext,
             MeetingType = style == null ? string.Empty : MeetingTypeForPrompt(style),

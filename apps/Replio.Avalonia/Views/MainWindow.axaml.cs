@@ -144,6 +144,10 @@ public partial class MainWindow : Window
                 case nameof(MainViewModel.SelectedSessionTab):
                     OnUi(SyncSessionTab);
                     break;
+                case nameof(MainViewModel.SettingsSection):
+                    // Each settings section opens from its top.
+                    OnUi(() => SettingsScroll.Offset = default);
+                    break;
             }
         };
         _viewModel.OverlayMoveRequested += (dx, dy) => OnUi(() => MoveOverlay(dx, dy));

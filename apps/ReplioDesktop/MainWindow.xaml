@@ -247,6 +247,95 @@
                 </Setter.Value>
             </Setter>
         </Style>
+        <!-- Settings: the section menu on the left, cards on the right, info and warning boxes. -->
+        <Style x:Key="SettingsNavStyle" TargetType="RadioButton">
+            <Setter Property="Foreground" Value="{DynamicResource EchoSoftTextBrush}" />
+            <Setter Property="FontSize" Value="14" />
+            <Setter Property="FontWeight" Value="SemiBold" />
+            <Setter Property="Cursor" Value="Hand" />
+            <Setter Property="Margin" Value="0,0,0,2" />
+            <Setter Property="GroupName" Value="SettingsNav" />
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="RadioButton">
+                        <Grid>
+                            <Border x:Name="Item" Padding="12,9" CornerRadius="10" Background="Transparent">
+                                <ContentPresenter VerticalAlignment="Center" />
+                            </Border>
+                            <Border x:Name="Mark" Width="3" Margin="0,8" HorizontalAlignment="Left" CornerRadius="2" Background="{DynamicResource EchoAccentBrush}" Visibility="Collapsed" />
+                        </Grid>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter TargetName="Item" Property="Background" Value="{DynamicResource EchoHoverBrush}" />
+                            </Trigger>
+                            <Trigger Property="IsChecked" Value="True">
+                                <Setter TargetName="Item" Property="Background" Value="{DynamicResource EchoAccentSoftBrush}" />
+                                <Setter TargetName="Mark" Property="Visibility" Value="Visible" />
+                                <Setter Property="Foreground" Value="{DynamicResource EchoTextBrush}" />
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+        <Style x:Key="SettingsCardStyle" TargetType="Border">
+            <Setter Property="Background" Value="{DynamicResource EchoSurfaceBrush}" />
+            <Setter Property="BorderBrush" Value="{DynamicResource EchoBorderBrush}" />
+            <Setter Property="BorderThickness" Value="1" />
+            <Setter Property="CornerRadius" Value="14" />
+            <Setter Property="Padding" Value="18,14,18,16" />
+            <Setter Property="Margin" Value="0,0,0,12" />
+        </Style>
+        <Style x:Key="SettingsCardTitleStyle" TargetType="TextBlock">
+            <Setter Property="FontSize" Value="15" />
+            <Setter Property="FontWeight" Value="Bold" />
+            <Setter Property="Foreground" Value="{DynamicResource EchoTextBrush}" />
+            <Setter Property="Margin" Value="0,0,0,8" />
+            <Setter Property="TextWrapping" Value="Wrap" />
+        </Style>
+        <Style x:Key="SettingsHintStyle" TargetType="TextBlock">
+            <Setter Property="FontSize" Value="13" />
+            <Setter Property="Foreground" Value="{DynamicResource EchoMutedBrush}" />
+            <Setter Property="Margin" Value="0,4,0,0" />
+            <Setter Property="TextWrapping" Value="Wrap" />
+        </Style>
+        <Style x:Key="SettingsInfoBoxStyle" TargetType="Border">
+            <Setter Property="Background" Value="{DynamicResource EchoAccentSoftBrush}" />
+            <Setter Property="BorderBrush" Value="{DynamicResource EchoAccentSoftBorderBrush}" />
+            <Setter Property="BorderThickness" Value="1" />
+            <Setter Property="CornerRadius" Value="10" />
+            <Setter Property="Padding" Value="14,10" />
+        </Style>
+        <Style x:Key="SettingsWarnBoxStyle" TargetType="Border">
+            <Setter Property="Background" Value="#26F5C451" />
+            <Setter Property="BorderBrush" Value="#99F5C451" />
+            <Setter Property="BorderThickness" Value="1" />
+            <Setter Property="CornerRadius" Value="10" />
+            <Setter Property="Padding" Value="14,10" />
+        </Style>
+        <!-- «Дополнительно»: a text toggle that opens technical fields under it. -->
+        <Style x:Key="SettingsMoreToggleStyle" TargetType="ToggleButton">
+            <Setter Property="Foreground" Value="{DynamicResource EchoAccentTextBrush}" />
+            <Setter Property="FontWeight" Value="SemiBold" />
+            <Setter Property="Cursor" Value="Hand" />
+            <Setter Property="HorizontalAlignment" Value="Left" />
+            <Setter Property="Margin" Value="0,10,0,0" />
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="ToggleButton">
+                        <StackPanel Orientation="Horizontal" Background="Transparent">
+                            <TextBlock x:Name="Arrow" Margin="0,0,6,0" Text="▸" />
+                            <ContentPresenter />
+                        </StackPanel>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsChecked" Value="True">
+                                <Setter TargetName="Arrow" Property="Text" Value="▾" />
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
         <Style x:Key="RoundedTextBoxStyle" TargetType="TextBox">
             <Setter Property="Background" Value="{DynamicResource EchoInputBrush}" />
             <Setter Property="Foreground" Value="{DynamicResource EchoTextBrush}" />
@@ -2113,6 +2202,28 @@
                                             <TextBox Margin="0,6,0,0" MinHeight="96" AcceptsReturn="True" TextWrapping="Wrap" VerticalScrollBarVisibility="Auto"
                                                      Text="{Binding SummaryFormat, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
                                         </StackPanel>
+                                        <!-- «Имена и термины темы»: added to the common list from Settings in this topic's meetings. -->
+                                        <StackPanel DataContext="{Binding DataContext, RelativeSource={RelativeSource AncestorType=Window}}">
+                                            <TextBlock Margin="0,16,0,0" FontWeight="SemiBold" Foreground="{DynamicResource EchoTextBrush}" Text="{Binding L[TopicGlossaryLabel]}" />
+                                            <TextBlock Margin="0,2,0,0" FontSize="13" TextWrapping="Wrap" Foreground="{DynamicResource EchoMutedBrush}" Text="{Binding L[TopicGlossaryHint]}" />
+                                            <Grid Margin="0,6,0,0">
+                                                <TextBox x:Name="TopicGlossaryBox" MinHeight="64" AcceptsReturn="True" TextWrapping="Wrap" VerticalScrollBarVisibility="Auto"
+                                                         Text="{Binding TopicSttGlossary, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+                                                <TextBlock Margin="12,9,12,0" VerticalAlignment="Top" IsHitTestVisible="False" TextWrapping="Wrap"
+                                                           Foreground="{DynamicResource EchoMutedBrush}" Text="{Binding L[TopicGlossaryExample]}">
+                                                    <TextBlock.Style>
+                                                        <Style TargetType="TextBlock">
+                                                            <Setter Property="Visibility" Value="Collapsed" />
+                                                            <Style.Triggers>
+                                                                <DataTrigger Binding="{Binding Text, ElementName=TopicGlossaryBox}" Value="">
+                                                                    <Setter Property="Visibility" Value="Visible" />
+                                                                </DataTrigger>
+                                                            </Style.Triggers>
+                                                        </Style>
+                                                    </TextBlock.Style>
+                                                </TextBlock>
+                                            </Grid>
+                                        </StackPanel>
                                     </StackPanel>
                                 </ScrollViewer>
                             </Border>
@@ -2729,581 +2840,678 @@
             </TabItem>
 
             <TabItem Tag="Settings">
-                <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
-                <Grid Margin="24">
-                    <StackPanel>
-                        <TextBlock Foreground="{Binding PrimaryTextBrush}" FontSize="30" FontWeight="ExtraBold" Text="{Binding L[SettingsTab]}" />
-                        <!-- Data folder: sessions, topics, knowledge base and screenshots; a cloud folder syncs them between computers. -->
-                        <StackPanel>
-                            <TextBlock Margin="0,16,0,0" Foreground="{Binding PrimaryTextBrush}" FontWeight="SemiBold" Text="{Binding L[DataFolderTitle]}" />
-                            <TextBlock Margin="0,6,0,0" Foreground="{Binding SecondaryTextBrush}" TextWrapping="Wrap" Text="{Binding L[DataFolderHint]}" />
-                            <TextBlock Margin="0,8,0,0" Foreground="{Binding PrimaryTextBrush}" TextWrapping="Wrap" Text="{Binding DataFolderPath}" />
-                            <StackPanel Margin="0,8,0,0" Orientation="Horizontal">
-                                <Button Height="34" Padding="14,0" Command="{Binding ChooseDataFolderCommand}" Content="{Binding L[DataFolderChoose]}" />
-                                <Button Height="34" Padding="14,0" Margin="8,0,0,0" Command="{Binding OpenDataFolderCommand}" Content="{Binding L[DataFolderOpen]}" />
-                                <Button Height="34" Padding="14,0" Margin="8,0,0,0" Command="{Binding ResetDataFolderCommand}" Content="{Binding L[DataFolderReset]}"
-                                        Visibility="{Binding IsDataFolderCustom, Converter={StaticResource BoolToVisibility}}" />
-                                <Button Height="34" Padding="14,0" Margin="8,0,0,0" Style="{StaticResource EchoAccentButtonStyle}"
-                                        Command="{Binding RestartAppCommand}" Content="{Binding L[DataFolderRestart]}"
-                                        Visibility="{Binding IsRestartNeeded, Converter={StaticResource BoolToVisibility}}" />
+                <!-- Settings in seven sections (MainViewModel.SettingsLayout.cs): the menu on the left, the section on the right.
+                     Changes are saved by themselves; each plan sees only what it can use. -->
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="230" />
+                        <ColumnDefinition Width="*" />
+                    </Grid.ColumnDefinitions>
+                    <Border Background="{DynamicResource EchoSurfaceBrush}" BorderBrush="{DynamicResource EchoBorderBrush}" BorderThickness="0,0,1,0">
+                        <DockPanel Margin="10,20,10,16">
+                            <TextBlock DockPanel.Dock="Top" Margin="12,0,0,14" FontSize="24" FontWeight="ExtraBold" Foreground="{DynamicResource EchoTextBrush}" Text="{Binding L[SettingsTab]}" />
+                            <StackPanel DockPanel.Dock="Bottom" Margin="12,10,6,0" Orientation="Horizontal">
+                                <TextBlock Margin="0,0,6,0" FontWeight="Bold" Foreground="{DynamicResource EchoAccentTextBrush}" Text="✓" />
+                                <TextBlock FontSize="12" TextWrapping="Wrap" MaxWidth="170" Foreground="{DynamicResource EchoMutedBrush}" Text="{Binding SettingsSaveStatus}" />
                             </StackPanel>
-                            <TextBlock Margin="0,6,0,0" Foreground="{Binding SecondaryTextBrush}" TextWrapping="Wrap" Text="{Binding DataFolderStatus}" />
-                            <StackPanel Margin="0,10,0,0" Visibility="{Binding HasSessionConflicts, Converter={StaticResource BoolToVisibility}}">
-                                <TextBlock Foreground="{Binding PrimaryTextBrush}" FontWeight="SemiBold" Text="{Binding L[DataConflictsTitle]}" />
-                                <TextBlock Margin="0,4,0,0" Foreground="{Binding SecondaryTextBrush}" TextWrapping="Wrap" Text="{Binding L[DataConflictsHint]}" />
-                                <ItemsControl Margin="0,6,0,0" ItemsSource="{Binding SessionConflicts}">
-                                    <ItemsControl.ItemTemplate>
-                                        <DataTemplate>
-                                            <Border Margin="0,6,0,0" Padding="12,8" CornerRadius="8" Background="{DynamicResource EchoSurfaceBrush}" BorderBrush="{DynamicResource EchoBorderBrush}" BorderThickness="1">
-                                                <StackPanel>
-                                                    <TextBlock FontWeight="SemiBold" Foreground="{DynamicResource EchoTextBrush}" Text="{Binding Title}" />
-                                                    <DockPanel Margin="0,6,0,0">
-                                                        <Button DockPanel.Dock="Right" Height="30" Padding="12,0" Command="{Binding KeepMainCommand}"
-                                                                Content="{Binding DataContext.L[DataConflictKeep], RelativeSource={RelativeSource AncestorType=Window}}" />
-                                                        <TextBlock VerticalAlignment="Center" Foreground="{DynamicResource EchoMutedBrush}" Text="{Binding MainInfo}" />
-                                                    </DockPanel>
-                                                    <DockPanel Margin="0,6,0,0">
-                                                        <Button DockPanel.Dock="Right" Height="30" Padding="12,0" Command="{Binding KeepCopyCommand}"
-                                                                Content="{Binding DataContext.L[DataConflictKeep], RelativeSource={RelativeSource AncestorType=Window}}" />
-                                                        <TextBlock VerticalAlignment="Center" Foreground="{DynamicResource EchoMutedBrush}" Text="{Binding CopyInfo}" />
-                                                    </DockPanel>
-                                                </StackPanel>
+                            <StackPanel>
+                                <RadioButton Style="{StaticResource SettingsNavStyle}" IsChecked="{Binding IsSettingsAccount, Mode=TwoWay}" Content="{Binding L[SettingsNav_account]}" />
+                                <RadioButton Style="{StaticResource SettingsNavStyle}" IsChecked="{Binding IsSettingsMeetings, Mode=TwoWay}" Content="{Binding L[SettingsNav_meetings]}" />
+                                <RadioButton Style="{StaticResource SettingsNavStyle}" IsChecked="{Binding IsSettingsSpeech, Mode=TwoWay}" Content="{Binding L[SettingsNav_speech]}" />
+                                <RadioButton Style="{StaticResource SettingsNavStyle}" IsChecked="{Binding IsSettingsAi, Mode=TwoWay}" Content="{Binding L[SettingsNav_ai]}" />
+                                <RadioButton Style="{StaticResource SettingsNavStyle}" IsChecked="{Binding IsSettingsWindows, Mode=TwoWay}" Content="{Binding L[SettingsNav_windows]}" />
+                                <RadioButton Style="{StaticResource SettingsNavStyle}" IsChecked="{Binding IsSettingsHotkeys, Mode=TwoWay}" Content="{Binding L[SettingsNav_hotkeys]}" />
+                                <RadioButton Style="{StaticResource SettingsNavStyle}" IsChecked="{Binding IsSettingsData, Mode=TwoWay}" Content="{Binding L[SettingsNav_data]}" />
+                            </StackPanel>
+                        </DockPanel>
+                    </Border>
+                    <ScrollViewer x:Name="SettingsScroll" Grid.Column="1" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
+                        <StackPanel Margin="28,22,28,28" MaxWidth="880" HorizontalAlignment="Left">
+                            <TextBlock FontSize="26" FontWeight="ExtraBold" Foreground="{DynamicResource EchoTextBrush}" Text="{Binding SettingsSectionTitle}" />
+                            <TextBlock Margin="0,2,0,16" FontSize="14" Foreground="{DynamicResource EchoMutedBrush}" Text="{Binding SettingsSectionSubtitle}" />
+
+                            <!-- ===== Аккаунт ===== -->
+                            <StackPanel Visibility="{Binding IsSettingsAccount, Converter={StaticResource BoolToVisibility}}">
+                                <Border Style="{StaticResource SettingsCardStyle}">
+                                    <StackPanel>
+                                        <TextBlock FontSize="22" FontWeight="ExtraBold" Foreground="{DynamicResource EchoTextBrush}" TextWrapping="Wrap" Text="{Binding AccountPlanTitle}"
+                                                   Visibility="{Binding IsSignedIn, Converter={StaticResource BoolToVisibility}}" />
+                                        <TextBlock Margin="0,4,0,0" FontSize="14" Foreground="{DynamicResource EchoSoftTextBrush}" TextWrapping="Wrap" Text="{Binding AccountPlanDetails}"
+                                                   Visibility="{Binding IsSignedIn, Converter={StaticResource BoolToVisibility}}" />
+                                        <TextBlock Margin="0,4,0,0" FontSize="14" Foreground="{DynamicResource EchoSoftTextBrush}" TextWrapping="Wrap" Text="{Binding AccountStatusText}" />
+                                        <WrapPanel Margin="0,12,0,0" Visibility="{Binding IsSignedOut, Converter={StaticResource BoolToVisibility}}">
+                                            <Button Height="36" Margin="0,0,8,6" Padding="18,0" FontSize="14" Style="{StaticResource EchoAccentButtonStyle}"
+                                                    Command="{Binding SignInCommand}" ToolTip="{Binding L[TipAccountSignIn]}" Content="{Binding L[AccountSignIn]}" />
+                                            <Button Height="36" Margin="0,0,8,6" Padding="14,0" Command="{Binding OpenCabinetCommand}" ToolTip="{Binding L[TipAccountOpenCabinet]}" Content="{Binding L[AccountOpenCabinet]}" />
+                                        </WrapPanel>
+                                        <StackPanel Margin="0,12,0,0" Orientation="Horizontal" Visibility="{Binding IsSigningIn, Converter={StaticResource BoolToVisibility}}">
+                                            <controls:EchoThinkingDots Margin="0,0,10,0" VerticalAlignment="Center" />
+                                            <Border Padding="12,6" CornerRadius="8" Background="{DynamicResource EchoSurfaceAltBrush}" BorderBrush="{DynamicResource EchoBorderBrush}" BorderThickness="1">
+                                                <TextBlock FontSize="18" FontWeight="Bold" Foreground="{DynamicResource EchoTextBrush}" Text="{Binding SignInCode}" />
                                             </Border>
-                                        </DataTemplate>
-                                    </ItemsControl.ItemTemplate>
-                                </ItemsControl>
+                                            <Button Height="34" Margin="10,0,0,0" Padding="14,0" Command="{Binding OpenSignInPageCommand}" ToolTip="{Binding L[TipAccountOpenPage]}" Content="{Binding L[AccountOpenPage]}" />
+                                            <Button Height="34" Margin="8,0,0,0" Padding="14,0" Command="{Binding CancelSignInCommand}" Content="{Binding L[AccountCancel]}" />
+                                        </StackPanel>
+                                        <WrapPanel Margin="0,12,0,0" Visibility="{Binding IsSignedIn, Converter={StaticResource BoolToVisibility}}">
+                                            <Button Height="34" Margin="0,0,8,6" Padding="14,0" Style="{StaticResource EchoAccentButtonStyle}" Command="{Binding OpenCabinetCommand}" ToolTip="{Binding L[TipAccountOpenCabinet]}" Content="{Binding L[AccountOpenCabinet]}" />
+                                            <Button Height="34" Margin="0,0,8,6" Padding="14,0" Command="{Binding OpenUpgradeCommand}" ToolTip="{Binding L[TipAccountUpgrade]}" Content="{Binding L[AccountUpgrade]}" />
+                                            <Button Height="34" Margin="0,0,8,6" Padding="14,0" Command="{Binding RefreshAccountCommand}" ToolTip="{Binding L[TipAccountRefresh]}" Content="{Binding L[AccountRefresh]}" />
+                                            <Button Height="34" Margin="0,0,8,6" Padding="14,0" Command="{Binding SignOutCommand}" ToolTip="{Binding L[TipAccountSignOut]}" Content="{Binding L[AccountSignOut]}" />
+                                        </WrapPanel>
+                                    </StackPanel>
+                                </Border>
                             </StackPanel>
-                        </StackPanel>
-                        <!-- Updates: installed version and a manual check (the app also checks at start and once a day). -->
-                        <StackPanel Visibility="{Binding IsUpdateSupported, Converter={StaticResource BoolToVisibility}}" ToolTip="{Binding L[UpdateCheckToolTip]}" Background="Transparent">
-                            <TextBlock Margin="0,16,0,0" Foreground="{Binding PrimaryTextBrush}" FontWeight="SemiBold" Text="{Binding L[UpdateSectionTitle]}" />
-                            <StackPanel Margin="0,8,0,0" Orientation="Horizontal">
-                                <TextBlock VerticalAlignment="Center" Foreground="{Binding SecondaryTextBrush}" Text="{Binding CurrentVersionText}" />
-                                <Button Height="34" Margin="14,0,0,0" Padding="14,0" Command="{Binding CheckUpdatesCommand}" Content="{Binding L[UpdateCheckButton]}" />
-                            </StackPanel>
-                            <TextBlock Margin="0,6,0,0" Foreground="{Binding SecondaryTextBrush}" TextWrapping="Wrap" Text="{Binding UpdateStatus}" />
-                        </StackPanel>
-                        <!-- Replio account: sign-in on replio.ru, the plan and, on plans with a choice, the prepared models. -->
-                        <StackPanel Visibility="{Binding ShowAccountSection, Converter={StaticResource BoolToVisibility}}">
-                        <TextBlock Margin="0,16,0,0" Foreground="{Binding PrimaryTextBrush}" FontWeight="SemiBold" Text="{Binding L[AccountTitle]}" />
-                        <TextBlock Margin="0,6,0,0" Foreground="{Binding PrimaryTextBrush}" TextWrapping="Wrap" Text="{Binding AccountPlanText}"
-                                   Visibility="{Binding IsSignedIn, Converter={StaticResource BoolToVisibility}}" />
-                        <TextBlock Margin="0,6,0,0" Foreground="{Binding SecondaryTextBrush}" TextWrapping="Wrap" Text="{Binding AccountStatusText}" />
-                        <StackPanel Margin="0,10,0,0" Orientation="Horizontal" Visibility="{Binding IsSignedOut, Converter={StaticResource BoolToVisibility}}">
-                            <Button Height="36" Padding="18,0" FontSize="14" Style="{StaticResource EchoAccentButtonStyle}"
-                                    Command="{Binding SignInCommand}" ToolTip="{Binding L[TipAccountSignIn]}" Content="{Binding L[AccountSignIn]}" />
-                            <Button Height="36" Margin="8,0,0,0" Padding="14,0" Command="{Binding OpenCabinetCommand}" ToolTip="{Binding L[TipAccountOpenCabinet]}" Content="{Binding L[AccountOpenCabinet]}" />
-                        </StackPanel>
-                        <StackPanel Margin="0,10,0,0" Orientation="Horizontal" Visibility="{Binding IsSigningIn, Converter={StaticResource BoolToVisibility}}">
-                            <controls:EchoThinkingDots Margin="0,0,10,0" VerticalAlignment="Center" />
-                            <Border Padding="12,6" CornerRadius="8" Background="{DynamicResource EchoSurfaceBrush}" BorderBrush="{DynamicResource EchoBorderBrush}" BorderThickness="1">
-                                <TextBlock FontSize="18" FontWeight="Bold" Foreground="{DynamicResource EchoTextBrush}" Text="{Binding SignInCode}" />
-                            </Border>
-                            <Button Height="34" Margin="10,0,0,0" Padding="14,0" Command="{Binding OpenSignInPageCommand}" ToolTip="{Binding L[TipAccountOpenPage]}" Content="{Binding L[AccountOpenPage]}" />
-                            <Button Height="34" Margin="8,0,0,0" Padding="14,0" Command="{Binding CancelSignInCommand}" Content="{Binding L[AccountCancel]}" />
-                        </StackPanel>
-                        <StackPanel Margin="0,10,0,0" Orientation="Horizontal" Visibility="{Binding IsSignedIn, Converter={StaticResource BoolToVisibility}}">
-                            <Button Height="34" Padding="14,0" Command="{Binding OpenCabinetCommand}" ToolTip="{Binding L[TipAccountOpenCabinet]}" Content="{Binding L[AccountOpenCabinet]}" />
-                            <Button Height="34" Margin="8,0,0,0" Padding="14,0" Command="{Binding RefreshAccountCommand}" ToolTip="{Binding L[TipAccountRefresh]}" Content="{Binding L[AccountRefresh]}" />
-                            <Button Height="34" Margin="8,0,0,0" Padding="14,0" Command="{Binding OpenUpgradeCommand}" ToolTip="{Binding L[TipAccountUpgrade]}" Content="{Binding L[AccountUpgrade]}" />
-                            <Button Height="34" Margin="8,0,0,0" Padding="14,0" Command="{Binding SignOutCommand}" ToolTip="{Binding L[TipAccountSignOut]}" Content="{Binding L[AccountSignOut]}" />
-                        </StackPanel>
-                        <TextBlock Margin="0,8,0,0" Foreground="{Binding SecondaryTextBrush}" TextWrapping="Wrap" Text="{Binding ReplioModelSummaryText}"
-                                   Visibility="{Binding ShowReplioModelSummary, Converter={StaticResource BoolToVisibility}}" />
-                        <StackPanel Visibility="{Binding ShowReplioModelChoice, Converter={StaticResource BoolToVisibility}}">
-                            <Grid ToolTip="{Binding L[TipReplioFastModel]}" Background="Transparent" Margin="0,10,0,0">
-                            <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="230" />
-                                <ColumnDefinition Width="*" />
-                            </Grid.ColumnDefinitions>
-                                <TextBlock Foreground="{Binding SecondaryTextBrush}" VerticalAlignment="Center" Text="{Binding L[SettingsModel]}" />
-                                <ComboBox Grid.Column="1" ItemsSource="{Binding ReplioFastModels}" DisplayMemberPath="Display" SelectedItem="{Binding SelectedReplioFastModel, Mode=TwoWay}" />
-                            </Grid>
-                            <Grid ToolTip="{Binding L[TipReplioAnalysisModel]}" Background="Transparent" Margin="0,10,0,0">
-                            <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="230" />
-                                <ColumnDefinition Width="*" />
-                            </Grid.ColumnDefinitions>
-                                <TextBlock Foreground="{Binding SecondaryTextBrush}" VerticalAlignment="Center" Text="{Binding L[SettingsAnalysisModel]}" />
-                                <ComboBox Grid.Column="1" ItemsSource="{Binding ReplioAnalysisModels}" DisplayMemberPath="Display" SelectedItem="{Binding SelectedReplioAnalysisModel, Mode=TwoWay}" />
-                            </Grid>
-                            <Grid ToolTip="{Binding L[TipReplioSttModel]}" Background="Transparent" Margin="0,10,0,0">
-                            <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="230" />
-                                <ColumnDefinition Width="*" />
-                            </Grid.ColumnDefinitions>
-                                <TextBlock Foreground="{Binding SecondaryTextBrush}" VerticalAlignment="Center" Text="{Binding L[SettingsSttModel]}" />
-                                <ComboBox Grid.Column="1" ItemsSource="{Binding ReplioSttModels}" DisplayMemberPath="Display" SelectedItem="{Binding SelectedReplioSttModel, Mode=TwoWay}" />
-                            </Grid>
-                        </StackPanel>
-                        </StackPanel>
-                        <TextBlock Margin="0,16,0,0" Foreground="{Binding PrimaryTextBrush}" FontWeight="SemiBold" Text="{Binding L[SettingsSectionAppearance]}" />
-                        <Grid ToolTip="{Binding L[TipToggleTheme]}" Background="Transparent" Margin="0,10,0,0">
-                            <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="230" />
-                                <ColumnDefinition Width="*" />
-                            </Grid.ColumnDefinitions>
-                            <TextBlock Foreground="{Binding SecondaryTextBrush}" VerticalAlignment="Center" Text="{Binding L[SettingsTheme]}" />
-                            <StackPanel Grid.Column="1" Orientation="Horizontal">
-                                <RadioButton GroupName="ThemeMode" Style="{StaticResource SegmentStyle}" IsChecked="{Binding IsDarkTheme, Mode=TwoWay}" ToolTip="{Binding L[TipThemeDark]}" Content="{Binding L[ThemeDark]}" />
-                                <RadioButton GroupName="ThemeMode" Style="{StaticResource SegmentStyle}" IsChecked="{Binding IsLightTheme, Mode=TwoWay}" ToolTip="{Binding L[TipThemeLight]}" Content="{Binding L[ThemeLight]}" />
-                            </StackPanel>
-                        </Grid>
-                        <Grid ToolTip="{Binding L[TipLanguage]}" Background="Transparent" Margin="0,10,0,0">
-                            <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="230" />
-                                <ColumnDefinition Width="*" />
-                            </Grid.ColumnDefinitions>
-                            <TextBlock Foreground="{Binding SecondaryTextBrush}" VerticalAlignment="Center" Text="{Binding L[SettingsLanguage]}" />
-                            <StackPanel Grid.Column="1" Orientation="Horizontal">
-                                <RadioButton GroupName="UiLanguage" Style="{StaticResource SegmentStyle}" IsChecked="{Binding IsRussianUi, Mode=TwoWay}" ToolTip="{Binding L[TipLanguageRu]}" Content="Русский (RU)" />
-                                <RadioButton GroupName="UiLanguage" Style="{StaticResource SegmentStyle}" IsChecked="{Binding IsEnglishUi, Mode=TwoWay}" ToolTip="{Binding L[TipLanguageEn]}" Content="English (EN)" />
-                            </StackPanel>
-                        </Grid>
-                        <TextBlock Margin="0,6,0,0" Foreground="{Binding SecondaryTextBrush}" TextWrapping="Wrap" Text="{Binding L[SettingsLanguageHint]}" />
-                        <TextBlock Margin="0,16,0,0" Foreground="{Binding PrimaryTextBrush}" FontWeight="SemiBold" Text="{Binding L[SettingsSectionScreenShare]}" />
-                        <CheckBox Margin="0,8,0,0"
-                                  Style="{StaticResource ModernCheckBoxStyle}"
-                                  IsChecked="{Binding ShowInScreenShare, Mode=TwoWay}"
-                                  ToolTip="{Binding L[ShowInScreenShareHint]}"
-                                  Content="{Binding L[ShowInScreenShare]}" />
-                        <TextBlock Margin="0,4,0,0" Foreground="{Binding SecondaryTextBrush}" TextWrapping="Wrap" Text="{Binding L[ShowInScreenShareHint]}" />
-                        <!-- «Встречи без темы»: how Replio helps when a meeting has no topic (topics have their own «Как помогать»). -->
-                        <StackPanel DataContext="{Binding DefaultMeetingStyle}">
-                            <TextBlock Margin="0,16,0,0" Foreground="{Binding DataContext.PrimaryTextBrush, RelativeSource={RelativeSource AncestorType=Window}}" FontWeight="SemiBold"
-                                       Text="{Binding DataContext.L[SettingsSectionMeetings], RelativeSource={RelativeSource AncestorType=Window}}" />
-                            <TextBlock Margin="0,6,0,0" Foreground="{Binding DataContext.SecondaryTextBrush, RelativeSource={RelativeSource AncestorType=Window}}" TextWrapping="Wrap"
-                                       Text="{Binding DataContext.L[SettingsMeetingsHint], RelativeSource={RelativeSource AncestorType=Window}}" />
-                            <Grid Margin="0,10,0,0">
-                                <Grid.ColumnDefinitions>
-                                    <ColumnDefinition Width="230" />
-                                    <ColumnDefinition Width="*" />
-                                </Grid.ColumnDefinitions>
-                                <TextBlock VerticalAlignment="Center" Foreground="{Binding DataContext.SecondaryTextBrush, RelativeSource={RelativeSource AncestorType=Window}}"
-                                           Text="{Binding DataContext.L[MeetingStylePresetLabel], RelativeSource={RelativeSource AncestorType=Window}}" />
-                                <ComboBox Grid.Column="1" MaxWidth="360" HorizontalAlignment="Left" MinWidth="260"
-                                          ItemsSource="{Binding Presets}" DisplayMemberPath="Name"
-                                          SelectedItem="{Binding SelectedPreset, Mode=TwoWay}" />
-                            </Grid>
-                            <TextBlock Margin="0,10,0,0" Foreground="{Binding DataContext.SecondaryTextBrush, RelativeSource={RelativeSource AncestorType=Window}}"
-                                       Text="{Binding DataContext.L[MeetingGuidanceLabel], RelativeSource={RelativeSource AncestorType=Window}}" />
-                            <TextBox Margin="0,6,0,0" MinHeight="80" AcceptsReturn="True" TextWrapping="Wrap" VerticalScrollBarVisibility="Auto"
-                                     ToolTip="{Binding DataContext.L[MeetingGuidanceHint], RelativeSource={RelativeSource AncestorType=Window}}"
-                                     Text="{Binding Guidance, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
-                            <TextBlock Margin="0,10,0,0" Foreground="{Binding DataContext.SecondaryTextBrush, RelativeSource={RelativeSource AncestorType=Window}}"
-                                       Text="{Binding DataContext.L[SummaryFormatLabel], RelativeSource={RelativeSource AncestorType=Window}}" />
-                            <TextBox Margin="0,6,0,0" MinHeight="80" AcceptsReturn="True" TextWrapping="Wrap" VerticalScrollBarVisibility="Auto"
-                                     ToolTip="{Binding DataContext.L[SummaryFormatHint], RelativeSource={RelativeSource AncestorType=Window}}"
-                                     Text="{Binding SummaryFormat, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
-                        </StackPanel>
-                        <TextBlock Margin="0,16,0,0" Foreground="{Binding PrimaryTextBrush}" FontWeight="SemiBold" Text="{Binding L[SettingsSectionAi]}" />
-                        <CheckBox Margin="0,8,0,0"
-                                  IsChecked="{Binding SmartModeEnabled, Mode=TwoWay}"
-                                  ToolTip="{Binding L[TipSmartMode]}"
-                                  Content="{Binding L[SmartModeToggle]}" />
-                        <TextBlock Margin="0,4,0,0" Foreground="{Binding SecondaryTextBrush}" TextWrapping="Wrap" Text="{Binding L[SmartModeHint]}" />
-                        <CheckBox Margin="0,10,0,0"
-                                  Style="{StaticResource ModernCheckBoxStyle}"
-                                  IsChecked="{Binding CaptureScreenContextEnabled, Mode=TwoWay}"
-                                  ToolTip="{Binding L[TipScreenContext]}"
-                                  Content="{Binding L[SettingsScreenContext]}" />
-                        <!-- Without screenshots as AI context nothing is captured, so its options are greyed out. -->
-                        <StackPanel IsEnabled="{Binding CaptureScreenContextEnabled}" Style="{StaticResource DependentSettingsStyle}">
-                        <CheckBox Margin="0,8,0,0"
-                                  Style="{StaticResource ModernCheckBoxStyle}"
-                                  IsChecked="{Binding VideoContextEnabled, Mode=TwoWay}"
-                                  ToolTip="{Binding L[TipAutoSnapshots]}"
-                                  Content="{Binding L[SettingsAutoSnapshots]}" />
-                        <StackPanel Visibility="{Binding ShowAdvancedSettings, Converter={StaticResource BoolToVisibility}}">
-                        <Grid ToolTip="{Binding L[TipSnapshotInterval]}" Background="Transparent" Margin="0,10,0,0" IsEnabled="{Binding VideoContextEnabled}">
-                            <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="230" />
-                                <ColumnDefinition Width="*" />
-                            </Grid.ColumnDefinitions>
-                            <TextBlock Foreground="{Binding SecondaryTextBrush}" VerticalAlignment="Center" Text="{Binding L[SettingsSnapshotInterval]}" />
-                            <TextBox Grid.Column="1" Text="{Binding VideoContextIntervalMs, UpdateSourceTrigger=PropertyChanged}" />
-                        </Grid>
-                        <Grid ToolTip="{Binding L[TipSnapshotBuffer]}" Background="Transparent" Margin="0,10,0,0">
-                            <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="230" />
-                                <ColumnDefinition Width="*" />
-                            </Grid.ColumnDefinitions>
-                            <TextBlock Foreground="{Binding SecondaryTextBrush}" VerticalAlignment="Center" Text="{Binding L[SettingsSnapshotBuffer]}" />
-                            <TextBox Grid.Column="1" Text="{Binding VisualContextMaxFrames, UpdateSourceTrigger=PropertyChanged}" />
-                        </Grid>
-                        <Grid ToolTip="{Binding L[TipSnapshotsPerRequest]}" Background="Transparent" Margin="0,10,0,0">
-                            <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="230" />
-                                <ColumnDefinition Width="*" />
-                            </Grid.ColumnDefinitions>
-                            <TextBlock Foreground="{Binding SecondaryTextBrush}" VerticalAlignment="Center" Text="{Binding L[SettingsSnapshotsPerRequest]}" />
-                            <TextBox Grid.Column="1" Text="{Binding VisualContextMaxImagesPerRequest, UpdateSourceTrigger=PropertyChanged}" />
-                        </Grid>
-                        </StackPanel>
-                        </StackPanel>
-                        <TextBlock Margin="0,6,0,0" Foreground="{Binding SecondaryTextBrush}" TextWrapping="Wrap" Text="{Binding L[SettingsSnapshotsHint]}" />
-                        <TextBlock Margin="0,4,0,0" Foreground="{Binding SecondaryTextBrush}" Text="{Binding VisualContextStatusText}" />
-                        <!-- Own providers and keys: only «Приватный» plan or developer mode. -->
-                        <StackPanel Visibility="{Binding ShowOwnProviderSettings, Converter={StaticResource BoolToVisibility}}">
-                        <TextBlock Margin="0,16,0,0" Foreground="{Binding PrimaryTextBrush}" FontWeight="SemiBold" Text="{Binding L[SettingsSectionLlm]}" />
-                        <!-- Provider first, then what it needs: its own address for «Custom», the key, the models. -->
-                        <Grid ToolTip="{Binding L[TipProviderPreset]}" Background="Transparent" Margin="0,10,0,0">
-                            <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="230" />
-                                <ColumnDefinition Width="*" />
-                            </Grid.ColumnDefinitions>
-                            <TextBlock Foreground="{Binding SecondaryTextBrush}" VerticalAlignment="Center" Text="{Binding L[SettingsProviderPreset]}" />
-                            <ComboBox Grid.Column="1"
-                                      ItemsSource="{Binding ApiProviderPresets}"
-                                      SelectedItem="{Binding SelectedApiPreset, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
-                        </Grid>
-                        <Grid ToolTip="{Binding L[TipProvider]}" Background="Transparent" Margin="0,10,0,0" Visibility="{Binding ProviderFieldVisibility, Converter={StaticResource BoolToVisibility}}">
-                            <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="230" />
-                                <ColumnDefinition Width="*" />
-                            </Grid.ColumnDefinitions>
-                            <TextBlock Foreground="{Binding SecondaryTextBrush}" VerticalAlignment="Center" Text="{Binding L[SettingsProvider]}" />
-                            <TextBox Grid.Column="1" Text="{Binding ApiProvider, UpdateSourceTrigger=PropertyChanged}" />
-                        </Grid>
-                        <Grid ToolTip="{Binding L[TipBaseUrl]}" Background="Transparent" Margin="0,10,0,0" Visibility="{Binding BaseUrlFieldVisibility, Converter={StaticResource BoolToVisibility}}">
-                            <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="230" />
-                                <ColumnDefinition Width="*" />
-                            </Grid.ColumnDefinitions>
-                            <TextBlock Foreground="{Binding SecondaryTextBrush}" VerticalAlignment="Center" Text="{Binding L[SettingsBaseUrl]}" />
-                            <TextBox Grid.Column="1" Text="{Binding OpenAiBaseUrl, UpdateSourceTrigger=PropertyChanged}" />
-                        </Grid>
-                        <Grid ToolTip="{Binding L[TipEndpointPath]}" Background="Transparent" Margin="0,10,0,0" Visibility="{Binding EndpointPathFieldVisibility, Converter={StaticResource BoolToVisibility}}">
-                            <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="230" />
-                                <ColumnDefinition Width="*" />
-                            </Grid.ColumnDefinitions>
-                            <TextBlock Foreground="{Binding SecondaryTextBrush}" VerticalAlignment="Center" Text="{Binding L[SettingsEndpointPath]}" />
-                            <TextBox Grid.Column="1" Text="{Binding ChatCompletionsPath, UpdateSourceTrigger=PropertyChanged}" />
-                        </Grid>
-                        <Grid ToolTip="{Binding L[TipKeyHeader]}" Background="Transparent" Margin="0,10,0,0" Visibility="{Binding ApiKeyHeaderFieldVisibility, Converter={StaticResource BoolToVisibility}}">
-                            <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="230" />
-                                <ColumnDefinition Width="*" />
-                            </Grid.ColumnDefinitions>
-                            <TextBlock Foreground="{Binding SecondaryTextBrush}" VerticalAlignment="Center" Text="{Binding L[SettingsKeyHeader]}" />
-                            <TextBox Grid.Column="1" Text="{Binding ApiKeyHeaderName, UpdateSourceTrigger=PropertyChanged}" />
-                        </Grid>
-                        <Grid ToolTip="{Binding L[TipKeyPrefix]}" Background="Transparent" Margin="0,10,0,0" Visibility="{Binding ApiKeyPrefixFieldVisibility, Converter={StaticResource BoolToVisibility}}">
-                            <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="230" />
-                                <ColumnDefinition Width="*" />
-                            </Grid.ColumnDefinitions>
-                            <TextBlock Foreground="{Binding SecondaryTextBrush}" VerticalAlignment="Center" Text="{Binding L[SettingsKeyPrefix]}" />
-                            <TextBox Grid.Column="1" Text="{Binding ApiKeyPrefix, UpdateSourceTrigger=PropertyChanged}" />
-                        </Grid>
-                        <Grid ToolTip="{Binding L[TipApiKey]}" Background="Transparent" Margin="0,10,0,0" Visibility="{Binding ApiKeyFieldVisibility, Converter={StaticResource BoolToVisibility}}">
-                            <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="230" />
-                                <ColumnDefinition Width="*" />
-                            </Grid.ColumnDefinitions>
-                            <TextBlock Foreground="{Binding SecondaryTextBrush}" VerticalAlignment="Center" Text="{Binding L[SettingsApiKey]}" />
-                            <PasswordBox Grid.Column="1" controls:SecretBox.Secret="{Binding OpenAiApiKey, Mode=TwoWay}" />
-                        </Grid>
-                        <Grid ToolTip="{Binding L[TipModel]}" Background="Transparent" Margin="0,10,0,0">
-                            <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="230" />
-                                <ColumnDefinition Width="*" />
-                            </Grid.ColumnDefinitions>
-                            <TextBlock Foreground="{Binding SecondaryTextBrush}" VerticalAlignment="Center" Text="{Binding L[SettingsModel]}" />
-                            <controls:ModelPicker Grid.Column="1"
-                                                  Text="{Binding OpenAiModel, Mode=TwoWay}"
-                                                  Options="{Binding ChatModelOptions}"
-                                                  Status="{Binding ChatModelsStatus}"
-                                                  LoadCommand="{Binding LoadChatModelsCommand}" />
-                        </Grid>
-                        <Grid ToolTip="{Binding L[SettingsAnalysisModelHint]}" Background="Transparent" Margin="0,10,0,0">
-                            <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="230" />
-                                <ColumnDefinition Width="*" />
-                            </Grid.ColumnDefinitions>
-                            <TextBlock Foreground="{Binding SecondaryTextBrush}" VerticalAlignment="Center" Text="{Binding L[SettingsAnalysisModel]}" />
-                            <controls:ModelPicker Grid.Column="1"
-                                                  Text="{Binding AnalysisModel, Mode=TwoWay}"
-                                                  Options="{Binding ChatModelOptions}"
-                                                  Status="{Binding ChatModelsStatus}"
-                                                  LoadCommand="{Binding LoadChatModelsCommand}" />
-                        </Grid>
-                        <TextBlock Margin="0,6,0,0" Foreground="{Binding SecondaryTextBrush}" TextWrapping="Wrap" Text="{Binding L[SettingsModelPickerHint]}" />
-                        </StackPanel>
-                        <TextBlock Margin="0,16,0,0" Foreground="{Binding PrimaryTextBrush}" FontWeight="SemiBold" Text="{Binding L[SettingsSttTitle]}" />
-                        <Grid ToolTip="{Binding L[TipSpeechLanguage]}" Background="Transparent" Margin="0,10,0,0">
-                            <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="230" />
-                                <ColumnDefinition Width="*" />
-                            </Grid.ColumnDefinitions>
-                            <TextBlock Foreground="{Binding SecondaryTextBrush}" VerticalAlignment="Center" Text="{Binding L[SettingsSpeechLanguage]}" />
-                            <ComboBox Grid.Column="1"
-                                      ItemsSource="{Binding SpeechLanguageOptions}"
-                                      DisplayMemberPath="Title"
-                                      SelectedItem="{Binding SelectedSpeechLanguage, Mode=TwoWay}" />
-                        </Grid>
-                        <CheckBox Margin="0,8,0,0"
-                                  Style="{StaticResource ModernCheckBoxStyle}"
-                                  Visibility="{Binding ShowLocalSttSettings, Converter={StaticResource BoolToVisibility}}"
-                                  IsChecked="{Binding UseApiStt, Mode=TwoWay}"
-                                  ToolTip="{Binding L[SettingsSttHint]}"
-                                  Content="{Binding L[SettingsUseApiStt]}" />
-                        <!-- Same order as for the AI model: provider, key, model. Dimmed while recognition stays local. -->
-                        <StackPanel IsEnabled="{Binding UseApiStt}" Style="{StaticResource DependentSettingsStyle}"
-                                    Visibility="{Binding ShowOwnProviderSettings, Converter={StaticResource BoolToVisibility}}">
-                            <Grid ToolTip="{Binding L[TipSttProvider]}" Background="Transparent" Margin="0,10,0,0">
-                                <Grid.ColumnDefinitions>
-                                    <ColumnDefinition Width="230" />
-                                    <ColumnDefinition Width="*" />
-                                </Grid.ColumnDefinitions>
-                                <TextBlock Foreground="{Binding SecondaryTextBrush}" VerticalAlignment="Center" Text="{Binding L[SettingsProviderPreset]}" />
-                                <ComboBox Grid.Column="1"
-                                          ItemsSource="{Binding SttApiPresets}"
-                                          SelectedItem="{Binding SelectedSttPreset, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
-                            </Grid>
-                            <Grid ToolTip="{Binding L[TipSttBaseUrl]}" Background="Transparent" Margin="0,10,0,0" Visibility="{Binding SttBaseUrlFieldVisibility, Converter={StaticResource BoolToVisibility}}">
-                                <Grid.ColumnDefinitions>
-                                    <ColumnDefinition Width="230" />
-                                    <ColumnDefinition Width="*" />
-                                </Grid.ColumnDefinitions>
-                                <TextBlock Foreground="{Binding SecondaryTextBrush}" VerticalAlignment="Center" Text="{Binding L[SettingsBaseUrl]}" />
-                                <TextBox Grid.Column="1" Text="{Binding SttApiBaseUrl, UpdateSourceTrigger=PropertyChanged}" />
-                            </Grid>
-                            <Grid ToolTip="{Binding L[TipSttApiKey]}" Background="Transparent" Margin="0,10,0,0">
-                                <Grid.ColumnDefinitions>
-                                    <ColumnDefinition Width="230" />
-                                    <ColumnDefinition Width="*" />
-                                </Grid.ColumnDefinitions>
-                                <TextBlock Foreground="{Binding SecondaryTextBrush}" VerticalAlignment="Center" Text="{Binding L[SettingsSttApiKey]}" />
-                                <PasswordBox Grid.Column="1" controls:SecretBox.Secret="{Binding SttApiKey, Mode=TwoWay}" />
-                            </Grid>
-                            <TextBlock Margin="0,6,0,0" Foreground="{Binding SecondaryTextBrush}" TextWrapping="Wrap" Text="{Binding SttKeySourceText}" />
-                            <TextBlock Margin="0,4,0,0" Foreground="{Binding SecondaryTextBrush}" TextWrapping="Wrap" Text="{Binding L[SettingsSttHint]}" />
-                            <Grid ToolTip="{Binding L[TipSttModel]}" Background="Transparent" Margin="0,10,0,0">
-                                <Grid.ColumnDefinitions>
-                                    <ColumnDefinition Width="230" />
-                                    <ColumnDefinition Width="*" />
-                                </Grid.ColumnDefinitions>
-                                <TextBlock Foreground="{Binding SecondaryTextBrush}" VerticalAlignment="Center" Text="{Binding L[SettingsSttModel]}" />
-                                <controls:ModelPicker Grid.Column="1"
-                                                      Text="{Binding SttApiModel, Mode=TwoWay}"
-                                                      Options="{Binding SpeechModelOptions}"
-                                                      Status="{Binding SpeechModelsStatus}"
-                                                      LoadCommand="{Binding LoadSpeechModelsCommand}" />
-                            </Grid>
-                        </StackPanel>
-                        <TextBlock Margin="0,4,0,0" Foreground="{Binding SecondaryTextBrush}" Text="{Binding SttStatusText}" />
-                        <Grid ToolTip="{Binding L[TipSttGlossary]}" Background="Transparent" Margin="0,10,0,0">
-                            <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="230" />
-                                <ColumnDefinition Width="*" />
-                            </Grid.ColumnDefinitions>
-                            <TextBlock Foreground="{Binding SecondaryTextBrush}" VerticalAlignment="Top" Margin="0,4,12,0" TextWrapping="Wrap" Text="{Binding L[SettingsSttGlossary]}" />
-                            <TextBox x:Name="SttGlossaryBox"
-                                     Grid.Column="1"
-                                     MinHeight="56"
-                                     AcceptsReturn="True"
-                                     TextWrapping="Wrap"
-                                     VerticalScrollBarVisibility="Auto"
-                                     Text="{Binding SttGlossary, UpdateSourceTrigger=PropertyChanged}" />
-                            <TextBlock Grid.Column="1"
-                                       Margin="10,8,10,0"
-                                       VerticalAlignment="Top"
-                                       IsHitTestVisible="False"
-                                       TextWrapping="Wrap"
-                                       Foreground="{DynamicResource EchoMutedBrush}"
-                                       Text="{Binding L[SettingsSttGlossaryExample]}">
-                                <TextBlock.Style>
-                                    <Style TargetType="TextBlock">
-                                        <Setter Property="Visibility" Value="Collapsed" />
-                                        <Style.Triggers>
-                                            <DataTrigger Binding="{Binding Text, ElementName=SttGlossaryBox}" Value="">
-                                                <Setter Property="Visibility" Value="Visible" />
-                                            </DataTrigger>
-                                        </Style.Triggers>
-                                    </Style>
-                                </TextBlock.Style>
-                            </TextBlock>
-                        </Grid>
-                        <TextBlock Margin="0,4,0,0" Foreground="{Binding SecondaryTextBrush}" TextWrapping="Wrap" Text="{Binding L[SettingsSttGlossaryHint]}" />
-                        <!-- Local whisper models: only plans with local recognition. -->
-                        <StackPanel Visibility="{Binding ShowLocalSttSettings, Converter={StaticResource BoolToVisibility}}">
-                        <TextBlock Margin="0,16,0,0" Foreground="{Binding PrimaryTextBrush}" FontWeight="SemiBold" Text="{Binding L[SpeechModelTitle]}" />
-                        <TextBlock Margin="0,6,0,0" Foreground="{Binding SecondaryTextBrush}" TextWrapping="Wrap" Text="{Binding L[SpeechModelIntro]}" />
-                        <TextBlock Margin="0,4,0,0" Foreground="{Binding SecondaryTextBrush}" TextWrapping="Wrap" Text="{Binding SpeechModelHardwareText}" />
-                        <TextBlock Margin="0,4,0,0" Foreground="{Binding PrimaryTextBrush}" TextWrapping="Wrap" Text="{Binding SpeechModelStatusText}" />
-                        <ItemsControl Margin="0,8,0,0" ItemsSource="{Binding SpeechModels}">
-                            <ItemsControl.ItemTemplate>
-                                <DataTemplate>
-                                    <Border Margin="0,0,0,8"
-                                            Padding="12,10"
-                                            CornerRadius="8"
-                                            BorderThickness="1"
-                                            Background="{Binding DataContext.SurfaceAltBrush, RelativeSource={RelativeSource AncestorType=Window}}"
-                                            BorderBrush="{Binding DataContext.BorderBrush, RelativeSource={RelativeSource AncestorType=Window}}">
-                                        <Grid>
+
+                            <!-- ===== Встречи (по умолчанию) ===== -->
+                            <StackPanel Visibility="{Binding IsSettingsMeetings, Converter={StaticResource BoolToVisibility}}">
+                                <Border Style="{StaticResource SettingsCardStyle}">
+                                    <StackPanel DataContext="{Binding DefaultMeetingStyle}">
+                                        <TextBlock Style="{StaticResource SettingsCardTitleStyle}" Text="{Binding DataContext.L[SettingsSectionMeetings], RelativeSource={RelativeSource AncestorType=Window}}" />
+                                        <TextBlock Margin="0,-4,0,6" Style="{StaticResource SettingsHintStyle}" Text="{Binding DataContext.L[SettingsMeetingsHint], RelativeSource={RelativeSource AncestorType=Window}}" />
+                                        <Grid Margin="0,6,0,0">
                                             <Grid.ColumnDefinitions>
+                                                <ColumnDefinition Width="230" />
                                                 <ColumnDefinition Width="*" />
-                                                <ColumnDefinition Width="Auto" />
                                             </Grid.ColumnDefinitions>
+                                            <TextBlock VerticalAlignment="Center" Foreground="{DynamicResource EchoSoftTextBrush}"
+                                                       Text="{Binding DataContext.L[MeetingStylePresetLabel], RelativeSource={RelativeSource AncestorType=Window}}" />
+                                            <ComboBox Grid.Column="1" MaxWidth="360" HorizontalAlignment="Left" MinWidth="260"
+                                                      ItemsSource="{Binding Presets}" DisplayMemberPath="Name"
+                                                      SelectedItem="{Binding SelectedPreset, Mode=TwoWay}" />
+                                        </Grid>
+                                        <TextBlock Margin="0,12,0,0" FontWeight="SemiBold" Foreground="{DynamicResource EchoTextBrush}"
+                                                   Text="{Binding DataContext.L[MeetingGuidanceLabel], RelativeSource={RelativeSource AncestorType=Window}}" />
+                                        <TextBlock Style="{StaticResource SettingsHintStyle}" Margin="0,2,0,0"
+                                                   Text="{Binding DataContext.L[MeetingGuidanceHint], RelativeSource={RelativeSource AncestorType=Window}}" />
+                                        <TextBox Margin="0,6,0,0" MinHeight="80" AcceptsReturn="True" TextWrapping="Wrap" VerticalScrollBarVisibility="Auto"
+                                                 Text="{Binding Guidance, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+                                        <TextBlock Margin="0,12,0,0" FontWeight="SemiBold" Foreground="{DynamicResource EchoTextBrush}"
+                                                   Text="{Binding DataContext.L[SummaryFormatLabel], RelativeSource={RelativeSource AncestorType=Window}}" />
+                                        <TextBlock Style="{StaticResource SettingsHintStyle}" Margin="0,2,0,0"
+                                                   Text="{Binding DataContext.L[SummaryFormatHint], RelativeSource={RelativeSource AncestorType=Window}}" />
+                                        <TextBox Margin="0,6,0,0" MinHeight="80" AcceptsReturn="True" TextWrapping="Wrap" VerticalScrollBarVisibility="Auto"
+                                                 Text="{Binding SummaryFormat, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+                                        <!-- Common names and terms: every meeting; a topic adds its own on its «Как помогать» tab. -->
+                                        <StackPanel DataContext="{Binding DataContext, RelativeSource={RelativeSource AncestorType=Window}}">
+                                            <TextBlock Margin="0,12,0,0" FontWeight="SemiBold" Foreground="{DynamicResource EchoTextBrush}" Text="{Binding L[SettingsSttGlossary]}" />
+                                            <TextBlock Style="{StaticResource SettingsHintStyle}" Margin="0,2,0,0" Text="{Binding L[SettingsSttGlossaryHint]}" />
+                                            <Grid Margin="0,6,0,0">
+                                                <TextBox x:Name="SttGlossaryBox" MinHeight="56" AcceptsReturn="True" TextWrapping="Wrap" VerticalScrollBarVisibility="Auto"
+                                                         Text="{Binding SttGlossary, UpdateSourceTrigger=PropertyChanged}" />
+                                                <TextBlock Margin="12,9,12,0" VerticalAlignment="Top" IsHitTestVisible="False" TextWrapping="Wrap"
+                                                           Foreground="{DynamicResource EchoMutedBrush}" Text="{Binding L[SettingsSttGlossaryExample]}">
+                                                    <TextBlock.Style>
+                                                        <Style TargetType="TextBlock">
+                                                            <Setter Property="Visibility" Value="Collapsed" />
+                                                            <Style.Triggers>
+                                                                <DataTrigger Binding="{Binding Text, ElementName=SttGlossaryBox}" Value="">
+                                                                    <Setter Property="Visibility" Value="Visible" />
+                                                                </DataTrigger>
+                                                            </Style.Triggers>
+                                                        </Style>
+                                                    </TextBlock.Style>
+                                                </TextBlock>
+                                            </Grid>
+                                        </StackPanel>
+                                    </StackPanel>
+                                </Border>
+                            </StackPanel>
+
+                            <!-- ===== Речь ===== -->
+                            <StackPanel Visibility="{Binding IsSettingsSpeech, Converter={StaticResource BoolToVisibility}}">
+                                <!-- Бесплатный, Старт: in the Replio cloud, nothing to choose. -->
+                                <Border Style="{StaticResource SettingsCardStyle}" Visibility="{Binding ShowSttCloudInfo, Converter={StaticResource BoolToVisibility}}">
+                                    <StackPanel>
+                                        <TextBlock Style="{StaticResource SettingsCardTitleStyle}" Text="{Binding L[SttWhereTitle]}" />
+                                        <Border Style="{StaticResource SettingsInfoBoxStyle}">
                                             <StackPanel>
-                                                <StackPanel Orientation="Horizontal">
-                                                    <TextBlock FontWeight="SemiBold"
-                                                               Foreground="{Binding DataContext.PrimaryTextBrush, RelativeSource={RelativeSource AncestorType=Window}}"
-                                                               Text="{Binding Title}" />
-                                                    <TextBlock Margin="10,0,0,0"
-                                                               Foreground="{Binding DataContext.SecondaryTextBrush, RelativeSource={RelativeSource AncestorType=Window}}"
-                                                               Text="{Binding SizeText}" />
-                                                    <Border Margin="10,0,0,0"
-                                                            Padding="8,1"
-                                                            CornerRadius="9"
-                                                            Background="{DynamicResource EchoAccentSoftBrush}"
-                                                            Visibility="{Binding RecommendedVisibility, Converter={StaticResource BoolToVisibility}}">
-                                                        <TextBlock Foreground="{DynamicResource EchoBadgeTextBrush}"
-                                                                   FontSize="11"
-                                                                   Text="{Binding DataContext.L[SpeechModelRecommended], RelativeSource={RelativeSource AncestorType=Window}}" />
-                                                    </Border>
-                                                </StackPanel>
-                                                <TextBlock Margin="0,4,0,0"
-                                                           TextWrapping="Wrap"
-                                                           Foreground="{Binding DataContext.SecondaryTextBrush, RelativeSource={RelativeSource AncestorType=Window}}"
-                                                           Text="{Binding Description}" />
-                                                <TextBlock Margin="0,4,0,0"
-                                                           Foreground="{Binding DataContext.SecondaryTextBrush, RelativeSource={RelativeSource AncestorType=Window}}"
-                                                           Text="{Binding SuitabilityText}" />
-                                                <ProgressBar Margin="0,6,0,0"
-                                                             Height="6"
-                                                             Maximum="100"
-                                                             Value="{Binding ProgressPercent, Mode=OneWay}"
-                                                             Visibility="{Binding DownloadingVisibility, Converter={StaticResource BoolToVisibility}}" />
+                                                <TextBlock FontWeight="SemiBold" Foreground="{DynamicResource EchoTextBrush}" TextWrapping="Wrap" Text="{Binding SttCloudInfoTitle}" />
+                                                <TextBlock Margin="0,2,0,0" Foreground="{DynamicResource EchoSoftTextBrush}" TextWrapping="Wrap" Text="{Binding L[SttCloudPrivacy]}" />
                                             </StackPanel>
-                                            <StackPanel Grid.Column="1" Margin="12,0,0,0" VerticalAlignment="Center" HorizontalAlignment="Right">
-                                                <TextBlock HorizontalAlignment="Right"
-                                                           Foreground="{Binding DataContext.PrimaryTextBrush, RelativeSource={RelativeSource AncestorType=Window}}"
-                                                           Text="{Binding StatusText}" />
-                                                <StackPanel Margin="0,6,0,0" Orientation="Horizontal" HorizontalAlignment="Right">
-                                                    <Button MinWidth="96" Height="30" Padding="10,0"
-                                                            Visibility="{Binding DownloadVisibility, Converter={StaticResource BoolToVisibility}}"
-                                                            Command="{Binding DataContext.DownloadSpeechModelCommand, RelativeSource={RelativeSource AncestorType=Window}}"
-                                                            ToolTip="{Binding DataContext.L[TipSpeechDownload], RelativeSource={RelativeSource AncestorType=Window}}"
-                                                            CommandParameter="{Binding}"
-                                                            Content="{Binding DataContext.L[SpeechModelDownload], RelativeSource={RelativeSource AncestorType=Window}}" />
-                                                    <Button MinWidth="96" Height="30" Padding="10,0"
-                                                            Visibility="{Binding UseVisibility, Converter={StaticResource BoolToVisibility}}"
-                                                            Command="{Binding DataContext.UseSpeechModelCommand, RelativeSource={RelativeSource AncestorType=Window}}"
-                                                            ToolTip="{Binding DataContext.L[TipSpeechUse], RelativeSource={RelativeSource AncestorType=Window}}"
-                                                            CommandParameter="{Binding}"
-                                                            Content="{Binding DataContext.L[SpeechModelUse], RelativeSource={RelativeSource AncestorType=Window}}" />
-                                                    <Button MinWidth="80" Height="30" Margin="6,0,0,0" Padding="10,0"
-                                                            Visibility="{Binding DeleteVisibility, Converter={StaticResource BoolToVisibility}}"
-                                                            Command="{Binding DataContext.DeleteSpeechModelCommand, RelativeSource={RelativeSource AncestorType=Window}}"
-                                                            ToolTip="{Binding DataContext.L[TipSpeechDelete], RelativeSource={RelativeSource AncestorType=Window}}"
-                                                            CommandParameter="{Binding}"
-                                                            Content="{Binding DataContext.L[SpeechModelDelete], RelativeSource={RelativeSource AncestorType=Window}}" />
-                                                    <Button MinWidth="96" Height="30" Padding="10,0"
-                                                            Visibility="{Binding DownloadingVisibility, Converter={StaticResource BoolToVisibility}}"
-                                                            Command="{Binding DataContext.CancelSpeechModelDownloadCommand, RelativeSource={RelativeSource AncestorType=Window}}"
-                                                            ToolTip="{Binding DataContext.L[TipSpeechCancel], RelativeSource={RelativeSource AncestorType=Window}}"
-                                                            Content="{Binding DataContext.L[SpeechModelCancel], RelativeSource={RelativeSource AncestorType=Window}}" />
-                                                </StackPanel>
+                                        </Border>
+                                        <TextBlock Style="{StaticResource SettingsHintStyle}" Margin="0,8,0,0" Text="{Binding SttCloudInfoHint}" />
+                                    </StackPanel>
+                                </Border>
+                                <!-- Про, Команда: Стандарт or Точная. -->
+                                <Border Style="{StaticResource SettingsCardStyle}" Visibility="{Binding ShowSttQualityChoice, Converter={StaticResource BoolToVisibility}}">
+                                    <StackPanel>
+                                        <TextBlock Style="{StaticResource SettingsCardTitleStyle}" Text="{Binding L[SttQualityTitle]}" />
+                                        <ComboBox MinWidth="300" MaxWidth="420" HorizontalAlignment="Left" ToolTip="{Binding L[TipReplioSttModel]}"
+                                                  ItemsSource="{Binding ReplioSttModels}" DisplayMemberPath="Display" SelectedItem="{Binding SelectedReplioSttModel, Mode=TwoWay}" />
+                                        <TextBlock Style="{StaticResource SettingsHintStyle}" Margin="0,8,0,0" Text="{Binding L[SttQualityHint]}" />
+                                    </StackPanel>
+                                </Border>
+                                <!-- Локальный: only on this computer. -->
+                                <Border Style="{StaticResource SettingsCardStyle}" Visibility="{Binding IsLocalSpeechPlan, Converter={StaticResource BoolToVisibility}}">
+                                    <StackPanel>
+                                        <TextBlock Style="{StaticResource SettingsCardTitleStyle}" Text="{Binding L[SttWhereTitle]}" />
+                                        <Border Style="{StaticResource SettingsInfoBoxStyle}">
+                                            <StackPanel>
+                                                <TextBlock FontWeight="SemiBold" Foreground="{DynamicResource EchoTextBrush}" Text="{Binding L[SttLocalTitle]}" />
+                                                <TextBlock Margin="0,2,0,0" Foreground="{DynamicResource EchoSoftTextBrush}" TextWrapping="Wrap" Text="{Binding L[SttLocalText]}" />
+                                            </StackPanel>
+                                        </Border>
+                                    </StackPanel>
+                                </Border>
+                                <!-- Приватный: the company's own server. -->
+                                <Border Style="{StaticResource SettingsCardStyle}" Visibility="{Binding IsCompanyPlan, Converter={StaticResource BoolToVisibility}}">
+                                    <Border Style="{StaticResource SettingsInfoBoxStyle}">
+                                        <StackPanel>
+                                            <TextBlock FontWeight="SemiBold" Foreground="{DynamicResource EchoTextBrush}" Text="{Binding L[CompanyServiceTitle]}" />
+                                            <TextBlock Margin="0,2,0,0" Foreground="{DynamicResource EchoSoftTextBrush}" TextWrapping="Wrap" Text="{Binding L[CompanyServiceText]}" />
+                                        </StackPanel>
+                                    </Border>
+                                </Border>
+                                <!-- Developer mode: on this computer or through an own service. -->
+                                <Border Style="{StaticResource SettingsCardStyle}" Visibility="{Binding ShowSttWhereChoice, Converter={StaticResource BoolToVisibility}}">
+                                    <StackPanel>
+                                        <TextBlock Style="{StaticResource SettingsCardTitleStyle}" Text="{Binding L[SttWhereChoiceTitle]}" />
+                                        <StackPanel Orientation="Horizontal">
+                                            <RadioButton GroupName="SttWhere" Style="{StaticResource SegmentStyle}" IsChecked="{Binding IsSttOnComputer, Mode=TwoWay}" Content="{Binding L[SttOnComputer]}" />
+                                            <RadioButton GroupName="SttWhere" Style="{StaticResource SegmentStyle}" IsChecked="{Binding IsSttOwnService, Mode=TwoWay}" Content="{Binding L[SttOwnService]}" />
+                                        </StackPanel>
+                                        <TextBlock Style="{StaticResource SettingsHintStyle}" Margin="0,8,0,0" Text="{Binding L[SttOnComputerHint]}"
+                                                   Visibility="{Binding IsSttOnComputer, Converter={StaticResource BoolToVisibility}}" />
+                                        <StackPanel Visibility="{Binding ShowSttServiceSettings, Converter={StaticResource BoolToVisibility}}">
+                                            <Grid ToolTip="{Binding L[TipSttProvider]}" Background="Transparent" Margin="0,12,0,0">
+                                                <Grid.ColumnDefinitions>
+                                                    <ColumnDefinition Width="230" />
+                                                    <ColumnDefinition Width="*" />
+                                                </Grid.ColumnDefinitions>
+                                                <TextBlock Foreground="{DynamicResource EchoSoftTextBrush}" VerticalAlignment="Center" Text="{Binding L[SettingsProviderPreset]}" />
+                                                <ComboBox Grid.Column="1" ItemsSource="{Binding SttApiPresets}" SelectedItem="{Binding SelectedSttPreset, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+                                            </Grid>
+                                            <Grid ToolTip="{Binding L[TipSttBaseUrl]}" Background="Transparent" Margin="0,10,0,0" Visibility="{Binding SttBaseUrlFieldVisibility, Converter={StaticResource BoolToVisibility}}">
+                                                <Grid.ColumnDefinitions>
+                                                    <ColumnDefinition Width="230" />
+                                                    <ColumnDefinition Width="*" />
+                                                </Grid.ColumnDefinitions>
+                                                <TextBlock Foreground="{DynamicResource EchoSoftTextBrush}" VerticalAlignment="Center" Text="{Binding L[SettingsBaseUrl]}" />
+                                                <TextBox Grid.Column="1" Text="{Binding SttApiBaseUrl, UpdateSourceTrigger=PropertyChanged}" />
+                                            </Grid>
+                                            <Grid ToolTip="{Binding L[TipSttApiKey]}" Background="Transparent" Margin="0,10,0,0">
+                                                <Grid.ColumnDefinitions>
+                                                    <ColumnDefinition Width="230" />
+                                                    <ColumnDefinition Width="*" />
+                                                </Grid.ColumnDefinitions>
+                                                <TextBlock Foreground="{DynamicResource EchoSoftTextBrush}" VerticalAlignment="Center" Text="{Binding L[SettingsSttApiKey]}" />
+                                                <PasswordBox Grid.Column="1" controls:SecretBox.Secret="{Binding SttApiKey, Mode=TwoWay}" />
+                                            </Grid>
+                                            <TextBlock Style="{StaticResource SettingsHintStyle}" Margin="230,6,0,0" Text="{Binding SttKeySourceText}" />
+                                            <Grid ToolTip="{Binding L[TipSttModel]}" Background="Transparent" Margin="0,10,0,0">
+                                                <Grid.ColumnDefinitions>
+                                                    <ColumnDefinition Width="230" />
+                                                    <ColumnDefinition Width="*" />
+                                                </Grid.ColumnDefinitions>
+                                                <TextBlock Foreground="{DynamicResource EchoSoftTextBrush}" VerticalAlignment="Center" Text="{Binding L[SettingsSttModel]}" />
+                                                <controls:ModelPicker Grid.Column="1"
+                                                                      Text="{Binding SttApiModel, Mode=TwoWay}"
+                                                                      Options="{Binding SpeechModelOptions}"
+                                                                      Status="{Binding SpeechModelsStatus}"
+                                                                      LoadCommand="{Binding LoadSpeechModelsCommand}" />
+                                            </Grid>
+                                            <TextBlock Style="{StaticResource SettingsHintStyle}" Margin="0,8,0,0" Text="{Binding L[SttOwnServiceHint]}" />
+                                        </StackPanel>
+                                    </StackPanel>
+                                </Border>
+                                <!-- Models on this computer: «Локальный», «Приватный», developer mode on «На этом компьютере». -->
+                                <Border Style="{StaticResource SettingsCardStyle}" Visibility="{Binding ShowSpeechModels, Converter={StaticResource BoolToVisibility}}">
+                                    <StackPanel>
+                                        <TextBlock Style="{StaticResource SettingsCardTitleStyle}" Text="{Binding L[SpeechModelTitle]}" />
+                                        <Border Margin="0,0,0,10" Style="{StaticResource SettingsWarnBoxStyle}" Visibility="{Binding IsSpeechModelMissing, Converter={StaticResource BoolToVisibility}}">
+                                            <TextBlock Foreground="{DynamicResource EchoTextBrush}" TextWrapping="Wrap" Text="{Binding SpeechModelStatusText}" />
+                                        </Border>
+                                        <ItemsControl ItemsSource="{Binding SpeechModels}">
+                                            <ItemsControl.ItemTemplate>
+                                                <DataTemplate>
+                                                    <Border Margin="0,0,0,8" Padding="14,10" CornerRadius="10" BorderThickness="1"
+                                                            Background="{DynamicResource EchoInputBrush}" BorderBrush="{DynamicResource EchoBorderBrush}">
+                                                        <Grid>
+                                                            <Grid.ColumnDefinitions>
+                                                                <ColumnDefinition Width="*" />
+                                                                <ColumnDefinition Width="Auto" />
+                                                            </Grid.ColumnDefinitions>
+                                                            <StackPanel>
+                                                                <StackPanel Orientation="Horizontal">
+                                                                    <TextBlock FontWeight="SemiBold" Foreground="{DynamicResource EchoTextBrush}" Text="{Binding Title}" />
+                                                                    <Border Margin="10,0,0,0" Padding="8,1" CornerRadius="9" Background="{DynamicResource EchoAccentSoftBrush}"
+                                                                            Visibility="{Binding RecommendedVisibility, Converter={StaticResource BoolToVisibility}}">
+                                                                        <TextBlock Foreground="{DynamicResource EchoBadgeTextBrush}" FontSize="11"
+                                                                                   Text="{Binding DataContext.L[SpeechModelRecommended], RelativeSource={RelativeSource AncestorType=Window}}" />
+                                                                    </Border>
+                                                                </StackPanel>
+                                                                <TextBlock Margin="0,2,0,0" FontSize="12" Foreground="{DynamicResource EchoMutedBrush}" Text="{Binding SizeText}" />
+                                                                <TextBlock Margin="0,4,0,0" FontSize="13" TextWrapping="Wrap" Foreground="{DynamicResource EchoSoftTextBrush}" Text="{Binding Description}" />
+                                                                <TextBlock Margin="0,2,0,0" FontSize="12" Foreground="{DynamicResource EchoMutedBrush}" Text="{Binding SuitabilityText}" />
+                                                                <ProgressBar Margin="0,6,0,0" Height="6" Maximum="100" Value="{Binding ProgressPercent, Mode=OneWay}"
+                                                                             Visibility="{Binding DownloadingVisibility, Converter={StaticResource BoolToVisibility}}" />
+                                                            </StackPanel>
+                                                            <StackPanel Grid.Column="1" Margin="12,0,0,0" VerticalAlignment="Center" HorizontalAlignment="Right">
+                                                                <TextBlock HorizontalAlignment="Right" Foreground="{DynamicResource EchoTextBrush}" Text="{Binding StatusText}" />
+                                                                <StackPanel Margin="0,6,0,0" Orientation="Horizontal" HorizontalAlignment="Right">
+                                                                    <Button MinWidth="96" Height="30" Padding="10,0"
+                                                                            Visibility="{Binding DownloadVisibility, Converter={StaticResource BoolToVisibility}}"
+                                                                            Command="{Binding DataContext.DownloadSpeechModelCommand, RelativeSource={RelativeSource AncestorType=Window}}"
+                                                                            ToolTip="{Binding DataContext.L[TipSpeechDownload], RelativeSource={RelativeSource AncestorType=Window}}"
+                                                                            CommandParameter="{Binding}"
+                                                                            Content="{Binding DataContext.L[SpeechModelDownload], RelativeSource={RelativeSource AncestorType=Window}}" />
+                                                                    <Button MinWidth="96" Height="30" Padding="10,0"
+                                                                            Visibility="{Binding UseVisibility, Converter={StaticResource BoolToVisibility}}"
+                                                                            Command="{Binding DataContext.UseSpeechModelCommand, RelativeSource={RelativeSource AncestorType=Window}}"
+                                                                            ToolTip="{Binding DataContext.L[TipSpeechUse], RelativeSource={RelativeSource AncestorType=Window}}"
+                                                                            CommandParameter="{Binding}"
+                                                                            Content="{Binding DataContext.L[SpeechModelUse], RelativeSource={RelativeSource AncestorType=Window}}" />
+                                                                    <Button MinWidth="80" Height="30" Margin="6,0,0,0" Padding="10,0"
+                                                                            Visibility="{Binding DeleteVisibility, Converter={StaticResource BoolToVisibility}}"
+                                                                            Command="{Binding DataContext.DeleteSpeechModelCommand, RelativeSource={RelativeSource AncestorType=Window}}"
+                                                                            ToolTip="{Binding DataContext.L[TipSpeechDelete], RelativeSource={RelativeSource AncestorType=Window}}"
+                                                                            CommandParameter="{Binding}"
+                                                                            Content="{Binding DataContext.L[SpeechModelDelete], RelativeSource={RelativeSource AncestorType=Window}}" />
+                                                                    <Button MinWidth="96" Height="30" Padding="10,0"
+                                                                            Visibility="{Binding DownloadingVisibility, Converter={StaticResource BoolToVisibility}}"
+                                                                            Command="{Binding DataContext.CancelSpeechModelDownloadCommand, RelativeSource={RelativeSource AncestorType=Window}}"
+                                                                            ToolTip="{Binding DataContext.L[TipSpeechCancel], RelativeSource={RelativeSource AncestorType=Window}}"
+                                                                            Content="{Binding DataContext.L[SpeechModelCancel], RelativeSource={RelativeSource AncestorType=Window}}" />
+                                                                </StackPanel>
+                                                            </StackPanel>
+                                                        </Grid>
+                                                    </Border>
+                                                </DataTemplate>
+                                            </ItemsControl.ItemTemplate>
+                                        </ItemsControl>
+                                        <TextBlock Style="{StaticResource SettingsHintStyle}" Text="{Binding L[SpeechModelIntro]}" />
+                                        <TextBlock Style="{StaticResource SettingsHintStyle}" Text="{Binding SpeechModelHardwareText}" />
+                                    </StackPanel>
+                                </Border>
+                                <Border Style="{StaticResource SettingsCardStyle}">
+                                    <StackPanel>
+                                        <TextBlock Style="{StaticResource SettingsCardTitleStyle}" Text="{Binding L[SettingsSpeechLanguage]}" />
+                                        <ComboBox MinWidth="260" MaxWidth="360" HorizontalAlignment="Left" ToolTip="{Binding L[TipSpeechLanguage]}"
+                                                  ItemsSource="{Binding SpeechLanguageOptions}" DisplayMemberPath="Title" SelectedItem="{Binding SelectedSpeechLanguage, Mode=TwoWay}" />
+                                        <TextBlock Style="{StaticResource SettingsHintStyle}" Margin="0,8,0,0" Text="{Binding L[TipSpeechLanguage]}" />
+                                    </StackPanel>
+                                </Border>
+                                <Border Style="{StaticResource SettingsCardStyle}">
+                                    <StackPanel>
+                                        <TextBlock Style="{StaticResource SettingsCardTitleStyle}" Text="{Binding L[SoundCheckTitle]}" />
+                                        <Button HorizontalAlignment="Left" MinWidth="170" Height="34" Padding="14,0" Command="{Binding RunAudioCaptureTestCommand}"
+                                                ToolTip="{Binding L[TipTestAudioCapture]}" Content="{Binding L[TestAudioCapture]}" />
+                                        <TextBlock Style="{StaticResource SettingsHintStyle}" Margin="0,8,0,0" Text="{Binding L[SoundCheckHint]}" />
+                                        <TextBlock Margin="0,8,0,0" Foreground="{DynamicResource EchoTextBrush}" TextWrapping="Wrap" Text="{Binding AudioHealthMessage}" />
+                                        <TextBlock Margin="0,4,0,0" FontSize="13" Foreground="{DynamicResource EchoMutedBrush}" Text="{Binding SystemStatsText}" />
+                                        <TextBlock Margin="0,2,0,0" FontSize="13" Foreground="{DynamicResource EchoMutedBrush}" Text="{Binding MicStatsText}" />
+                                    </StackPanel>
+                                </Border>
+                            </StackPanel>
+
+                            <!-- ===== ИИ-помощник ===== -->
+                            <StackPanel Visibility="{Binding IsSettingsAi, Converter={StaticResource BoolToVisibility}}">
+                                <!-- Replio plans: the prepared models, by name (Бесплатный, Старт) or to choose (Про, Команда, Локальный). -->
+                                <Border Style="{StaticResource SettingsCardStyle}" Visibility="{Binding IsManagedAi, Converter={StaticResource BoolToVisibility}}">
+                                    <StackPanel>
+                                        <TextBlock Style="{StaticResource SettingsCardTitleStyle}" Text="{Binding L[AiModelsTitle]}" />
+                                        <StackPanel Visibility="{Binding ShowReplioModelNames, Converter={StaticResource BoolToVisibility}}">
+                                            <Grid Margin="0,4,0,0">
+                                                <Grid.ColumnDefinitions>
+                                                    <ColumnDefinition Width="230" />
+                                                    <ColumnDefinition Width="*" />
+                                                </Grid.ColumnDefinitions>
+                                                <TextBlock Foreground="{DynamicResource EchoSoftTextBrush}" Text="{Binding L[AiHintsModelLabel]}" />
+                                                <TextBlock Grid.Column="1" FontWeight="SemiBold" Foreground="{DynamicResource EchoTextBrush}" Text="{Binding ReplioFastModelName}" />
+                                            </Grid>
+                                            <Grid Margin="0,8,0,0">
+                                                <Grid.ColumnDefinitions>
+                                                    <ColumnDefinition Width="230" />
+                                                    <ColumnDefinition Width="*" />
+                                                </Grid.ColumnDefinitions>
+                                                <TextBlock Foreground="{DynamicResource EchoSoftTextBrush}" Text="{Binding L[AiAnalysisModelLabel]}" />
+                                                <TextBlock Grid.Column="1" FontWeight="SemiBold" Foreground="{DynamicResource EchoTextBrush}" Text="{Binding ReplioAnalysisModelName}" />
+                                            </Grid>
+                                            <TextBlock Style="{StaticResource SettingsHintStyle}" Margin="0,10,0,0" Text="{Binding AiModelsHint}" />
+                                        </StackPanel>
+                                        <StackPanel Visibility="{Binding ShowReplioModelChoice, Converter={StaticResource BoolToVisibility}}">
+                                            <Grid ToolTip="{Binding L[TipReplioFastModel]}" Background="Transparent" Margin="0,4,0,0">
+                                                <Grid.ColumnDefinitions>
+                                                    <ColumnDefinition Width="230" />
+                                                    <ColumnDefinition Width="*" />
+                                                </Grid.ColumnDefinitions>
+                                                <TextBlock Foreground="{DynamicResource EchoSoftTextBrush}" VerticalAlignment="Center" Text="{Binding L[AiHintsModelLabel]}" />
+                                                <ComboBox Grid.Column="1" MaxWidth="420" HorizontalAlignment="Stretch" ItemsSource="{Binding ReplioFastModels}" DisplayMemberPath="Display" SelectedItem="{Binding SelectedReplioFastModel, Mode=TwoWay}" />
+                                            </Grid>
+                                            <Grid ToolTip="{Binding L[TipReplioAnalysisModel]}" Background="Transparent" Margin="0,10,0,0">
+                                                <Grid.ColumnDefinitions>
+                                                    <ColumnDefinition Width="230" />
+                                                    <ColumnDefinition Width="*" />
+                                                </Grid.ColumnDefinitions>
+                                                <TextBlock Foreground="{DynamicResource EchoSoftTextBrush}" VerticalAlignment="Center" Text="{Binding L[AiAnalysisModelLabel]}" />
+                                                <ComboBox Grid.Column="1" MaxWidth="420" HorizontalAlignment="Stretch" ItemsSource="{Binding ReplioAnalysisModels}" DisplayMemberPath="Display" SelectedItem="{Binding SelectedReplioAnalysisModel, Mode=TwoWay}" />
+                                            </Grid>
+                                            <TextBlock Style="{StaticResource SettingsHintStyle}" Margin="230,8,0,0" Text="{Binding L[TipReplioFastModel]}" />
+                                        </StackPanel>
+                                    </StackPanel>
+                                </Border>
+                                <!-- Приватный: the company's own server. -->
+                                <Border Style="{StaticResource SettingsCardStyle}" Visibility="{Binding IsCompanyPlan, Converter={StaticResource BoolToVisibility}}">
+                                    <Border Style="{StaticResource SettingsInfoBoxStyle}">
+                                        <StackPanel>
+                                            <TextBlock FontWeight="SemiBold" Foreground="{DynamicResource EchoTextBrush}" Text="{Binding L[CompanyServiceTitle]}" />
+                                            <TextBlock Margin="0,2,0,0" Foreground="{DynamicResource EchoSoftTextBrush}" TextWrapping="Wrap" Text="{Binding L[CompanyServiceText]}" />
+                                        </StackPanel>
+                                    </Border>
+                                </Border>
+                                <!-- Developer mode: own AI service; the technical fields only for «Custom». -->
+                                <Border Style="{StaticResource SettingsCardStyle}" Visibility="{Binding ShowOwnProviderSettings, Converter={StaticResource BoolToVisibility}}">
+                                    <StackPanel>
+                                        <TextBlock Style="{StaticResource SettingsCardTitleStyle}" Text="{Binding L[AiServiceTitle]}" />
+                                        <Grid ToolTip="{Binding L[TipProviderPreset]}" Background="Transparent">
+                                            <Grid.ColumnDefinitions>
+                                                <ColumnDefinition Width="230" />
+                                                <ColumnDefinition Width="*" />
+                                            </Grid.ColumnDefinitions>
+                                            <TextBlock Foreground="{DynamicResource EchoSoftTextBrush}" VerticalAlignment="Center" Text="{Binding L[SettingsProviderPreset]}" />
+                                            <ComboBox Grid.Column="1" ItemsSource="{Binding ApiProviderPresets}" SelectedItem="{Binding SelectedApiPreset, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+                                        </Grid>
+                                        <Grid ToolTip="{Binding L[TipBaseUrl]}" Background="Transparent" Margin="0,10,0,0" Visibility="{Binding BaseUrlFieldVisibility, Converter={StaticResource BoolToVisibility}}">
+                                            <Grid.ColumnDefinitions>
+                                                <ColumnDefinition Width="230" />
+                                                <ColumnDefinition Width="*" />
+                                            </Grid.ColumnDefinitions>
+                                            <TextBlock Foreground="{DynamicResource EchoSoftTextBrush}" VerticalAlignment="Center" Text="{Binding L[SettingsBaseUrl]}" />
+                                            <TextBox Grid.Column="1" Text="{Binding OpenAiBaseUrl, UpdateSourceTrigger=PropertyChanged}" />
+                                        </Grid>
+                                        <Grid ToolTip="{Binding L[TipApiKey]}" Background="Transparent" Margin="0,10,0,0" Visibility="{Binding ApiKeyFieldVisibility, Converter={StaticResource BoolToVisibility}}">
+                                            <Grid.ColumnDefinitions>
+                                                <ColumnDefinition Width="230" />
+                                                <ColumnDefinition Width="*" />
+                                            </Grid.ColumnDefinitions>
+                                            <TextBlock Foreground="{DynamicResource EchoSoftTextBrush}" VerticalAlignment="Center" Text="{Binding L[SettingsApiKey]}" />
+                                            <PasswordBox Grid.Column="1" controls:SecretBox.Secret="{Binding OpenAiApiKey, Mode=TwoWay}" />
+                                        </Grid>
+                                        <Grid ToolTip="{Binding L[TipModel]}" Background="Transparent" Margin="0,10,0,0">
+                                            <Grid.ColumnDefinitions>
+                                                <ColumnDefinition Width="230" />
+                                                <ColumnDefinition Width="*" />
+                                            </Grid.ColumnDefinitions>
+                                            <TextBlock Foreground="{DynamicResource EchoSoftTextBrush}" VerticalAlignment="Center" Text="{Binding L[SettingsModel]}" />
+                                            <controls:ModelPicker Grid.Column="1"
+                                                                  Text="{Binding OpenAiModel, Mode=TwoWay}"
+                                                                  Options="{Binding ChatModelOptions}"
+                                                                  Status="{Binding ChatModelsStatus}"
+                                                                  LoadCommand="{Binding LoadChatModelsCommand}" />
+                                        </Grid>
+                                        <Grid ToolTip="{Binding L[SettingsAnalysisModelHint]}" Background="Transparent" Margin="0,10,0,0">
+                                            <Grid.ColumnDefinitions>
+                                                <ColumnDefinition Width="230" />
+                                                <ColumnDefinition Width="*" />
+                                            </Grid.ColumnDefinitions>
+                                            <TextBlock Foreground="{DynamicResource EchoSoftTextBrush}" VerticalAlignment="Center" Text="{Binding L[SettingsAnalysisModel]}" />
+                                            <controls:ModelPicker Grid.Column="1"
+                                                                  Text="{Binding AnalysisModel, Mode=TwoWay}"
+                                                                  Options="{Binding ChatModelOptions}"
+                                                                  Status="{Binding ChatModelsStatus}"
+                                                                  LoadCommand="{Binding LoadChatModelsCommand}" />
+                                        </Grid>
+                                        <TextBlock Style="{StaticResource SettingsHintStyle}" Margin="230,6,0,0" Text="{Binding L[SettingsModelPickerHint]}" />
+                                        <ToggleButton x:Name="AiServiceMoreToggle" Style="{StaticResource SettingsMoreToggleStyle}" Content="{Binding L[AiAdvanced]}"
+                                                      Visibility="{Binding EndpointPathFieldVisibility, Converter={StaticResource BoolToVisibility}}" />
+                                        <StackPanel Visibility="{Binding IsChecked, ElementName=AiServiceMoreToggle, Converter={StaticResource BoolToVisibility}}">
+                                            <Grid ToolTip="{Binding L[TipProvider]}" Background="Transparent" Margin="0,10,0,0" Visibility="{Binding ProviderFieldVisibility, Converter={StaticResource BoolToVisibility}}">
+                                                <Grid.ColumnDefinitions>
+                                                    <ColumnDefinition Width="230" />
+                                                    <ColumnDefinition Width="*" />
+                                                </Grid.ColumnDefinitions>
+                                                <TextBlock Foreground="{DynamicResource EchoSoftTextBrush}" VerticalAlignment="Center" Text="{Binding L[SettingsProvider]}" />
+                                                <TextBox Grid.Column="1" Text="{Binding ApiProvider, UpdateSourceTrigger=PropertyChanged}" />
+                                            </Grid>
+                                            <Grid ToolTip="{Binding L[TipEndpointPath]}" Background="Transparent" Margin="0,10,0,0" Visibility="{Binding EndpointPathFieldVisibility, Converter={StaticResource BoolToVisibility}}">
+                                                <Grid.ColumnDefinitions>
+                                                    <ColumnDefinition Width="230" />
+                                                    <ColumnDefinition Width="*" />
+                                                </Grid.ColumnDefinitions>
+                                                <TextBlock Foreground="{DynamicResource EchoSoftTextBrush}" VerticalAlignment="Center" Text="{Binding L[SettingsEndpointPath]}" />
+                                                <TextBox Grid.Column="1" Text="{Binding ChatCompletionsPath, UpdateSourceTrigger=PropertyChanged}" />
+                                            </Grid>
+                                            <Grid ToolTip="{Binding L[TipKeyHeader]}" Background="Transparent" Margin="0,10,0,0" Visibility="{Binding ApiKeyHeaderFieldVisibility, Converter={StaticResource BoolToVisibility}}">
+                                                <Grid.ColumnDefinitions>
+                                                    <ColumnDefinition Width="230" />
+                                                    <ColumnDefinition Width="*" />
+                                                </Grid.ColumnDefinitions>
+                                                <TextBlock Foreground="{DynamicResource EchoSoftTextBrush}" VerticalAlignment="Center" Text="{Binding L[SettingsKeyHeader]}" />
+                                                <TextBox Grid.Column="1" Text="{Binding ApiKeyHeaderName, UpdateSourceTrigger=PropertyChanged}" />
+                                            </Grid>
+                                            <Grid ToolTip="{Binding L[TipKeyPrefix]}" Background="Transparent" Margin="0,10,0,0" Visibility="{Binding ApiKeyPrefixFieldVisibility, Converter={StaticResource BoolToVisibility}}">
+                                                <Grid.ColumnDefinitions>
+                                                    <ColumnDefinition Width="230" />
+                                                    <ColumnDefinition Width="*" />
+                                                </Grid.ColumnDefinitions>
+                                                <TextBlock Foreground="{DynamicResource EchoSoftTextBrush}" VerticalAlignment="Center" Text="{Binding L[SettingsKeyPrefix]}" />
+                                                <TextBox Grid.Column="1" Text="{Binding ApiKeyPrefix, UpdateSourceTrigger=PropertyChanged}" />
+                                            </Grid>
+                                        </StackPanel>
+                                    </StackPanel>
+                                </Border>
+                                <Border Style="{StaticResource SettingsCardStyle}">
+                                    <StackPanel>
+                                        <TextBlock Style="{StaticResource SettingsCardTitleStyle}" Text="{Binding L[ScreenContextTitle]}" />
+                                        <CheckBox Style="{StaticResource ModernCheckBoxStyle}" IsChecked="{Binding CaptureScreenContextEnabled, Mode=TwoWay}" ToolTip="{Binding L[TipScreenContext]}" Content="{Binding L[SettingsScreenContext]}" />
+                                        <!-- Without screenshots as AI context nothing is captured, so its options are greyed out. -->
+                                        <StackPanel IsEnabled="{Binding CaptureScreenContextEnabled}" Style="{StaticResource DependentSettingsStyle}">
+                                            <CheckBox Margin="0,8,0,0" Style="{StaticResource ModernCheckBoxStyle}" IsChecked="{Binding VideoContextEnabled, Mode=TwoWay}" ToolTip="{Binding L[TipAutoSnapshots]}" Content="{Binding L[SettingsAutoSnapshots]}" />
+                                        </StackPanel>
+                                        <TextBlock Style="{StaticResource SettingsHintStyle}" Margin="0,8,0,0" Text="{Binding L[SettingsSnapshotsHint]}" />
+                                        <TextBlock Margin="0,4,0,0" FontSize="13" Foreground="{DynamicResource EchoMutedBrush}" Text="{Binding VisualContextStatusText}" />
+                                        <StackPanel Visibility="{Binding ShowAdvancedSettings, Converter={StaticResource BoolToVisibility}}">
+                                            <ToggleButton x:Name="SnapshotsMoreToggle" Style="{StaticResource SettingsMoreToggleStyle}" Content="{Binding L[AiAdvanced]}" />
+                                            <StackPanel IsEnabled="{Binding CaptureScreenContextEnabled}" Style="{StaticResource DependentSettingsStyle}"
+                                                        Visibility="{Binding IsChecked, ElementName=SnapshotsMoreToggle, Converter={StaticResource BoolToVisibility}}">
+                                                <Grid ToolTip="{Binding L[TipSnapshotInterval]}" Background="Transparent" Margin="0,10,0,0" IsEnabled="{Binding VideoContextEnabled}">
+                                                    <Grid.ColumnDefinitions>
+                                                        <ColumnDefinition Width="230" />
+                                                        <ColumnDefinition Width="160" />
+                                                    </Grid.ColumnDefinitions>
+                                                    <TextBlock Foreground="{DynamicResource EchoSoftTextBrush}" VerticalAlignment="Center" Text="{Binding L[SettingsSnapshotInterval]}" />
+                                                    <TextBox Grid.Column="1" Text="{Binding VideoContextIntervalMs, UpdateSourceTrigger=PropertyChanged}" />
+                                                </Grid>
+                                                <Grid ToolTip="{Binding L[TipSnapshotBuffer]}" Background="Transparent" Margin="0,10,0,0">
+                                                    <Grid.ColumnDefinitions>
+                                                        <ColumnDefinition Width="230" />
+                                                        <ColumnDefinition Width="160" />
+                                                    </Grid.ColumnDefinitions>
+                                                    <TextBlock Foreground="{DynamicResource EchoSoftTextBrush}" VerticalAlignment="Center" Text="{Binding L[SettingsSnapshotBuffer]}" />
+                                                    <TextBox Grid.Column="1" Text="{Binding VisualContextMaxFrames, UpdateSourceTrigger=PropertyChanged}" />
+                                                </Grid>
+                                                <Grid ToolTip="{Binding L[TipSnapshotsPerRequest]}" Background="Transparent" Margin="0,10,0,0">
+                                                    <Grid.ColumnDefinitions>
+                                                        <ColumnDefinition Width="230" />
+                                                        <ColumnDefinition Width="160" />
+                                                    </Grid.ColumnDefinitions>
+                                                    <TextBlock Foreground="{DynamicResource EchoSoftTextBrush}" VerticalAlignment="Center" Text="{Binding L[SettingsSnapshotsPerRequest]}" />
+                                                    <TextBox Grid.Column="1" Text="{Binding VisualContextMaxImagesPerRequest, UpdateSourceTrigger=PropertyChanged}" />
+                                                </Grid>
+                                            </StackPanel>
+                                        </StackPanel>
+                                    </StackPanel>
+                                </Border>
+                            </StackPanel>
+
+                            <!-- ===== Окна и вид ===== -->
+                            <StackPanel Visibility="{Binding IsSettingsWindows, Converter={StaticResource BoolToVisibility}}">
+                                <Border Style="{StaticResource SettingsCardStyle}">
+                                    <StackPanel>
+                                        <TextBlock Style="{StaticResource SettingsCardTitleStyle}" Text="{Binding L[SettingsSectionAppearance]}" />
+                                        <Grid ToolTip="{Binding L[TipToggleTheme]}" Background="Transparent">
+                                            <Grid.ColumnDefinitions>
+                                                <ColumnDefinition Width="230" />
+                                                <ColumnDefinition Width="*" />
+                                            </Grid.ColumnDefinitions>
+                                            <TextBlock Foreground="{DynamicResource EchoSoftTextBrush}" VerticalAlignment="Center" Text="{Binding L[SettingsTheme]}" />
+                                            <StackPanel Grid.Column="1" Orientation="Horizontal">
+                                                <RadioButton GroupName="ThemeMode" Style="{StaticResource SegmentStyle}" IsChecked="{Binding IsDarkTheme, Mode=TwoWay}" ToolTip="{Binding L[TipThemeDark]}" Content="{Binding L[ThemeDark]}" />
+                                                <RadioButton GroupName="ThemeMode" Style="{StaticResource SegmentStyle}" IsChecked="{Binding IsLightTheme, Mode=TwoWay}" ToolTip="{Binding L[TipThemeLight]}" Content="{Binding L[ThemeLight]}" />
                                             </StackPanel>
                                         </Grid>
-                                    </Border>
-                                </DataTemplate>
-                            </ItemsControl.ItemTemplate>
-                        </ItemsControl>
-                        </StackPanel>
-                        <TextBlock Margin="0,16,0,0" Foreground="{Binding PrimaryTextBrush}" FontWeight="SemiBold" Text="{Binding L[HotkeysTitle]}" />
-                        <Grid ToolTip="{Binding L[TipHotkeyShowHide]}" Background="Transparent" Margin="0,8,0,0">
-                            <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="220" />
-                                <ColumnDefinition Width="220" />
-                                <ColumnDefinition Width="220" />
-                            </Grid.ColumnDefinitions>
-                            <TextBlock Foreground="{Binding SecondaryTextBrush}" Text="{Binding L[HotkeyShowHide]}" />
-                            <TextBox Grid.Column="1" Text="{Binding ToggleOverlayHotkeyText, UpdateSourceTrigger=PropertyChanged}" />
-                            <TextBlock Grid.Column="2" Margin="8,0,0,0" Foreground="{Binding SecondaryTextBrush}" Text="Ctrl+/" />
-                        </Grid>
-                        <Grid ToolTip="{Binding L[TipHotkeyAsk]}" Background="Transparent" Margin="0,8,0,0">
-                            <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="220" />
-                                <ColumnDefinition Width="220" />
-                                <ColumnDefinition Width="220" />
-                            </Grid.ColumnDefinitions>
-                            <TextBlock Foreground="{Binding SecondaryTextBrush}" Text="{Binding L[HotkeyAsk]}" />
-                            <TextBox Grid.Column="1" Text="{Binding AskHotkeyText, UpdateSourceTrigger=PropertyChanged}" />
-                            <TextBlock Grid.Column="2" Margin="8,0,0,0" Foreground="{Binding SecondaryTextBrush}" Text="Ctrl+Enter" />
-                        </Grid>
-                        <Grid ToolTip="{Binding L[TipHotkeyClearChat]}" Background="Transparent" Margin="0,8,0,0">
-                            <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="220" />
-                                <ColumnDefinition Width="220" />
-                                <ColumnDefinition Width="220" />
-                            </Grid.ColumnDefinitions>
-                            <TextBlock Foreground="{Binding SecondaryTextBrush}" Text="{Binding L[HotkeyClearChat]}" />
-                            <TextBox Grid.Column="1" Text="{Binding ClearChatHotkeyText, UpdateSourceTrigger=PropertyChanged}" />
-                            <TextBlock Grid.Column="2" Margin="8,0,0,0" Foreground="{Binding SecondaryTextBrush}" Text="Ctrl+R" />
-                        </Grid>
-                        <Grid ToolTip="{Binding L[TipHotkeyStartStop]}" Background="Transparent" Margin="0,8,0,0">
-                            <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="220" />
-                                <ColumnDefinition Width="220" />
-                                <ColumnDefinition Width="220" />
-                            </Grid.ColumnDefinitions>
-                            <TextBlock Foreground="{Binding SecondaryTextBrush}" Text="{Binding L[HotkeyStartStop]}" />
-                            <TextBox Grid.Column="1" Text="{Binding ToggleCaptureHotkeyText, UpdateSourceTrigger=PropertyChanged}" />
-                            <TextBlock Grid.Column="2" Margin="8,0,0,0" Foreground="{Binding SecondaryTextBrush}" Text="Ctrl+Shift+/" />
-                        </Grid>
-                        <Grid ToolTip="{Binding L[TipHotkeyMove]}" Background="Transparent" Margin="0,8,0,0">
-                            <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="220" />
-                                <ColumnDefinition Width="220" />
-                                <ColumnDefinition Width="220" />
-                            </Grid.ColumnDefinitions>
-                            <TextBlock Foreground="{Binding SecondaryTextBrush}" TextWrapping="Wrap" Text="{Binding L[HotkeyMove]}" />
-                            <StackPanel Grid.Column="1" Orientation="Horizontal">
-                                <TextBox Width="50" Margin="0,0,6,0" Text="{Binding MoveLeftHotkeyText, UpdateSourceTrigger=PropertyChanged}" />
-                                <TextBox Width="50" Margin="0,0,6,0" Text="{Binding MoveRightHotkeyText, UpdateSourceTrigger=PropertyChanged}" />
-                                <TextBox Width="50" Margin="0,0,6,0" Text="{Binding MoveUpHotkeyText, UpdateSourceTrigger=PropertyChanged}" />
-                                <TextBox Width="50" Text="{Binding MoveDownHotkeyText, UpdateSourceTrigger=PropertyChanged}" />
+                                        <Grid ToolTip="{Binding L[TipLanguage]}" Background="Transparent" Margin="0,10,0,0">
+                                            <Grid.ColumnDefinitions>
+                                                <ColumnDefinition Width="230" />
+                                                <ColumnDefinition Width="*" />
+                                            </Grid.ColumnDefinitions>
+                                            <TextBlock Foreground="{DynamicResource EchoSoftTextBrush}" VerticalAlignment="Center" Text="{Binding L[SettingsLanguage]}" />
+                                            <StackPanel Grid.Column="1" Orientation="Horizontal">
+                                                <RadioButton GroupName="UiLanguage" Style="{StaticResource SegmentStyle}" IsChecked="{Binding IsRussianUi, Mode=TwoWay}" ToolTip="{Binding L[TipLanguageRu]}" Content="Русский (RU)" />
+                                                <RadioButton GroupName="UiLanguage" Style="{StaticResource SegmentStyle}" IsChecked="{Binding IsEnglishUi, Mode=TwoWay}" ToolTip="{Binding L[TipLanguageEn]}" Content="English (EN)" />
+                                            </StackPanel>
+                                        </Grid>
+                                        <TextBlock Style="{StaticResource SettingsHintStyle}" Margin="230,8,0,0" Text="{Binding L[SettingsLanguageHint]}" />
+                                    </StackPanel>
+                                </Border>
+                                <Border Style="{StaticResource SettingsCardStyle}">
+                                    <StackPanel>
+                                        <TextBlock Style="{StaticResource SettingsCardTitleStyle}" Text="{Binding L[SettingsSectionScreenShare]}" />
+                                        <CheckBox Style="{StaticResource ModernCheckBoxStyle}" IsChecked="{Binding HideInScreenShare, Mode=TwoWay}" ToolTip="{Binding L[ShowInScreenShareHint]}" Content="{Binding L[HideInScreenShare]}" />
+                                        <TextBlock Style="{StaticResource SettingsHintStyle}" Margin="0,6,0,0" Text="{Binding L[ShowInScreenShareHint]}" />
+                                    </StackPanel>
+                                </Border>
                             </StackPanel>
-                            <TextBlock Grid.Column="2" Margin="8,0,0,0" Foreground="{Binding SecondaryTextBrush}" Text="Alt+←→↑↓" />
-                        </Grid>
-                        <Grid ToolTip="{Binding L[TipHotkeyScroll]}" Background="Transparent" Margin="0,8,0,0">
-                            <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="220" />
-                                <ColumnDefinition Width="220" />
-                                <ColumnDefinition Width="220" />
-                            </Grid.ColumnDefinitions>
-                            <TextBlock Foreground="{Binding SecondaryTextBrush}" Text="{Binding L[HotkeyScroll]}" />
-                            <StackPanel Grid.Column="1" Orientation="Horizontal">
-                                <TextBox Width="90" Margin="0,0,6,0" Text="{Binding ScrollUpHotkeyText, UpdateSourceTrigger=PropertyChanged}" />
-                                <TextBox Width="90" Text="{Binding ScrollDownHotkeyText, UpdateSourceTrigger=PropertyChanged}" />
+
+                            <!-- ===== Горячие клавиши ===== -->
+                            <StackPanel Visibility="{Binding IsSettingsHotkeys, Converter={StaticResource BoolToVisibility}}">
+                                <Border Style="{StaticResource SettingsCardStyle}">
+                                    <StackPanel>
+                                        <Border Margin="0,0,0,10" Style="{StaticResource SettingsWarnBoxStyle}" Visibility="{Binding HasHotkeyError, Converter={StaticResource BoolToVisibility}}">
+                                            <TextBlock Foreground="{DynamicResource EchoTextBrush}" TextWrapping="Wrap" Text="{Binding HotkeyErrorText}" />
+                                        </Border>
+                                        <Grid ToolTip="{Binding L[TipHotkeyShowHide]}" Background="Transparent" Margin="0,0,0,0">
+                                            <Grid.ColumnDefinitions>
+                                                <ColumnDefinition Width="260" />
+                                                <ColumnDefinition Width="230" />
+                                            </Grid.ColumnDefinitions>
+                                            <TextBlock Foreground="{DynamicResource EchoSoftTextBrush}" VerticalAlignment="Center" Text="{Binding L[HotkeyShowHide]}" />
+                                            <TextBox Grid.Column="1" Text="{Binding ToggleOverlayHotkeyText, UpdateSourceTrigger=PropertyChanged}" />
+                                        </Grid>
+                                        <Grid ToolTip="{Binding L[TipHotkeyAsk]}" Background="Transparent" Margin="0,8,0,0">
+                                            <Grid.ColumnDefinitions>
+                                                <ColumnDefinition Width="260" />
+                                                <ColumnDefinition Width="230" />
+                                            </Grid.ColumnDefinitions>
+                                            <TextBlock Foreground="{DynamicResource EchoSoftTextBrush}" VerticalAlignment="Center" Text="{Binding L[HotkeyAsk]}" />
+                                            <TextBox Grid.Column="1" Text="{Binding AskHotkeyText, UpdateSourceTrigger=PropertyChanged}" />
+                                        </Grid>
+                                        <Grid ToolTip="{Binding L[TipHotkeyStartStop]}" Background="Transparent" Margin="0,8,0,0">
+                                            <Grid.ColumnDefinitions>
+                                                <ColumnDefinition Width="260" />
+                                                <ColumnDefinition Width="230" />
+                                            </Grid.ColumnDefinitions>
+                                            <TextBlock Foreground="{DynamicResource EchoSoftTextBrush}" VerticalAlignment="Center" Text="{Binding L[HotkeyStartStop]}" />
+                                            <TextBox Grid.Column="1" Text="{Binding ToggleCaptureHotkeyText, UpdateSourceTrigger=PropertyChanged}" />
+                                        </Grid>
+                                        <Grid ToolTip="{Binding L[TipHotkeySnapshot]}" Background="Transparent" Margin="0,8,0,0">
+                                            <Grid.ColumnDefinitions>
+                                                <ColumnDefinition Width="260" />
+                                                <ColumnDefinition Width="230" />
+                                            </Grid.ColumnDefinitions>
+                                            <TextBlock Foreground="{DynamicResource EchoSoftTextBrush}" VerticalAlignment="Center" Text="{Binding L[HotkeySnapshot]}" />
+                                            <TextBox Grid.Column="1" Text="{Binding SnapshotHotkeyText, UpdateSourceTrigger=PropertyChanged}" />
+                                        </Grid>
+                                        <Grid ToolTip="{Binding L[TipHotkeyClearChat]}" Background="Transparent" Margin="0,8,0,0">
+                                            <Grid.ColumnDefinitions>
+                                                <ColumnDefinition Width="260" />
+                                                <ColumnDefinition Width="230" />
+                                            </Grid.ColumnDefinitions>
+                                            <TextBlock Foreground="{DynamicResource EchoSoftTextBrush}" VerticalAlignment="Center" Text="{Binding L[HotkeyClearChat]}" />
+                                            <TextBox Grid.Column="1" Text="{Binding ClearChatHotkeyText, UpdateSourceTrigger=PropertyChanged}" />
+                                        </Grid>
+                                        <Grid ToolTip="{Binding L[TipHotkeyMove]}" Background="Transparent" Margin="0,8,0,0">
+                                            <Grid.ColumnDefinitions>
+                                                <ColumnDefinition Width="260" />
+                                                <ColumnDefinition Width="*" />
+                                            </Grid.ColumnDefinitions>
+                                            <TextBlock Foreground="{DynamicResource EchoSoftTextBrush}" VerticalAlignment="Center" TextWrapping="Wrap" Text="{Binding L[HotkeyMove]}" />
+                                            <StackPanel Grid.Column="1" Orientation="Horizontal">
+                                                <TextBox Width="84" Margin="0,0,6,0" Text="{Binding MoveLeftHotkeyText, UpdateSourceTrigger=PropertyChanged}" />
+                                                <TextBox Width="84" Margin="0,0,6,0" Text="{Binding MoveRightHotkeyText, UpdateSourceTrigger=PropertyChanged}" />
+                                                <TextBox Width="84" Margin="0,0,6,0" Text="{Binding MoveUpHotkeyText, UpdateSourceTrigger=PropertyChanged}" />
+                                                <TextBox Width="84" Text="{Binding MoveDownHotkeyText, UpdateSourceTrigger=PropertyChanged}" />
+                                            </StackPanel>
+                                        </Grid>
+                                        <Grid ToolTip="{Binding L[TipHotkeyScroll]}" Background="Transparent" Margin="0,8,0,0">
+                                            <Grid.ColumnDefinitions>
+                                                <ColumnDefinition Width="260" />
+                                                <ColumnDefinition Width="*" />
+                                            </Grid.ColumnDefinitions>
+                                            <TextBlock Foreground="{DynamicResource EchoSoftTextBrush}" VerticalAlignment="Center" Text="{Binding L[HotkeyScroll]}" />
+                                            <StackPanel Grid.Column="1" Orientation="Horizontal">
+                                                <TextBox Width="130" Margin="0,0,6,0" Text="{Binding ScrollUpHotkeyText, UpdateSourceTrigger=PropertyChanged}" />
+                                                <TextBox Width="130" Text="{Binding ScrollDownHotkeyText, UpdateSourceTrigger=PropertyChanged}" />
+                                            </StackPanel>
+                                        </Grid>
+                                        <TextBlock Style="{StaticResource SettingsHintStyle}" Margin="0,12,0,0" Text="{Binding L[HotkeysHint]}" />
+                                        <Button HorizontalAlignment="Left" Margin="0,10,0,0" Height="34" Padding="14,0" Command="{Binding ResetHotkeysCommand}"
+                                                ToolTip="{Binding L[TipHotkeysReset]}" Content="{Binding L[HotkeysReset]}" />
+                                    </StackPanel>
+                                </Border>
                             </StackPanel>
-                            <TextBlock Grid.Column="2" Margin="8,0,0,0" Foreground="{Binding SecondaryTextBrush}" Text="Ctrl+Shift+Up/Down" />
-                        </Grid>
-                        <Grid ToolTip="{Binding L[TipHotkeySnapshot]}" Background="Transparent" Margin="0,8,0,0">
-                            <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="220" />
-                                <ColumnDefinition Width="220" />
-                                <ColumnDefinition Width="220" />
-                            </Grid.ColumnDefinitions>
-                            <TextBlock Foreground="{Binding SecondaryTextBrush}" Text="{Binding L[HotkeySnapshot]}" />
-                            <TextBox Grid.Column="1" Text="{Binding SnapshotHotkeyText, UpdateSourceTrigger=PropertyChanged}" />
-                            <TextBlock Grid.Column="2" Margin="8,0,0,0" Foreground="{Binding SecondaryTextBrush}" Text="Ctrl+Shift+S" />
-                        </Grid>
-                        <StackPanel Orientation="Horizontal" Margin="0,18,0,0">
-                            <Button MinWidth="170" Height="34" Padding="10,0" Command="{Binding SaveSettingsCommand}" ToolTip="{Binding L[TipSaveSettings]}" Content="{Binding L[SaveSettings]}" />
-                            <Button MinWidth="170" Height="34" Padding="10,0" Margin="8,0,0,0" Command="{Binding RunAudioTestCommand}" ToolTip="{Binding L[TipTestMicrophone]}" Content="{Binding L[TestMicrophone]}" />
-                            <Button MinWidth="190" Height="34" Padding="10,0" Margin="8,0,0,0" Command="{Binding RunAudioCaptureTestCommand}" ToolTip="{Binding L[TipTestAudioCapture]}" Content="{Binding L[TestAudioCapture]}" />
+
+                            <!-- ===== Данные и обновления ===== -->
+                            <StackPanel Visibility="{Binding IsSettingsData, Converter={StaticResource BoolToVisibility}}">
+                                <!-- Data folder: sessions, topics, knowledge base and screenshots; a cloud folder syncs them between computers. -->
+                                <Border Style="{StaticResource SettingsCardStyle}">
+                                    <StackPanel>
+                                        <TextBlock Style="{StaticResource SettingsCardTitleStyle}" Text="{Binding L[DataFolderTitle]}" />
+                                        <TextBlock Margin="0,-4,0,0" Style="{StaticResource SettingsHintStyle}" Text="{Binding L[DataFolderHint]}" />
+                                        <TextBlock Margin="0,10,0,0" FontWeight="SemiBold" Foreground="{DynamicResource EchoTextBrush}" TextWrapping="Wrap" Text="{Binding DataFolderPath}" />
+                                        <WrapPanel Margin="0,10,0,0">
+                                            <Button Height="34" Margin="0,0,8,6" Padding="14,0" Command="{Binding ChooseDataFolderCommand}" Content="{Binding L[DataFolderChoose]}" />
+                                            <Button Height="34" Margin="0,0,8,6" Padding="14,0" Command="{Binding OpenDataFolderCommand}" Content="{Binding L[DataFolderOpen]}" />
+                                            <Button Height="34" Margin="0,0,8,6" Padding="14,0" Command="{Binding ResetDataFolderCommand}" Content="{Binding L[DataFolderReset]}"
+                                                    Visibility="{Binding IsDataFolderCustom, Converter={StaticResource BoolToVisibility}}" />
+                                            <Button Height="34" Margin="0,0,8,6" Padding="14,0" Style="{StaticResource EchoAccentButtonStyle}"
+                                                    Command="{Binding RestartAppCommand}" Content="{Binding L[DataFolderRestart]}"
+                                                    Visibility="{Binding IsRestartNeeded, Converter={StaticResource BoolToVisibility}}" />
+                                        </WrapPanel>
+                                        <TextBlock Style="{StaticResource SettingsHintStyle}" Text="{Binding DataFolderStatus}" />
+                                        <StackPanel Margin="0,10,0,0" Visibility="{Binding HasSessionConflicts, Converter={StaticResource BoolToVisibility}}">
+                                            <TextBlock FontWeight="SemiBold" Foreground="{DynamicResource EchoTextBrush}" Text="{Binding L[DataConflictsTitle]}" />
+                                            <TextBlock Style="{StaticResource SettingsHintStyle}" Text="{Binding L[DataConflictsHint]}" />
+                                            <ItemsControl Margin="0,6,0,0" ItemsSource="{Binding SessionConflicts}">
+                                                <ItemsControl.ItemTemplate>
+                                                    <DataTemplate>
+                                                        <Border Margin="0,6,0,0" Padding="12,8" CornerRadius="8" Background="{DynamicResource EchoSurfaceAltBrush}" BorderBrush="{DynamicResource EchoBorderBrush}" BorderThickness="1">
+                                                            <StackPanel>
+                                                                <TextBlock FontWeight="SemiBold" Foreground="{DynamicResource EchoTextBrush}" Text="{Binding Title}" />
+                                                                <DockPanel Margin="0,6,0,0">
+                                                                    <Button DockPanel.Dock="Right" Height="30" Padding="12,0" Command="{Binding KeepMainCommand}"
+                                                                            Content="{Binding DataContext.L[DataConflictKeep], RelativeSource={RelativeSource AncestorType=Window}}" />
+                                                                    <TextBlock VerticalAlignment="Center" Foreground="{DynamicResource EchoMutedBrush}" Text="{Binding MainInfo}" />
+                                                                </DockPanel>
+                                                                <DockPanel Margin="0,6,0,0">
+                                                                    <Button DockPanel.Dock="Right" Height="30" Padding="12,0" Command="{Binding KeepCopyCommand}"
+                                                                            Content="{Binding DataContext.L[DataConflictKeep], RelativeSource={RelativeSource AncestorType=Window}}" />
+                                                                    <TextBlock VerticalAlignment="Center" Foreground="{DynamicResource EchoMutedBrush}" Text="{Binding CopyInfo}" />
+                                                                </DockPanel>
+                                                            </StackPanel>
+                                                        </Border>
+                                                    </DataTemplate>
+                                                </ItemsControl.ItemTemplate>
+                                            </ItemsControl>
+                                        </StackPanel>
+                                    </StackPanel>
+                                </Border>
+                                <!-- Updates: installed version and a manual check (the app also checks at start and once a day). -->
+                                <Border Style="{StaticResource SettingsCardStyle}" Visibility="{Binding IsUpdateSupported, Converter={StaticResource BoolToVisibility}}">
+                                    <StackPanel ToolTip="{Binding L[UpdateCheckToolTip]}" Background="Transparent">
+                                        <TextBlock Style="{StaticResource SettingsCardTitleStyle}" Text="{Binding L[UpdateSectionTitle]}" />
+                                        <StackPanel Orientation="Horizontal">
+                                            <TextBlock VerticalAlignment="Center" FontWeight="SemiBold" Foreground="{DynamicResource EchoTextBrush}" Text="{Binding CurrentVersionText}" />
+                                            <Button Height="34" Margin="14,0,0,0" Padding="14,0" Command="{Binding CheckUpdatesCommand}" Content="{Binding L[UpdateCheckButton]}" />
+                                        </StackPanel>
+                                        <TextBlock Style="{StaticResource SettingsHintStyle}" Margin="0,8,0,0" Text="{Binding UpdateStatus}" />
+                                        <TextBlock Style="{StaticResource SettingsHintStyle}" Text="{Binding L[UpdateCheckToolTip]}" />
+                                    </StackPanel>
+                                </Border>
+                            </StackPanel>
                         </StackPanel>
-                        <TextBlock Margin="0,12,0,0" Foreground="{Binding PrimaryTextBrush}" Text="{Binding AudioHealthMessage}" />
-                        <TextBlock Margin="0,6,0,0" Foreground="{Binding SecondaryTextBrush}" Text="{Binding SystemStatsText}" />
-                        <TextBlock Margin="0,4,0,0" Foreground="{Binding SecondaryTextBrush}" Text="{Binding MicStatsText}" />
-                    </StackPanel>
+                    </ScrollViewer>
                 </Grid>
-                </ScrollViewer>
             </TabItem>
         </TabControl>
     </Grid>

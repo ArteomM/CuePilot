@@ -72,14 +72,19 @@ public partial class MainViewModel
 
     public bool ShowReplioModelChoice => IsManagedAi && _account is { ModelChoice: true };
 
-    public bool ShowReplioModelSummary => IsManagedAi && IsSignedIn && !ShowReplioModelChoice;
+    /// <summary>
+    /// Service, key and model fields: developer mode only. On «Приватный» the company's administrator sets up the
+    /// company's own AI and speech service; employees only see that it is in use (Arteom 2026-11-25).
+    /// </summary>
+    public bool ShowOwnProviderSettings => IsDeveloperMode;
 
-    public bool ShowOwnProviderSettings => CanUseOwnProviders;
+    /// <summary>«Приватный» without developer mode: AI and speech through the company's own server.</summary>
+    public bool IsCompanyPlan => !IsDeveloperMode && _account?.CustomProviders == true;
 
     public bool ShowLocalSttSettings => CanUseLocalStt;
 
     /// <summary>Technical knobs (snapshot timing and counts): plans with own providers or developer mode only.</summary>
-    public bool ShowAdvancedSettings => CanUseOwnProviders;
+    public bool ShowAdvancedSettings => IsDeveloperMode;
 
     public IReadOnlyList<ReplioModelOption> ReplioFastModels => _account?.FastModels ?? [];
     public IReadOnlyList<ReplioModelOption> ReplioAnalysisModels => _account?.AnalysisModels ?? [];
@@ -103,8 +108,8 @@ public partial class MainViewModel
         set => SetReplioModel(value, model => _settings.ReplioSttModel = model);
     }
 
-    /// <summary>«Тариф «Старт» · осталось 300 из 900 мин до 24.12.2026 · устройств 1 из 2»</summary>
-    public string AccountPlanText
+    /// <summary>«Тариф «Старт»» in large type on the account card.</summary>
+    public string AccountPlanTitle
     {
         get
         {
@@ -118,14 +123,28 @@ public partial class MainViewModel
                 return _isAccountRefreshing ? L["AccountLoading"] : L["AccountUnknown"];
             }
 
-            var parts = new List<string> { string.Format(L["AccountPlan"], _account.PlanName) };
+            return string.Format(L["AccountPlan"], _account.PlanName);
+        }
+    }
+
+    /// <summary>«осталось 300 из 900 мин · до 24.12.2026 · устройств 1 из 2» under the plan name.</summary>
+    public string AccountPlanDetails
+    {
+        get
+        {
+            if (!IsSignedIn || _account == null)
+            {
+                return string.Empty;
+            }
+
+            var parts = new List<string>();
             if (_account.MinutesLeft is int left)
             {
                 parts.Add(_account.MinutesTotal is int total
                     ? string.Format(L["AccountMinutesOf"], left, total)
                     : string.Format(L["AccountMinutes"], left));
             }
-            else if (_account.AiLeftPercent is int percent)
+            else if (_account.AiLeftPercent is int percent && !_limitUnlimited)
             {
                 parts.Add(string.Format(L["AccountAiLeft"], percent));
             }
@@ -143,13 +162,6 @@ public partial class MainViewModel
             return string.Join(" · ", parts);
         }
     }
-
-    /// <summary>«Подсказки: Быстрая · Итоги и вопросы: Умная · Распознавание: Стандарт»</summary>
-    public string ReplioModelSummaryText => string.Format(
-        L["AccountModelsSummary"],
-        SelectedReplioFastModel?.Title ?? L["AccountModelDefault"],
-        SelectedReplioAnalysisModel?.Title ?? L["AccountModelDefault"],
-        CanUseLocalStt && !UseApiStt ? L["AccountSttLocal"] : SelectedReplioSttModel?.Title ?? L["AccountModelDefault"]);
 
     public string AccountStatusText
     {
@@ -415,14 +427,16 @@ public partial class MainViewModel
         {
             nameof(IsSignedIn), nameof(IsSignedOut), nameof(IsSigningIn), nameof(SignInCode), nameof(CanUseOwnProviders),
             nameof(CanUseLocalStt), nameof(IsManagedAi), nameof(ShowAccountSection), nameof(ShowReplioModelChoice),
-            nameof(ShowReplioModelSummary), nameof(ShowOwnProviderSettings), nameof(ShowLocalSttSettings), nameof(ShowAdvancedSettings),
+            nameof(ShowOwnProviderSettings), nameof(IsCompanyPlan), nameof(ShowLocalSttSettings), nameof(ShowAdvancedSettings),
             nameof(ReplioFastModels), nameof(ReplioAnalysisModels), nameof(ReplioSttModels), nameof(SelectedReplioFastModel),
-            nameof(SelectedReplioAnalysisModel), nameof(SelectedReplioSttModel), nameof(AccountPlanText),
-            nameof(ReplioModelSummaryText), nameof(AccountStatusText)
+            nameof(SelectedReplioAnalysisModel), nameof(SelectedReplioSttModel), nameof(AccountPlanTitle), nameof(AccountPlanDetails),
+            nameof(AccountStatusText)
         })
         {
             OnPropertyChanged(name);
         }
+
+        OnSettingsLayoutPlanChanged();
 
         SignInCommand?.RaiseCanExecuteChanged();
         CancelSignInCommand?.RaiseCanExecuteChanged();
@@ -491,8 +505,11 @@ public partial class MainViewModel
         };
     }
 
-    /// <summary>API recognition is the only way on plans without local whisper.</summary>
-    private bool EffectiveUseApiStt => !CanUseLocalStt || UseApiStt;
+    /// <summary>
+    /// Cloud plans always recognise through Replio, «Локальный» always on this computer (the gateway offers it no
+    /// speech models), and only own-provider setups choose.
+    /// </summary>
+    private bool EffectiveUseApiStt => CanUseOwnProviders ? UseApiStt : !CanUseLocalStt;
 
     /// <summary>Address, model, key and extra headers of API speech recognition.</summary>
     private (string Url, string Model, string Key, string Headers) ResolveSttApi(string? sessionId)

@@ -112,7 +112,7 @@
   <data name="SettingsInvisibility" xml:space="preserve"><value>Invisibility</value></data>
   <data name="SettingsShortcuts" xml:space="preserve"><value>Shortcuts</value></data>
   <data name="SettingsAudio" xml:space="preserve"><value>Audio</value></data>
-  <data name="SettingsLanguage" xml:space="preserve"><value>Language</value></data>
+  <data name="SettingsLanguage" xml:space="preserve"><value>Interface language</value></data>
   <data name="SettingsDisplay" xml:space="preserve"><value>Display</value></data>
   <data name="SettingsPrivacy" xml:space="preserve"><value>Privacy</value></data>
   <data name="SettingsAccount" xml:space="preserve"><value>Account</value></data>
@@ -123,7 +123,7 @@
   <data name="MonitorSecondary" xml:space="preserve"><value>Secondary</value></data>
   <data name="OutputLanguage" xml:space="preserve"><value>Output language</value></data>
   <data name="ShowInScreenShare" xml:space="preserve"><value>Show Replio windows in screen sharing and recordings</value></data>
-  <data name="ShowInScreenShareHint" xml:space="preserve"><value>When off, Replio windows stay visible to you but are hidden from screen sharing (Zoom, Teams, Meet, Discord), recordings and screenshots. Applies immediately; press "Save settings" to keep it.</value></data>
+  <data name="ShowInScreenShareHint" xml:space="preserve"><value>People in Zoom, Teams, Meet, Discord and Telemost do not see Replio windows, and they are not in screen recordings or screenshots. You see everything as usual.</value></data>
   <data name="SettingsSectionScreenShare" xml:space="preserve"><value>Screen sharing</value></data>
   <data name="ShowInTaskbar" xml:space="preserve"><value>Show in taskbar / dock</value></data>
   <data name="InvisibilityModeEnabled" xml:space="preserve"><value>Invisibility mode enabled</value></data>
@@ -217,7 +217,7 @@
   <data name="WhatsNewButtonText" xml:space="preserve"><value>What's new in Replio {0} ↗</value></data>
   <data name="WhatsNewTitle" xml:space="preserve"><value>Replio {0} highlights</value></data>
   <data name="WhatsNewBody" xml:space="preserve"><value>Replio 1.1.2:&#x0a;• «Modes» are replaced by the topic tab «How to help»: meeting type (sales, interview, negotiation, stand-up, consultation or your own), how to hint and which sections to add to the summary. Meetings without a topic are set up in Settings.&#x0a;• The search in the header looks everywhere: topics, topic summaries, meeting summaries, transcripts, emails, the knowledge base and questions. A click opens the right place.&#x0a;• «Update topic» also redoes out-of-date meeting summaries of the topic and replaces «Rewrite summary» in a topic's meeting.&#x0a;• A limit bar in the header shows what is left today and this month: yellow when little is left, red at the very end.&#x0a;• «Help» opens as a small window with short cards and pictures.&#x0a;• Settings now have «Open account page» and «Data folder»: keep meetings, topics and the knowledge base in Yandex Disk, OneDrive or iCloud Drive to have them on all your computers.&#x0a;• New logo, as on the site. The plan from your account is picked up by itself.&#x0a;&#x0a;Replio 1.1.0 — the first version.&#x0a;• Live hints during a call: «What to say», «What to answer», «What to ask» and follow-up questions in a separate window that is hidden from screen share.&#x0a;• Meeting summary, follow-up email and transcript with «Copy» buttons; screenshots are kept with the meeting.&#x0a;• Topics: sessions, a knowledge base (documents, folders, audio and video, your own text), «Summary», «Questions» with sources and a relation graph. One «Update topic» button parses new materials and refreshes the summary and graph.&#x0a;• The speech language is detected automatically for each side of the call; it can also be chosen in Settings.&#x0a;• Replio account: sign in on replio.ru; the key is stored encrypted on the computer. Hints, summaries and recognition run on your plan.&#x0a;• Updates arrive in the app: a new version shows an «Update» button. Settings and the key are kept on update.&#x0a;• The replio command and an MCP server for AI agents (Claude Code, Codex, Cursor): details in %AppData%\Replio\AGENTS.md.</value></data>
-  <data name="SmartModeToggle" xml:space="preserve"><value>Deep AI mode</value></data>
+  <data name="SmartModeToggle" xml:space="preserve"><value>Deep mode</value></data>
   <data name="HotkeysTitle" xml:space="preserve"><value>Hotkeys</value></data>
   <data name="OpenAiKeyMissing" xml:space="preserve"><value>API key is missing. Add it in Settings → API key, or put a line ApiKey=... into %AppData%\Replio\secrets.txt (or set POLZA_API_KEY).</value></data>
   <data name="WhatShouldISayPrompt" xml:space="preserve"><value>Suggest what I should say next in this conversation.</value></data>
@@ -229,15 +229,15 @@
   <data name="OpenAiBaseUrlInvalid" xml:space="preserve"><value>API base URL is invalid. Use a full URL like https://api.openai.com/v1.</value></data>
   <data name="DeleteSessionConfirmTitle" xml:space="preserve"><value>Delete session</value></data>
   <data name="DeleteSessionConfirmMessage" xml:space="preserve"><value>Delete session "{0}"? This action cannot be undone.</value></data>
-  <data name="SttApiKeyMissing" xml:space="preserve"><value>API transcription is enabled, but no API key was found. Local whisper.cpp will be used for this session.</value></data>
-  <data name="SettingsAnalysisModel" xml:space="preserve"><value>Model for summary and email</value></data>
+  <data name="SttApiKeyMissing" xml:space="preserve"><value>No access key was found for recognition through your own service. This recording is recognised on this computer.</value></data>
+  <data name="SettingsAnalysisModel" xml:space="preserve"><value>Model for summaries and emails</value></data>
   <data name="SettingsAnalysisModelHint" xml:space="preserve"><value>Used for the session summary and the follow-up email. Empty = same as the model for hints. Pick it from the list or type it in</value></data>
   <data name="SettingsSttTitle" xml:space="preserve"><value>Speech recognition</value></data>
   <data name="SettingsUseApiStt" xml:space="preserve"><value>Recognize speech through the API instead of local whisper.cpp</value></data>
   <data name="SettingsSttModel" xml:space="preserve"><value>Recognition model</value></data>
-  <data name="SettingsSttApiKey" xml:space="preserve"><value>API key</value></data>
-  <data name="SettingsSttGlossary" xml:space="preserve"><value>Speech recognition glossary</value></data>
-  <data name="SettingsSttGlossaryHint" xml:space="preserve"><value>Words speech recognition often gets wrong: colleagues' names, company and product names, terms. Comma or new line separated. The glossary does not change AI answers.</value></data>
+  <data name="SettingsSttApiKey" xml:space="preserve"><value>Access key</value></data>
+  <data name="SettingsSttGlossary" xml:space="preserve"><value>Names and terms</value></data>
+  <data name="SettingsSttGlossaryHint" xml:space="preserve"><value>Words that recognition gets wrong: colleagues' names, your company, products. They apply to all meetings. Add words for a particular topic in that topic's «How to help» tab. Separate with commas or new lines.</value></data>
   <data name="SettingsSttHint" xml:space="preserve"><value>The field is optional. If the API fails, the chunk is recognized locally by whisper.cpp.</value></data>
   <data name="OverlayActionWhatToSay" xml:space="preserve"><value>• What to say</value></data>
   <data name="SmartToggleShort" xml:space="preserve"><value>Deep</value></data>
@@ -272,8 +272,8 @@
   <data name="ActionWhatToSayRequest" xml:space="preserve"><value>Suggest what I should say now.</value></data>
   <data name="ActionWhatToAsk" xml:space="preserve"><value>What to ask</value></data>
   <data name="ActionWhatToAskRequest" xml:space="preserve"><value>Suggest the next question.</value></data>
-  <data name="SttStatusApi" xml:space="preserve"><value>Recognition: API ({0})</value></data>
-  <data name="SttStatusLocal" xml:space="preserve"><value>Recognition: local whisper.cpp</value></data>
+  <data name="SttStatusApi" xml:space="preserve"><value>Recognition: through your own service ({0})</value></data>
+  <data name="SttStatusLocal" xml:space="preserve"><value>Recognition: on this computer</value></data>
   <data name="SttKeySourceField" xml:space="preserve"><value>Recognition key: the one entered in the field above.</value></data>
   <data name="SttKeySourceSecrets" xml:space="preserve"><value>Recognition key: SttApiKey from secrets.txt.</value></data>
   <data name="SttKeySourceLlmSecrets" xml:space="preserve"><value>Recognition key: the same Polza.ai key as for hints (ApiKey from secrets.txt or POLZA_API_KEY). Nothing else is needed.</value></data>
@@ -315,18 +315,18 @@
   <data name="TabUsage" xml:space="preserve"><value>Usage</value></data>
   <data name="NewRecording" xml:space="preserve"><value>New recording</value></data>
   <data name="SettingsSectionAi" xml:space="preserve"><value>Context for AI</value></data>
-  <data name="SettingsScreenContext" xml:space="preserve"><value>Use screenshots as AI context</value></data>
-  <data name="SettingsAutoSnapshots" xml:space="preserve"><value>Take snapshots automatically when the screen changes</value></data>
+  <data name="SettingsScreenContext" xml:space="preserve"><value>Let the AI see my screen</value></data>
+  <data name="SettingsAutoSnapshots" xml:space="preserve"><value>Take a snapshot when the screen changes</value></data>
   <data name="SettingsSnapshotInterval" xml:space="preserve"><value>Screen check interval, ms</value></data>
   <data name="SettingsSnapshotBuffer" xml:space="preserve"><value>Keep snapshots per session</value></data>
   <data name="SettingsSnapshotsPerRequest" xml:space="preserve"><value>Snapshots per AI request</value></data>
-  <data name="SettingsSnapshotsHint" xml:space="preserve"><value>Snapshots are taken only while recording. The latest ones are attached to every AI request; the 📷 button adds one right away.</value></data>
+  <data name="SettingsSnapshotsHint" xml:space="preserve"><value>While recording, Replio attaches screen snapshots to questions so the AI sees the slides or document. The 📷 button takes one at once.</value></data>
   <data name="SettingsSectionLlm" xml:space="preserve"><value>AI model</value></data>
-  <data name="SettingsApiKey" xml:space="preserve"><value>API key</value></data>
-  <data name="SettingsProviderPreset" xml:space="preserve"><value>Provider preset</value></data>
-  <data name="SettingsProvider" xml:space="preserve"><value>Provider name</value></data>
+  <data name="SettingsApiKey" xml:space="preserve"><value>Access key</value></data>
+  <data name="SettingsProviderPreset" xml:space="preserve"><value>Service</value></data>
+  <data name="SettingsProvider" xml:space="preserve"><value>Service name</value></data>
   <data name="SettingsModel" xml:space="preserve"><value>Model for hints</value></data>
-  <data name="SettingsBaseUrl" xml:space="preserve"><value>API address</value></data>
+  <data name="SettingsBaseUrl" xml:space="preserve"><value>Service address</value></data>
   <data name="SettingsEndpointPath" xml:space="preserve"><value>Request path</value></data>
   <data name="SettingsKeyHeader" xml:space="preserve"><value>Key header</value></data>
   <data name="SettingsKeyPrefix" xml:space="preserve"><value>Key prefix</value></data>
@@ -338,13 +338,13 @@
   <data name="HotkeyScroll" xml:space="preserve"><value>Scroll chat</value></data>
   <data name="HotkeySnapshot" xml:space="preserve"><value>Screenshot</value></data>
   <data name="TestMicrophone" xml:space="preserve"><value>Test microphone</value></data>
-  <data name="TestAudioCapture" xml:space="preserve"><value>Test audio capture</value></data>
-  <data name="SpeechModelTitle" xml:space="preserve"><value>Local speech recognition model</value></data>
-  <data name="SpeechModelIntro" xml:space="preserve"><value>The model is not included in the installer: download it once. It is stored in %LocalAppData%\Replio\models and survives reinstalls. API recognition does not need a model.</value></data>
-  <data name="SpeechModelHardware" xml:space="preserve"><value>Your PC: {0} CPU cores, {1} GB of memory.</value></data>
+  <data name="TestAudioCapture" xml:space="preserve"><value>Check sound</value></data>
+  <data name="SpeechModelTitle" xml:space="preserve"><value>Speech model</value></data>
+  <data name="SpeechModelIntro" xml:space="preserve"><value>The model is downloaded once and stays after reinstalling.</value></data>
+  <data name="SpeechModelHardware" xml:space="preserve"><value>Your computer: {0} CPU cores, {1} GB of memory.</value></data>
   <data name="SpeechModelSize" xml:space="preserve"><value>≈ {0} MB</value></data>
   <data name="SpeechModelRecommended" xml:space="preserve"><value>Recommended</value></data>
-  <data name="SpeechModelSuitsPc" xml:space="preserve"><value>Suits your PC</value></data>
+  <data name="SpeechModelSuitsPc" xml:space="preserve"><value>Suits your computer</value></data>
   <data name="SpeechModelMaySlow" xml:space="preserve"><value>May lag: needs {0}+ cores and {1} GB of memory</value></data>
   <data name="SpeechModelActive" xml:space="preserve"><value>In use</value></data>
   <data name="SpeechModelInstalled" xml:space="preserve"><value>Downloaded</value></data>
@@ -359,13 +359,13 @@
   <data name="SpeechModelDownloadFailed" xml:space="preserve"><value>Could not download model {0}: {1}</value></data>
   <data name="SpeechModelDeleteTitle" xml:space="preserve"><value>Delete model</value></data>
   <data name="SpeechModelDeleteConfirm" xml:space="preserve"><value>Delete model {0} from disk? You can download it again later.</value></data>
-  <data name="SpeechModelMissingStatus" xml:space="preserve"><value>No model downloaded, local recognition does not work. Download a model below (small is recommended) or turn on API recognition.</value></data>
-  <data name="SpeechModelActiveStatus" xml:space="preserve"><value>Using model {0}.</value></data>
-  <data name="SpeechModelMissingOnStart" xml:space="preserve"><value>The speech recognition model is not downloaded, so no transcript will appear. Open Settings → Speech recognition and download the small model (≈ 265 MB), or turn on API recognition.</value></data>
-  <data name="SpeechModelDesc_small_q8_0" xml:space="preserve"><value>Recognizes Russian well and rarely confuses it with Ukrainian. About 3 seconds per 5 seconds of speech on a regular CPU. Best choice for most PCs.</value></data>
-  <data name="SpeechModelDesc_large_v3_turbo_q5_0" xml:space="preserve"><value>Best quality for Russian: handles terms, names and fast speech better. High CPU load, roughly 2–3 times slower than small. For powerful PCs with 8+ cores.</value></data>
-  <data name="SpeechModelDesc_medium_q5_0" xml:space="preserve"><value>Better than small, but usually below large-v3-turbo at a similar load. Only worth it if turbo works worse for you.</value></data>
-  <data name="SpeechModelDesc_base_q8_0" xml:space="preserve"><value>Lightest and fastest, but weak for Russian: often confuses it with Ukrainian and drops words. Only for very weak PCs.</value></data>
+  <data name="SpeechModelMissingStatus" xml:space="preserve"><value>No model is downloaded, so no transcript will appear. Download «Balanced»: it suits most computers.</value></data>
+  <data name="SpeechModelActiveStatus" xml:space="preserve"><value>Using the «{0}» model.</value></data>
+  <data name="SpeechModelMissingOnStart" xml:space="preserve"><value>The speech model is not downloaded, so no transcript will appear. Open «Settings → Speech» and download «Balanced» (≈ 265 MB).</value></data>
+  <data name="SpeechModelDesc_small_q8_0" xml:space="preserve"><value>Recognises Russian well and rarely confuses it with Ukrainian. About 3 seconds per 5 seconds of speech on a regular CPU. The best choice for most computers.</value></data>
+  <data name="SpeechModelDesc_large_v3_turbo_q5_0" xml:space="preserve"><value>The highest quality for Russian: better with terms, names and fast speech. High CPU load, about 2–3 times slower than «Balanced». For powerful computers with 8+ cores.</value></data>
+  <data name="SpeechModelDesc_medium_q5_0" xml:space="preserve"><value>Better than «Balanced», usually below «Precise» at a similar load. Only worth it if «Precise» works worse for you.</value></data>
+  <data name="SpeechModelDesc_base_q8_0" xml:space="preserve"><value>The lightest and fastest, but weak for Russian: often confuses it with Ukrainian and skips words. Only for very weak computers.</value></data>
   <data name="CopiedFeedback" xml:space="preserve"><value>Copied</value></data>
   <data name="CopyEmail" xml:space="preserve"><value>Copy email</value></data>
   <data name="CopyTranscript" xml:space="preserve"><value>Copy transcript</value></data>
@@ -391,8 +391,8 @@
   <data name="SelectSessions" xml:space="preserve"><value>Select</value></data>
   <data name="SessionsDeletedFeedback" xml:space="preserve"><value>Sessions deleted: {0}</value></data>
   <data name="SessionsMovedFeedback" xml:space="preserve"><value>Moved: {0} → "{1}"</value></data>
-  <data name="SettingsLanguageHint" xml:space="preserve"><value>English: interface and AI answers in English; a fixed speech language switches to English too («Auto-detect» stays). Applies from the next recording.</value></data>
-  <data name="SettingsSectionAppearance" xml:space="preserve"><value>Appearance and language</value></data>
+  <data name="SettingsLanguageHint" xml:space="preserve"><value>English: interface and AI answers in English; a speech language chosen by hand also becomes English. Applies from the next recording.</value></data>
+  <data name="SettingsSectionAppearance" xml:space="preserve"><value>Look</value></data>
   <data name="SettingsTheme" xml:space="preserve"><value>Theme</value></data>
   <data name="TabEmail" xml:space="preserve"><value>Email</value></data>
   <data name="ThemeDark" xml:space="preserve"><value>Night</value></data>
@@ -440,7 +440,7 @@
   <data name="TipTabSummary" xml:space="preserve"><value>Summary: action items, highlights, participants</value></data>
   <data name="TipTabTranscript" xml:space="preserve"><value>Conversation transcript</value></data>
   <data name="TipTabUsage" xml:space="preserve"><value>Usage: duration, AI requests, cost</value></data>
-  <data name="TipTestAudioCapture" xml:space="preserve"><value>Check system and microphone audio capture</value></data>
+  <data name="TipTestAudioCapture" xml:space="preserve"><value>Shows whether Replio hears your microphone and the computer sound (the other side). Works while recording</value></data>
   <data name="TipTestMicrophone" xml:space="preserve"><value>Check the microphone</value></data>
   <data name="TipThemeDark" xml:space="preserve"><value>Dark theme: graphite and mint</value></data>
   <data name="TipThemeLight" xml:space="preserve"><value>Light theme for daytime</value></data>
@@ -479,22 +479,22 @@
   <data name="TipHotkeyShowHide" xml:space="preserve"><value>Show or hide the hints overlay</value></data>
   <data name="TipHotkeySnapshot" xml:space="preserve"><value>Take a screenshot for the AI context while recording</value></data>
   <data name="TipHotkeyStartStop" xml:space="preserve"><value>Start or stop recording</value></data>
-  <data name="TipApiKey" xml:space="preserve"><value>Key of the selected provider. When empty, the key is read from %AppData%\Replio\secrets.txt. Stored only on this PC</value></data>
+  <data name="TipApiKey" xml:space="preserve"><value>Key of the chosen service. Stored only on this computer</value></data>
   <data name="TipBaseUrl" xml:space="preserve"><value>Provider API address, e.g. https://polza.ai/api/v1</value></data>
   <data name="TipEndpointPath" xml:space="preserve"><value>Request path, usually /chat/completions</value></data>
   <data name="TipKeyHeader" xml:space="preserve"><value>HTTP header that carries the key, usually Authorization</value></data>
   <data name="TipKeyPrefix" xml:space="preserve"><value>Prefix before the key in the header, usually Bearer</value></data>
-  <data name="TipModel" xml:space="preserve"><value>Fast model for live hints during the conversation. Pick it from the list or type the id as the provider spells it</value></data>
-  <data name="TipProviderPreset" xml:space="preserve"><value>Ready-made AI provider settings. Polza.ai is the default</value></data>
+  <data name="TipModel" xml:space="preserve"><value>Model for hints during a conversation. Pick it from the list or type the id as the service spells it</value></data>
+  <data name="TipProviderPreset" xml:space="preserve"><value>The service the AI works through. Polza.ai by default</value></data>
   <data name="TipProvider" xml:space="preserve"><value>Provider name for a custom preset</value></data>
   <data name="TipSnapshotBuffer" xml:space="preserve"><value>How many recent screenshots to keep for context</value></data>
   <data name="TipSnapshotInterval" xml:space="preserve"><value>How often to check the screen for changes, in milliseconds</value></data>
   <data name="TipSnapshotsPerRequest" xml:space="preserve"><value>How many screenshots to send per AI request (more is more precise but costs more)</value></data>
-  <data name="TipSttApiKey" xml:space="preserve"><value>Key of the recognition provider. Empty means the main key is used when the provider is the same</value></data>
+  <data name="TipSttApiKey" xml:space="preserve"><value>Key of the recognition service. Empty: the AI service key, if it is the same service</value></data>
   <data name="TipSttGlossary" xml:space="preserve"><value>Names and terms speech recognition must spell correctly</value></data>
-  <data name="TipSttModel" xml:space="preserve"><value>Speech recognition model for the API. Pick it from the list or type the id as the provider spells it</value></data>
-  <data name="SettingsModelPickerHint" xml:space="preserve"><value>Pick a model from the provider's list (▾) or type it in yourself: typing narrows the list, any value you type is kept.</value></data>
-  <data name="TipSttProvider" xml:space="preserve"><value>Who recognizes speech through the API: Polza.ai by default, OpenAI, Groq or your own OpenAI-compatible address</value></data>
+  <data name="TipSttModel" xml:space="preserve"><value>Recognition model of the chosen service. Pick it from the list or type the id as the service spells it</value></data>
+  <data name="SettingsModelPickerHint" xml:space="preserve"><value>Pick a model from the service list (▾) or type its name.</value></data>
+  <data name="TipSttProvider" xml:space="preserve"><value>Who recognises speech: Polza.ai, OpenAI, Groq or your own OpenAI-compatible service</value></data>
   <data name="TipSttBaseUrl" xml:space="preserve"><value>Address of an OpenAI-compatible recognition API (…/v1); /audio/transcriptions is added to it</value></data>
   <data name="TipModelPickerOpen" xml:space="preserve"><value>Show the provider's models</value></data>
   <data name="TipModelPickerRefresh" xml:space="preserve"><value>Ask the provider for its current list of models again</value></data>
@@ -636,7 +636,7 @@
   <data name="UsageLastTokensValue" xml:space="preserve"><value>prompt {0}, answer {1}, total {2}</value></data>
   <data name="TopicAnswerCost" xml:space="preserve"><value>Answer cost: {0}</value></data>
   <data name="KnowledgeRemovedUpdatingFeedback" xml:space="preserve"><value>Removed sources: {0}. The topic summary is updating</value></data>
-  <data name="SmartModeHint" xml:space="preserve"><value>The AI thinks longer over every answer: overlay hints, summaries, the follow-up email and topic answers. More accurate in hard conversations, but each answer comes a few seconds later and costs more. Not needed for ordinary calls.</value></data>
+  <data name="SmartModeHint" xml:space="preserve"><value>More accurate in difficult conversations, but answers come a few seconds later and use more of the limit. Not needed for ordinary calls.</value></data>
   <data name="SettingsSttGlossaryExample" xml:space="preserve"><value>For example: Artem, Polza.ai, Replio, KPI, Sberbank</value></data>
   <data name="HotkeysRegisterFailedMessage" xml:space="preserve"><value>These hotkeys are already taken by another program, so Replio cannot use them:&#x0a;{0}&#x0a;&#x0a;Change them in «Settings → Hotkeys» or close the program that took them.</value></data>
   <data name="TopicTabSummary" xml:space="preserve"><value>Summary</value></data>
@@ -658,7 +658,7 @@
   <data name="MacPermissionScreenDenied" xml:space="preserve"><value>To hear the other side of the call, Replio needs «Screen &amp; System Audio Recording». Open settings, turn Replio on and restart it: macOS applies this permission only after a restart.</value></data>
   <data name="MacPermissionOpenSettings" xml:space="preserve"><value>Open settings</value></data>
   <data name="KnowledgeAddMedia" xml:space="preserve"><value>+ Media</value></data>
-  <data name="TipKnowledgeAddMedia" xml:space="preserve"><value>Attach audio or video (mp3, wav, m4a, ogg, mp4, mov, mkv and more). «Parse» transcribes the speech with the recognition settings, locally or through the API, and stores the text with time marks and a link to the file. You can also drag files here</value></data>
+  <data name="TipKnowledgeAddMedia" xml:space="preserve"><value>Attach audio or video (mp3, wav, m4a, ogg, mp4, mov, mkv and more). «Parse» recognises the speech the same way as in meetings (Settings → Speech) and stores the text with time marks and a link to the file. You can also drag files here</value></data>
   <data name="KnowledgeAddMediaTitle" xml:space="preserve"><value>Attach audio or video to the topic</value></data>
   <data name="KnowledgeMediaFilterName" xml:space="preserve"><value>Audio and video</value></data>
   <data name="KnowledgeExtractingAudio" xml:space="preserve"><value>Reading the sound…</value></data>
@@ -668,9 +668,9 @@
   <data name="KnowledgeStop" xml:space="preserve"><value>Stop</value></data>
   <data name="TipKnowledgeStop" xml:space="preserve"><value>Stop transcribing. The text saved earlier for this file stays</value></data>
   <data name="KnowledgeTranscriptionStopped" xml:space="preserve"><value>Transcription stopped</value></data>
-  <data name="MediaNoSpeechEngine" xml:space="preserve"><value>No speech recognition available: download a model in «Settings → Speech recognition» or turn on recognition through the API there</value></data>
-  <data name="MediaEngineLocal" xml:space="preserve"><value>local, {0}</value></data>
-  <data name="MediaEngineApi" xml:space="preserve"><value>API, {0}</value></data>
+  <data name="MediaNoSpeechEngine" xml:space="preserve"><value>No speech recognition available: download a model in «Settings → Speech»</value></data>
+  <data name="MediaEngineLocal" xml:space="preserve"><value>on this computer, {0}</value></data>
+  <data name="MediaEngineApi" xml:space="preserve"><value>in the cloud, {0}</value></data>
   <data name="MediaTranscriptMeta" xml:space="preserve"><value>Length: {0} · Recognition: {1} · {2}</value></data>
   <data name="MediaTranscriptHeading" xml:space="preserve"><value>Transcript</value></data>
   <data name="MediaNoSpeechFound" xml:space="preserve"><value>No speech found in the file.</value></data>
@@ -728,8 +728,8 @@
   <data name="AccountModelsSummary" xml:space="preserve"><value>Hints: {0} · Summaries and questions: {1} · Speech: {2}</value></data>
   <data name="AccountModelDefault" xml:space="preserve"><value>plan default</value></data>
   <data name="AccountSttLocal" xml:space="preserve"><value>on this computer</value></data>
-  <data name="TipReplioFastModel" xml:space="preserve"><value>Model for live hints during a call: the faster, the sooner the hint appears</value></data>
-  <data name="TipReplioAnalysisModel" xml:space="preserve"><value>Model for summaries, follow-up e-mails, topic questions and the graph</value></data>
+  <data name="TipReplioFastModel" xml:space="preserve"><value>The faster the model, the sooner a hint appears</value></data>
+  <data name="TipReplioAnalysisModel" xml:space="preserve"><value>Model for summaries, emails, topic questions and the graph</value></data>
   <data name="TipReplioSttModel" xml:space="preserve"><value>Speech recognition through Replio</value></data>
   <data name="SttStatusReplio" xml:space="preserve"><value>Recognition: Replio</value></data>
   <data name="UpdateBanner" xml:space="preserve"><value>Version {0} is available</value></data>
@@ -780,7 +780,7 @@
   <data name="DataConflictVersion" xml:space="preserve"><value>changed {0}, lines: {1}, {2}</value></data>
   <data name="DataConflictWithSummary" xml:space="preserve"><value>has a summary</value></data>
   <data name="DataConflictNoSummary" xml:space="preserve"><value>no summary</value></data>
-  <data name="MeetingPresetName_inherit" xml:space="preserve"><value>Same as meetings without a topic</value></data>
+  <data name="MeetingPresetName_inherit" xml:space="preserve"><value>Default (from Settings)</value></data>
   <data name="MeetingPresetName_general" xml:space="preserve"><value>Ordinary meeting</value></data>
   <data name="MeetingPresetName_sales" xml:space="preserve"><value>Sales</value></data>
   <data name="MeetingPresetName_interview" xml:space="preserve"><value>Job interview</value></data>
@@ -800,7 +800,7 @@
   <data name="MeetingPresetFormat_standup" xml:space="preserve"><value>Status: what was done since the last meeting.&#x0a;Blockers: what is in the way and who helps to remove it.</value></data>
   <data name="MeetingPresetGuidance_consulting" xml:space="preserve"><value>This is a consultation and I am the consultant. Help me understand the client's situation precisely and suggest clarifying questions. Rely on the topic's knowledge base. Warn me about risks and about what needs to be checked.</value></data>
   <data name="MeetingPresetFormat_consulting" xml:space="preserve"><value>Client's situation: the request and the key facts.&#x0a;Recommendations: what we advised and why.&#x0a;To check: what data or documents are needed.</value></data>
-  <data name="MeetingStyleInheritedHint" xml:space="preserve"><value>Meetings in this topic use the variant from Settings → «Meetings without a topic»: {0}. Pick a variant above to give this topic its own.</value></data>
+  <data name="MeetingStyleInheritedHint" xml:space="preserve"><value>Meetings in this topic use the defaults from «Settings → Meetings»: {0}. Pick a variant above to give this topic its own.</value></data>
   <data name="TopicTabMeetings" xml:space="preserve"><value>How to help</value></data>
   <data name="TipTopicTabMeetings" xml:space="preserve"><value>How Replio helps in this topic's meetings: hints during the conversation and the summary format</value></data>
   <data name="MeetingStyleTitle" xml:space="preserve"><value>How Replio helps in this topic's meetings</value></data>
@@ -808,10 +808,10 @@
   <data name="MeetingStylePresetLabel" xml:space="preserve"><value>Type of meetings</value></data>
   <data name="MeetingGuidanceLabel" xml:space="preserve"><value>How to help in meetings</value></data>
   <data name="MeetingGuidanceHint" xml:space="preserve"><value>What matters in the hints during the conversation. Write it in your own words.</value></data>
-  <data name="SummaryFormatLabel" xml:space="preserve"><value>Summary format</value></data>
+  <data name="SummaryFormatLabel" xml:space="preserve"><value>What to add to summaries</value></data>
   <data name="SummaryFormatHint" xml:space="preserve"><value>Sections to add to the summary after tasks, key points and participants, one per line: «Name: what goes there». Leave empty for the usual sections only.</value></data>
-  <data name="SettingsSectionMeetings" xml:space="preserve"><value>Meetings without a topic</value></data>
-  <data name="SettingsMeetingsHint" xml:space="preserve"><value>This is how Replio helps in meetings that do not belong to a topic, and in topics set to «Same as meetings without a topic». Each topic can have its own variant on its «How to help» tab.</value></data>
+  <data name="SettingsSectionMeetings" xml:space="preserve"><value>Meetings (default)</value></data>
+  <data name="SettingsMeetingsHint" xml:space="preserve"><value>This is how Replio helps in all meetings: without a topic and in topics that have no setup of their own. A topic can be set up separately on its «How to help» tab.</value></data>
   <data name="TopicActualizeSessions" xml:space="preserve"><value>Meeting summaries {0} of {1}…</value></data>
   <data name="TipSessionTopicActualize" xml:space="preserve"><value>This meeting belongs to a topic: redoes its summary in the topic's format, together with the other out-of-date summaries, the topic's «Summary» and graph. The dot means something is out of date</value></data>
   <data name="SearchGroupTopics" xml:space="preserve"><value>Topics</value></data>
@@ -835,7 +835,7 @@
   <data name="HelpClose" xml:space="preserve"><value>Close</value></data>
   <data name="HelpMacMoveWarning" xml:space="preserve"><value>**Move Replio to Applications first.** macOS now runs it from a temporary folder, and the path in the commands below will stop working after a restart.</value></data>
   <data name="HelpTopicStartTitle" xml:space="preserve"><value>First steps</value></data>
-  <data name="HelpTopicStartBody" xml:space="preserve"><value>1. Open **Settings** → **Sign in on replio.ru** and confirm in the browser.&#x0a;2. Keep **Speech language** on «Auto»: Replio detects the language of each side.&#x0a;3. Press **Test audio capture**: both the other side and your microphone should be heard.</value></data>
+  <data name="HelpTopicStartBody" xml:space="preserve"><value>1. Open **Settings** → **Account** → **Sign in via replio.ru** and confirm in the browser.&#x0a;2. Keep **Speech language** on «Auto-detect»: Replio finds each side's language itself.&#x0a;3. During your first recording open **Settings** → **Speech** → **Check sound**: both the other side and your microphone should be heard.</value></data>
   <data name="HelpTopicRecordTitle" xml:space="preserve"><value>Recording a meeting</value></data>
   <data name="HelpTopicRecordBody" xml:space="preserve"><value>- Press **Start Replio** on the home screen or {START}.&#x0a;- Replio records the other side and your microphone.&#x0a;- A small panel appears over other windows. It is hidden from screen sharing.&#x0a;- To stop: the same button or {START}. Replio prepares the summary and the title itself.</value></data>
   <data name="HelpTopicHintsTitle" xml:space="preserve"><value>Hints during a call</value></data>
@@ -847,13 +847,13 @@
   <data name="HelpTopicHotkeysTitle" xml:space="preserve"><value>Hotkeys</value></data>
   <data name="HelpTopicHotkeysBody" xml:space="preserve"><value>{HOTKEYS}&#x0a;&#x0a;Change them in **Settings** → **Hotkeys**.</value></data>
   <data name="HelpTopicDataTitle" xml:space="preserve"><value>Data folder and cloud</value></data>
-  <data name="HelpTopicDataBody" xml:space="preserve"><value>- Meetings, topics and the knowledge base live in the **data folder**: **Settings** → **Data folder**.&#x0a;- Pick a folder in Yandex Disk, OneDrive or iCloud Drive, and your meetings will be on all your computers.&#x0a;- Nothing goes to Replio servers. Settings and the sign-in key stay separate on each computer.</value></data>
+  <data name="HelpTopicDataBody" xml:space="preserve"><value>- Meetings, topics and the knowledge base live in the **data folder**: **Settings** → **Data and updates**.&#x0a;- Pick a folder in Yandex Disk, OneDrive or iCloud Drive, and your meetings will be on all your computers.&#x0a;- Nothing goes to Replio servers. Settings and the sign-in key stay separate on each computer.</value></data>
   <data name="HelpTopicAgentsTitle" xml:space="preserve"><value>AI agents (MCP)</value></data>
   <data name="HelpTopicAgentsBody" xml:space="preserve"><value>{MAC_WARNING}Replio gives your meetings to local AI agents: Claude Code, Codex, Cursor. The data is read only on this computer.&#x0a;&#x0a;**Claude Code.** Run in a terminal or press **Copy the Claude Code command** below:&#x0a;&#x0a;```&#x0a;{MCP_CLAUDE}&#x0a;```&#x0a;&#x0a;**Cursor and other MCP clients.** Add to the MCP settings (`mcp.json`):&#x0a;&#x0a;```&#x0a;{MCP_JSON}&#x0a;```&#x0a;&#x0a;Then ask the agent: «find yesterday's meeting and list the tasks».&#x0a;&#x0a;**Terminal:** `{CLI} list`, `{CLI} show last`, `{CLI} guide`.</value></data>
   <data name="HelpTopicTroubleTitle" xml:space="preserve"><value>If something does not work</value></data>
-  <data name="HelpTopicTroubleBody" xml:space="preserve"><value>- **No hints or summary.** Check the sign-in and the minutes left in **Settings** → **Replio account**.&#x0a;- **The other side is not heard.** Press **Test audio capture**. Their sound must play through this computer's speakers or headphones.&#x0a;- **A hotkey does not work.** Another program took it: set a different one.&#x0a;- Questions and ideas: hello@replio.ru.</value></data>
+  <data name="HelpTopicTroubleBody" xml:space="preserve"><value>- **No hints or summary.** Check the sign-in and what is left in **Settings** → **Account**.&#x0a;- **The other side is not heard.** While recording open **Settings** → **Speech** → **Check sound**. Their sound must play through this computer's speakers or headphones.&#x0a;- **A hotkey does not work.** Another program took it: set a different one in **Settings** → **Hotkeys**.&#x0a;- Questions and ideas: hello@replio.ru.</value></data>
   <data name="HelpTopicMeetingsTitle" xml:space="preserve"><value>How Replio helps in a topic</value></data>
-  <data name="HelpTopicMeetingsBody" xml:space="preserve"><value>- Open a topic → the **How to help** tab.&#x0a;- Pick the **type of meetings**: sales, job interview, negotiation, team meeting, consultation or an ordinary meeting.&#x0a;- **How to help in meetings**: what the hints should focus on. **Summary format**: which sections to add to the summary.&#x0a;- Edit the texts freely: the variant becomes **Custom**.&#x0a;- Meetings without a topic follow **Settings → Meetings without a topic**.</value></data>
+  <data name="HelpTopicMeetingsBody" xml:space="preserve"><value>- Open a topic → the **How to help** tab.&#x0a;- Pick the **type of meetings**: sales, job interview, negotiation, team meeting, consultation or an ordinary meeting.&#x0a;- **How to help in meetings**: what the hints should focus on. **What to add to summaries**: which sections to add to the summary.&#x0a;- **Topic names and terms**: participants, companies and terms, so recognition spells them right.&#x0a;- Edit the texts freely: the variant becomes **Custom**.&#x0a;- Topics without their own setup and meetings without a topic follow **Settings → Meetings**.</value></data>
   <data name="HelpTopicSearchTitle" xml:space="preserve"><value>Search</value></data>
   <data name="HelpTopicSearchBody" xml:space="preserve"><value>- Type in the search box at the top: Replio looks through topics and their summaries, meeting titles, summaries, transcripts and emails, the knowledge base and questions.&#x0a;- All words must be found, in any order.&#x0a;- Click a result to open the right place, or press **Enter** for the first one. **Esc** closes the list.</value></data>
   <data name="AccountOpenCabinet" xml:space="preserve"><value>Open account page</value></data>
@@ -879,4 +879,62 @@
   <data name="LimitTipUnlimited" xml:space="preserve"><value>Plan limits do not apply to your account.</value></data>
   <data name="HelpZoomHint" xml:space="preserve"><value>Click to enlarge</value></data>
   <data name="HelpZoomClose" xml:space="preserve"><value>Click or press Esc to go back</value></data>
+  <data name="SettingsNav_account" xml:space="preserve"><value>Account</value></data>
+  <data name="SettingsNav_meetings" xml:space="preserve"><value>Meetings</value></data>
+  <data name="SettingsNav_speech" xml:space="preserve"><value>Speech</value></data>
+  <data name="SettingsNav_ai" xml:space="preserve"><value>AI assistant</value></data>
+  <data name="SettingsNav_windows" xml:space="preserve"><value>Windows and look</value></data>
+  <data name="SettingsNav_hotkeys" xml:space="preserve"><value>Hotkeys</value></data>
+  <data name="SettingsNav_data" xml:space="preserve"><value>Data and updates</value></data>
+  <data name="SettingsNavHint_account" xml:space="preserve"><value>Plan, what is left and sign-in</value></data>
+  <data name="SettingsNavHint_meetings" xml:space="preserve"><value>How Replio helps in all meetings</value></data>
+  <data name="SettingsNavHint_speech" xml:space="preserve"><value>Recognition, names and sound check</value></data>
+  <data name="SettingsNavHint_ai" xml:space="preserve"><value>Models, deep mode and screen</value></data>
+  <data name="SettingsNavHint_windows" xml:space="preserve"><value>Theme, language and screen sharing</value></data>
+  <data name="SettingsNavHint_hotkeys" xml:space="preserve"><value>Work from any window</value></data>
+  <data name="SettingsNavHint_data" xml:space="preserve"><value>Where meetings are kept and the Replio version</value></data>
+  <data name="SettingsAutoSaveHint" xml:space="preserve"><value>Changes are saved automatically</value></data>
+  <data name="SettingsSavedAt" xml:space="preserve"><value>Saved at {0}</value></data>
+  <data name="SttWhereTitle" xml:space="preserve"><value>Where speech is recognised</value></data>
+  <data name="SttWhereCloud" xml:space="preserve"><value>In the Replio cloud, «{0}» quality</value></data>
+  <data name="SttStandardName" xml:space="preserve"><value>Standard</value></data>
+  <data name="SttCloudPrivacy" xml:space="preserve"><value>Audio is not kept after recognition.</value></data>
+  <data name="SttCloudUpgradeHint" xml:space="preserve"><value>Precise recognition comes with the Pro and Team plans.</value></data>
+  <data name="SttSignInHint" xml:space="preserve"><value>To recognise speech, sign in under «Account».</value></data>
+  <data name="SttQualityTitle" xml:space="preserve"><value>Recognition quality</value></data>
+  <data name="SttQualityHint" xml:space="preserve"><value>Both models run in the Replio cloud and use plan hours the same way.</value></data>
+  <data name="SttLocalTitle" xml:space="preserve"><value>On this computer</value></data>
+  <data name="SttLocalText" xml:space="preserve"><value>Audio never leaves this computer, hours are unlimited.</value></data>
+  <data name="SttWhereChoiceTitle" xml:space="preserve"><value>Where to recognise speech</value></data>
+  <data name="SttOnComputer" xml:space="preserve"><value>On this computer</value></data>
+  <data name="SttOwnService" xml:space="preserve"><value>Through your own service</value></data>
+  <data name="SttOwnServiceHint" xml:space="preserve"><value>If the service is unavailable, a fragment is recognised on this computer when a model is downloaded.</value></data>
+  <data name="SttOnComputerHint" xml:space="preserve"><value>Audio never leaves this computer.</value></data>
+  <data name="SttLanguageTitle" xml:space="preserve"><value>Language and names</value></data>
+  <data name="SoundCheckTitle" xml:space="preserve"><value>Sound check</value></data>
+  <data name="SoundCheckHint" xml:space="preserve"><value>Shows microphone and computer sound levels while recording.</value></data>
+  <data name="SpeechModelMissingStatusOwn" xml:space="preserve"><value>No model is downloaded, so speech is not recognised on this computer. Download «Balanced» or choose «Through your own service».</value></data>
+  <data name="SpeechModelName_small_q8_0" xml:space="preserve"><value>Balanced</value></data>
+  <data name="SpeechModelName_large_v3_turbo_q5_0" xml:space="preserve"><value>Precise</value></data>
+  <data name="SpeechModelName_medium_q5_0" xml:space="preserve"><value>Medium</value></data>
+  <data name="SpeechModelName_base_q8_0" xml:space="preserve"><value>Light</value></data>
+  <data name="AiModelsTitle" xml:space="preserve"><value>Models</value></data>
+  <data name="AiHintsModelLabel" xml:space="preserve"><value>Hints during a meeting</value></data>
+  <data name="AiAnalysisModelLabel" xml:space="preserve"><value>Summaries, emails and questions</value></data>
+  <data name="AiModelFastName" xml:space="preserve"><value>Fast</value></data>
+  <data name="AiModelSmartName" xml:space="preserve"><value>Smart</value></data>
+  <data name="AiModelsUpgradeHint" xml:space="preserve"><value>Choosing models comes with the Pro, Team and Local plans.</value></data>
+  <data name="AiModelsSignInHint" xml:space="preserve"><value>Hints and summaries start working after you sign in.</value></data>
+  <data name="AiServiceTitle" xml:space="preserve"><value>AI service</value></data>
+  <data name="AiAdvanced" xml:space="preserve"><value>Advanced</value></data>
+  <data name="ScreenContextTitle" xml:space="preserve"><value>Screen</value></data>
+  <data name="HideInScreenShare" xml:space="preserve"><value>Hide Replio during screen sharing</value></data>
+  <data name="HotkeysHint" xml:space="preserve"><value>Click a field and type a combination, for example Ctrl+Shift+O. A combination with a mistake is not applied until it is fixed.</value></data>
+  <data name="HotkeysReset" xml:space="preserve"><value>Restore defaults</value></data>
+  <data name="TipHotkeysReset" xml:space="preserve"><value>Restore the combinations a fresh install has</value></data>
+  <data name="TopicGlossaryLabel" xml:space="preserve"><value>Topic names and terms</value></data>
+  <data name="TopicGlossaryHint" xml:space="preserve"><value>Participants, companies, products and terms of this topic. In the topic's meetings they are added to the common list from «Settings → Meetings». Separate with commas or new lines.</value></data>
+  <data name="TopicGlossaryExample" xml:space="preserve"><value>For example: John Smith, KEGOC, feasibility study</value></data>
+  <data name="CompanyServiceTitle" xml:space="preserve"><value>AI and speech: your company's server</value></data>
+  <data name="CompanyServiceText" xml:space="preserve"><value>Your company's administrator sets it up once in the account on replio.ru. No keys or addresses are needed here.</value></data>
 </root>

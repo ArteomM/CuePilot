@@ -21,8 +21,9 @@ public class SpeechModelItemViewModel : ObservableObject
     }
 
     public SpeechModelInfo Info { get; }
-    public string Title => Info.Title;
-    public string SizeText => string.Format(_l["SpeechModelSize"], Info.ApproxSizeMb);
+    /// <summary>«Сбалансированная»; the technical name («small (q8_0)») goes small next to the size.</summary>
+    public string Title => _l[Info.NameKey];
+    public string SizeText => Info.Title + " · " + string.Format(_l["SpeechModelSize"], Info.ApproxSizeMb);
     public string Description => _l[Info.DescriptionKey];
     public bool RecommendedVisibility => Info.Recommended;
     public bool SuitsThisPc => SpeechModelCatalog.SuitsThisPc(Info);

@@ -276,6 +276,101 @@
         <Setter Property="BorderBrush" Value="{DynamicResource EchoAccentBrush}" />
     </Style>
 
+    <!-- Настройки (SettingsNavStyle, SettingsCardStyle… в ReplioDesktop/MainWindow.xaml): меню разделов слева, карточки справа. -->
+    <Style Selector="RadioButton.settingsNav">
+        <Setter Property="Foreground" Value="{DynamicResource EchoSoftTextBrush}" />
+        <Setter Property="FontSize" Value="14" />
+        <Setter Property="FontWeight" Value="SemiBold" />
+        <Setter Property="Cursor" Value="Hand" />
+        <Setter Property="Margin" Value="0,0,0,2" />
+        <Setter Property="HorizontalAlignment" Value="Stretch" />
+        <Setter Property="Template">
+            <ControlTemplate>
+                <Grid>
+                    <Border Name="Item" Padding="12,9" CornerRadius="10" Background="Transparent">
+                        <ContentPresenter Name="PART_ContentPresenter"
+                                          Content="{TemplateBinding Content}"
+                                          Foreground="{TemplateBinding Foreground}"
+                                          VerticalAlignment="Center" />
+                    </Border>
+                    <Border Name="Mark" Width="3" Margin="0,8" HorizontalAlignment="Left" CornerRadius="2"
+                            Background="{DynamicResource EchoAccentBrush}" IsVisible="False" />
+                </Grid>
+            </ControlTemplate>
+        </Setter>
+    </Style>
+    <Style Selector="RadioButton.settingsNav:pointerover /template/ Border#Item">
+        <Setter Property="Background" Value="{DynamicResource EchoHoverBrush}" />
+    </Style>
+    <Style Selector="RadioButton.settingsNav:checked">
+        <Setter Property="Foreground" Value="{DynamicResource EchoTextBrush}" />
+    </Style>
+    <Style Selector="RadioButton.settingsNav:checked /template/ Border#Item">
+        <Setter Property="Background" Value="{DynamicResource EchoAccentSoftBrush}" />
+    </Style>
+    <Style Selector="RadioButton.settingsNav:checked /template/ Border#Mark">
+        <Setter Property="IsVisible" Value="True" />
+    </Style>
+    <Style Selector="Border.settingsCard">
+        <Setter Property="Background" Value="{DynamicResource EchoSurfaceBrush}" />
+        <Setter Property="BorderBrush" Value="{DynamicResource EchoBorderBrush}" />
+        <Setter Property="BorderThickness" Value="1" />
+        <Setter Property="CornerRadius" Value="14" />
+        <Setter Property="Padding" Value="18,14,18,16" />
+        <Setter Property="Margin" Value="0,0,0,12" />
+    </Style>
+    <Style Selector="TextBlock.settingsCardTitle">
+        <Setter Property="FontSize" Value="15" />
+        <Setter Property="FontWeight" Value="Bold" />
+        <Setter Property="Foreground" Value="{DynamicResource EchoTextBrush}" />
+        <Setter Property="Margin" Value="0,0,0,8" />
+        <Setter Property="TextWrapping" Value="Wrap" />
+    </Style>
+    <Style Selector="TextBlock.settingsHint">
+        <Setter Property="FontSize" Value="13" />
+        <Setter Property="Foreground" Value="{DynamicResource EchoMutedBrush}" />
+        <Setter Property="Margin" Value="0,4,0,0" />
+        <Setter Property="TextWrapping" Value="Wrap" />
+    </Style>
+    <Style Selector="TextBlock.settingsLabel">
+        <Setter Property="Foreground" Value="{DynamicResource EchoSoftTextBrush}" />
+        <Setter Property="VerticalAlignment" Value="Center" />
+        <Setter Property="TextWrapping" Value="Wrap" />
+    </Style>
+    <Style Selector="Border.settingsInfo">
+        <Setter Property="Background" Value="{DynamicResource EchoAccentSoftBrush}" />
+        <Setter Property="BorderBrush" Value="{DynamicResource EchoAccentSoftBorderBrush}" />
+        <Setter Property="BorderThickness" Value="1" />
+        <Setter Property="CornerRadius" Value="10" />
+        <Setter Property="Padding" Value="14,10" />
+    </Style>
+    <Style Selector="Border.settingsWarn">
+        <Setter Property="Background" Value="#26F5C451" />
+        <Setter Property="BorderBrush" Value="#99F5C451" />
+        <Setter Property="BorderThickness" Value="1" />
+        <Setter Property="CornerRadius" Value="10" />
+        <Setter Property="Padding" Value="14,10" />
+    </Style>
+    <!-- «Дополнительно»: текстовый переключатель, открывающий технические поля под ним. -->
+    <Style Selector="ToggleButton.settingsMore">
+        <Setter Property="Foreground" Value="{DynamicResource EchoAccentTextBrush}" />
+        <Setter Property="FontWeight" Value="SemiBold" />
+        <Setter Property="Cursor" Value="Hand" />
+        <Setter Property="HorizontalAlignment" Value="Left" />
+        <Setter Property="Margin" Value="0,10,0,0" />
+        <Setter Property="Template">
+            <ControlTemplate>
+                <StackPanel Orientation="Horizontal" Background="Transparent">
+                    <TextBlock Name="Arrow" Margin="0,0,6,0" Foreground="{TemplateBinding Foreground}" Text="▸" />
+                    <ContentPresenter Name="PART_ContentPresenter" Content="{TemplateBinding Content}" Foreground="{TemplateBinding Foreground}" />
+                </StackPanel>
+            </ControlTemplate>
+        </Setter>
+    </Style>
+    <Style Selector="ToggleButton.settingsMore:checked /template/ TextBlock#Arrow">
+        <Setter Property="Text" Value="▾" />
+    </Style>
+
     <!-- Галочка (ModernCheckBoxStyle): скруглённый квадрат, мятная заливка с тёмной галкой. -->
     <Style Selector="CheckBox">
         <Setter Property="Foreground" Value="{DynamicResource EchoTextBrush}" />

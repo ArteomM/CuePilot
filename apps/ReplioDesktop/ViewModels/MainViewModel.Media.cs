@@ -101,7 +101,7 @@ public partial class MainViewModel
             SttDir = sttDir,
             Language = _settings.CaptureLanguage,
             SilenceThreshold = _settings.SttSilenceThreshold,
-            SttGlossary = SttGlossary,
+            SttGlossary = SttGlossaryFor(_topics.FirstOrDefault(t => t.Sources.Contains(source))),
             UseApiStt = useApi,
             SttApiUrl = apiUrl,
             SttApiModel = apiModel,

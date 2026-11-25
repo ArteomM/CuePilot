@@ -22,6 +22,73 @@ public partial class MainViewModel
 
     public bool ShowMeetingsPanel => IsTopicSelected && TopicTab == TopicTabMeetings;
 
+    private UiTimer? _topicGlossarySaveTimer;
+    private bool _topicGlossaryPending;
+
+    /// <summary>«Имена и термины темы» of the selected topic; written to topics.json once typing pauses.</summary>
+    public string TopicSttGlossary
+    {
+        get => SelectedTopic?.SttGlossary ?? string.Empty;
+        set
+        {
+            value ??= string.Empty;
+            if (SelectedTopic is not { } topic || topic.SttGlossary == value)
+            {
+                return;
+            }
+
+            topic.SttGlossary = value;
+            OnPropertyChanged();
+            _topicGlossaryPending = true;
+            _topicGlossarySaveTimer ??= CreateTopicGlossaryTimer();
+            _topicGlossarySaveTimer.Stop();
+            _topicGlossarySaveTimer.Start();
+        }
+    }
+
+    private UiTimer CreateTopicGlossaryTimer()
+    {
+        var timer = new UiTimer { Interval = TimeSpan.FromMilliseconds(800) };
+        timer.Tick += (_, _) => FlushTopicGlossary();
+        return timer;
+    }
+
+    /// <summary>Writes a pending «Имена и термины темы» edit (topic switch, app exit).</summary>
+    public void FlushTopicGlossary()
+    {
+        _topicGlossarySaveTimer?.Stop();
+        if (!_topicGlossaryPending)
+        {
+            return;
+        }
+
+        _topicGlossaryPending = false;
+        SaveTopics();
+        AppendLog("[meetings] Topic names and terms saved.");
+    }
+
+    /// <summary>
+    /// What speech recognition should spell right: the topic's own words first (DesktopCapture keeps the first 300
+    /// characters), then the common list from Settings, each word once.
+    /// </summary>
+    private string SttGlossaryFor(SessionTopic? topic)
+    {
+        var seen = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
+        var words = new List<string>();
+        foreach (string text in new[] { topic?.SttGlossary ?? string.Empty, SttGlossary })
+        {
+            foreach (string word in text.Split(new[] { '\r', '\n', ',', ';' }, StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries))
+            {
+                if (seen.Add(word))
+                {
+                    words.Add(word);
+                }
+            }
+        }
+
+        return string.Join(", ", words);
+    }
+
     private void InitializeMeetingStyles()
     {
         MigrateModesToMeetingStyle();
@@ -90,6 +157,8 @@ public partial class MainViewModel
             return;
         }
 
+        FlushTopicGlossary();
+        OnPropertyChanged(nameof(TopicSttGlossary));
         SessionTopic? topic = SelectedTopic;
         if (topic == null)
         {

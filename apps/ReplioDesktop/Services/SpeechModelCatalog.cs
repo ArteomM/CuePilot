@@ -18,6 +18,9 @@ public sealed class SpeechModelInfo
 
     /// <summary>Resource key of the description (Russian quality, speed, CPU load).</summary>
     public string DescriptionKey => "SpeechModelDesc_" + Id.Replace('-', '_');
+
+    /// <summary>Resource key of the plain name users see («Сбалансированная»); <see cref="Title"/> stays the technical one.</summary>
+    public string NameKey => "SpeechModelName_" + Id.Replace('-', '_');
 }
 
 /// <summary>

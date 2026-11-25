@@ -224,6 +224,11 @@ public class SessionTopic
     /// <summary>Sections the summary adds after its usual ones.</summary>
     public string SummaryFormat { get; set; } = string.Empty;
     public DateTime? MeetingStyleUpdatedAt { get; set; }
+    /// <summary>
+    /// «Имена и термины темы»: names and terms speech recognition should spell right in this topic's meetings,
+    /// added to the common list in Settings (Arteom 2026-11-25: per topic is more precise).
+    /// </summary>
+    public string SttGlossary { get; set; } = string.Empty;
     /// <summary>When the summary format in effect for the topic last changed: older meeting summaries are out of date.</summary>
     public DateTime? SummaryFormatUpdatedAt { get; set; }
 }

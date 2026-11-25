@@ -159,6 +159,12 @@ public partial class MainWindow : Window
             {
                 Dispatcher.Invoke(() => ScreenShareProtection.SetShowInScreenShare(_viewModel.ShowInScreenShare));
             }
+
+            if (e.PropertyName == nameof(MainViewModel.SettingsSection))
+            {
+                // Each settings section opens from its top.
+                Dispatcher.BeginInvoke(() => SettingsScroll.ScrollToTop());
+            }
         };
         _viewModel.OverlayMoveRequested += (dx, dy) => Dispatcher.Invoke(() => MoveOverlay(dx, dy));
         _viewModel.PermissionConfirmationRequested += ShowPermissionWizard;
