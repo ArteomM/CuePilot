@@ -467,7 +467,9 @@ internal static class Installer
             ?? throw new InvalidOperationException("Не удалось записать данные для удаления программы.");
         key.SetValue("DisplayName", AppName);
         key.SetValue("DisplayVersion", Version);
-        key.SetValue("Publisher", AppName);
+        key.SetValue("Publisher", "ИП Макаров Артём Павлович");
+        key.SetValue("URLInfoAbout", "https://replio.ru");
+        key.SetValue("HelpLink", "mailto:hello@replio.ru");
         key.SetValue("DisplayIcon", exePath + ",0");
         key.SetValue("InstallLocation", targetDir);
         key.SetValue("UninstallString", $"cmd.exe /c \"\"{uninstallScript}\"\"");

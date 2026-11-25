@@ -92,8 +92,8 @@ public partial class App : Application
                 VerticalAlignment = VerticalAlignment.Center,
                 Foreground = TryFindResource("EchoTextBrush") as Brush ?? Brushes.White,
                 Text = russian
-                    ? "Переношу ваши сессии, темы и настройки из CuePilot в Replio. Это один раз."
-                    : "Moving your CuePilot sessions, topics and settings to Replio. This happens once."
+                    ? "Готовлю ваши данные. Это займёт немного времени и бывает один раз."
+                    : "Preparing your data. This takes a moment and happens once."
             }
         };
         splash.Show();

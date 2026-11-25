@@ -8,6 +8,9 @@
     <Nullable>disable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
     <Version>1.1.0</Version>
+    <Company>ИП Макаров Артём Павлович</Company>
+    <Copyright>© 2026 ИП Макаров Артём Павлович</Copyright>
+    <Description>Replio — запись и распознавание речи</Description>
     <AssemblyVersion>1.1.0.0</AssemblyVersion>
     <FileVersion>1.1.0.0</FileVersion>
     <Product>Replio</Product>
