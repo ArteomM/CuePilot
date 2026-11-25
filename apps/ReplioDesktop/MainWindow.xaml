@@ -2739,6 +2739,7 @@
                                   IsChecked="{Binding VideoContextEnabled, Mode=TwoWay}"
                                   ToolTip="{Binding L[TipAutoSnapshots]}"
                                   Content="{Binding L[SettingsAutoSnapshots]}" />
+                        <StackPanel Visibility="{Binding ShowAdvancedSettings, Converter={StaticResource BoolToVisibility}}">
                         <Grid ToolTip="{Binding L[TipSnapshotInterval]}" Background="Transparent" Margin="0,10,0,0" IsEnabled="{Binding VideoContextEnabled}">
                             <Grid.ColumnDefinitions>
                                 <ColumnDefinition Width="230" />
@@ -2763,6 +2764,7 @@
                             <TextBlock Foreground="{Binding SecondaryTextBrush}" VerticalAlignment="Center" Text="{Binding L[SettingsSnapshotsPerRequest]}" />
                             <TextBox Grid.Column="1" Text="{Binding VisualContextMaxImagesPerRequest, UpdateSourceTrigger=PropertyChanged}" />
                         </Grid>
+                        </StackPanel>
                         </StackPanel>
                         <TextBlock Margin="0,6,0,0" Foreground="{Binding SecondaryTextBrush}" TextWrapping="Wrap" Text="{Binding L[SettingsSnapshotsHint]}" />
                         <TextBlock Margin="0,4,0,0" Foreground="{Binding SecondaryTextBrush}" Text="{Binding VisualContextStatusText}" />

@@ -77,6 +77,9 @@ public partial class MainViewModel
 
     public bool ShowLocalSttSettings => CanUseLocalStt;
 
+    /// <summary>Technical knobs (snapshot timing and counts): plans with own providers or developer mode only.</summary>
+    public bool ShowAdvancedSettings => CanUseOwnProviders;
+
     public IReadOnlyList<ReplioModelOption> ReplioFastModels => _account?.FastModels ?? [];
     public IReadOnlyList<ReplioModelOption> ReplioAnalysisModels => _account?.AnalysisModels ?? [];
     public IReadOnlyList<ReplioModelOption> ReplioSttModels => _account?.SttModels ?? [];
@@ -380,7 +383,7 @@ public partial class MainViewModel
         {
             nameof(IsSignedIn), nameof(IsSignedOut), nameof(IsSigningIn), nameof(SignInCode), nameof(CanUseOwnProviders),
             nameof(CanUseLocalStt), nameof(IsManagedAi), nameof(ShowAccountSection), nameof(ShowReplioModelChoice),
-            nameof(ShowReplioModelSummary), nameof(ShowOwnProviderSettings), nameof(ShowLocalSttSettings),
+            nameof(ShowReplioModelSummary), nameof(ShowOwnProviderSettings), nameof(ShowLocalSttSettings), nameof(ShowAdvancedSettings),
             nameof(ReplioFastModels), nameof(ReplioAnalysisModels), nameof(ReplioSttModels), nameof(SelectedReplioFastModel),
             nameof(SelectedReplioAnalysisModel), nameof(SelectedReplioSttModel), nameof(AccountPlanText),
             nameof(ReplioModelSummaryText), nameof(AccountStatusText)

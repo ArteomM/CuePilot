@@ -1,3 +1,5 @@
+using System.Text.Json.Serialization;
+
 namespace ReplioDesktop.Services;
 
 public class AppSettings
@@ -83,9 +85,11 @@ public class AppSettings
     public bool KeepAudioChunks { get; set; }
 
     /// <summary>
-    /// Opens every setting without a Replio account: own providers and keys, local whisper. Not shown in the UI;
-    /// set for development and for data brought over from CuePilot, where the user had own keys.
+    /// Opens every setting without a Replio account: own providers and keys, local whisper. Not shown in the UI and
+    /// never set by the app: only by hand, «"ReplioDeveloperMode": true» in settings.json, for development.
+    /// The earlier «DeveloperMode» key (set by the data import of 1.1.0 test builds) is ignored on purpose.
     /// </summary>
+    [JsonPropertyName("ReplioDeveloperMode")]
     public bool DeveloperMode { get; set; }
 
     /// <summary>This installation's id for the Replio gateway (X-Replio-Device), created on first start.</summary>

@@ -90,11 +90,6 @@ public static class LegacyDataImport
                         if (IsTextWithPaths(file))
                         {
                             string text = MovePaths(File.ReadAllText(file), sourceRoot, targetRoot);
-                            if (directory == sourceRoot && Path.GetFileName(file).Equals("settings.json", StringComparison.OrdinalIgnoreCase))
-                            {
-                                text = KeepOwnKeys(text);
-                            }
-
                             File.WriteAllText(target, text, new UTF8Encoding(false));
                         }
                         else
@@ -117,27 +112,6 @@ public static class LegacyDataImport
         }
 
         return copied;
-    }
-
-    /// <summary>
-    /// A CuePilot user worked with own provider keys and local whisper: the copied settings keep that setup
-    /// (DeveloperMode) instead of asking for a Replio account. Removing the flag from settings.json switches to the account.
-    /// </summary>
-    private static string KeepOwnKeys(string json)
-    {
-        try
-        {
-            if (System.Text.Json.Nodes.JsonNode.Parse(json) is System.Text.Json.Nodes.JsonObject settings && !settings.ContainsKey("DeveloperMode"))
-            {
-                settings["DeveloperMode"] = true;
-                return settings.ToJsonString(new System.Text.Json.JsonSerializerOptions { WriteIndented = true });
-            }
-        }
-        catch (System.Text.Json.JsonException)
-        {
-        }
-
-        return json;
     }
 
     private static bool IsTextWithPaths(string file)

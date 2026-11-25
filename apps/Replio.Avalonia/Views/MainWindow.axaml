@@ -2008,6 +2008,7 @@
                                       IsChecked="{Binding VideoContextEnabled, Mode=TwoWay}"
                                       ToolTip.Tip="{Binding L[TipAutoSnapshots]}"
                                       Content="{Binding L[SettingsAutoSnapshots]}" />
+                            <StackPanel IsVisible="{Binding ShowAdvancedSettings}">
                             <Grid Classes="row" ColumnDefinitions="230,*" ToolTip.Tip="{Binding L[TipSnapshotInterval]}" IsEnabled="{Binding VideoContextEnabled}">
                                 <TextBlock Foreground="{Binding SecondaryTextBrush}" VerticalAlignment="Center" Text="{Binding L[SettingsSnapshotInterval]}" />
                                 <TextBox Grid.Column="1" Text="{Binding VideoContextIntervalMs}" />
@@ -2020,6 +2021,7 @@
                                 <TextBlock Foreground="{Binding SecondaryTextBrush}" VerticalAlignment="Center" Text="{Binding L[SettingsSnapshotsPerRequest]}" />
                                 <TextBox Grid.Column="1" Text="{Binding VisualContextMaxImagesPerRequest}" />
                             </Grid>
+                            </StackPanel>
                         </StackPanel>
                         <TextBlock Margin="0,6,0,0" Foreground="{Binding SecondaryTextBrush}" TextWrapping="Wrap" Text="{Binding L[SettingsSnapshotsHint]}" />
                         <TextBlock Margin="0,4,0,0" Foreground="{Binding SecondaryTextBrush}" Text="{Binding VisualContextStatusText}" />

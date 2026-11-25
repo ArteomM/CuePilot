@@ -2231,6 +2231,7 @@ public partial class MainViewModel : ObservableObject
             OnPropertyChanged(nameof(OnboardingStepText));
             RefreshSelectedSessionScreenshots(SelectedSession);
             OnPropertyChanged(nameof(CurrentVersionText));
+            OnPropertyChanged(nameof(SttKeySourceText));
             if (InstallUpdateCommand != null)
             {
                 OnUpdateChanged();
