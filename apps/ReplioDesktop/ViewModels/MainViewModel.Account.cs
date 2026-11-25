@@ -406,7 +406,7 @@ public partial class MainViewModel
     private void ApplyAccount(ReplioAccountInfo account)
     {
         _account = account;
-        _settings.ReplioAccountJson = account.RawJson;
+        _settings.ReplioAccountJson = account.CacheJson;
         PersistSettingsQuietly();
         OnAccountChanged();
         ApplyAccountLimits(account);
@@ -471,11 +471,16 @@ public partial class MainViewModel
 
     private string EffectiveFastModel => IsManagedAi
         ? EffectiveReplioModel(_settings.ReplioFastModel, ReplioFastModels, _account?.DefaultFast ?? "replio-fast")
+        : IsCompanyPlan ? CompanyService?.FastModel ?? string.Empty
         : OpenAiModel.Trim();
 
     private string EffectiveAnalysisModel => IsManagedAi
         ? EffectiveReplioModel(_settings.ReplioAnalysisModel, ReplioAnalysisModels, _account?.DefaultAnalysis ?? "replio-smart")
+        : IsCompanyPlan ? CompanyService?.AnalysisModel ?? string.Empty
         : AnalysisModel?.Trim() ?? string.Empty;
+
+    /// <summary>«Приватный»: the service the company's administrator set up on replio.ru (null until the account answers).</summary>
+    private ReplioCompanyService? CompanyService => IsCompanyPlan ? _account?.Company : null;
 
     /// <summary>X-Replio-Session goes with requests made while a recording runs.</summary>
     private string? RecordingSessionId => IsCapturing ? _currentSessionId : null;
@@ -495,6 +500,19 @@ public partial class MainViewModel
             };
         }
 
+        if (IsCompanyPlan)
+        {
+            // The company's own OpenAI-compatible server; nothing goes through replio.ru.
+            return new LlmEndpoint
+            {
+                BaseUrl = CompanyService?.AiBaseUrl ?? string.Empty,
+                ApiKey = CompanyService?.AiKey ?? string.Empty,
+                EndpointPath = "/chat/completions",
+                ApiKeyHeaderName = "Authorization",
+                ApiKeyPrefix = "Bearer"
+            };
+        }
+
         return new LlmEndpoint
         {
             BaseUrl = OpenAiBaseUrl.Trim(),
@@ -509,7 +527,9 @@ public partial class MainViewModel
     /// Cloud plans always recognise through Replio, «Локальный» always on this computer (the gateway offers it no
     /// speech models), and only own-provider setups choose.
     /// </summary>
-    private bool EffectiveUseApiStt => CanUseOwnProviders ? UseApiStt : !CanUseLocalStt;
+    private bool EffectiveUseApiStt => IsCompanyPlan ? CompanyService?.SpeechOnService == true
+        : CanUseOwnProviders ? UseApiStt
+        : !CanUseLocalStt;
 
     /// <summary>Address, model, key and extra headers of API speech recognition.</summary>
     private (string Url, string Model, string Key, string Headers) ResolveSttApi(string? sessionId)
@@ -521,6 +541,11 @@ public partial class MainViewModel
                 EffectiveReplioModel(_settings.ReplioSttModel, ReplioSttModels, _account?.DefaultStt ?? "replio-speech"),
                 _replioKey,
                 ReplioApi.HeadersLine(_settings.ReplioDeviceId, sessionId));
+        }
+
+        if (IsCompanyPlan)
+        {
+            return (CompanyService?.SpeechBaseUrl ?? string.Empty, CompanyService?.SpeechModel ?? string.Empty, CompanyService?.SpeechKey ?? string.Empty, string.Empty);
         }
 
         return (

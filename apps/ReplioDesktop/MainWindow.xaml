@@ -2866,7 +2866,13 @@
                         </DockPanel>
                     </Border>
                     <ScrollViewer x:Name="SettingsScroll" Grid.Column="1" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
-                        <StackPanel Margin="28,22,28,28" MaxWidth="880" HorizontalAlignment="Left">
+                        <!-- One width for every card: up to 860 px, narrower with the window. -->
+                        <Grid Margin="28,22,28,28">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="1000*" MaxWidth="860" />
+                            <ColumnDefinition Width="*" />
+                        </Grid.ColumnDefinitions>
+                        <StackPanel>
                             <TextBlock FontSize="26" FontWeight="ExtraBold" Foreground="{DynamicResource EchoTextBrush}" Text="{Binding SettingsSectionTitle}" />
                             <TextBlock Margin="0,2,0,16" FontSize="14" Foreground="{DynamicResource EchoMutedBrush}" Text="{Binding SettingsSectionSubtitle}" />
 
@@ -2994,13 +3000,12 @@
                                     </StackPanel>
                                 </Border>
                                 <!-- Приватный: the company's own server. -->
-                                <Border Style="{StaticResource SettingsCardStyle}" Visibility="{Binding IsCompanyPlan, Converter={StaticResource BoolToVisibility}}">
-                                    <Border Style="{StaticResource SettingsInfoBoxStyle}">
-                                        <StackPanel>
-                                            <TextBlock FontWeight="SemiBold" Foreground="{DynamicResource EchoTextBrush}" Text="{Binding L[CompanyServiceTitle]}" />
-                                            <TextBlock Margin="0,2,0,0" Foreground="{DynamicResource EchoSoftTextBrush}" TextWrapping="Wrap" Text="{Binding L[CompanyServiceText]}" />
-                                        </StackPanel>
-                                    </Border>
+                                <Border Margin="0,0,0,12" Style="{StaticResource SettingsInfoBoxStyle}" Visibility="{Binding IsCompanyPlan, Converter={StaticResource BoolToVisibility}}">
+                                    <StackPanel>
+                                        <TextBlock FontWeight="SemiBold" Foreground="{DynamicResource EchoTextBrush}" Text="{Binding L[CompanyServiceTitle]}" />
+                                        <TextBlock Margin="0,2,0,0" Foreground="{DynamicResource EchoSoftTextBrush}" TextWrapping="Wrap" Text="{Binding CompanyServiceText}" />
+                                        <TextBlock Margin="0,6,0,0" Foreground="{DynamicResource EchoSoftTextBrush}" TextWrapping="Wrap" Text="{Binding CompanySpeechText}" />
+                                    </StackPanel>
                                 </Border>
                                 <!-- Developer mode: on this computer or through an own service. -->
                                 <Border Style="{StaticResource SettingsCardStyle}" Visibility="{Binding ShowSttWhereChoice, Converter={StaticResource BoolToVisibility}}">
@@ -3138,8 +3143,10 @@
                                                 ToolTip="{Binding L[TipTestAudioCapture]}" Content="{Binding L[TestAudioCapture]}" />
                                         <TextBlock Style="{StaticResource SettingsHintStyle}" Margin="0,8,0,0" Text="{Binding L[SoundCheckHint]}" />
                                         <TextBlock Margin="0,8,0,0" Foreground="{DynamicResource EchoTextBrush}" TextWrapping="Wrap" Text="{Binding AudioHealthMessage}" />
-                                        <TextBlock Margin="0,4,0,0" FontSize="13" Foreground="{DynamicResource EchoMutedBrush}" Text="{Binding SystemStatsText}" />
-                                        <TextBlock Margin="0,2,0,0" FontSize="13" Foreground="{DynamicResource EchoMutedBrush}" Text="{Binding MicStatsText}" />
+                                        <StackPanel Visibility="{Binding IsCapturing, Converter={StaticResource BoolToVisibility}}">
+                                            <TextBlock Margin="0,4,0,0" FontSize="13" Foreground="{DynamicResource EchoMutedBrush}" Text="{Binding SystemStatsText}" />
+                                            <TextBlock Margin="0,2,0,0" FontSize="13" Foreground="{DynamicResource EchoMutedBrush}" Text="{Binding MicStatsText}" />
+                                        </StackPanel>
                                     </StackPanel>
                                 </Border>
                             </StackPanel>
@@ -3176,7 +3183,7 @@
                                                     <ColumnDefinition Width="*" />
                                                 </Grid.ColumnDefinitions>
                                                 <TextBlock Foreground="{DynamicResource EchoSoftTextBrush}" VerticalAlignment="Center" Text="{Binding L[AiHintsModelLabel]}" />
-                                                <ComboBox Grid.Column="1" MaxWidth="420" HorizontalAlignment="Stretch" ItemsSource="{Binding ReplioFastModels}" DisplayMemberPath="Display" SelectedItem="{Binding SelectedReplioFastModel, Mode=TwoWay}" />
+                                                <ComboBox Grid.Column="1" Width="420" HorizontalAlignment="Left" ItemsSource="{Binding ReplioFastModels}" DisplayMemberPath="Display" SelectedItem="{Binding SelectedReplioFastModel, Mode=TwoWay}" />
                                             </Grid>
                                             <Grid ToolTip="{Binding L[TipReplioAnalysisModel]}" Background="Transparent" Margin="0,10,0,0">
                                                 <Grid.ColumnDefinitions>
@@ -3184,20 +3191,18 @@
                                                     <ColumnDefinition Width="*" />
                                                 </Grid.ColumnDefinitions>
                                                 <TextBlock Foreground="{DynamicResource EchoSoftTextBrush}" VerticalAlignment="Center" Text="{Binding L[AiAnalysisModelLabel]}" />
-                                                <ComboBox Grid.Column="1" MaxWidth="420" HorizontalAlignment="Stretch" ItemsSource="{Binding ReplioAnalysisModels}" DisplayMemberPath="Display" SelectedItem="{Binding SelectedReplioAnalysisModel, Mode=TwoWay}" />
+                                                <ComboBox Grid.Column="1" Width="420" HorizontalAlignment="Left" ItemsSource="{Binding ReplioAnalysisModels}" DisplayMemberPath="Display" SelectedItem="{Binding SelectedReplioAnalysisModel, Mode=TwoWay}" />
                                             </Grid>
                                             <TextBlock Style="{StaticResource SettingsHintStyle}" Margin="230,8,0,0" Text="{Binding L[TipReplioFastModel]}" />
                                         </StackPanel>
                                     </StackPanel>
                                 </Border>
                                 <!-- Приватный: the company's own server. -->
-                                <Border Style="{StaticResource SettingsCardStyle}" Visibility="{Binding IsCompanyPlan, Converter={StaticResource BoolToVisibility}}">
-                                    <Border Style="{StaticResource SettingsInfoBoxStyle}">
-                                        <StackPanel>
-                                            <TextBlock FontWeight="SemiBold" Foreground="{DynamicResource EchoTextBrush}" Text="{Binding L[CompanyServiceTitle]}" />
-                                            <TextBlock Margin="0,2,0,0" Foreground="{DynamicResource EchoSoftTextBrush}" TextWrapping="Wrap" Text="{Binding L[CompanyServiceText]}" />
-                                        </StackPanel>
-                                    </Border>
+                                <Border Margin="0,0,0,12" Style="{StaticResource SettingsInfoBoxStyle}" Visibility="{Binding IsCompanyPlan, Converter={StaticResource BoolToVisibility}}">
+                                    <StackPanel>
+                                        <TextBlock FontWeight="SemiBold" Foreground="{DynamicResource EchoTextBrush}" Text="{Binding L[CompanyServiceTitle]}" />
+                                        <TextBlock Margin="0,2,0,0" Foreground="{DynamicResource EchoSoftTextBrush}" TextWrapping="Wrap" Text="{Binding CompanyServiceText}" />
+                                    </StackPanel>
                                 </Border>
                                 <!-- Developer mode: own AI service; the technical fields only for «Custom». -->
                                 <Border Style="{StaticResource SettingsCardStyle}" Visibility="{Binding ShowOwnProviderSettings, Converter={StaticResource BoolToVisibility}}">
@@ -3510,6 +3515,7 @@
                                 </Border>
                             </StackPanel>
                         </StackPanel>
+                        </Grid>
                     </ScrollViewer>
                 </Grid>
             </TabItem>

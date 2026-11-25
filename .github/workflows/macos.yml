@@ -42,9 +42,10 @@ jobs:
 
   release:
     # The latest installers on the «mac-latest» release page: one .dmg per Mac type, no nested zips.
-    # Only main publishes: work branches build but never replace the tester's release.
+    # main publishes on push; a work branch only when the build is started by hand («Run workflow»), so routine
+    # pushes never replace the tester's release.
     needs: build
-    if: github.ref == 'refs/heads/main'
+    if: github.ref == 'refs/heads/main' || github.event_name == 'workflow_dispatch'
     runs-on: ubuntu-latest
     steps:
       - uses: actions/download-artifact@v4

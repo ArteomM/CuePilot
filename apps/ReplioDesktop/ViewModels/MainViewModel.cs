@@ -813,7 +813,7 @@ public partial class MainViewModel : ObservableObject
             string? path = SpeechModelCatalog.ResolveActiveModelPath(_settings, _projectRoot);
             if (path == null)
             {
-                return L[CanUseOwnProviders ? "SpeechModelMissingStatusOwn" : "SpeechModelMissingStatus"];
+                return L[IsDeveloperMode ? "SpeechModelMissingStatusOwn" : "SpeechModelMissingStatus"];
             }
 
             string fileName = Path.GetFileName(path);
@@ -1917,11 +1917,6 @@ public partial class MainViewModel : ObservableObject
         if (string.IsNullOrWhiteSpace(OverlayStateText))
         {
             OverlayStateText = L["StateReady"];
-        }
-
-        if (string.IsNullOrWhiteSpace(AudioHealthMessage))
-        {
-            AudioHealthMessage = L["AudioHealthListening"];
         }
     }
 

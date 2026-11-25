@@ -6,6 +6,7 @@ using System.Net.Http.Headers;
 using System.Security.Cryptography;
 using System.Text;
 using System.Text.Json;
+using System.Text.Json.Nodes;
 
 namespace ReplioDesktop.Services;
 
@@ -179,8 +180,39 @@ public sealed class ReplioAccountInfo
     public int? DevicesUsed { get; init; }
     public string UpgradeUrl { get; init; } = "https://replio.ru/account/plan";
 
+    /// <summary>«Приватный»: the company's own AI and speech service, set up by its administrator in the account on replio.ru.</summary>
+    public ReplioCompanyService? Company { get; init; }
+
     /// <summary>The JSON as received, cached in settings so the app knows the plan before the network answers.</summary>
     public string RawJson { get; init; } = string.Empty;
+
+    /// <summary>RawJson without the company service keys: settings.json never holds them, the next /account brings them again.</summary>
+    public string CacheJson
+    {
+        get
+        {
+            if (Company == null)
+            {
+                return RawJson;
+            }
+
+            try
+            {
+                JsonNode? root = JsonNode.Parse(RawJson);
+                if (root?["company"] is JsonObject company)
+                {
+                    (company["ai"] as JsonObject)?.Remove("key");
+                    (company["speech"] as JsonObject)?.Remove("key");
+                }
+
+                return root?.ToJsonString() ?? string.Empty;
+            }
+            catch (JsonException)
+            {
+                return string.Empty;
+            }
+        }
+    }
 
     public static ReplioAccountInfo Parse(string json)
     {
@@ -220,6 +252,7 @@ public sealed class ReplioAccountInfo
             DevicesMax = Json.Int(quota, "devices_max"),
             DevicesUsed = Json.Int(quota, "devices_used"),
             UpgradeUrl = Json.Text(root, "upgrade_url") ?? "https://replio.ru/account/plan",
+            Company = ReplioCompanyService.Parse(Json.Object(root, "company")),
             RawJson = root.GetRawText()
         };
     }
@@ -239,6 +272,45 @@ public sealed class ReplioAccountInfo
 }
 
 /// <summary>Device sign-in: the code to confirm on replio.ru and how often to ask whether it was confirmed.</summary>
+/// <summary>
+/// «Приватный»: the company's AI (an OpenAI-compatible address, key and models) and where speech is recognised
+/// («local» on the employees' computers or «service» on the company's server). Employees never see or edit it.
+/// </summary>
+public sealed record ReplioCompanyService(
+    bool Configured,
+    string AiBaseUrl,
+    string AiKey,
+    string FastModel,
+    string AnalysisModel,
+    bool SpeechOnService,
+    string SpeechBaseUrl,
+    string SpeechKey,
+    string SpeechModel)
+{
+    public static ReplioCompanyService? Parse(JsonElement company)
+    {
+        if (company.ValueKind != JsonValueKind.Object)
+        {
+            return null;
+        }
+
+        JsonElement ai = Json.Object(company, "ai");
+        JsonElement speech = Json.Object(company, "speech");
+        string fast = Json.Text(ai, "fast_model") ?? string.Empty;
+        string analysis = Json.Text(ai, "analysis_model") ?? string.Empty;
+        return new ReplioCompanyService(
+            Json.Bool(company, "configured"),
+            (Json.Text(ai, "base_url") ?? string.Empty).Trim().TrimEnd('/'),
+            Json.Text(ai, "key") ?? string.Empty,
+            fast,
+            string.IsNullOrWhiteSpace(analysis) ? fast : analysis,
+            Json.Text(speech, "mode") == "service",
+            (Json.Text(speech, "base_url") ?? string.Empty).Trim().TrimEnd('/'),
+            Json.Text(speech, "key") ?? string.Empty,
+            Json.Text(speech, "model") ?? string.Empty);
+    }
+}
+
 public sealed record ReplioDeviceLogin(string DeviceCode, string UserCode, string VerificationUrl, TimeSpan ExpiresIn, TimeSpan Interval);
 
 public enum ReplioLoginState

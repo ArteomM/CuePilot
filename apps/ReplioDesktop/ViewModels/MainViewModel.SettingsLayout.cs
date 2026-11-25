@@ -204,7 +204,14 @@ public partial class MainViewModel
     public bool ShowSttServiceSettings => IsDeveloperMode && UseApiStt;
 
     /// <summary>The list of local models: whenever speech is recognised on this computer.</summary>
-    public bool ShowSpeechModels => CanUseLocalStt && !(CanUseOwnProviders && UseApiStt);
+    public bool ShowSpeechModels => CanUseLocalStt && !EffectiveUseApiStt;
+
+    /// <summary>«Приватный»: whether the administrator has set the company's service up, in one line under the title.</summary>
+    public string CompanyServiceText => L[CompanyService?.Configured == true ? "CompanyServiceText" : "CompanyServiceNotReady"];
+
+    /// <summary>«Приватный», section «Речь»: on these computers (download a model below) or on the company's server.</summary>
+    public string CompanySpeechText => L[CompanyService?.SpeechOnService == true ? "CompanySpeechService" : "CompanySpeechLocal"];
+
 
     /// <summary>Local recognition without a downloaded model: no transcript would appear.</summary>
     public bool IsSpeechModelMissing => ShowSpeechModels && SpeechModelCatalog.ResolveActiveModelPath(_settings, _projectRoot) == null;
@@ -235,7 +242,7 @@ public partial class MainViewModel
         {
             nameof(IsLocalSpeechPlan), nameof(ShowSttQualityChoice), nameof(ShowSttCloudInfo), nameof(SttCloudInfoTitle),
             nameof(SttCloudInfoHint), nameof(ShowSttWhereChoice), nameof(IsSttOnComputer), nameof(IsSttOwnService),
-            nameof(ShowSttServiceSettings), nameof(ShowSpeechModels), nameof(IsSpeechModelMissing), nameof(ShowReplioModelNames),
+            nameof(ShowSttServiceSettings), nameof(ShowSpeechModels), nameof(CompanyServiceText), nameof(CompanySpeechText), nameof(IsSpeechModelMissing), nameof(ShowReplioModelNames),
             nameof(ReplioFastModelName), nameof(ReplioAnalysisModelName), nameof(AiModelsHint), nameof(SpeechModelStatusText)
         })
         {
