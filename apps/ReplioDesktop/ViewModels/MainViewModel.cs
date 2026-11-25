@@ -71,14 +71,6 @@ public partial class MainViewModel : ObservableObject
     private bool _isEditingSessionTitle;
     private string _currentSessionSummary = string.Empty;
     private SessionUsageView _usageView = SessionUsageView.Empty;
-    private string _selectedModeName = "General";
-    private string _modeEditorName = AppSettings.GeneralModeName;
-    private string _generalRealtimePrompt = string.Empty;
-    private string _generalNotesTemplate = string.Empty;
-    private string _generalReferenceFile = string.Empty;
-    private string _defaultRealtimePrompt = string.Empty;
-    private string _defaultNotesTemplate = string.Empty;
-    private string _defaultReferenceFile = string.Empty;
     private string _sessionQuery = string.Empty;
     private bool _smartModeEnabled;
     private string _selectedApiPreset = "Custom";
@@ -133,7 +125,6 @@ public partial class MainViewModel : ObservableObject
     private readonly RelayCommand _hideOverlayCommand;
     private readonly RelayCommand _askOverlayCommand;
     private readonly RelayCommand _openSettingsCommand;
-    private readonly RelayCommand _openModesCommand;
     private readonly RelayCommand _openSessionCommand;
     private readonly RelayCommand _goHomeCommand;
     private readonly RelayCommand _runAudioCaptureTestCommand;
@@ -152,9 +143,6 @@ public partial class MainViewModel : ObservableObject
     private readonly RelayCommand _saveSessionTitleCommand;
     private readonly RelayCommand _deleteSessionCommand;
     private readonly RelayCommand _captureSnapshotCommand;
-    private readonly RelayCommand _setModeActiveCommand;
-    private readonly RelayCommand _uploadModeReferenceFileCommand;
-    private readonly RelayCommand _newModeCommand;
 
     public MainViewModel(
         string projectRoot,
@@ -190,17 +178,6 @@ public partial class MainViewModel : ObservableObject
         _captureScreenContextEnabled = _settings.CaptureScreenContextEnabled;
         _selectedMonitor = _settings.SelectedMonitor;
         _selectedOutputLanguage = _settings.OutputLanguage;
-        _generalRealtimePrompt = _settings.GeneralRealtimePrompt;
-        _generalNotesTemplate = _settings.GeneralNotesTemplate;
-        _generalReferenceFile = _settings.GeneralReferenceFile;
-        _defaultRealtimePrompt = _settings.DefaultRealtimePrompt;
-        _defaultNotesTemplate = _settings.DefaultNotesTemplate;
-        _defaultReferenceFile = _settings.DefaultReferenceFile;
-        _selectedModeName = string.Equals(_settings.SelectedModeName, AppSettings.DefaultModeName, StringComparison.OrdinalIgnoreCase)
-            ? AppSettings.DefaultModeName
-            : AppSettings.GeneralModeName;
-        _modeEditorName = _selectedModeName;
-        EnsureModeExamples();
         _videoContextEnabled = _settings.VideoContextEnabled;
         _videoContextIntervalMs = Math.Clamp(_settings.VideoContextIntervalMs, 800, 20000);
         _visualContextMaxFrames = Math.Clamp(_settings.VisualContextMaxFrames, 4, 120);
@@ -251,11 +228,6 @@ public partial class MainViewModel : ObservableObject
         _hideOverlayCommand = new RelayCommand(() => HideOverlayRequested?.Invoke());
         _askOverlayCommand = new RelayCommand(() => ShowOverlayRequested?.Invoke());
         _openSettingsCommand = new RelayCommand(() => SelectedMainPage = "Settings");
-        _openModesCommand = new RelayCommand(() =>
-        {
-            ModeEditorName = SelectedModeName;
-            SelectedMainPage = "Modes";
-        });
         _openSessionCommand = new RelayCommand(OpenSession);
         _goHomeCommand = new RelayCommand(() => SelectedMainPage = "Home", () => SelectedMainPage != "Home");
         _runAudioCaptureTestCommand = new RelayCommand(RunAudioCaptureTest);
@@ -274,9 +246,6 @@ public partial class MainViewModel : ObservableObject
         _saveSessionTitleCommand = new RelayCommand(SaveSessionTitle, () => IsEditingSessionTitle && SelectedSession != null);
         _deleteSessionCommand = new RelayCommand(DeleteSession);
         _captureSnapshotCommand = new RelayCommand(CaptureSnapshotNow, () => IsCapturing && CaptureScreenContextEnabled);
-        _setModeActiveCommand = new RelayCommand(SetModeActive, () => !IsEditorModeActive);
-        _uploadModeReferenceFileCommand = new RelayCommand(UploadModeReferenceFile);
-        _newModeCommand = new RelayCommand(RequestNewMode);
 
         StartCaptureCommand = _startCaptureCommand;
         StopCaptureCommand = _stopCaptureCommand;
@@ -301,7 +270,6 @@ public partial class MainViewModel : ObservableObject
         HideOverlayCommand = _hideOverlayCommand;
         AskOverlayCommand = _askOverlayCommand;
         OpenSettingsCommand = _openSettingsCommand;
-        OpenModesCommand = _openModesCommand;
         OpenSessionCommand = _openSessionCommand;
         GoHomeCommand = _goHomeCommand;
         RunAudioCaptureTestCommand = _runAudioCaptureTestCommand;
@@ -321,9 +289,6 @@ public partial class MainViewModel : ObservableObject
         SaveSessionTitleCommand = _saveSessionTitleCommand;
         DeleteSessionCommand = _deleteSessionCommand;
         CaptureSnapshotCommand = _captureSnapshotCommand;
-        SetModeActiveCommand = _setModeActiveCommand;
-        UploadModeReferenceFileCommand = _uploadModeReferenceFileCommand;
-        NewModeCommand = _newModeCommand;
 
         _captureOrchestrator.LogLine += (_, line) => RunOnUi(() =>
         {
@@ -348,6 +313,7 @@ public partial class MainViewModel : ObservableObject
         InitializeUpdates();
         InitializeHelp();
         InitializeDataFolder();
+        InitializeMeetingStyles();
         OpenAiAssistClient.ReplioRefused += ex => OnReplioRefusal(ex);
         InitializeLibrary();
         InitializeScreenshots();
@@ -421,7 +387,6 @@ public partial class MainViewModel : ObservableObject
     public RelayCommand HideOverlayCommand { get; }
     public RelayCommand AskOverlayCommand { get; }
     public RelayCommand OpenSettingsCommand { get; }
-    public RelayCommand OpenModesCommand { get; }
     public RelayCommand OpenSessionCommand { get; }
     public RelayCommand GoHomeCommand { get; }
     public RelayCommand RunAudioCaptureTestCommand { get; }
@@ -441,9 +406,6 @@ public partial class MainViewModel : ObservableObject
     public RelayCommand SaveSessionTitleCommand { get; }
     public RelayCommand DeleteSessionCommand { get; }
     public RelayCommand CaptureSnapshotCommand { get; }
-    public RelayCommand SetModeActiveCommand { get; }
-    public RelayCommand UploadModeReferenceFileCommand { get; }
-    public RelayCommand NewModeCommand { get; }
 
     public bool IsAssistBusy
     {
@@ -1209,6 +1171,7 @@ public partial class MainViewModel : ObservableObject
             RefreshSelectedSessionScreenshots(value);
             OnPropertyChanged();
             OnFollowUpEmailChanged();
+            OnSessionTopicActualizeChanged();
             _startRenameSessionCommand.RaiseCanExecuteChanged();
             _saveSessionTitleCommand.RaiseCanExecuteChanged();
         }
@@ -1275,200 +1238,6 @@ public partial class MainViewModel : ObservableObject
             OnPropertyChanged();
         }
     }
-
-    public string SelectedModeName
-    {
-        get => _selectedModeName;
-        set
-        {
-            string normalized = string.Equals(value, AppSettings.DefaultModeName, StringComparison.OrdinalIgnoreCase)
-                ? AppSettings.DefaultModeName
-                : AppSettings.GeneralModeName;
-            if (_selectedModeName == normalized)
-            {
-                return;
-            }
-
-            _selectedModeName = normalized;
-            _settings.SelectedModeName = normalized;
-            _settingsService.Save(_settings);
-            OnPropertyChanged();
-            OnPropertyChanged(nameof(ModesButtonText));
-            OnPropertyChanged(nameof(IsDefaultModeSelected));
-            OnPropertyChanged(nameof(ActiveModeRealtimePrompt));
-            OnPropertyChanged(nameof(ActiveModeNotesTemplate));
-            OnPropertyChanged(nameof(IsEditorModeActive));
-            OnPropertyChanged(nameof(ModeActionButtonText));
-            _setModeActiveCommand.RaiseCanExecuteChanged();
-        }
-    }
-
-    public string ModesButtonText => $"Режимы: {SelectedModeName}";
-
-    public string ModeEditorName
-    {
-        get => _modeEditorName;
-        set
-        {
-            string normalized = string.Equals(value, AppSettings.DefaultModeName, StringComparison.OrdinalIgnoreCase)
-                ? AppSettings.DefaultModeName
-                : AppSettings.GeneralModeName;
-            if (_modeEditorName == normalized)
-            {
-                return;
-            }
-
-            _modeEditorName = normalized;
-            OnPropertyChanged();
-            OnPropertyChanged(nameof(ModeEditorTitle));
-            OnPropertyChanged(nameof(IsEditorModeActive));
-            OnPropertyChanged(nameof(ModeActionButtonText));
-            OnPropertyChanged(nameof(ModeEditorRealtimePrompt));
-            OnPropertyChanged(nameof(ModeEditorNotesTemplate));
-            OnPropertyChanged(nameof(ModeEditorReferenceFile));
-            _setModeActiveCommand.RaiseCanExecuteChanged();
-        }
-    }
-
-    public string ModeEditorTitle => ModeEditorName;
-    public bool IsEditorModeActive => string.Equals(ModeEditorName, SelectedModeName, StringComparison.OrdinalIgnoreCase);
-    public string ModeActionButtonText => IsEditorModeActive ? "✓ Активен" : "✓ Сделать активным";
-
-    public string ModeEditorRealtimePrompt
-    {
-        get => string.Equals(ModeEditorName, AppSettings.DefaultModeName, StringComparison.OrdinalIgnoreCase)
-            ? DefaultRealtimePrompt
-            : GeneralRealtimePrompt;
-        set
-        {
-            if (string.Equals(ModeEditorName, AppSettings.DefaultModeName, StringComparison.OrdinalIgnoreCase))
-            {
-                DefaultRealtimePrompt = value;
-                return;
-            }
-
-            GeneralRealtimePrompt = value;
-        }
-    }
-
-    public string ModeEditorNotesTemplate
-    {
-        get => string.Equals(ModeEditorName, AppSettings.DefaultModeName, StringComparison.OrdinalIgnoreCase)
-            ? DefaultNotesTemplate
-            : GeneralNotesTemplate;
-        set
-        {
-            if (string.Equals(ModeEditorName, AppSettings.DefaultModeName, StringComparison.OrdinalIgnoreCase))
-            {
-                DefaultNotesTemplate = value;
-                return;
-            }
-
-            GeneralNotesTemplate = value;
-        }
-    }
-
-    public string ModeEditorReferenceFile
-    {
-        get => string.Equals(ModeEditorName, AppSettings.DefaultModeName, StringComparison.OrdinalIgnoreCase)
-            ? DefaultReferenceFile
-            : GeneralReferenceFile;
-        set
-        {
-            if (string.Equals(ModeEditorName, AppSettings.DefaultModeName, StringComparison.OrdinalIgnoreCase))
-            {
-                DefaultReferenceFile = value;
-                return;
-            }
-
-            GeneralReferenceFile = value;
-        }
-    }
-
-    public string GeneralRealtimePrompt
-    {
-        get => _generalRealtimePrompt;
-        set
-        {
-            _generalRealtimePrompt = value;
-            OnPropertyChanged();
-            OnPropertyChanged(nameof(ActiveModeRealtimePrompt));
-            OnPropertyChanged(nameof(ModeEditorRealtimePrompt));
-        }
-    }
-
-    public string GeneralNotesTemplate
-    {
-        get => _generalNotesTemplate;
-        set
-        {
-            _generalNotesTemplate = value;
-            OnPropertyChanged();
-            OnPropertyChanged(nameof(ActiveModeNotesTemplate));
-            OnPropertyChanged(nameof(ModeEditorNotesTemplate));
-        }
-    }
-
-    public string GeneralReferenceFile
-    {
-        get => _generalReferenceFile;
-        set
-        {
-            if (_generalReferenceFile == value)
-            {
-                return;
-            }
-
-            _generalReferenceFile = value;
-            OnPropertyChanged();
-            OnPropertyChanged(nameof(ModeEditorReferenceFile));
-        }
-    }
-
-    public string DefaultRealtimePrompt
-    {
-        get => _defaultRealtimePrompt;
-        set
-        {
-            _defaultRealtimePrompt = value;
-            OnPropertyChanged();
-            OnPropertyChanged(nameof(ActiveModeRealtimePrompt));
-            OnPropertyChanged(nameof(ModeEditorRealtimePrompt));
-        }
-    }
-
-    public string DefaultNotesTemplate
-    {
-        get => _defaultNotesTemplate;
-        set
-        {
-            _defaultNotesTemplate = value;
-            OnPropertyChanged();
-            OnPropertyChanged(nameof(ActiveModeNotesTemplate));
-            OnPropertyChanged(nameof(ModeEditorNotesTemplate));
-        }
-    }
-
-    public string DefaultReferenceFile
-    {
-        get => _defaultReferenceFile;
-        set
-        {
-            if (_defaultReferenceFile == value)
-            {
-                return;
-            }
-
-            _defaultReferenceFile = value;
-            OnPropertyChanged();
-            OnPropertyChanged(nameof(ModeEditorReferenceFile));
-        }
-    }
-
-    public IReadOnlyList<string> ModeOptions { get; } = [AppSettings.GeneralModeName, AppSettings.DefaultModeName];
-    public bool IsDefaultModeSelected => string.Equals(SelectedModeName, AppSettings.DefaultModeName, StringComparison.OrdinalIgnoreCase);
-    public string ActiveModeRealtimePrompt => IsDefaultModeSelected ? DefaultRealtimePrompt : GeneralRealtimePrompt;
-    public string ActiveModeNotesTemplate => IsDefaultModeSelected ? DefaultNotesTemplate : GeneralNotesTemplate;
 
     public string CaptureStatusText
     {
@@ -1846,11 +1615,14 @@ public partial class MainViewModel : ObservableObject
         try
         {
             _sessionLifecycleService.CompleteActiveIfAny(L["SessionSummaryFallback"]);
+            // The session keeps a copy of the meeting variant it was recorded with (shown in its statistics);
+            // hints and summaries use the topic's current one (MainViewModel.MeetingStyle.cs).
+            MeetingStyle meetingStyle = ResolveMeetingStyle(SelectedTopic);
             SessionSummary session = _sessionLifecycleService.StartNew(
                 NewSessionTitle(DateTime.Now),
-                SelectedModeName,
-                ActiveModeRealtimePrompt,
-                ActiveModeNotesTemplate);
+                MeetingPresetName(meetingStyle.Preset),
+                meetingStyle.Guidance,
+                meetingStyle.SummaryFormat);
             if (SelectedTopic is { } selectedTopic)
             {
                 // A recording started while a topic is open belongs to that topic.
@@ -1968,7 +1740,7 @@ public partial class MainViewModel : ObservableObject
         {
             AssistResult result = await _conversationAssistService.BuildSessionSummaryAsync(
                 session,
-                BuildAssistOptions());
+                BuildAssistOptions(session: session));
             RecordAssistUsage(session, L["ActionSummary"], result);
             if (!string.IsNullOrWhiteSpace(result.Text))
             {
@@ -2093,13 +1865,6 @@ public partial class MainViewModel : ObservableObject
         _settings.CaptureScreenContextEnabled = CaptureScreenContextEnabled;
         _settings.SelectedMonitor = SelectedMonitor;
         _settings.OutputLanguage = SelectedOutputLanguage;
-        _settings.GeneralRealtimePrompt = GeneralRealtimePrompt;
-        _settings.GeneralNotesTemplate = GeneralNotesTemplate;
-        _settings.GeneralReferenceFile = GeneralReferenceFile;
-        _settings.DefaultRealtimePrompt = DefaultRealtimePrompt;
-        _settings.DefaultNotesTemplate = DefaultNotesTemplate;
-        _settings.DefaultReferenceFile = DefaultReferenceFile;
-        _settings.SelectedModeName = SelectedModeName;
         _settings.VideoContextEnabled = VideoContextEnabled;
         _settings.VideoContextIntervalMs = VideoContextIntervalMs;
         _settings.VisualContextMaxFrames = VisualContextMaxFrames;
@@ -2240,6 +2005,7 @@ public partial class MainViewModel : ObservableObject
             OnPropertyChanged(nameof(CurrentVersionText));
             OnPropertyChanged(nameof(SttKeySourceText));
             OnPropertyChanged(nameof(HelpText));
+            OnLocalizationChangedForMeetingStyles();
             if (InstallUpdateCommand != null)
             {
                 OnUpdateChanged();
@@ -2436,7 +2202,6 @@ public partial class MainViewModel : ObservableObject
         if (active != null)
         {
             _currentSessionId = active.Id;
-            SelectedModeName = string.IsNullOrWhiteSpace(active.ModeName) ? SelectedModeName : active.ModeName;
             CurrentSessionTitle = active.Title;
             EditableSessionTitle = active.Title;
             IsEditingSessionTitle = false;
@@ -2475,10 +2240,6 @@ public partial class MainViewModel : ObservableObject
             if (selected != null)
             {
                 SelectedSession = selected;
-                if (!string.IsNullOrWhiteSpace(selected.ModeName))
-                {
-                    SelectedModeName = selected.ModeName;
-                }
                 CurrentSessionTitle = selected.Title;
                 EditableSessionTitle = selected.Title;
                 IsEditingSessionTitle = false;
@@ -2540,7 +2301,7 @@ public partial class MainViewModel : ObservableObject
         int manualSnapshots = session.VisualFrames.Count(IsManualFrame);
         List<UsageRow> metrics =
         [
-            new(L["UsageMode"], session.ModeName, session.ModeName),
+            new(L["UsageMode"], MeetingPresetName(ResolveMeetingStyle(session).Preset)),
             new(L["UsageDurationMinutes"], usage.SessionDurationMinutes.ToString("0.0", CultureInfo.CurrentCulture)),
             new(L["UsageTranscriptItems"], usage.TranscriptItemsCount.ToString(CultureInfo.CurrentCulture)),
             new(L["UsageSuggestions"], usage.SuggestionsCount.ToString(CultureInfo.CurrentCulture)),
@@ -2621,10 +2382,6 @@ public partial class MainViewModel : ObservableObject
         }
 
         SelectedSession = session;
-        if (!string.IsNullOrWhiteSpace(session.ModeName))
-        {
-            SelectedModeName = session.ModeName;
-        }
         CurrentSessionTitle = session.Title;
         EditableSessionTitle = session.Title;
         IsEditingSessionTitle = false;
@@ -2979,7 +2736,7 @@ public partial class MainViewModel : ObservableObject
         try
         {
             AppendAssistDialog(session.Id, action, "User", userDialogText);
-            AssistResult result = await request(session, BuildAssistOptions(BuildTopicHintContext(session)));
+            AssistResult result = await request(session, BuildAssistOptions(BuildTopicHintContext(session), session));
             RecordAssistUsage(session, action, result);
 
             string text = string.IsNullOrWhiteSpace(result.Text) ? fallback(session) : result.Text.Trim();
@@ -3107,11 +2864,6 @@ public partial class MainViewModel : ObservableObject
     private void ApplyAssistProviderSettings()
     {
         NormalizeModelForSelectedPreset();
-        _settings.SelectedModeName = SelectedModeName;
-        _settings.GeneralRealtimePrompt = GeneralRealtimePrompt;
-        _settings.DefaultRealtimePrompt = DefaultRealtimePrompt;
-        _settings.GeneralNotesTemplate = GeneralNotesTemplate;
-        _settings.DefaultNotesTemplate = DefaultNotesTemplate;
         _settings.CaptureScreenContextEnabled = CaptureScreenContextEnabled;
         _settings.VideoContextEnabled = VideoContextEnabled;
         _settings.VideoContextIntervalMs = VideoContextIntervalMs;
@@ -3128,9 +2880,11 @@ public partial class MainViewModel : ObservableObject
         _settings.OpenAiBaseUrl = OpenAiBaseUrl;
     }
 
-    private AssistOptions BuildAssistOptions(string topicContext = "")
+    /// <summary>With a session: also the meeting variant of its topic (or of meetings without a topic).</summary>
+    private AssistOptions BuildAssistOptions(string topicContext = "", SessionSummary? session = null)
     {
         ApplyAssistProviderSettings();
+        MeetingStyle? style = session == null ? null : ResolveMeetingStyle(session);
         return new AssistOptions
         {
             Endpoint = BuildLlmEndpoint(),
@@ -3138,7 +2892,10 @@ public partial class MainViewModel : ObservableObject
             AnalysisModel = EffectiveAnalysisModel,
             SmartModeEnabled = SmartModeEnabled,
             Settings = _settings,
-            TopicContext = topicContext
+            TopicContext = topicContext,
+            MeetingType = style == null ? string.Empty : MeetingTypeForPrompt(style),
+            MeetingGuidance = style?.Guidance ?? string.Empty,
+            SummaryFormat = style?.SummaryFormat ?? string.Empty
         };
     }
 
@@ -3322,62 +3079,6 @@ public partial class MainViewModel : ObservableObject
         }
 
         return "Custom";
-    }
-
-    private void EnsureModeExamples()
-    {
-        if (string.IsNullOrWhiteSpace(GeneralRealtimePrompt))
-        {
-            GeneralRealtimePrompt = "Пример: отвечай кратко и по делу, предлагай конкретные шаги и уточняй риски.";
-        }
-
-        if (string.IsNullOrWhiteSpace(DefaultRealtimePrompt))
-        {
-            DefaultRealtimePrompt = "Пример: сначала уточни задачу, затем предложи 2-3 варианта решения и лучший из них.";
-        }
-
-        if (string.IsNullOrWhiteSpace(GeneralNotesTemplate))
-        {
-            GeneralNotesTemplate = "Пример заметок:\n- Цель\n- Ключевые решения\n- Следующие шаги";
-        }
-
-        if (string.IsNullOrWhiteSpace(DefaultNotesTemplate))
-        {
-            DefaultNotesTemplate = "Пример заметок:\n- Контекст\n- Что сделали\n- Что проверить после";
-        }
-
-        if (string.IsNullOrWhiteSpace(GeneralReferenceFile))
-        {
-            GeneralReferenceFile = "Файл не выбран.";
-        }
-
-        if (string.IsNullOrWhiteSpace(DefaultReferenceFile))
-        {
-            DefaultReferenceFile = "Файл не выбран.";
-        }
-    }
-
-    private void SetModeActive()
-    {
-        SelectedModeName = ModeEditorName;
-        AppendLog($"[modes] Active mode changed to {SelectedModeName}.");
-    }
-
-    private async void UploadModeReferenceFile()
-    {
-        IReadOnlyList<string> files = await PickFilesAsync("Выберите файл контекста для режима", "Все файлы", "*.*", false);
-        if (files.Count == 0)
-        {
-            return;
-        }
-
-        ModeEditorReferenceFile = files[0];
-        AppendLog($"[modes] Reference file selected for {ModeEditorName}: {files[0]}");
-    }
-
-    private void RequestNewMode()
-    {
-        NotificationRequested?.Invoke("Режимы", "В этой версии доступны два встроенных режима: General и Default.", false);
     }
 
     private void AppendAssistDialog(string sessionId, string action, string role, string text)

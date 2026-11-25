@@ -36,7 +36,7 @@ public partial class ConversationAssistService
             "No dates, no words like «Встреча», «Обсуждение», «Созвон» at the start unless the title makes no sense without them.\n" +
             "Write in Russian.\n" +
             topicNote +
-            $"Mode: {session.ModeName}\n\n" +
+            MeetingTypeLine(options) + "\n" +
             "Summary:\n" + text;
 
         LlmResponse response = await CompleteAsync(options, AssistModelTier.Fast, systemPrompt, userPrompt, [], cancellationToken);

@@ -40,7 +40,7 @@ public partial class MainViewModel
                 try
                 {
                     AssistResult result = await _conversationAssistService.BuildSessionTitleAsync(
-                        session, clean, TopicNameOf(session), BuildAssistOptions());
+                        session, clean, TopicNameOf(session), BuildAssistOptions(session: session));
                     RecordAssistUsage(session, L["ActionSessionTitle"], result);
                     core = result.Text;
                 }

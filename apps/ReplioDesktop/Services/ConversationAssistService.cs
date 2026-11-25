@@ -44,14 +44,12 @@ public partial class ConversationAssistService
         string transcriptContext = BuildTranscriptContext(session, userPrompt, 26);
         string webContext = await BuildWebContextAsync(userPrompt, cancellationToken);
         string visualContext = BuildVisualContext(session, settings, out List<AssistImageInput> images);
-        string systemPrompt = ResolveModeSystemPrompt(
-            session,
-            smartModeEnabled,
-            settings,
+        string systemPrompt = HintSystemPrompt(
+            options,
             "You are a meeting copilot assistant. Answer the user's question using session context first, then web context if relevant. Think carefully and return only the final answer.");
         string fullPrompt =
             $"Session title: {session.Title}\n" +
-            $"Session mode: {session.ModeName}\n" +
+            MeetingTypeLine(options) +
             $"User request: {userPrompt}\n" +
             $"Transcript context:\n{transcriptContext}\n\n" +
             TopicHintContext.PromptBlock(options.TopicContext) +
@@ -75,10 +73,8 @@ public partial class ConversationAssistService
 
         string transcriptContext = BuildTranscriptContext(session, null, 20);
         string visualContext = BuildVisualContext(session, settings, out List<AssistImageInput> images);
-        string systemPrompt = ResolveModeSystemPrompt(
-            session,
-            smartModeEnabled,
-            settings,
+        string systemPrompt = HintSystemPrompt(
+            options,
             "You are a live meeting copilot. Suggest what the user should say right now.");
         string fullPrompt =
             $"Session title: {session.Title}\n" +
@@ -106,10 +102,8 @@ public partial class ConversationAssistService
         string transcriptContext = BuildTranscriptContext(session, null, 20);
         string webContext = await BuildWebContextAsync(session.Title, cancellationToken);
         string visualContext = BuildVisualContext(session, settings, out List<AssistImageInput> images);
-        string systemPrompt = ResolveModeSystemPrompt(
-            session,
-            smartModeEnabled,
-            settings,
+        string systemPrompt = HintSystemPrompt(
+            options,
             "You are a meeting copilot. Generate one high-value next clarifying question based on conversation context.");
         string fullPrompt =
             $"Session title: {session.Title}\n" +
@@ -135,10 +129,8 @@ public partial class ConversationAssistService
 
         string transcriptContext = BuildTranscriptContext(session, userPrompt, 18);
         string visualContext = BuildVisualContext(session, settings, out List<AssistImageInput> images);
-        string systemPrompt = ResolveModeSystemPrompt(
-            session,
-            smartModeEnabled,
-            settings,
+        string systemPrompt = HintSystemPrompt(
+            options,
             "You are a meeting copilot. Generate only clarifying follow-up questions grounded in the latest transcript context.");
         string fullPrompt =
             $"Session title: {session.Title}\n" +
@@ -162,10 +154,8 @@ public partial class ConversationAssistService
 
         string transcriptContext = BuildTranscriptContext(session, null, 24);
         string visualContext = BuildVisualContext(session, settings, out List<AssistImageInput> images);
-        string systemPrompt = ResolveModeSystemPrompt(
-            session,
-            smartModeEnabled,
-            settings,
+        string systemPrompt = HintSystemPrompt(
+            options,
             "You are a meeting copilot. Produce a compact, high-fidelity recap of the latest discussion.");
         string fullPrompt =
             $"Session title: {session.Title}\n" +
@@ -188,10 +178,8 @@ public partial class ConversationAssistService
 
         string transcriptContext = BuildSummaryTranscriptContext(session);
         string visualContext = BuildVisualContext(session, settings, out List<AssistImageInput> images);
-        string systemPrompt = ResolveModeSystemPrompt(
-            session,
-            smartModeEnabled,
-            settings,
+        string systemPrompt = ReportSystemPrompt(
+            options,
             "You are an AI tasked with creating a concise, structured summary of a meeting based on its raw transcript. " +
             "Use Russian language. Be factual, neutral, terse. Do not add filler phrases, opinions, or extra commentary. " +
             "Preserve terminology and proper nouns exactly as in transcript. Output only the formatted summary.");
@@ -219,6 +207,7 @@ public partial class ConversationAssistService
             SummaryParticipantsHeading + "\n" +
             "- <Name>: <main тезисы этого участника>\n" +
             "- ...\n\n" +
+            SummaryFormatBlock(options) +
             "Requirements:\n" +
             "- Write in Russian.\n" +
             "- Use a neutral, factual tone; no personal opinions.\n" +
@@ -254,10 +243,8 @@ public partial class ConversationAssistService
             ? BuildTranscriptContext(session)
             : SessionScreenshots.StripLinks(session.SummaryText);
         string visualContext = BuildVisualContext(session, settings, out List<AssistImageInput> images);
-        string systemPrompt = ResolveModeSystemPrompt(
-            session,
-            smartModeEnabled,
-            settings,
+        string systemPrompt = ReportSystemPrompt(
+            options,
             "You are a meeting copilot. Draft a polished follow-up email with clear structure, action owners, and deadlines.");
         string fullPrompt =
             $"Session title: {session.Title}\n" +
@@ -308,42 +295,42 @@ public partial class ConversationAssistService
             cancellationToken);
     }
 
-    private static string ResolveModeSystemPrompt(
-        SessionSummary session,
-        bool smartModeEnabled,
-        AppSettings settings,
-        string fallbackPrompt)
+    /// <summary>
+    /// Live hints: the base prompt, the meeting type and the topic's «Как помогать на встречах» (MeetingStyle.cs).
+    /// </summary>
+    private static string HintSystemPrompt(AssistOptions options, string basePrompt)
     {
-        string modePrompt = session.ModeRealtimePrompt;
-        string modeNotesTemplate = session.ModeNotesTemplate;
-        if (string.IsNullOrWhiteSpace(modePrompt))
+        string prompt = basePrompt + MeetingTypeSentence(options);
+        if (!string.IsNullOrWhiteSpace(options.MeetingGuidance))
         {
-            modePrompt = string.Equals(session.ModeName, AppSettings.DefaultModeName, StringComparison.OrdinalIgnoreCase)
-                ? settings.DefaultRealtimePrompt
-                : settings.GeneralRealtimePrompt;
+            prompt += "\n\nHow the user wants you to help in this kind of meeting (follow it; the output rules of the request still apply):\n" +
+                      options.MeetingGuidance.Trim();
         }
 
-        if (string.IsNullOrWhiteSpace(modeNotesTemplate))
-        {
-            modeNotesTemplate = string.Equals(session.ModeName, AppSettings.DefaultModeName, StringComparison.OrdinalIgnoreCase)
-                ? settings.DefaultNotesTemplate
-                : settings.GeneralNotesTemplate;
-        }
-
-        string modeGuidance = string.IsNullOrWhiteSpace(modePrompt)
-            ? fallbackPrompt
-            : modePrompt.Trim();
-        if (!string.IsNullOrWhiteSpace(modeNotesTemplate))
-        {
-            modeGuidance += "\nNotes template preference: " + modeNotesTemplate.Trim();
-        }
-        if (!smartModeEnabled)
-        {
-            return modeGuidance;
-        }
-
-        return modeGuidance + " Keep output concise and grounded in the latest evidence.";
+        return options.SmartModeEnabled ? prompt + "\nKeep output concise and grounded in the latest evidence." : prompt;
     }
+
+    /// <summary>Summary and email: the base prompt and the meeting type; the summary format goes into the request.</summary>
+    private static string ReportSystemPrompt(AssistOptions options, string basePrompt)
+    {
+        string prompt = basePrompt + MeetingTypeSentence(options);
+        return options.SmartModeEnabled ? prompt + "\nKeep output concise and grounded in the latest evidence." : prompt;
+    }
+
+    private static string MeetingTypeSentence(AssistOptions options) =>
+        string.IsNullOrWhiteSpace(options.MeetingType) ? string.Empty : $"\nMeeting type: {options.MeetingType.Trim()}.";
+
+    private static string MeetingTypeLine(AssistOptions options) =>
+        string.IsNullOrWhiteSpace(options.MeetingType) ? string.Empty : $"Meeting type: {options.MeetingType.Trim()}\n";
+
+    /// <summary>The topic's «Формат итогов»: extra sections after the usual ones.</summary>
+    private static string SummaryFormatBlock(AssistOptions options) =>
+        string.IsNullOrWhiteSpace(options.SummaryFormat)
+            ? string.Empty
+            : "5. After these sections add the sections the user wants for this kind of meeting, described below. " +
+              "Make each section a \"## \" heading in Russian, fill it only from the transcript, and write \"*Нет данных*\" " +
+              "under a section the meeting said nothing about:\n" +
+              options.SummaryFormat.Trim() + "\n\n";
 
     private static string BuildVisualContext(SessionSummary session, AppSettings settings, out List<AssistImageInput> images)
     {
@@ -776,6 +763,12 @@ public sealed class AssistOptions
     public required AppSettings Settings { get; init; }
     /// <summary>Overview and earlier summaries of the session's topic for the live hints; empty without a topic.</summary>
     public string TopicContext { get; init; } = string.Empty;
+    /// <summary>«Продажа», «Собеседование»…; empty for an ordinary meeting or the user's own texts (MeetingStyle.cs).</summary>
+    public string MeetingType { get; init; } = string.Empty;
+    /// <summary>«Как помогать на встречах» of the session's topic, or of meetings without a topic.</summary>
+    public string MeetingGuidance { get; init; } = string.Empty;
+    /// <summary>«Формат итогов»: sections the summary adds.</summary>
+    public string SummaryFormat { get; init; } = string.Empty;
 }
 
 public sealed class AssistResult

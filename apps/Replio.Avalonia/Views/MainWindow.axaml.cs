@@ -181,8 +181,6 @@ public partial class MainWindow : Window
         SessionTitleEditTextBox.LostFocus += SessionTitleEditTextBox_OnLostFocus;
         SessionAskTextBox.PointerEntered += (_, _) => ClearSessionAskPlaceholder();
         SessionAskTextBox.GotFocus += (_, _) => ClearSessionAskPlaceholder();
-        ModeRealtimePromptTextBox.GotFocus += ModePromptTextBox_OnGotFocus;
-        ModeNotesTemplateTextBox.GotFocus += ModePromptTextBox_OnGotFocus;
     }
 
     /// <summary>Replio was started again while running: show this window instead.</summary>
@@ -616,20 +614,6 @@ public partial class MainWindow : Window
         if (string.Equals(current, placeholder, StringComparison.OrdinalIgnoreCase))
         {
             _viewModel.OverlayPrompt = string.Empty;
-        }
-    }
-
-    private void ModePromptTextBox_OnGotFocus(object? sender, GotFocusEventArgs e)
-    {
-        if (sender is not TextBox textBox)
-        {
-            return;
-        }
-
-        string current = textBox.Text?.Trim() ?? string.Empty;
-        if (current.StartsWith("Пример:", StringComparison.OrdinalIgnoreCase))
-        {
-            textBox.Clear();
         }
     }
 

@@ -122,6 +122,9 @@ public class SessionSummary : ObservableObject
     public DateTime? EndedAt { get; set; }
     public SessionStatus Status { get; set; } = SessionStatus.Active;
     public string SummaryText { get; set; } = string.Empty;
+    /// <summary>When the summary was last written; older ones count as made at the end of the meeting.</summary>
+    public DateTime? SummaryUpdatedAt { get; set; }
+    /// <summary>Meeting type it was recorded with (MeetingStyle.cs); older sessions have «General»/«Default» here.</summary>
     public string ModeName { get; set; } = AppSettings.GeneralModeName;
     public string ModeRealtimePrompt { get; set; } = string.Empty;
     public string ModeNotesTemplate { get; set; } = string.Empty;
@@ -212,6 +215,17 @@ public class SessionTopic
     public DateTime? GraphUpdatedAt { get; set; }
     /// <summary>Fingerprint of sessions and sources the graph was built from.</summary>
     public string GraphStamp { get; set; } = string.Empty;
+    /// <summary>
+    /// «Как помогать»: a MeetingPresets id; empty or «inherit» = as for meetings without a topic (Settings).
+    /// </summary>
+    public string MeetingPreset { get; set; } = string.Empty;
+    /// <summary>Guidance for the live hints in this topic's meetings.</summary>
+    public string MeetingGuidance { get; set; } = string.Empty;
+    /// <summary>Sections the summary adds after its usual ones.</summary>
+    public string SummaryFormat { get; set; } = string.Empty;
+    public DateTime? MeetingStyleUpdatedAt { get; set; }
+    /// <summary>When the summary format in effect for the topic last changed: older meeting summaries are out of date.</summary>
+    public DateTime? SummaryFormatUpdatedAt { get; set; }
 }
 
 public class TopicQuestionEntry

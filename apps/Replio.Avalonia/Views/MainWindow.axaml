@@ -212,12 +212,6 @@
         <Style Selector="TabControl#SessionTabs > TabItem:pointerover /template/ Border#TabBorder">
             <Setter Property="Opacity" Value="0.93" />
         </Style>
-        <Style Selector="ListBox#ModesList ListBoxItem TextBlock.modeCheck">
-            <Setter Property="IsVisible" Value="False" />
-        </Style>
-        <Style Selector="ListBox#ModesList ListBoxItem:selected TextBlock.modeCheck">
-            <Setter Property="IsVisible" Value="True" />
-        </Style>
         <Style Selector="ProgressBar">
             <Setter Property="Foreground" Value="{DynamicResource EchoAccentBrush}" />
             <Setter Property="Background" Value="{DynamicResource EchoSurfaceAltBrush}" />
@@ -300,12 +294,6 @@
                                   Data="M11.5,2 A7,7 0 1 0 16,12.5 A5.6,5.6 0 1 1 11.5,2 Z" />
                         </Grid>
                     </Button>
-                    <Button Width="180"
-                            Height="34"
-                            Margin="0,0,8,0"
-                            Command="{Binding OpenModesCommand}"
-                            ToolTip.Tip="{Binding L[TipModes]}"
-                            Content="{Binding ModesButtonText}" />
                     <Button Height="34"
                             Padding="14,0"
                             Margin="0,0,8,0"
@@ -605,7 +593,6 @@
                             <DockPanel LastChildFill="False">
                             <!-- One «Актуализировать тему» for the whole topic: materials, summary and graph. -->
                             <Button DockPanel.Dock="Right"
-                                    Classes="accent"
                                     Height="34"
                                     Margin="12,0,0,6"
                                     Padding="16,0"
@@ -620,7 +607,7 @@
                                              Height="7"
                                              Margin="8,0,0,0"
                                              VerticalAlignment="Center"
-                                             Fill="{DynamicResource EchoBgBrush}"
+                                             Fill="{DynamicResource EchoAccentBrush}"
                                              IsVisible="{Binding IsTopicOutdated}" />
                                 </StackPanel>
                             </Button>
@@ -670,6 +657,9 @@
                                                  Fill="{DynamicResource EchoAccentBrush}"
                                                  IsVisible="{Binding IsGraphStale}" />
                                     </StackPanel>
+                                </RadioButton>
+                                <RadioButton GroupName="TopicTab" Classes="topicTab" IsChecked="{Binding IsTopicTabMeetings, Mode=TwoWay}" ToolTip.Tip="{Binding L[TipTopicTabMeetings]}">
+                                    <TextBlock Text="{Binding L[TopicTabMeetings]}" />
                                 </RadioButton>
                             </StackPanel>
                             </DockPanel>
@@ -1335,6 +1325,48 @@
                             </ListBox>
                         </Grid>
 
+                        <!-- «Как помогать»: the topic's meeting type, hint guidance and summary format (MainViewModel.MeetingStyle.cs). -->
+                        <Border Grid.Row="2"
+                                Margin="0,16,0,0"
+                                Padding="24,16,24,16"
+                                CornerRadius="16"
+                                Background="{DynamicResource EchoSurfaceBrush}"
+                                BorderBrush="{DynamicResource EchoBorderBrush}"
+                                BorderThickness="1"
+                                IsVisible="{Binding ShowMeetingsPanel}">
+                            <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
+                                <StackPanel MaxWidth="820" HorizontalAlignment="Left" DataContext="{Binding TopicMeetingStyle}">
+                                    <TextBlock FontSize="18" FontWeight="ExtraBold" Foreground="{DynamicResource EchoTextBrush}"
+                                               Text="{Binding $parent[Window].DataContext.L[MeetingStyleTitle]}" />
+                                    <TextBlock Margin="0,4,0,0" FontSize="13" TextWrapping="Wrap" Foreground="{DynamicResource EchoMutedBrush}"
+                                               Text="{Binding $parent[Window].DataContext.L[MeetingStyleIntro]}" />
+                                    <Grid Margin="0,14,0,0" ColumnDefinitions="200,*">
+                                        <TextBlock VerticalAlignment="Center" Foreground="{DynamicResource EchoMutedBrush}"
+                                                   Text="{Binding $parent[Window].DataContext.L[MeetingStylePresetLabel]}" />
+                                        <ComboBox Grid.Column="1" MinWidth="260" MaxWidth="360" HorizontalAlignment="Left"
+                                                  ItemsSource="{Binding Presets}" DisplayMemberBinding="{Binding Name}"
+                                                  SelectedItem="{Binding SelectedPreset, Mode=TwoWay}" />
+                                    </Grid>
+                                    <TextBlock Margin="0,12,0,0" TextWrapping="Wrap" FontSize="13" Foreground="{DynamicResource EchoMutedBrush}"
+                                               Text="{Binding InheritedText}" IsVisible="{Binding IsInherited}" />
+                                    <StackPanel IsVisible="{Binding HasOwnTexts}">
+                                        <TextBlock Margin="0,16,0,0" FontWeight="SemiBold" Foreground="{DynamicResource EchoTextBrush}"
+                                                   Text="{Binding $parent[Window].DataContext.L[MeetingGuidanceLabel]}" />
+                                        <TextBlock Margin="0,2,0,0" FontSize="13" TextWrapping="Wrap" Foreground="{DynamicResource EchoMutedBrush}"
+                                                   Text="{Binding $parent[Window].DataContext.L[MeetingGuidanceHint]}" />
+                                        <TextBox Margin="0,6,0,0" MinHeight="96" AcceptsReturn="True" TextWrapping="Wrap"
+                                                 Text="{Binding Guidance, Mode=TwoWay}" />
+                                        <TextBlock Margin="0,16,0,0" FontWeight="SemiBold" Foreground="{DynamicResource EchoTextBrush}"
+                                                   Text="{Binding $parent[Window].DataContext.L[SummaryFormatLabel]}" />
+                                        <TextBlock Margin="0,2,0,0" FontSize="13" TextWrapping="Wrap" Foreground="{DynamicResource EchoMutedBrush}"
+                                                   Text="{Binding $parent[Window].DataContext.L[SummaryFormatHint]}" />
+                                        <TextBox Margin="0,6,0,0" MinHeight="96" AcceptsReturn="True" TextWrapping="Wrap"
+                                                 Text="{Binding SummaryFormat, Mode=TwoWay}" />
+                                    </StackPanel>
+                                </StackPanel>
+                            </ScrollViewer>
+                        </Border>
+
                         <!-- «Граф»: entities and relations of the topic, like the Obsidian graph. -->
                         <Grid Grid.Row="2" Margin="0,16,0,0" RowDefinitions="Auto,*" IsVisible="{Binding ShowGraphPanel}">
                             <Grid ColumnDefinitions="*,Auto,Auto">
@@ -1512,7 +1544,18 @@
                                    Foreground="{DynamicResource EchoAccentTextBrush}"
                                    Text="{Binding ActionFeedbackText}" />
                         <Button Margin="8,0,0,0" Content="{Binding L[FollowUpEmail]}" MinWidth="136" Padding="12,0" Height="34" Command="{Binding FollowUpEmailCommand}" ToolTip.Tip="{Binding L[TipFollowUpEmail]}" />
-                        <Button Margin="8,0,0,0" Content="{Binding L[Regenerate]}" MinWidth="118" Padding="12,0" Height="34" Command="{Binding RegenerateSummaryCommand}" ToolTip.Tip="{Binding L[TipRegenerate]}" />
+                        <Button Margin="8,0,0,0" Content="{Binding L[Regenerate]}" MinWidth="118" Padding="12,0" Height="34" Command="{Binding RegenerateSummaryCommand}" ToolTip.Tip="{Binding L[TipRegenerate]}"
+                                IsVisible="{Binding ShowRegenerateSummary}" />
+                        <!-- A meeting of a topic is updated with its topic (MainViewModel.TopicActualize.cs). -->
+                        <Button Margin="8,0,0,0" Padding="12,0" Height="34" Command="{Binding ActualizeSessionTopicCommand}" ToolTip.Tip="{Binding L[TipSessionTopicActualize]}"
+                                IsVisible="{Binding IsSelectedSessionInTopic}">
+                            <StackPanel Orientation="Horizontal">
+                                <controls:EchoThinkingDots Margin="0,0,8,0" VerticalAlignment="Center" IsVisible="{Binding IsTopicActualizing}" />
+                                <TextBlock VerticalAlignment="Center" Text="{Binding ActualizeTopicButtonText}" />
+                                <Ellipse Width="7" Height="7" Margin="8,0,0,0" VerticalAlignment="Center" Fill="{DynamicResource EchoAccentBrush}"
+                                         IsVisible="{Binding IsSelectedSessionTopicOutdated}" />
+                            </StackPanel>
+                        </Button>
                     </StackPanel>
                 </Grid>
                 <TabControl x:Name="SessionTabs"
@@ -1789,133 +1832,6 @@
                 </Grid>
             </Grid>
 
-            <Grid x:Name="ModesPage"
-                  Margin="14"
-                  ColumnDefinitions="250,16,*"
-                  IsVisible="{Binding SelectedMainPage, Converter={x:Static controls:EqualsConverter.Instance}, ConverterParameter=Modes}">
-                <Border Grid.Column="0"
-                        Background="{DynamicResource EchoSurfaceBrush}"
-                        BorderBrush="{Binding BorderBrush}"
-                        BorderThickness="1"
-                        CornerRadius="12"
-                        Padding="10">
-                    <StackPanel>
-                        <Button Height="34"
-                                HorizontalAlignment="Stretch"
-                                Command="{Binding NewModeCommand}"
-                                Content="+ Новый режим" />
-                        <ListBox x:Name="ModesList"
-                                 Margin="0,12,0,0"
-                                 BorderThickness="0"
-                                 Background="Transparent"
-                                 ItemsSource="{Binding ModeOptions}"
-                                 SelectedItem="{Binding ModeEditorName, Mode=TwoWay}">
-                            <ListBox.ItemTemplate>
-                                <DataTemplate>
-                                    <Grid Margin="4,6" ColumnDefinitions="*,Auto">
-                                        <TextBlock Foreground="{Binding $parent[Window].DataContext.PrimaryTextBrush}"
-                                                   FontSize="16"
-                                                   Text="{Binding}" />
-                                        <TextBlock Grid.Column="1"
-                                                   Classes="modeCheck"
-                                                   Margin="8,0,0,0"
-                                                   FontSize="18"
-                                                   Foreground="{DynamicResource EchoAccentTextBrush}"
-                                                   Text="✓" />
-                                    </Grid>
-                                </DataTemplate>
-                            </ListBox.ItemTemplate>
-                        </ListBox>
-                    </StackPanel>
-                </Border>
-                <Border Grid.Column="2"
-                        Background="{DynamicResource EchoSurfaceBrush}"
-                        BorderBrush="{Binding BorderBrush}"
-                        BorderThickness="1"
-                        CornerRadius="12"
-                        Padding="18">
-                    <Grid RowDefinitions="Auto,Auto,Auto,Auto,Auto,Auto">
-                        <Grid ColumnDefinitions="*,Auto,Auto">
-                            <TextBlock FontSize="32"
-                                       FontWeight="ExtraBold"
-                                       Foreground="{Binding PrimaryTextBrush}"
-                                       Text="{Binding ModeEditorTitle}" />
-                            <Button Grid.Column="1"
-                                    Height="36"
-                                    Margin="0,6,8,0"
-                                    Padding="14,0"
-                                    Command="{Binding SetModeActiveCommand}"
-                                    Content="{Binding ModeActionButtonText}" />
-                            <Button Grid.Column="2"
-                                    Width="36"
-                                    Height="36"
-                                    Margin="0,6,0,0"
-                                    Padding="0"
-                                    HorizontalContentAlignment="Center"
-                                    Content="..." />
-                        </Grid>
-                        <TextBlock Grid.Row="1"
-                                   Margin="0,14,0,0"
-                                   Foreground="{Binding PrimaryTextBrush}"
-                                   FontSize="18"
-                                   FontWeight="SemiBold"
-                                   Text="Реальное время (prompt)" />
-                        <TextBox x:Name="ModeRealtimePromptTextBox"
-                                 Grid.Row="2"
-                                 Classes="modePrompt"
-                                 Margin="0,8,0,0"
-                                 Height="210"
-                                 Padding="12,8"
-                                 AcceptsReturn="True"
-                                 TextWrapping="Wrap"
-                                 VerticalContentAlignment="Top"
-                                 ScrollViewer.VerticalScrollBarVisibility="Auto"
-                                 Text="{Binding ModeEditorRealtimePrompt, Mode=TwoWay}" />
-                        <TextBlock Grid.Row="3"
-                                   Margin="0,14,0,0"
-                                   Foreground="{Binding PrimaryTextBrush}"
-                                   FontSize="18"
-                                   FontWeight="SemiBold"
-                                   Text="Файлы контекста" />
-                        <Border Grid.Row="4"
-                                Margin="0,8,0,0"
-                                Padding="16"
-                                CornerRadius="12"
-                                BorderBrush="{DynamicResource EchoBorderBrush}"
-                                BorderThickness="1"
-                                Background="{DynamicResource EchoBgBrush}">
-                            <StackPanel>
-                                <TextBlock Foreground="{Binding SecondaryTextBrush}"
-                                           Text="{Binding ModeEditorReferenceFile}" />
-                                <Button Width="170"
-                                        Margin="0,12,0,0"
-                                        HorizontalAlignment="Left"
-                                        Command="{Binding UploadModeReferenceFileCommand}"
-                                        Content="Загрузить файл" />
-                            </StackPanel>
-                        </Border>
-                        <TextBlock Grid.Row="5"
-                                   Margin="0,14,0,0"
-                                   VerticalAlignment="Top"
-                                   Foreground="{Binding PrimaryTextBrush}"
-                                   FontSize="18"
-                                   FontWeight="SemiBold"
-                                   Text="Шаблон заметок" />
-                        <TextBox x:Name="ModeNotesTemplateTextBox"
-                                 Grid.Row="5"
-                                 Classes="modePrompt"
-                                 Margin="0,52,0,0"
-                                 Height="120"
-                                 Padding="12,8"
-                                 AcceptsReturn="True"
-                                 TextWrapping="Wrap"
-                                 VerticalContentAlignment="Top"
-                                 ScrollViewer.VerticalScrollBarVisibility="Auto"
-                                 Text="{Binding ModeEditorNotesTemplate, Mode=TwoWay}" />
-                    </Grid>
-                </Border>
-            </Grid>
-
             <ScrollViewer x:Name="HelpPage"
                           VerticalScrollBarVisibility="Auto"
                           HorizontalScrollBarVisibility="Disabled"
@@ -2050,6 +1966,30 @@
                                   ToolTip.Tip="{Binding L[ShowInScreenShareHint]}"
                                   Content="{Binding L[ShowInScreenShare]}" />
                         <TextBlock Margin="0,4,0,0" Foreground="{Binding SecondaryTextBrush}" TextWrapping="Wrap" Text="{Binding L[ShowInScreenShareHint]}" />
+                        <!-- «Встречи без темы»: how Replio helps when a meeting has no topic (topics have their own «Как помогать»). -->
+                        <StackPanel DataContext="{Binding DefaultMeetingStyle}">
+                            <TextBlock Margin="0,16,0,0" Foreground="{Binding $parent[Window].DataContext.PrimaryTextBrush}" FontWeight="SemiBold"
+                                       Text="{Binding $parent[Window].DataContext.L[SettingsSectionMeetings]}" />
+                            <TextBlock Margin="0,6,0,0" Foreground="{Binding $parent[Window].DataContext.SecondaryTextBrush}" TextWrapping="Wrap"
+                                       Text="{Binding $parent[Window].DataContext.L[SettingsMeetingsHint]}" />
+                            <Grid Margin="0,10,0,0" ColumnDefinitions="230,*">
+                                <TextBlock VerticalAlignment="Center" Foreground="{Binding $parent[Window].DataContext.SecondaryTextBrush}"
+                                           Text="{Binding $parent[Window].DataContext.L[MeetingStylePresetLabel]}" />
+                                <ComboBox Grid.Column="1" MinWidth="260" MaxWidth="360" HorizontalAlignment="Left"
+                                          ItemsSource="{Binding Presets}" DisplayMemberBinding="{Binding Name}"
+                                          SelectedItem="{Binding SelectedPreset, Mode=TwoWay}" />
+                            </Grid>
+                            <TextBlock Margin="0,10,0,0" Foreground="{Binding $parent[Window].DataContext.SecondaryTextBrush}"
+                                       Text="{Binding $parent[Window].DataContext.L[MeetingGuidanceLabel]}" />
+                            <TextBox Margin="0,6,0,0" MinHeight="80" AcceptsReturn="True" TextWrapping="Wrap"
+                                     ToolTip.Tip="{Binding $parent[Window].DataContext.L[MeetingGuidanceHint]}"
+                                     Text="{Binding Guidance, Mode=TwoWay}" />
+                            <TextBlock Margin="0,10,0,0" Foreground="{Binding $parent[Window].DataContext.SecondaryTextBrush}"
+                                       Text="{Binding $parent[Window].DataContext.L[SummaryFormatLabel]}" />
+                            <TextBox Margin="0,6,0,0" MinHeight="80" AcceptsReturn="True" TextWrapping="Wrap"
+                                     ToolTip.Tip="{Binding $parent[Window].DataContext.L[SummaryFormatHint]}"
+                                     Text="{Binding SummaryFormat, Mode=TwoWay}" />
+                        </StackPanel>
                         <TextBlock Margin="0,16,0,0" Foreground="{Binding PrimaryTextBrush}" FontWeight="SemiBold" Text="{Binding L[SettingsSectionAi]}" />
                         <CheckBox Margin="0,8,0,0"
                                   IsChecked="{Binding SmartModeEnabled, Mode=TwoWay}"

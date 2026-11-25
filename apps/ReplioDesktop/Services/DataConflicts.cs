@@ -107,6 +107,15 @@ public static class DataConflicts
                 same.LastAnswerAt = other.LastAnswerAt;
             }
 
+            if ((other.MeetingStyleUpdatedAt ?? DateTime.MinValue) > (same.MeetingStyleUpdatedAt ?? DateTime.MinValue))
+            {
+                same.MeetingPreset = other.MeetingPreset;
+                same.MeetingGuidance = other.MeetingGuidance;
+                same.SummaryFormat = other.SummaryFormat;
+                same.MeetingStyleUpdatedAt = other.MeetingStyleUpdatedAt;
+                same.SummaryFormatUpdatedAt = other.SummaryFormatUpdatedAt;
+            }
+
             if (string.IsNullOrWhiteSpace(same.Name))
             {
                 same.Name = other.Name;

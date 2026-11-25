@@ -406,6 +406,8 @@ public partial class MainViewModel
         });
         BuildTopicGraphCommand = new RelayCommand(async () => await BuildTopicGraphAsync(), () => SelectedTopic != null && !IsGraphBusy && TopicHasMaterial(SelectedTopic));
         ActualizeTopicCommand = new RelayCommand(async () => await ActualizeTopicAsync(), () => CanActualizeTopic);
+        ActualizeSessionTopicCommand = new RelayCommand(async () => await ActualizeSessionTopicAsync(),
+            () => !IsTopicActualizing && !IsAssistBusy && SessionTopicOf(SelectedSession) != null && SelectedSession?.Status == SessionStatus.Completed);
     }
 
     /// <summary>1.0.1 kept only the last answer: carry it over into the dialog history once the topics are loaded.</summary>
@@ -440,7 +442,9 @@ public partial class MainViewModel
         OnPropertyChanged(nameof(IsTopicTabKnowledge));
         OnPropertyChanged(nameof(IsTopicTabQuestions));
         OnPropertyChanged(nameof(IsTopicTabGraph));
+        OnPropertyChanged(nameof(IsTopicTabMeetings));
         OnPropertyChanged(nameof(ShowSessionsPanel));
+        OnPropertyChanged(nameof(ShowMeetingsPanel));
         OnPropertyChanged(nameof(ShowSummaryPanel));
         OnPropertyChanged(nameof(ShowKnowledgePanel));
         OnPropertyChanged(nameof(ShowQuestionsPanel));
@@ -458,6 +462,7 @@ public partial class MainViewModel
         if (_knowledgeItemsTopicId != SelectedTopic?.Id)
         {
             _knowledgeItemsTopicId = SelectedTopic?.Id;
+            LoadTopicMeetingStyle();
             RebuildKnowledgeItems();
             RebuildQuestionItems();
             LoadGraph();

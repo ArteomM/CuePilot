@@ -196,7 +196,11 @@ public sealed class SessionLifecycleService : IDisposable
 
     public void UpdateSummary(string sessionId, string summaryText)
     {
-        Mutate(sessionId, session => session.SummaryText = summaryText);
+        Mutate(sessionId, session =>
+        {
+            session.SummaryText = summaryText;
+            session.SummaryUpdatedAt = DateTime.Now;
+        });
     }
 
     public void UpdateFollowUpEmail(string sessionId, string emailText)
@@ -408,6 +412,7 @@ public sealed class SessionLifecycleService : IDisposable
         session.EndedAt = DateTime.Now;
         session.Status = SessionStatus.Completed;
         session.SummaryText = summaryText;
+        session.SummaryUpdatedAt = session.EndedAt;
         session.Usage.SessionDurationMinutes = Math.Max(0.1, (session.EndedAt.Value - session.StartedAt).TotalMinutes);
     }
 }

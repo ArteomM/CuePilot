@@ -700,20 +700,6 @@ public partial class MainWindow : Window
         }
     }
 
-    private void ModePromptTextBox_OnGotKeyboardFocus(object sender, KeyboardFocusChangedEventArgs e)
-    {
-        if (sender is not TextBox textBox)
-        {
-            return;
-        }
-
-        string current = textBox.Text?.Trim() ?? string.Empty;
-        if (current.StartsWith("Пример:", StringComparison.OrdinalIgnoreCase))
-        {
-            textBox.Clear();
-        }
-    }
-
     protected override void OnClosing(System.ComponentModel.CancelEventArgs e)
     {
         if (_allowRealClose)

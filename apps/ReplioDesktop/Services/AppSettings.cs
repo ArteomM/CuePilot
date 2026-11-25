@@ -65,6 +65,15 @@ public class AppSettings
     public string DefaultNotesTemplate { get; set; } = string.Empty;
     public string DefaultReferenceFile { get; set; } = string.Empty;
     public string SelectedModeName { get; set; } = GeneralModeName;
+    // The fields above belong to the former «Режимы»: kept so nothing the user wrote is lost, no longer used.
+    /// <summary>
+    /// «Встречи без темы» (Settings): a MeetingPresets id; null until the old modes are carried over at first start.
+    /// </summary>
+    public string? MeetingPreset { get; set; }
+    public string MeetingGuidance { get; set; } = string.Empty;
+    public string SummaryFormat { get; set; } = string.Empty;
+    /// <summary>When the format above last changed (summaries of meetings without an own topic format made before are out of date).</summary>
+    public DateTime? SummaryFormatUpdatedAt { get; set; }
     public bool VideoContextEnabled { get; set; } = true;
     public int VideoContextIntervalMs { get; set; } = 2000;
     public int VisualContextMaxFrames { get; set; } = 24;
