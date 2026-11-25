@@ -306,6 +306,12 @@
                             Command="{Binding OpenModesCommand}"
                             ToolTip.Tip="{Binding L[TipModes]}"
                             Content="{Binding ModesButtonText}" />
+                    <Button Height="34"
+                            Padding="14,0"
+                            Margin="0,0,8,0"
+                            Command="{Binding OpenHelpCommand}"
+                            ToolTip.Tip="{Binding L[TipHelp]}"
+                            Content="{Binding L[HelpButton]}" />
                     <Button Width="110"
                             Height="34"
                             Command="{Binding OpenSettingsCommand}"
@@ -1909,6 +1915,22 @@
                     </Grid>
                 </Border>
             </Grid>
+
+            <ScrollViewer x:Name="HelpPage"
+                          VerticalScrollBarVisibility="Auto"
+                          HorizontalScrollBarVisibility="Disabled"
+                          IsVisible="{Binding SelectedMainPage, Converter={x:Static controls:EqualsConverter.Instance}, ConverterParameter=Help}">
+                <StackPanel Margin="24" MaxWidth="900" HorizontalAlignment="Left">
+                    <StackPanel Orientation="Horizontal" Margin="0,0,0,12">
+                        <Button Height="34" Padding="14,0" Classes="accent"
+                                Command="{Binding CopyMcpCommandCommand}" Content="{Binding L[HelpCopyMcp]}" />
+                        <Button Height="34" Padding="14,0" Margin="8,0,0,0"
+                                Command="{Binding OpenAgentsGuideCommand}" Content="{Binding L[HelpOpenAgents]}" />
+                        <TextBlock Margin="12,0,0,0" VerticalAlignment="Center" Foreground="{Binding SecondaryTextBrush}" Text="{Binding HelpFeedback}" />
+                    </StackPanel>
+                    <controls:MarkdownView Markdown="{Binding HelpText}" MaxRenderChars="60000" />
+                </StackPanel>
+            </ScrollViewer>
 
             <ScrollViewer x:Name="SettingsPage"
                           VerticalScrollBarVisibility="Auto"

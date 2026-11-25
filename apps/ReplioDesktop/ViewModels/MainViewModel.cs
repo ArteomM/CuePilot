@@ -346,6 +346,7 @@ public partial class MainViewModel : ObservableObject
         InitializeModelCatalog();
         InitializeAccount();
         InitializeUpdates();
+        InitializeHelp();
         OpenAiAssistClient.ReplioRefused += ex => OnReplioRefusal(ex);
         InitializeLibrary();
         InitializeScreenshots();
@@ -2232,6 +2233,7 @@ public partial class MainViewModel : ObservableObject
             RefreshSelectedSessionScreenshots(SelectedSession);
             OnPropertyChanged(nameof(CurrentVersionText));
             OnPropertyChanged(nameof(SttKeySourceText));
+            OnPropertyChanged(nameof(HelpText));
             if (InstallUpdateCommand != null)
             {
                 OnUpdateChanged();

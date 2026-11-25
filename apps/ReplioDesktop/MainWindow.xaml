@@ -593,6 +593,12 @@
                             Command="{Binding OpenModesCommand}"
                             ToolTip="{Binding L[TipModes]}"
                             Content="{Binding ModesButtonText}" />
+                    <Button Height="34"
+                            Padding="14,0"
+                            Margin="0,0,8,0"
+                            Command="{Binding OpenHelpCommand}"
+                            ToolTip="{Binding L[TipHelp]}"
+                            Content="{Binding L[HelpButton]}" />
                     <Button Width="110"
                             Height="34"
                             Command="{Binding OpenSettingsCommand}"
@@ -2624,6 +2630,20 @@
                 </Grid>
             </TabItem>
 
+            <TabItem Tag="Help">
+                <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
+                    <StackPanel Margin="24" MaxWidth="900" HorizontalAlignment="Left">
+                        <StackPanel Orientation="Horizontal" Margin="0,0,0,12">
+                            <Button Height="34" Padding="14,0" Style="{StaticResource EchoAccentButtonStyle}"
+                                    Command="{Binding CopyMcpCommandCommand}" Content="{Binding L[HelpCopyMcp]}" />
+                            <Button Height="34" Padding="14,0" Margin="8,0,0,0"
+                                    Command="{Binding OpenAgentsGuideCommand}" Content="{Binding L[HelpOpenAgents]}" />
+                            <TextBlock Margin="12,0,0,0" VerticalAlignment="Center" Foreground="{Binding SecondaryTextBrush}" Text="{Binding HelpFeedback}" />
+                        </StackPanel>
+                        <controls:MarkdownView Markdown="{Binding HelpText}" MaxRenderChars="60000" />
+                    </StackPanel>
+                </ScrollViewer>
+            </TabItem>
             <TabItem Tag="Settings">
                 <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
                 <Grid Margin="24">
