@@ -7,13 +7,13 @@
     <TargetFramework Condition="'$(ReplioMac)' == 'true'">net8.0</TargetFramework>
     <Nullable>disable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
-    <Version>1.1.0</Version>
+    <Version>1.1.1</Version>
     <Company>ИП Макаров Артём Павлович</Company>
     <Copyright>© 2026 ИП Макаров Артём Павлович</Copyright>
     <Description>Replio — запись и распознавание речи</Description>
     <AssemblyTitle>Replio — запись и распознавание речи</AssemblyTitle>
-    <AssemblyVersion>1.1.0.0</AssemblyVersion>
-    <FileVersion>1.1.0.0</FileVersion>
+    <AssemblyVersion>1.1.1.0</AssemblyVersion>
+    <FileVersion>1.1.1.0</FileVersion>
     <Product>Replio</Product>
   </PropertyGroup>
 
