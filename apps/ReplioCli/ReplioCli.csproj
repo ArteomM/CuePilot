@@ -32,6 +32,7 @@
     <Compile Include="..\ReplioDesktop\Services\LegacyDataImport.cs" Link="Shared\LegacyDataImport.cs" />
     <Compile Include="..\ReplioDesktop\Services\SessionScreenshots.cs" Link="Shared\SessionScreenshots.cs" />
     <Compile Include="..\ReplioDesktop\Services\AgentGuide.cs" Link="Shared\AgentGuide.cs" />
+    <Compile Include="..\ReplioDesktop\Services\DataLocation.cs" Link="Shared\DataLocation.cs" />
   </ItemGroup>
 
 </Project>

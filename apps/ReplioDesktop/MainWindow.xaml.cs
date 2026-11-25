@@ -115,6 +115,7 @@ public partial class MainWindow : Window
         _viewModel.WindowModeRequested += ApplyWindowMode;
         _viewModel.HotkeysChanged += RegisterHotkeys;
         _viewModel.ExitForUpdateRequested += () => Dispatcher.BeginInvoke(new Action(ExitFromTray));
+        _viewModel.RestartRequested += () => Dispatcher.BeginInvoke(new Action(RestartApp));
         _viewModel.OverlayCaptureStateChanged += OnOverlayCaptureStateChanged;
         _viewModel.OverlaySuggestionChanged += text => Dispatcher.Invoke(() => _assistOverlayWindow.SetSuggestionPreview(text));
         _viewModel.OverlayQuestionAsked += text => Dispatcher.Invoke(() => _assistOverlayWindow.AddUserQuestion(text));
@@ -640,6 +641,25 @@ public partial class MainWindow : Window
         WindowState = WindowState.Normal;
         Show();
         Activate();
+    }
+
+    /// <summary>Starts a new copy (it waits for this one to close), then quits: used after the data folder changed.</summary>
+    private void RestartApp()
+    {
+        try
+        {
+            string? exe = Environment.ProcessPath;
+            if (!string.IsNullOrEmpty(exe))
+            {
+                System.Diagnostics.Process.Start(new System.Diagnostics.ProcessStartInfo(exe, "--restart") { UseShellExecute = false })?.Dispose();
+            }
+        }
+        catch (Exception)
+        {
+            // Without the new copy the user starts Replio again by hand; quitting still applies the change.
+        }
+
+        ExitFromTray();
     }
 
     private void ExitFromTray()

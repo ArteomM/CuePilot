@@ -757,4 +757,28 @@
   <data name="HelpCopyMcp" xml:space="preserve"><value>Copy the Claude Code command</value></data>
   <data name="HelpCopied" xml:space="preserve"><value>Command copied</value></data>
   <data name="HelpOpenAgents" xml:space="preserve"><value>Open the guide for agents</value></data>
+  <data name="DataFolderTitle" xml:space="preserve"><value>Data folder</value></data>
+  <data name="DataFolderHint" xml:space="preserve"><value>Meetings, topics, the knowledge base and screenshots. To have them on all your computers, pick a folder in Yandex Disk, OneDrive or iCloud Drive: the cloud syncs it. The data never reaches Replio servers. Settings and the key stay separate on each computer.</value></data>
+  <data name="DataFolderChoose" xml:space="preserve"><value>Choose folder…</value></data>
+  <data name="DataFolderReset" xml:space="preserve"><value>Back to default</value></data>
+  <data name="DataFolderOpen" xml:space="preserve"><value>Open folder</value></data>
+  <data name="DataFolderRestart" xml:space="preserve"><value>Restart Replio</value></data>
+  <data name="DataFolderPickTitle" xml:space="preserve"><value>Folder for Replio data (for example in your cloud drive)</value></data>
+  <data name="DataFolderCopying" xml:space="preserve"><value>Moving data: {0}%</value></data>
+  <data name="DataFolderMoved" xml:space="preserve"><value>Done: data is in «{0}», {1} file(s) copied. The old folder is untouched. Restart Replio to work with the new folder.</value></data>
+  <data name="DataFolderMovedWithVersions" xml:space="preserve"><value>Done: data is in «{0}», {1} file(s) copied. Meetings with two versions: {2}; choose one below after the restart. Restart Replio to work with the new folder.</value></data>
+  <data name="DataFolderFailed" xml:space="preserve"><value>Could not move the data: {0}</value></data>
+  <data name="DataFolderSame" xml:space="preserve"><value>Replio already keeps its data in this folder.</value></data>
+  <data name="DataFolderInvalid" xml:space="preserve"><value>This folder cannot be used: pick one outside the current data folder.</value></data>
+  <data name="DataFolderBlockedByRecording" xml:space="preserve"><value>The data folder can be changed after the recording.</value></data>
+  <data name="DataFolderUnavailable" xml:space="preserve"><value>The folder «{0}» is not available now (cloud not connected?), so Replio opened the default folder. Connect the cloud and restart Replio.</value></data>
+  <data name="DataConflictsTitle" xml:space="preserve"><value>Meetings with two versions</value></data>
+  <data name="DataConflictsHint" xml:space="preserve"><value>The cloud kept two versions of these meetings: they were changed on two computers at once. Choose which one to keep; the other goes to the conflicts folder.</value></data>
+  <data name="DataConflictCurrent" xml:space="preserve"><value>This one: {0}</value></data>
+  <data name="DataConflictOther" xml:space="preserve"><value>Other: {0}</value></data>
+  <data name="DataConflictKeep" xml:space="preserve"><value>Keep</value></data>
+  <data name="TipDataFolder" xml:space="preserve"><value>Changed · transcript lines · has a summary</value></data>
+  <data name="DataConflictVersion" xml:space="preserve"><value>changed {0}, lines: {1}, {2}</value></data>
+  <data name="DataConflictWithSummary" xml:space="preserve"><value>has a summary</value></data>
+  <data name="DataConflictNoSummary" xml:space="preserve"><value>no summary</value></data>
 </root>

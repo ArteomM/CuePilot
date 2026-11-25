@@ -347,6 +347,7 @@ public partial class MainViewModel : ObservableObject
         InitializeAccount();
         InitializeUpdates();
         InitializeHelp();
+        InitializeDataFolder();
         OpenAiAssistClient.ReplioRefused += ex => OnReplioRefusal(ex);
         InitializeLibrary();
         InitializeScreenshots();
@@ -507,6 +508,7 @@ public partial class MainViewModel : ObservableObject
             _startCaptureCommand.RaiseCanExecuteChanged();
             _stopCaptureCommand.RaiseCanExecuteChanged();
             OnCaptureStateChangedForUpdate();
+            OnCaptureStateChangedForDataFolder();
         }
     }
 

@@ -15,7 +15,7 @@ public class KnowledgeStore
 
     public KnowledgeStore()
     {
-        Root = System.IO.Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "Replio", "knowledge");
+        Root = System.IO.Path.Combine(DataLocation.Root, "knowledge");
         Directory.CreateDirectory(Root);
     }
 

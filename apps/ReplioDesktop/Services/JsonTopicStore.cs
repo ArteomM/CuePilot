@@ -5,7 +5,7 @@ using ReplioDesktop.Models;
 namespace ReplioDesktop.Services;
 
 /// <summary>
-/// Topics live in %AppData%\Replio\topics.json next to the sessions folder; sessions point to a topic by TopicId.
+/// Topics live in &lt;data folder&gt;\topics.json (see DataLocation) next to the sessions folder; sessions point to a topic by TopicId.
 /// </summary>
 public class JsonTopicStore
 {
@@ -15,13 +15,15 @@ public class JsonTopicStore
 
     public JsonTopicStore()
     {
-        string root = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "Replio");
+        string root = DataLocation.Root;
         Directory.CreateDirectory(root);
         _path = Path.Combine(root, "topics.json");
     }
 
     public List<SessionTopic> Load()
     {
+        // A cloud client leaves «topics (2).json»-style copies when two computers saved at once: fold them in.
+        DataConflicts.MergeTopicCopies(_path);
         if (!File.Exists(_path))
         {
             return [];

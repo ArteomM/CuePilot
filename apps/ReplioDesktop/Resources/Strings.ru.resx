@@ -757,4 +757,28 @@
   <data name="HelpCopyMcp" xml:space="preserve"><value>Скопировать команду для Claude Code</value></data>
   <data name="HelpCopied" xml:space="preserve"><value>Команда скопирована</value></data>
   <data name="HelpOpenAgents" xml:space="preserve"><value>Открыть инструкцию для агентов</value></data>
+  <data name="DataFolderTitle" xml:space="preserve"><value>Папка данных</value></data>
+  <data name="DataFolderHint" xml:space="preserve"><value>Встречи, темы, база знаний и снимки. Чтобы они были на всех ваших компьютерах, выберите папку в Яндекс Диске, OneDrive или iCloud Drive: облако само синхронизирует её. На серверы Replio данные не попадают. Настройки и ключ остаются на каждом компьютере свои.</value></data>
+  <data name="DataFolderChoose" xml:space="preserve"><value>Выбрать папку…</value></data>
+  <data name="DataFolderReset" xml:space="preserve"><value>Вернуть по умолчанию</value></data>
+  <data name="DataFolderOpen" xml:space="preserve"><value>Открыть папку</value></data>
+  <data name="DataFolderRestart" xml:space="preserve"><value>Перезапустить Replio</value></data>
+  <data name="DataFolderPickTitle" xml:space="preserve"><value>Папка для данных Replio (например, в Яндекс Диске)</value></data>
+  <data name="DataFolderCopying" xml:space="preserve"><value>Переношу данные: {0}%</value></data>
+  <data name="DataFolderMoved" xml:space="preserve"><value>Готово: данные в «{0}», скопировано файлов: {1}. Старая папка не тронута. Перезапустите Replio, чтобы работать с новой папкой.</value></data>
+  <data name="DataFolderMovedWithVersions" xml:space="preserve"><value>Готово: данные в «{0}», скопировано файлов: {1}. Встреч с разными версиями: {2}, выберите нужную ниже после перезапуска. Перезапустите Replio, чтобы работать с новой папкой.</value></data>
+  <data name="DataFolderFailed" xml:space="preserve"><value>Не удалось перенести данные: {0}</value></data>
+  <data name="DataFolderSame" xml:space="preserve"><value>Replio уже хранит данные в этой папке.</value></data>
+  <data name="DataFolderInvalid" xml:space="preserve"><value>Эта папка не подходит: выберите папку вне текущей папки данных.</value></data>
+  <data name="DataFolderBlockedByRecording" xml:space="preserve"><value>Папку данных можно сменить после записи.</value></data>
+  <data name="DataFolderUnavailable" xml:space="preserve"><value>Папка «{0}» сейчас недоступна (облако не подключено?), поэтому Replio открыл данные из папки по умолчанию. Подключите облако и перезапустите Replio.</value></data>
+  <data name="DataConflictsTitle" xml:space="preserve"><value>Встречи с двумя версиями</value></data>
+  <data name="DataConflictsHint" xml:space="preserve"><value>Облако сохранило две версии этих встреч: их меняли на двух компьютерах одновременно. Выберите, какую оставить; другая перенесётся в папку conflicts.</value></data>
+  <data name="DataConflictCurrent" xml:space="preserve"><value>Эта: {0}</value></data>
+  <data name="DataConflictOther" xml:space="preserve"><value>Другая: {0}</value></data>
+  <data name="DataConflictKeep" xml:space="preserve"><value>Оставить</value></data>
+  <data name="TipDataFolder" xml:space="preserve"><value>Изменена · строк транскрипта · есть ли итоги</value></data>
+  <data name="DataConflictVersion" xml:space="preserve"><value>изменена {0}, реплик: {1}, {2}</value></data>
+  <data name="DataConflictWithSummary" xml:space="preserve"><value>есть итоги</value></data>
+  <data name="DataConflictNoSummary" xml:space="preserve"><value>без итогов</value></data>
 </root>

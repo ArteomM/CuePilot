@@ -22,8 +22,7 @@ public class JsonSessionStore : ISessionStore
 
     public JsonSessionStore()
     {
-        string appData = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData);
-        _rootDirectory = Path.Combine(appData, "Replio");
+        _rootDirectory = DataLocation.Root;
         _sessionsDirectory = Path.Combine(_rootDirectory, "sessions");
         _legacyStorePath = Path.Combine(_rootDirectory, "sessions.json");
         Directory.CreateDirectory(_sessionsDirectory);
@@ -32,6 +31,7 @@ public class JsonSessionStore : ISessionStore
     public IReadOnlyList<SessionSummary> LoadSessions()
     {
         MigrateLegacyStore();
+        DataConflicts.TidySessionCopies(_sessionsDirectory);
 
         var sessions = new List<SessionSummary>();
         foreach (string path in Directory.EnumerateFiles(_sessionsDirectory, "*.json"))
@@ -42,6 +42,13 @@ public class JsonSessionStore : ISessionStore
                 SessionSummary? session = JsonSerializer.Deserialize<SessionSummary>(stream, JsonOptions);
                 if (session != null && !string.IsNullOrWhiteSpace(session.Id))
                 {
+                    if (DataConflicts.IsCopyName(path, session.Id))
+                    {
+                        // A cloud conflict copy waiting for the user's choice in Settings: the main file is shown.
+                        continue;
+                    }
+
+                    RebasePaths(session);
                     sessions.Add(session);
                 }
             }
@@ -80,6 +87,34 @@ public class JsonSessionStore : ISessionStore
     {
         string safeId = string.Concat(sessionId.Where(char.IsLetterOrDigit));
         return Path.Combine(_sessionsDirectory, safeId + ".json");
+    }
+
+    /// <summary>
+    /// Screenshot paths are stored as full paths. A session recorded on another computer (shared data folder) or
+    /// before the data folder moved points at that place; the files are here under this data folder.
+    /// </summary>
+    private static void RebasePaths(SessionSummary session)
+    {
+        foreach (var item in session.Transcript)
+        {
+            if (!string.IsNullOrEmpty(item.ScreenshotPath))
+            {
+                item.ScreenshotPath = DataLocation.Rebase(item.ScreenshotPath);
+            }
+        }
+
+        foreach (var frame in session.VisualFrames)
+        {
+            frame.FilePath = DataLocation.Rebase(frame.FilePath);
+            frame.FullImagePath = DataLocation.Rebase(frame.FullImagePath);
+        }
+
+        foreach (var shot in session.Screenshots)
+        {
+            shot.FilePath = DataLocation.Rebase(shot.FilePath);
+        }
+
+        session.SummaryText = DataLocation.RebaseText(session.SummaryText);
     }
 
     private void MigrateLegacyStore()

@@ -268,8 +268,21 @@ public sealed class Archive
                 // The app may be saving the same file: share it and never lock.
                 using var stream = new FileStream(path, FileMode.Open, FileAccess.Read, FileShare.ReadWrite | FileShare.Delete);
                 SessionSummary? session = JsonSerializer.Deserialize<SessionSummary>(stream, JsonOptions);
-                if (session != null && !string.IsNullOrWhiteSpace(session.Id))
+                // A cloud conflict copy («<id> (2).json») is the same meeting again: the app asks which to keep.
+                if (session != null && !string.IsNullOrWhiteSpace(session.Id) &&
+                    string.Equals(Path.GetFileNameWithoutExtension(path), string.Concat(session.Id.Where(char.IsLetterOrDigit)), StringComparison.OrdinalIgnoreCase))
                 {
+                    // Screenshots of a meeting recorded on another computer (shared data folder) are here.
+                    foreach (var shot in session.Screenshots)
+                    {
+                        shot.FilePath = DataLocation.Rebase(shot.FilePath);
+                    }
+
+                    foreach (var item in session.Transcript.Where(t => !string.IsNullOrEmpty(t.ScreenshotPath)))
+                    {
+                        item.ScreenshotPath = DataLocation.Rebase(item.ScreenshotPath);
+                    }
+
                     sessions.Add(session);
                 }
             }

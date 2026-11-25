@@ -36,6 +36,19 @@ public partial class App : Application
     {
         _instanceMutex = new Mutex(true, InstanceMutexName, out bool createdNew);
         _showEvent = new EventWaitHandle(false, EventResetMode.AutoReset, ShowEventName);
+        if (!createdNew && e.Args.Any(a => string.Equals(a, "--restart", StringComparison.OrdinalIgnoreCase)))
+        {
+            // «Перезапустить Replio» (new data folder): the old copy is closing, wait for it instead of showing it.
+            try
+            {
+                createdNew = _instanceMutex.WaitOne(TimeSpan.FromSeconds(20));
+            }
+            catch (AbandonedMutexException)
+            {
+                createdNew = true;
+            }
+        }
+
         if (!createdNew)
         {
             _showEvent.Set();

@@ -12,10 +12,8 @@ public static class AgentGuide
 {
     public const string FileName = "AGENTS.md";
 
-    public static string DataRoot =>
-        Environment.GetEnvironmentVariable("REPLIO_DATA") is { Length: > 0 } custom
-            ? custom
-            : Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "Replio");
+    /// <summary>The data folder (REPLIO_DATA, the folder chosen in Settings, or %AppData%\Replio).</summary>
+    public static string DataRoot => DataLocation.Root;
 
     public static string CliFileName => OperatingSystem.IsWindows() ? "replio.exe" : "replio";
 

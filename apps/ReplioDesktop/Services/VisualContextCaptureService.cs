@@ -32,8 +32,7 @@ public sealed class VisualContextCaptureService : IVisualContextCapture, IDispos
 
     public VisualContextCaptureService()
     {
-        string appData = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData);
-        _storageRoot = Path.Combine(appData, "Replio", "visual-context");
+        _storageRoot = Path.Combine(DataLocation.Root, "visual-context");
         Directory.CreateDirectory(_storageRoot);
     }
 

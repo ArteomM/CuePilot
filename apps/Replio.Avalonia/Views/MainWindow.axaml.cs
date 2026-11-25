@@ -89,6 +89,21 @@ public partial class MainWindow : Window
         _viewModel.ShowOverlayRequested += ShowAssistOverlay;
         _viewModel.HideOverlayRequested += HideAssistOverlay;
         _viewModel.WindowModeRequested += ApplyWindowMode;
+        _viewModel.RestartRequested += () => global::Avalonia.Threading.Dispatcher.UIThread.Post(() =>
+        {
+            try
+            {
+                if (Environment.ProcessPath is { Length: > 0 } exe)
+                {
+                    System.Diagnostics.Process.Start(new System.Diagnostics.ProcessStartInfo(exe, "--restart") { UseShellExecute = false })?.Dispose();
+                }
+            }
+            catch (Exception)
+            {
+            }
+
+            ExitFromTray();
+        });
         _viewModel.OverlayCaptureStateChanged += OnOverlayCaptureStateChanged;
         _viewModel.OverlaySuggestionChanged += text => OnUi(() => _assistOverlayWindow.SetSuggestionPreview(text));
         _viewModel.OverlayQuestionAsked += text => OnUi(() => _assistOverlayWindow.AddUserQuestion(text));

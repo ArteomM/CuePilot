@@ -14,7 +14,7 @@ public sealed class MacVisualContextCapture : IVisualContextCapture
     public event EventHandler<string>? LogLine;
 
     public string StorageRoot { get; } = Path.Combine(
-        Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "Replio", "visual-context");
+        DataLocation.Root, "visual-context");
 
     public void Start(string sessionId, int intervalMs) =>
         LogLine?.Invoke(this, "[visual] Screen context is not available on this platform yet.");
