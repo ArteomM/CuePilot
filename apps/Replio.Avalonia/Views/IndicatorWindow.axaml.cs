@@ -38,6 +38,22 @@ public partial class IndicatorWindow : Window
         InitializeComponent();
     }
 
+    /// <summary>A thin line along the bottom while the plan's remainder is 20 % or less: how much is left, in its colour.</summary>
+    public void SetLimit(bool show, int percent, string color, string tooltip)
+    {
+        LimitLine.IsVisible = show;
+        if (!show)
+        {
+            return;
+        }
+
+        int left = Math.Clamp(percent, 0, 100);
+        LimitLine.ColumnDefinitions[0].Width = new GridLength(left, GridUnitType.Star);
+        LimitLine.ColumnDefinitions[1].Width = new GridLength(100 - left, GridUnitType.Star);
+        LimitFill.Background = Brush.Parse(color);
+        ToolTip.SetTip(LimitLine, tooltip);
+    }
+
     public IndicatorWindow(LocalizationService localizer)
         : this()
     {

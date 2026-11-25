@@ -58,6 +58,22 @@ public partial class IndicatorWindow : Window
         SetCaptureState(false);
     }
 
+    /// <summary>A thin line along the bottom while the plan's remainder is 20 % or less: how much is left, in its colour.</summary>
+    public void SetLimit(bool show, int percent, string color, string tooltip)
+    {
+        LimitLine.Visibility = show ? Visibility.Visible : Visibility.Collapsed;
+        if (!show)
+        {
+            return;
+        }
+
+        int left = Math.Clamp(percent, 0, 100);
+        LimitLine.ColumnDefinitions[0].Width = new GridLength(left, GridUnitType.Star);
+        LimitLine.ColumnDefinitions[1].Width = new GridLength(100 - left, GridUnitType.Star);
+        LimitFill.Background = Frozen(color);
+        LimitLine.ToolTip = tooltip;
+    }
+
     /// <summary>The 📷 button answers at once: ⋯ while the screen is taken, ✓ and the number when saved, ✕ when not.</summary>
     public void SetSnapshotStage(SnapshotStage stage, int number)
     {

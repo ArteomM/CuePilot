@@ -1,0 +1,113 @@
+<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:controls="using:Replio.Avalonia.Views.Controls"
+        x:Class="Replio.Avalonia.Views.Dialogs.HelpWindow"
+        x:CompileBindings="False"
+        FontFamily="{StaticResource EchoFont}"
+        FontSize="14"
+        Width="860"
+        Height="620"
+        MinWidth="640"
+        MinHeight="460"
+        SystemDecorations="None"
+        TransparencyLevelHint="Transparent"
+        Background="Transparent"
+        CanResize="True"
+        ShowInTaskbar="False"
+        WindowStartupLocation="CenterOwner"
+        UseLayoutRounding="True">
+    <!-- «Справка»: short pages with a mini screenshot each, instead of one long text. DataContext: MainViewModel. -->
+    <Border Margin="12"
+            CornerRadius="18"
+            Background="{DynamicResource EchoSurfaceBrush}"
+            BorderBrush="{DynamicResource EchoBorderBrush}"
+            BorderThickness="1"
+            BoxShadow="0 4 24 0 #59000000">
+        <Grid RowDefinitions="Auto,*,Auto">
+            <!-- Header: drag to move, × to close. -->
+            <Grid x:Name="Header" Background="Transparent" Margin="22,16,14,8">
+                <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+                    <Ellipse Width="10" Height="10" VerticalAlignment="Center" Fill="{DynamicResource EchoAccentBrush}" />
+                    <TextBlock Margin="10,0,0,0"
+                               FontSize="17"
+                               FontWeight="ExtraBold"
+                               Foreground="{DynamicResource EchoTextBrush}"
+                               Text="{Binding L[HelpWindowTitle]}" />
+                </StackPanel>
+                <Button x:Name="CloseButton"
+                        Classes="ghost"
+                        HorizontalAlignment="Right"
+                        Width="34"
+                        Height="34"
+                        Padding="0"
+                        ToolTip.Tip="{Binding L[HelpClose]}">
+                    <Path Width="12" Height="12" Stretch="Uniform" StrokeThickness="1.8"
+                          Stroke="{DynamicResource EchoSoftTextBrush}" Data="M0,0 L10,10 M10,0 L0,10" />
+                </Button>
+            </Grid>
+
+            <Grid Grid.Row="1" Margin="14,0,22,0" ColumnDefinitions="210,*">
+                <ListBox x:Name="TopicList"
+                         Margin="0,4,0,0"
+                         Background="Transparent"
+                         BorderThickness="0"
+                         ScrollViewer.HorizontalScrollBarVisibility="Disabled"
+                         controls:ItemContainer.Classes="topic"
+                         ItemsSource="{Binding HelpTopics}"
+                         SelectedItem="{Binding SelectedHelpTopic, Mode=TwoWay}">
+                    <ListBox.ItemTemplate>
+                        <DataTemplate>
+                            <TextBlock Margin="12,9" FontSize="13.5" TextWrapping="Wrap"
+                                       Foreground="{DynamicResource EchoTextBrush}" Text="{Binding Title}" />
+                        </DataTemplate>
+                    </ListBox.ItemTemplate>
+                </ListBox>
+
+                <Grid Grid.Column="1" Margin="18,4,0,0" RowDefinitions="Auto,Auto,*,Auto">
+                    <TextBlock FontSize="21"
+                               FontWeight="ExtraBold"
+                               TextWrapping="Wrap"
+                               Foreground="{DynamicResource EchoTextBrush}"
+                               Text="{Binding SelectedHelpTopic.Title}" />
+                    <Border x:Name="ImageFrame"
+                            Grid.Row="1"
+                            Margin="0,12,0,0"
+                            Padding="6"
+                            HorizontalAlignment="Left"
+                            CornerRadius="12"
+                            Background="{DynamicResource EchoSurfaceAltBrush}"
+                            BorderBrush="{DynamicResource EchoCardBorderBrush}"
+                            BorderThickness="1">
+                        <Image x:Name="TopicImage"
+                               MaxHeight="190"
+                               Stretch="Uniform"
+                               StretchDirection="DownOnly"
+                               RenderOptions.BitmapInterpolationMode="HighQuality" />
+                    </Border>
+                    <controls:MarkdownView x:Name="TopicText"
+                                           Grid.Row="2"
+                                           Margin="0,10,0,0"
+                                           Markdown="{Binding SelectedHelpTopic.Markdown}" />
+                    <WrapPanel Grid.Row="3" Margin="0,8,0,0" IsVisible="{Binding IsAgentsHelpTopic}">
+                        <Button Height="34" Padding="14,0" Margin="0,0,8,6" Classes="accent"
+                                Command="{Binding CopyMcpCommandCommand}" Content="{Binding L[HelpCopyMcp]}" />
+                        <Button Height="34" Padding="14,0" Margin="0,0,8,6"
+                                Command="{Binding OpenAgentsGuideCommand}" Content="{Binding L[HelpOpenAgents]}" />
+                        <TextBlock Margin="4,0,0,6" VerticalAlignment="Center" Foreground="{DynamicResource EchoMutedBrush}" Text="{Binding HelpFeedback}" />
+                    </WrapPanel>
+                </Grid>
+            </Grid>
+
+            <!-- Footer: page counter and Back / Next. -->
+            <Grid Grid.Row="2" Margin="24,10,22,18">
+                <TextBlock VerticalAlignment="Center" FontSize="13" Foreground="{DynamicResource EchoMutedBrush}" Text="{Binding HelpCounterText}" />
+                <StackPanel HorizontalAlignment="Right" Orientation="Horizontal">
+                    <Button Height="36" MinWidth="110" Padding="16,0"
+                            Command="{Binding PreviousHelpTopicCommand}" Content="{Binding L[HelpPrev]}" />
+                    <Button Height="36" MinWidth="110" Margin="8,0,0,0" Padding="16,0" Classes="accent"
+                            Command="{Binding NextHelpTopicCommand}" Content="{Binding L[HelpNext]}" />
+                </StackPanel>
+            </Grid>
+        </Grid>
+    </Border>
+</Window>

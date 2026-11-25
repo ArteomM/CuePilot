@@ -133,6 +133,9 @@ public partial class MainWindow : Window
             }
         });
         _viewModel.SnapshotStageChanged += (stage, number) => Dispatcher.Invoke(() => _indicatorWindow.SetSnapshotStage(stage, number));
+        void ShowLimitOnIndicator() => _indicatorWindow.SetLimit(_viewModel.IsLimitLow, _viewModel.LimitLeftPercent, _viewModel.LimitBarColorOnDark, _viewModel.LimitBarTooltip);
+        _viewModel.LimitChanged += () => Dispatcher.Invoke(ShowLimitOnIndicator);
+        ShowLimitOnIndicator();
         _viewModel.MainWindowAttentionRequested += FocusMainWindowAfterAsk;
         _viewModel.PropertyChanged += (_, e) =>
         {
@@ -155,6 +158,7 @@ public partial class MainWindow : Window
         _viewModel.PermissionConfirmationRequested += ShowPermissionWizard;
         _viewModel.ConfirmationRequested += ShowConfirmationDialog;
         _viewModel.NotificationRequested += ShowNotification;
+        _viewModel.HelpWindowRequested += () => Views.HelpWindow.ShowFor(this, _viewModel);
         InitializeLibraryUi();
 
         _indicatorWindow.HideRequested += HideAssistOverlay;

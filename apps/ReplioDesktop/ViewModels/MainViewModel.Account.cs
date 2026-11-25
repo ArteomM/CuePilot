@@ -33,6 +33,7 @@ public partial class MainViewModel
     public RelayCommand SignOutCommand { get; private set; } = null!;
     public RelayCommand RefreshAccountCommand { get; private set; } = null!;
     public RelayCommand OpenUpgradeCommand { get; private set; } = null!;
+    public RelayCommand OpenCabinetCommand { get; private set; } = null!;
 
     public bool IsDeveloperMode => _settings.DeveloperMode;
 
@@ -201,6 +202,7 @@ public partial class MainViewModel
         SignOutCommand = new RelayCommand(async () => await SignOutAsync(), () => IsSignedIn);
         RefreshAccountCommand = new RelayCommand(async () => await RefreshAccountAsync(), () => IsSignedIn && !_isAccountRefreshing);
         OpenUpgradeCommand = new RelayCommand(() => OpenUrl(_account?.UpgradeUrl ?? "https://replio.ru/account/plan"));
+        OpenCabinetCommand = new RelayCommand(() => OpenUrl(ReplioApi.CabinetUrl));
 
         if (IsSignedIn)
         {
@@ -386,6 +388,7 @@ public partial class MainViewModel
         _account = null;
         _settings.ReplioAccountJson = string.Empty;
         PersistSettingsQuietly();
+        ApplyAccountLimits(null);
     }
 
     private void ApplyAccount(ReplioAccountInfo account)
@@ -394,6 +397,7 @@ public partial class MainViewModel
         _settings.ReplioAccountJson = account.RawJson;
         PersistSettingsQuietly();
         OnAccountChanged();
+        ApplyAccountLimits(account);
     }
 
     /// <summary>A gateway refusal during work: the plan may have changed or the key was revoked.</summary>
@@ -425,6 +429,7 @@ public partial class MainViewModel
         OpenSignInPageCommand?.RaiseCanExecuteChanged();
         SignOutCommand?.RaiseCanExecuteChanged();
         RefreshAccountCommand?.RaiseCanExecuteChanged();
+        OnLimitChanged();
     }
 
     private void SetReplioModel(ReplioModelOption? value, Action<string> store)

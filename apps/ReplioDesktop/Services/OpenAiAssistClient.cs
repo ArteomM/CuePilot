@@ -63,6 +63,8 @@ public class OpenAiAssistClient
 
             using (response)
             {
+                // The Replio gateway says how much of the plan's limits is left: the limit bar follows it.
+                ReplioApi.ReadQuotaHeaders(response);
                 string body = await response.Content.ReadAsStringAsync(cancellationToken);
                 if (response.IsSuccessStatusCode)
                 {

@@ -27,6 +27,7 @@
         </Style>
     </Window.Styles>
     <Border Margin="4" Background="#EB171B22" BorderBrush="#2A313C" BorderThickness="1" CornerRadius="16" Padding="6">
+        <Grid>
         <Grid ColumnDefinitions="Auto,*,Auto,Auto">
             <Button Width="34"
                     Height="34"
@@ -59,6 +60,13 @@
                     Padding="0"
                     HorizontalContentAlignment="Center"
                     Content="📷" />
+        </Grid>
+
+        <!-- What is left of the plan's limit, once it is 20 % or less (MainViewModel.Limits.cs). -->
+        <Grid x:Name="LimitLine" Height="3" Margin="10,0,10,-5" VerticalAlignment="Bottom" IsVisible="False" ColumnDefinitions="1*,1*">
+            <Border Grid.ColumnSpan="2" CornerRadius="1.5" Background="#2A313C" />
+            <Border x:Name="LimitFill" CornerRadius="1.5" Background="#F5C451" />
+        </Grid>
         </Grid>
     </Border>
 </Window>

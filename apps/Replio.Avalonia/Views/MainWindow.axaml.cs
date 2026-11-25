@@ -121,6 +121,9 @@ public partial class MainWindow : Window
             }
         });
         _viewModel.SnapshotStageChanged += (stage, number) => OnUi(() => _indicatorWindow.SetSnapshotStage(stage, number));
+        void ShowLimitOnIndicator() => _indicatorWindow.SetLimit(_viewModel.IsLimitLow, _viewModel.LimitLeftPercent, _viewModel.LimitBarColorOnDark, _viewModel.LimitBarTooltip);
+        _viewModel.LimitChanged += () => OnUi(ShowLimitOnIndicator);
+        ShowLimitOnIndicator();
         _viewModel.MainWindowAttentionRequested += FocusMainWindowAfterAsk;
         _viewModel.PropertyChanged += (_, e) =>
         {
@@ -155,6 +158,7 @@ public partial class MainWindow : Window
         }
         _viewModel.ConfirmationRequested += ShowConfirmationDialog;
         _viewModel.NotificationRequested += ShowNotification;
+        _viewModel.HelpWindowRequested += () => Dispatcher.UIThread.Post(() => Dialogs.HelpWindow.ShowFor(this, _viewModel));
 
         _indicatorWindow.HideRequested += HideAssistOverlay;
         _indicatorWindow.AskRequested += ShowAssistOverlay;

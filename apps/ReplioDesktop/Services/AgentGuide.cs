@@ -6,27 +6,36 @@ namespace ReplioDesktop.Services;
 /// <summary>
 /// How a local AI agent (Claude Code, Codex, Cursor…) finds Replio sessions: the app keeps
 /// %AppData%\Replio\AGENTS.md up to date with the path of the «replio» command and the data layout,
-/// and «replio guide» prints the same text.
+/// and «replio guide» prints the same text. The file stays in the per-device folder even when the data folder
+/// is in a cloud drive: its paths (the command, the user name) differ from computer to computer.
 /// </summary>
 public static class AgentGuide
 {
     public const string FileName = "AGENTS.md";
+    private const string Heading = "# Replio: sessions for AI agents";
 
     /// <summary>The data folder (REPLIO_DATA, the folder chosen in Settings, or %AppData%\Replio).</summary>
     public static string DataRoot => DataLocation.Root;
 
-    public static string CliFileName => OperatingSystem.IsWindows() ? "replio.exe" : "replio";
+    /// <summary>%AppData%\Replio\AGENTS.md: per device, never in the synced data folder.</summary>
+    public static string GuidePath => Path.Combine(DataLocation.ConfigRoot, FileName);
+
+    /// <summary>replio.exe on Windows; replio-cli inside Replio.app (the Mac disk ignores case: «replio» = «Replio»).</summary>
+    public static string CliFileName => OperatingSystem.IsWindows() ? "replio.exe" : "replio-cli";
 
     /// <summary>
-    /// The command next to the running app (Windows), or in its «cli» folder (Mac: Contents/MacOS/cli/replio, where
-    /// «replio» next to «Replio» would be the same file name); empty when this build has none.
+    /// True when macOS runs Replio from a temporary copy (App Translocation: started from the .dmg or Downloads without
+    /// moving it to Applications) or straight from the mounted .dmg: the command path would break after a restart.
     /// </summary>
+    public static bool IsTemporaryMacLocation =>
+        OperatingSystem.IsMacOS() &&
+        (AppContext.BaseDirectory.Contains("/AppTranslocation/", StringComparison.Ordinal) ||
+         AppContext.BaseDirectory.StartsWith("/Volumes/", StringComparison.Ordinal));
+
+    /// <summary>The command next to the running app, or empty when this build has none.</summary>
     public static string FindCli()
     {
-        // On a Mac «replio» next to the app would find «Replio», the app itself.
-        string path = OperatingSystem.IsMacOS()
-            ? Path.Combine(AppContext.BaseDirectory, "cli", CliFileName)
-            : Path.Combine(AppContext.BaseDirectory, CliFileName);
+        string path = Path.Combine(AppContext.BaseDirectory, CliFileName);
         return File.Exists(path) ? path : string.Empty;
     }
 
@@ -36,7 +45,7 @@ public static class AgentGuide
         string quoted = cli.Contains(' ') ? "\"" + cli + "\"" : cli;
         string root = DataRoot;
         var text = new StringBuilder();
-        text.AppendLine("# Replio: sessions for AI agents")
+        text.AppendLine(Heading)
             .AppendLine()
             .AppendLine("Replio records meetings (transcript, AI summary, screenshots) on this computer. " +
                         "Use the `replio` command to find a session by name or time and read or export it. " +
@@ -81,14 +90,14 @@ public static class AgentGuide
         return text.ToString();
     }
 
-    /// <summary>Writes AGENTS.md into the data folder when its text changed. Never throws.</summary>
+    /// <summary>Writes AGENTS.md into the per-device folder when its text changed. Never throws.</summary>
     public static void WriteIfChanged(string cliPath)
     {
+        RemoveFromSyncedFolder();
         try
         {
-            string root = DataRoot;
-            Directory.CreateDirectory(root);
-            string path = Path.Combine(root, FileName);
+            string path = GuidePath;
+            Directory.CreateDirectory(Path.GetDirectoryName(path)!);
             string text = Text(cliPath);
             if (File.Exists(path) && File.ReadAllText(path, Encoding.UTF8) == text)
             {
@@ -100,6 +109,37 @@ public static class AgentGuide
         catch (Exception)
         {
             // Only a convenience for agents: the app works without it.
+        }
+    }
+
+    /// <summary>
+    /// 1.1.1 wrote AGENTS.md into the data folder. In a cloud folder two computers would keep overwriting it with
+    /// their own paths, so a copy written by Replio is removed there. Never throws.
+    /// </summary>
+    private static void RemoveFromSyncedFolder()
+    {
+        try
+        {
+            string old = Path.Combine(DataRoot, FileName);
+            if (string.Equals(Path.GetFullPath(old), Path.GetFullPath(GuidePath), StringComparison.OrdinalIgnoreCase) ||
+                !File.Exists(old))
+            {
+                return;
+            }
+
+            using (var reader = new StreamReader(old, Encoding.UTF8))
+            {
+                if (reader.ReadLine()?.Trim() != Heading)
+                {
+                    return;
+                }
+            }
+
+            File.Delete(old);
+        }
+        catch (Exception)
+        {
+            // Left in place: agents read the copy in the per-device folder anyway.
         }
     }
 }

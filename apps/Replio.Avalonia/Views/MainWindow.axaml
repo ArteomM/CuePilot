@@ -460,6 +460,35 @@
                             </Border>
                         </Popup>
 
+                        <!-- Limit bar: the tightest remainder of the plan (MainViewModel.Limits.cs); a click opens the account on replio.ru. -->
+                        <Button Grid.Column="3"
+                                HorizontalAlignment="Right"
+                                VerticalAlignment="Center"
+                                Margin="16,0,20,0"
+                                Padding="2"
+                                Cursor="Hand"
+                                Background="Transparent"
+                                BorderThickness="0"
+                                Command="{Binding OpenCabinetCommand}"
+                                ToolTip.Tip="{Binding LimitBarTooltip}"
+                                IsVisible="{Binding ShowLimitBar}">
+                            <Button.Template>
+                                <ControlTemplate>
+                                    <Border Background="Transparent" Padding="{TemplateBinding Padding}">
+                                        <ContentPresenter Name="PART_ContentPresenter" Content="{TemplateBinding Content}" />
+                                    </Border>
+                                </ControlTemplate>
+                            </Button.Template>
+                            <StackPanel MinWidth="120">
+                                <TextBlock FontSize="12" FontWeight="SemiBold" Foreground="{Binding LimitTextColor}" Text="{Binding LimitBarText}" />
+                                <!-- Track 120 px = MainViewModel.LimitTrackWidth. -->
+                                <Grid Width="120" Height="6" Margin="0,5,0,0" HorizontalAlignment="Left">
+                                    <Border CornerRadius="3" Background="{DynamicResource EchoBorderBrush}" />
+                                    <Border CornerRadius="3" HorizontalAlignment="Left" Width="{Binding LimitBarWidth}" Background="{Binding LimitBarColor}" />
+                                </Grid>
+                            </StackPanel>
+                        </Button>
+
                         <Button Grid.Column="4"
                                 Classes="accent"
                                 MinWidth="200"
@@ -1883,22 +1912,6 @@
                 </Grid>
             </Grid>
 
-            <ScrollViewer x:Name="HelpPage"
-                          VerticalScrollBarVisibility="Auto"
-                          HorizontalScrollBarVisibility="Disabled"
-                          IsVisible="{Binding SelectedMainPage, Converter={x:Static controls:EqualsConverter.Instance}, ConverterParameter=Help}">
-                <StackPanel Margin="24" MaxWidth="900" HorizontalAlignment="Left">
-                    <StackPanel Orientation="Horizontal" Margin="0,0,0,12">
-                        <Button Height="34" Padding="14,0" Classes="accent"
-                                Command="{Binding CopyMcpCommandCommand}" Content="{Binding L[HelpCopyMcp]}" />
-                        <Button Height="34" Padding="14,0" Margin="8,0,0,0"
-                                Command="{Binding OpenAgentsGuideCommand}" Content="{Binding L[HelpOpenAgents]}" />
-                        <TextBlock Margin="12,0,0,0" VerticalAlignment="Center" Foreground="{Binding SecondaryTextBrush}" Text="{Binding HelpFeedback}" />
-                    </StackPanel>
-                    <controls:MarkdownView Markdown="{Binding HelpText}" MaxRenderChars="60000" />
-                </StackPanel>
-            </ScrollViewer>
-
             <ScrollViewer x:Name="SettingsPage"
                           VerticalScrollBarVisibility="Auto"
                           HorizontalScrollBarVisibility="Disabled"
@@ -1965,6 +1978,7 @@
                         <StackPanel Margin="0,10,0,0" Orientation="Horizontal" IsVisible="{Binding IsSignedOut}">
                             <Button Classes="accent" Height="36" Padding="18,0" FontSize="14"
                                     Command="{Binding SignInCommand}" ToolTip.Tip="{Binding L[TipAccountSignIn]}" Content="{Binding L[AccountSignIn]}" />
+                            <Button Height="36" Margin="8,0,0,0" Padding="14,0" Command="{Binding OpenCabinetCommand}" ToolTip.Tip="{Binding L[TipAccountOpenCabinet]}" Content="{Binding L[AccountOpenCabinet]}" />
                         </StackPanel>
                         <StackPanel Margin="0,10,0,0" Orientation="Horizontal" IsVisible="{Binding IsSigningIn}">
                             <controls:EchoThinkingDots Margin="0,0,10,0" VerticalAlignment="Center" />
@@ -1975,7 +1989,8 @@
                             <Button Height="34" Margin="8,0,0,0" Padding="14,0" Command="{Binding CancelSignInCommand}" Content="{Binding L[AccountCancel]}" />
                         </StackPanel>
                         <StackPanel Margin="0,10,0,0" Orientation="Horizontal" IsVisible="{Binding IsSignedIn}">
-                            <Button Height="34" Padding="14,0" Command="{Binding RefreshAccountCommand}" ToolTip.Tip="{Binding L[TipAccountRefresh]}" Content="{Binding L[AccountRefresh]}" />
+                            <Button Height="34" Padding="14,0" Command="{Binding OpenCabinetCommand}" ToolTip.Tip="{Binding L[TipAccountOpenCabinet]}" Content="{Binding L[AccountOpenCabinet]}" />
+                            <Button Height="34" Margin="8,0,0,0" Padding="14,0" Command="{Binding RefreshAccountCommand}" ToolTip.Tip="{Binding L[TipAccountRefresh]}" Content="{Binding L[AccountRefresh]}" />
                             <Button Height="34" Margin="8,0,0,0" Padding="14,0" Command="{Binding OpenUpgradeCommand}" ToolTip.Tip="{Binding L[TipAccountUpgrade]}" Content="{Binding L[AccountUpgrade]}" />
                             <Button Height="34" Margin="8,0,0,0" Padding="14,0" Command="{Binding SignOutCommand}" ToolTip.Tip="{Binding L[TipAccountSignOut]}" Content="{Binding L[AccountSignOut]}" />
                         </StackPanel>

@@ -49,6 +49,8 @@
     <EmbeddedResource Include="..\ReplioDesktop\Resources\Strings.ru.resx" ManifestResourceName="ReplioDesktop.Resources.Strings.ru" Link="Shared\Resources\Strings.ru.resx" />
     <AvaloniaResource Include="..\ReplioDesktop\Assets\Fonts\*.ttf" Link="Assets\Fonts\%(Filename)%(Extension)" />
     <AvaloniaResource Include="..\ReplioDesktop\replio-icon.png" Link="Assets\replio-icon.png" />
+    <!-- Mini screenshots of the help window, shared with the Windows app. -->
+    <AvaloniaResource Include="..\ReplioDesktop\Assets\Help\*.png" Link="Assets\Help\%(Filename)%(Extension)" />
   </ItemGroup>
 
 </Project>

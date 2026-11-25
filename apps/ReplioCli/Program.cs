@@ -67,7 +67,7 @@ static int Where(Archive archive, Options options)
         ["topics"] = Path.Combine(archive.Root, "topics.json"),
         ["knowledge"] = archive.KnowledgeRoot,
         ["exports"] = archive.ExportsFolder,
-        ["guide"] = Path.Combine(archive.Root, AgentGuide.FileName),
+        ["guide"] = AgentGuide.GuidePath,
         ["cli"] = Environment.ProcessPath,
         ["sessionCount"] = archive.Sessions.Count,
         ["topicCount"] = archive.Topics.Count

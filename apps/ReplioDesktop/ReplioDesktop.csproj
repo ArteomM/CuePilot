@@ -35,6 +35,8 @@
     <Resource Include="replio-icon.png" />
     <Resource Include="replio-favicon.ico" />
     <Resource Include="Assets\Fonts\*.ttf" />
+    <!-- Mini screenshots of the help window: <page>-dark.png and <page>-light.png, taken on demo data. -->
+    <Resource Include="Assets\Help\*.png" />
     <Content Include="Assets\Fonts\OFL.txt">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>

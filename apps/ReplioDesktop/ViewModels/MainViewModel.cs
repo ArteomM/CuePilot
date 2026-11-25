@@ -310,6 +310,7 @@ public partial class MainViewModel : ObservableObject
         RebuildLocalizedCollections();
         InitializeModelCatalog();
         InitializeAccount();
+        InitializeLimits();
         InitializeUpdates();
         InitializeHelp();
         InitializeDataFolder();
@@ -1993,6 +1994,8 @@ public partial class MainViewModel : ObservableObject
         OnPropertyChanged(nameof(PrimaryTextBrush));
         OnPropertyChanged(nameof(SecondaryTextBrush));
         OnPropertyChanged(nameof(AccentBrush));
+        OnPropertyChanged(nameof(LimitBarColor));
+        OnPropertyChanged(nameof(LimitTextColor));
     }
 
     private void OnLocalizationChanged(object? sender, PropertyChangedEventArgs e)
@@ -2006,8 +2009,13 @@ public partial class MainViewModel : ObservableObject
             RefreshSelectedSessionScreenshots(SelectedSession);
             OnPropertyChanged(nameof(CurrentVersionText));
             OnPropertyChanged(nameof(SttKeySourceText));
-            OnPropertyChanged(nameof(HelpText));
+            if (_helpTopics.Count > 0)
+            {
+                RefreshHelpTopics();
+            }
+
             OnLocalizationChangedForMeetingStyles();
+            OnLimitChanged();
             if (InstallUpdateCommand != null)
             {
                 OnUpdateChanged();

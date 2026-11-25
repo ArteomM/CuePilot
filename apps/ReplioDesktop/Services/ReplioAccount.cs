@@ -18,6 +18,9 @@ public static class ReplioApi
 {
     public const string DefaultBaseUrl = "https://replio.ru/api/v1";
 
+    /// <summary>The personal account page on the site (plan, payments, devices).</summary>
+    public const string CabinetUrl = "https://replio.ru/account";
+
     /// <summary>REPLIO_API_BASE overrides the address (a test gateway).</summary>
     public static string BaseUrl
     {
@@ -48,10 +51,35 @@ public static class ReplioApi
         return headers;
     }
 
+    /// <summary>Remainders the gateway sent with an answer (X-Replio-Day-Left, -Month-Left, -Minutes-Left, -Unlimited).</summary>
+    public static event Action<ReplioQuotaHint>? QuotaSeen;
+
+    /// <summary>Reads the remainders from a gateway answer, if it has them, and tells the app (any thread).</summary>
+    public static void ReadQuotaHeaders(HttpResponseMessage response)
+    {
+        int? day = HeaderInt(response, "X-Replio-Day-Left");
+        int? month = HeaderInt(response, "X-Replio-Month-Left");
+        int? minutes = HeaderInt(response, "X-Replio-Minutes-Left");
+        bool unlimited = HeaderInt(response, "X-Replio-Unlimited") == 1;
+        if (day != null || month != null || minutes != null || unlimited)
+        {
+            QuotaSeen?.Invoke(new ReplioQuotaHint(day, month, minutes, unlimited));
+        }
+    }
+
+    private static int? HeaderInt(HttpResponseMessage response, string name) =>
+        response.Headers.TryGetValues(name, out IEnumerable<string>? values) &&
+        int.TryParse(values.FirstOrDefault(), NumberStyles.Integer, CultureInfo.InvariantCulture, out int number)
+            ? number
+            : null;
+
     /// <summary>Same headers as one line for DesktopCapture: «Name=Value;Name=Value».</summary>
     public static string HeadersLine(string deviceId, string? sessionId) =>
         string.Join(";", Headers(deviceId, sessionId).Select(h => h.Name + "=" + h.Value));
 }
+
+/// <summary>Remainders before the request the gateway just answered: percents of today's and this month's limits, minutes of meetings.</summary>
+public sealed record ReplioQuotaHint(int? DayLeft, int? MonthLeft, int? MinutesLeft, bool Unlimited);
 
 /// <summary>A refusal of the gateway: {"error":{"code","message","resets_at","upgrade_url"}}. Message is Russian, for the user.</summary>
 public sealed class ReplioApiException : Exception
@@ -137,6 +165,15 @@ public sealed class ReplioAccountInfo
     public int? MinutesTotal { get; init; }
     public int? MinutesLeft { get; init; }
     public int? AiLeftPercent { get; init; }
+
+    /// <summary>Today's remainder of the daily limit (a fifth of the month's AI budget); at 0 the gateway answers 402 daily_limit.</summary>
+    public int? DayLeftPercent { get; init; }
+
+    /// <summary>When the daily limit starts over (midnight in Moscow), in local time.</summary>
+    public DateTime? DayResetsAt { get; init; }
+
+    /// <summary>The owner of the service: no limits apply.</summary>
+    public bool Unlimited { get; init; }
     public DateTime? PeriodEnd { get; init; }
     public int? DevicesMax { get; init; }
     public int? DevicesUsed { get; init; }
@@ -176,6 +213,9 @@ public sealed class ReplioAccountInfo
             MinutesTotal = Json.Int(quota, "minutes_total"),
             MinutesLeft = Json.Int(quota, "minutes_left"),
             AiLeftPercent = Json.Int(quota, "ai_left_percent"),
+            DayLeftPercent = Json.Int(quota, "day_left_percent"),
+            DayResetsAt = DateTimeOffset.TryParse(Json.Text(quota, "day_resets_at"), CultureInfo.InvariantCulture, DateTimeStyles.None, out DateTimeOffset resets) ? resets.LocalDateTime : null,
+            Unlimited = Json.Bool(quota, "unlimited"),
             PeriodEnd = DateTime.TryParse(periodEnd, CultureInfo.InvariantCulture, DateTimeStyles.AssumeLocal, out DateTime end) ? end : null,
             DevicesMax = Json.Int(quota, "devices_max"),
             DevicesUsed = Json.Int(quota, "devices_used"),
