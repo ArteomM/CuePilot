@@ -463,8 +463,55 @@
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
             <RowDefinition Height="*" />
         </Grid.RowDefinitions>
+
+        <!-- Update banner: «Доступна версия X», «Что нового», «Обновить» (off while recording), «Позже». -->
+        <Border Grid.Row="1"
+                Padding="16,10"
+                Background="{DynamicResource EchoAccentSoftBrush}"
+                BorderBrush="{DynamicResource EchoAccentSoftBorderBrush}"
+                BorderThickness="0,0,0,1"
+                Visibility="{Binding IsUpdateBannerVisible, Converter={StaticResource BoolToVisibility}}">
+            <StackPanel>
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="Auto" />
+                    </Grid.ColumnDefinitions>
+                    <StackPanel VerticalAlignment="Center">
+                        <TextBlock FontSize="15" FontWeight="SemiBold" Foreground="{DynamicResource EchoTextBrush}" Text="{Binding UpdateBannerText}" />
+                        <TextBlock Margin="0,2,0,0" FontSize="13" TextWrapping="Wrap" Foreground="{DynamicResource EchoMutedBrush}" Text="{Binding UpdateStatus}">
+                            <TextBlock.Style>
+                                <Style TargetType="TextBlock">
+                                    <Style.Triggers>
+                                        <DataTrigger Binding="{Binding UpdateStatus}" Value="">
+                                            <Setter Property="Visibility" Value="Collapsed" />
+                                        </DataTrigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </TextBlock.Style>
+                        </TextBlock>
+                        <ProgressBar Margin="0,6,0,0" Height="4" Maximum="100" Value="{Binding UpdateProgress, Mode=OneWay}"
+                                     Visibility="{Binding IsUpdating, Converter={StaticResource BoolToVisibility}}" />
+                    </StackPanel>
+                    <StackPanel Grid.Column="1" Margin="16,0,0,0" Orientation="Horizontal" VerticalAlignment="Center">
+                        <Button Height="32" Padding="14,0" Margin="0,0,8,0" Style="{StaticResource EchoGhostButtonStyle}"
+                                Command="{Binding ToggleUpdateNotesCommand}" Content="{Binding L[UpdateWhatsNew]}" />
+                        <Button Height="32" Padding="16,0" Margin="0,0,8,0" Style="{StaticResource EchoAccentButtonStyle}"
+                                Command="{Binding InstallUpdateCommand}" Content="{Binding InstallUpdateButtonText}"
+                                ToolTip="{Binding InstallUpdateToolTip}" ToolTipService.ShowOnDisabled="True" />
+                        <Button Height="32" Padding="14,0" Style="{StaticResource EchoGhostButtonStyle}"
+                                Visibility="{Binding CanDismissUpdate, Converter={StaticResource BoolToVisibility}}"
+                                Command="{Binding DismissUpdateCommand}" Content="{Binding L[UpdateLater]}" />
+                    </StackPanel>
+                </Grid>
+                <controls:MarkdownView Margin="0,10,0,0" MaxHeight="220"
+                                       Markdown="{Binding UpdateNotes}"
+                                       Visibility="{Binding IsUpdateNotesOpen, Converter={StaticResource BoolToVisibility}}" />
+            </StackPanel>
+        </Border>
 
         <Border Padding="10,8"
                 Background="{DynamicResource EchoHeaderBrush}"
@@ -555,7 +602,7 @@
             </Grid>
         </Border>
 
-        <TabControl Grid.Row="1"
+        <TabControl Grid.Row="2"
                     x:Name="MainPages"
                     SelectionChanged="MainPages_OnSelectionChanged"
                     Background="Transparent"
@@ -590,7 +637,7 @@
                                                    Height="42"
                                                    Margin="-4,0,4,0"
                                                    IsAnimating="{Binding IsCapturing}" />
-                                <TextBlock FontSize="26" FontWeight="ExtraBold" VerticalAlignment="Center" Foreground="{DynamicResource EchoTextBrush}"><Run Text="Cue" /><Run Foreground="{DynamicResource EchoAccentTextBrush}" Text="Pilot" /></TextBlock>
+                                <TextBlock FontSize="26" FontWeight="ExtraBold" VerticalAlignment="Center" Foreground="{DynamicResource EchoTextBrush}"><Run Text="Repl" /><Run Foreground="{DynamicResource EchoAccentTextBrush}" Text="io" /></TextBlock>
                             </StackPanel>
 
                             <Border Grid.Column="1" Margin="22,0,0,0" Height="32" Padding="12,0" CornerRadius="16" VerticalAlignment="Center" BorderThickness="1" ToolTip="{Binding L[ScreenShareBadgeHint]}">
@@ -2582,6 +2629,15 @@
                 <Grid Margin="24">
                     <StackPanel>
                         <TextBlock Foreground="{Binding PrimaryTextBrush}" FontSize="30" FontWeight="ExtraBold" Text="{Binding L[SettingsTab]}" />
+                        <!-- Updates: installed version and a manual check (the app also checks at start and once a day). -->
+                        <StackPanel Visibility="{Binding IsUpdateSupported, Converter={StaticResource BoolToVisibility}}" ToolTip="{Binding L[UpdateCheckToolTip]}" Background="Transparent">
+                            <TextBlock Margin="0,16,0,0" Foreground="{Binding PrimaryTextBrush}" FontWeight="SemiBold" Text="{Binding L[UpdateSectionTitle]}" />
+                            <StackPanel Margin="0,8,0,0" Orientation="Horizontal">
+                                <TextBlock VerticalAlignment="Center" Foreground="{Binding SecondaryTextBrush}" Text="{Binding CurrentVersionText}" />
+                                <Button Height="34" Margin="14,0,0,0" Padding="14,0" Command="{Binding CheckUpdatesCommand}" Content="{Binding L[UpdateCheckButton]}" />
+                            </StackPanel>
+                            <TextBlock Margin="0,6,0,0" Foreground="{Binding SecondaryTextBrush}" TextWrapping="Wrap" Text="{Binding UpdateStatus}" />
+                        </StackPanel>
                         <!-- Replio account: sign-in on replio.ru, the plan and, on plans with a choice, the prepared models. -->
                         <StackPanel Visibility="{Binding ShowAccountSection, Converter={StaticResource BoolToVisibility}}">
                         <TextBlock Margin="0,16,0,0" Foreground="{Binding PrimaryTextBrush}" FontWeight="SemiBold" Text="{Binding L[AccountTitle]}" />

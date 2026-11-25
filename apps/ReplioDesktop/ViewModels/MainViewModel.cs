@@ -345,6 +345,7 @@ public partial class MainViewModel : ObservableObject
         RebuildLocalizedCollections();
         InitializeModelCatalog();
         InitializeAccount();
+        InitializeUpdates();
         OpenAiAssistClient.ReplioRefused += ex => OnReplioRefusal(ex);
         InitializeLibrary();
         InitializeScreenshots();
@@ -504,6 +505,7 @@ public partial class MainViewModel : ObservableObject
             OnPropertyChanged();
             _startCaptureCommand.RaiseCanExecuteChanged();
             _stopCaptureCommand.RaiseCanExecuteChanged();
+            OnCaptureStateChangedForUpdate();
         }
     }
 
@@ -2228,6 +2230,11 @@ public partial class MainViewModel : ObservableObject
             OnPropertyChanged(nameof(OnboardingStepTitle));
             OnPropertyChanged(nameof(OnboardingStepText));
             RefreshSelectedSessionScreenshots(SelectedSession);
+            OnPropertyChanged(nameof(CurrentVersionText));
+            if (InstallUpdateCommand != null)
+            {
+                OnUpdateChanged();
+            }
         }
     }
 

@@ -732,4 +732,23 @@
   <data name="TipReplioAnalysisModel" xml:space="preserve"><value>Model for summaries, follow-up e-mails, topic questions and the graph</value></data>
   <data name="TipReplioSttModel" xml:space="preserve"><value>Speech recognition through Replio</value></data>
   <data name="SttStatusReplio" xml:space="preserve"><value>Recognition: Replio</value></data>
+  <data name="UpdateBanner" xml:space="preserve"><value>Version {0} is available</value></data>
+  <data name="UpdateBannerMandatory" xml:space="preserve"><value>Required update: version {0}</value></data>
+  <data name="UpdateNoNotes" xml:space="preserve"><value>Fixes and improvements.</value></data>
+  <data name="UpdateInstall" xml:space="preserve"><value>Update</value></data>
+  <data name="UpdateDownloading" xml:space="preserve"><value>Downloading…</value></data>
+  <data name="UpdateLater" xml:space="preserve"><value>Later</value></data>
+  <data name="UpdateWhatsNew" xml:space="preserve"><value>What's new</value></data>
+  <data name="UpdateInstallToolTip" xml:space="preserve"><value>Downloads the installer, closes Replio and installs the new version. Settings, key and sessions stay.</value></data>
+  <data name="UpdateBlockedByRecording" xml:space="preserve"><value>Update after the recording: it is off while recording.</value></data>
+  <data name="UpdateCurrentVersion" xml:space="preserve"><value>Installed version: {0}</value></data>
+  <data name="UpdateChecking" xml:space="preserve"><value>Checking for updates…</value></data>
+  <data name="UpdateUpToDate" xml:space="preserve"><value>You have the latest version.</value></data>
+  <data name="UpdateCheckFailed" xml:space="preserve"><value>Could not check for updates: {0}</value></data>
+  <data name="UpdateDownloadProgress" xml:space="preserve"><value>Downloading the update: {0}%</value></data>
+  <data name="UpdateStarting" xml:space="preserve"><value>Starting the installer, Replio will close…</value></data>
+  <data name="UpdateFailed" xml:space="preserve"><value>Update failed: {0}</value></data>
+  <data name="UpdateSectionTitle" xml:space="preserve"><value>Updates</value></data>
+  <data name="UpdateCheckButton" xml:space="preserve"><value>Check for updates</value></data>
+  <data name="UpdateCheckToolTip" xml:space="preserve"><value>Replio checks replio.ru at start and once a day. Settings, key and sessions are kept on update.</value></data>
 </root>

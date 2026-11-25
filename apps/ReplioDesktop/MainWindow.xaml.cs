@@ -114,6 +114,7 @@ public partial class MainWindow : Window
         _viewModel.HideOverlayRequested += HideAssistOverlay;
         _viewModel.WindowModeRequested += ApplyWindowMode;
         _viewModel.HotkeysChanged += RegisterHotkeys;
+        _viewModel.ExitForUpdateRequested += () => Dispatcher.BeginInvoke(new Action(ExitFromTray));
         _viewModel.OverlayCaptureStateChanged += OnOverlayCaptureStateChanged;
         _viewModel.OverlaySuggestionChanged += text => Dispatcher.Invoke(() => _assistOverlayWindow.SetSuggestionPreview(text));
         _viewModel.OverlayQuestionAsked += text => Dispatcher.Invoke(() => _assistOverlayWindow.AddUserQuestion(text));

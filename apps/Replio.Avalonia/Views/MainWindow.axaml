@@ -329,7 +329,7 @@
                                                Height="42"
                                                Margin="-4,0,4,0"
                                                IsAnimating="{Binding IsCapturing}" />
-                            <TextBlock FontSize="26" FontWeight="ExtraBold" VerticalAlignment="Center" Foreground="{DynamicResource EchoTextBrush}"><Run Text="Cue" /><Run Foreground="{DynamicResource EchoAccentTextBrush}" Text="Pilot" /></TextBlock>
+                            <TextBlock FontSize="26" FontWeight="ExtraBold" VerticalAlignment="Center" Foreground="{DynamicResource EchoTextBrush}"><Run Text="Repl" /><Run Foreground="{DynamicResource EchoAccentTextBrush}" Text="io" /></TextBlock>
                         </StackPanel>
 
                         <Border x:Name="ShareBadge"

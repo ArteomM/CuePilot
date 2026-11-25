@@ -18,13 +18,16 @@ namespace SetupReplio;
 internal static class Program
 {
     [STAThread]
-    private static int Main()
+    private static int Main(string[] args)
     {
+        // «--update»: started by the app's «Обновить» button. Installs without questions, keeps the user's shortcut
+        // choice and starts the new version. Settings and the key live in %AppData%\Replio and are never touched.
+        bool update = args.Any(a => string.Equals(a, "--update", StringComparison.OrdinalIgnoreCase));
         Application.EnableVisualStyles();
         Application.SetCompatibleTextRenderingDefault(false);
         try
         {
-            using var form = new SetupForm();
+            using var form = new SetupForm(update);
             Application.Run(form);
             return form.Succeeded ? 0 : 1;
         }
@@ -122,6 +125,28 @@ internal static class Installer
         finally
         {
             CloseHandle(handle);
+        }
+    }
+
+    /// <summary>Gives the app time to close by itself after «Обновить» (it saves the session first).</summary>
+    public static void WaitForAppExit(TimeSpan timeout)
+    {
+        DateTime deadline = DateTime.UtcNow + timeout;
+        while (DateTime.UtcNow < deadline)
+        {
+            Process[] running = FindRunningApp();
+            bool any = running.Length > 0;
+            foreach (Process process in running)
+            {
+                process.Dispose();
+            }
+
+            if (!any)
+            {
+                return;
+            }
+
+            Thread.Sleep(300);
         }
     }
 
@@ -806,9 +831,11 @@ internal sealed class SetupForm : Form
     private string _status = "Без прав администратора. Ваши настройки и ключ API сохранятся.";
     private bool _installed;
     private Point _dragStart;
+    private readonly bool _update;
 
-    public SetupForm()
+    public SetupForm(bool update = false)
     {
+        _update = update;
         _scale = DeviceDpi / 96f;
         Text = Installer.Title;
         FormBorderStyle = FormBorderStyle.None;
@@ -840,6 +867,30 @@ internal sealed class SetupForm : Form
         {
             _closeButton, _desktopShortcutCheck, _launchCheck, _progressBar, _installButton, _cancelButton
         });
+
+        if (_update)
+        {
+            _status = "Обновление Replio до версии " + Installer.Version + "…";
+            _desktopShortcutCheck.Checked = File.Exists(Installer.DesktopShortcutPath);
+            _launchCheck.Checked = true;
+            Shown += (_, _) => StartUpdate();
+        }
+    }
+
+    private void StartUpdate()
+    {
+        SetBusy(true);
+        var waiter = new Thread(() =>
+        {
+            Installer.WaitForAppExit(TimeSpan.FromSeconds(30));
+            Installer.StopRunningApp();
+            BeginInvoke(new Action(RunInstall));
+        })
+        {
+            IsBackground = true,
+            Name = "Replio update wait"
+        };
+        waiter.Start();
     }
 
     public bool Succeeded => _installed;
@@ -874,9 +925,9 @@ internal sealed class SetupForm : Form
         float x = S(92);
         using (var typographic = (StringFormat)StringFormat.GenericTypographic.Clone())
         {
-            float cueWidth = g.MeasureString("Cue", _titleFont, PointF.Empty, typographic).Width;
-            EchoTheme.DrawText(g, "Cue", _titleFont, new RectangleF(x, S(22), S(200), S(40)), EchoTheme.Text);
-            EchoTheme.DrawText(g, "Pilot", _titleFont, new RectangleF(x + cueWidth + S(2), S(22), S(200), S(40)), EchoTheme.Accent);
+            float cueWidth = g.MeasureString("Repl", _titleFont, PointF.Empty, typographic).Width;
+            EchoTheme.DrawText(g, "Repl", _titleFont, new RectangleF(x, S(22), S(200), S(40)), EchoTheme.Text);
+            EchoTheme.DrawText(g, "io", _titleFont, new RectangleF(x + cueWidth + S(2), S(22), S(200), S(40)), EchoTheme.Accent);
         }
 
         EchoTheme.DrawText(g, "Установка версии " + Installer.Version, _smallFont, new RectangleF(x + S(2), S(60), S(300), S(20)), EchoTheme.Muted);
@@ -896,23 +947,30 @@ internal sealed class SetupForm : Form
         EchoTheme.DrawText(g, _status, _smallFont, new RectangleF(S(28), S(240), S(504), S(24)), EchoTheme.Muted);
     }
 
-    /// <summary>The app logo: a «C» with a mint dot and one echo ring.</summary>
+    /// <summary>The app logo: an «R» with a mint dot and one echo ring, like the app's EchoLogo.</summary>
     private static void DrawLogo(Graphics g, RectangleF rect)
     {
         float unit = rect.Width / 120f;
+        PointF P(float x, float y) => new PointF(rect.X + x * unit, rect.Y + y * unit);
         using (var ring = new Pen(Color.FromArgb(90, EchoTheme.Accent), 2 * unit))
         {
             g.DrawEllipse(ring, rect.X + 14 * unit, rect.Y + 14 * unit, 92 * unit, 92 * unit);
         }
 
-        using (var stroke = new Pen(EchoTheme.Text, 10 * unit) { StartCap = LineCap.Round, EndCap = LineCap.Round })
+        using (var stroke = new Pen(EchoTheme.Text, 9 * unit) { StartCap = LineCap.Round, EndCap = LineCap.Round, LineJoin = LineJoin.Round })
+        using (var letter = new GraphicsPath())
         {
-            // Arc from the upper right through the left side to the lower right, like the app's EchoLogo.
-            g.DrawArc(stroke, rect.X + 30 * unit, rect.Y + 30 * unit, 60 * unit, 60 * unit, 45, 270);
+            // Same path as EchoLogo: M44,82 L44,38 L57,38 A11.5,11.5 0 0 1 57,61 L44,61 M55,61 L69,82
+            letter.AddLines(new[] { P(44, 82), P(44, 38), P(57, 38) });
+            letter.AddArc(rect.X + 45.5f * unit, rect.Y + 38 * unit, 23 * unit, 23 * unit, 270, 180);
+            letter.AddLine(P(57, 61), P(44, 61));
+            letter.StartFigure();
+            letter.AddLine(P(55, 61), P(69, 82));
+            g.DrawPath(stroke, letter);
         }
 
         using var dot = new SolidBrush(EchoTheme.Accent);
-        g.FillEllipse(dot, rect.X + 78 * unit, rect.Y + 54 * unit, 13 * unit, 13 * unit);
+        g.FillEllipse(dot, rect.X + 75 * unit, rect.Y + 54 * unit, 12 * unit, 12 * unit);
     }
 
     private void SetStatus(string status)
@@ -961,6 +1019,11 @@ internal sealed class SetupForm : Form
             Installer.StopRunningApp();
         }
 
+        RunInstall();
+    }
+
+    private void RunInstall()
+    {
         bool desktopShortcut = _desktopShortcutCheck.Checked;
         bool launch = _launchCheck.Checked;
         SetBusy(true);
@@ -1018,6 +1081,18 @@ internal sealed class SetupForm : Form
             {
                 MessageBox.Show("Replio установлен, но не запустился:\n" + ex.Message, Installer.Title, MessageBoxButtons.OK, MessageBoxIcon.Warning);
             }
+        }
+
+        if (_update)
+        {
+            SetStatus("✓ Replio обновлён до версии " + Installer.Version + ".");
+            var timer = new System.Windows.Forms.Timer { Interval = 1500 };
+            timer.Tick += (_, _) =>
+            {
+                timer.Stop();
+                Close();
+            };
+            timer.Start();
         }
     }
 
