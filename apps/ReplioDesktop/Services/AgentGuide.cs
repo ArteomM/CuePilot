@@ -17,10 +17,16 @@ public static class AgentGuide
 
     public static string CliFileName => OperatingSystem.IsWindows() ? "replio.exe" : "replio";
 
-    /// <summary>The command next to the running app, or empty when this build has none.</summary>
+    /// <summary>
+    /// The command next to the running app (Windows), or in its «cli» folder (Mac: Contents/MacOS/cli/replio, where
+    /// «replio» next to «Replio» would be the same file name); empty when this build has none.
+    /// </summary>
     public static string FindCli()
     {
-        string path = Path.Combine(AppContext.BaseDirectory, CliFileName);
+        // On a Mac «replio» next to the app would find «Replio», the app itself.
+        string path = OperatingSystem.IsMacOS()
+            ? Path.Combine(AppContext.BaseDirectory, "cli", CliFileName)
+            : Path.Combine(AppContext.BaseDirectory, CliFileName);
         return File.Exists(path) ? path : string.Empty;
     }
 

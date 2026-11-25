@@ -314,6 +314,7 @@ public partial class MainViewModel : ObservableObject
         InitializeHelp();
         InitializeDataFolder();
         InitializeMeetingStyles();
+        InitializeSearch();
         OpenAiAssistClient.ReplioRefused += ex => OnReplioRefusal(ex);
         InitializeLibrary();
         InitializeScreenshots();
@@ -1136,6 +1137,7 @@ public partial class MainViewModel : ObservableObject
             _sessionQuery = value;
             OnPropertyChanged();
             _completedSessionsView.Refresh();
+            ScheduleAppSearch();
         }
     }
 

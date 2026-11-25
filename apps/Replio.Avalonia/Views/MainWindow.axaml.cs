@@ -181,6 +181,20 @@ public partial class MainWindow : Window
         SessionTitleEditTextBox.LostFocus += SessionTitleEditTextBox_OnLostFocus;
         SessionAskTextBox.PointerEntered += (_, _) => ClearSessionAskPlaceholder();
         SessionAskTextBox.GotFocus += (_, _) => ClearSessionAskPlaceholder();
+        // Search everything: the results list reopens on focus; Enter opens the first result, Esc closes the list.
+        SearchBox.GotFocus += (_, _) => _viewModel.ReopenSearchResults();
+        SearchBox.AddHandler(KeyDownEvent, (_, e) =>
+        {
+            if (e.Key == Key.Enter)
+            {
+                _viewModel.OpenFirstSearchResult();
+                e.Handled = true;
+            }
+            else if (e.Key == Key.Escape)
+            {
+                _viewModel.IsSearchPopupOpen = false;
+            }
+        }, RoutingStrategies.Tunnel);
     }
 
     /// <summary>Replio was started again while running: show this window instead.</summary>

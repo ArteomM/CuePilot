@@ -429,7 +429,7 @@
   <data name="TipRenameSession" xml:space="preserve"><value>Нажмите, чтобы переименовать сессию</value></data>
   <data name="TipRenameTopic" xml:space="preserve"><value>Переименовать тему</value></data>
   <data name="TipSaveSettings" xml:space="preserve"><value>Сохранить настройки. Ключ API и ваши значения при обновлении не перезаписываются</value></data>
-  <data name="TipSearch" xml:space="preserve"><value>Поиск по названию, итогам и расшифровке сессий</value></data>
+  <data name="TipSearch" xml:space="preserve"><value>Поиск по всему: темы и их сводки, названия, итоги, расшифровки и письма встреч, база знаний и вопросы. Должны найтись все слова, в любом порядке</value></data>
   <data name="TipSelectAll" xml:space="preserve"><value>Отметить все сессии в списке (повторное нажатие снимет отметки)</value></data>
   <data name="TipSelectDone" xml:space="preserve"><value>Выйти из режима выбора</value></data>
   <data name="TipSelectMode" xml:space="preserve"><value>Отметить несколько сессий, чтобы удалить их или перенести в тему</value></data>
@@ -815,4 +815,18 @@
   <data name="SettingsMeetingsHint" xml:space="preserve"><value>Так Replio помогает на встречах, которые не относятся ни к одной теме, и в темах, где выбрано «Как для встреч без темы». У каждой темы может быть свой вариант на вкладке «Как помогать».</value></data>
   <data name="TopicActualizeSessions" xml:space="preserve"><value>Итоги встреч {0} из {1}…</value></data>
   <data name="TipSessionTopicActualize" xml:space="preserve"><value>Встреча относится к теме: итоги этой встречи обновятся в формате темы вместе с другими устаревшими итогами, «Сводкой» и графом темы. Точка: что-то устарело</value></data>
+  <data name="SearchGroupTopics" xml:space="preserve"><value>Темы</value></data>
+  <data name="SearchGroupSessions" xml:space="preserve"><value>Встречи</value></data>
+  <data name="SearchGroupTopicSummaries" xml:space="preserve"><value>Сводки тем</value></data>
+  <data name="SearchGroupKnowledge" xml:space="preserve"><value>База знаний</value></data>
+  <data name="SearchGroupQuestions" xml:space="preserve"><value>Вопросы</value></data>
+  <data name="SearchInName" xml:space="preserve"><value>в названии</value></data>
+  <data name="SearchInSummary" xml:space="preserve"><value>в итогах</value></data>
+  <data name="SearchInTranscript" xml:space="preserve"><value>в расшифровке</value></data>
+  <data name="SearchInEmail" xml:space="preserve"><value>в письме</value></data>
+  <data name="SearchInDialog" xml:space="preserve"><value>в подсказках</value></data>
+  <data name="SearchInScreen" xml:space="preserve"><value>на снимках экрана</value></data>
+  <data name="SearchInText" xml:space="preserve"><value>в тексте</value></data>
+  <data name="SearchNothing" xml:space="preserve"><value>Ничего не найдено</value></data>
+  <data name="SearchMore" xml:space="preserve"><value>и ещё {0}: добавьте слово, чтобы сузить поиск</value></data>
 </root>

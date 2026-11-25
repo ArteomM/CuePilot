@@ -429,7 +429,7 @@
   <data name="TipRenameSession" xml:space="preserve"><value>Click to rename the session</value></data>
   <data name="TipRenameTopic" xml:space="preserve"><value>Rename the topic</value></data>
   <data name="TipSaveSettings" xml:space="preserve"><value>Save the settings. Your API key and values are kept on upgrade</value></data>
-  <data name="TipSearch" xml:space="preserve"><value>Search session titles, summaries and transcripts</value></data>
+  <data name="TipSearch" xml:space="preserve"><value>Search everything: topics and their summaries, meeting titles, summaries, transcripts and emails, the knowledge base and questions. All words must be found, in any order</value></data>
   <data name="TipSelectAll" xml:space="preserve"><value>Check all sessions in the list (press again to uncheck)</value></data>
   <data name="TipSelectDone" xml:space="preserve"><value>Leave selection mode</value></data>
   <data name="TipSelectMode" xml:space="preserve"><value>Check several sessions to delete them or move them to a topic</value></data>
@@ -815,4 +815,18 @@
   <data name="SettingsMeetingsHint" xml:space="preserve"><value>This is how Replio helps in meetings that do not belong to a topic, and in topics set to «Same as meetings without a topic». Each topic can have its own variant on its «How to help» tab.</value></data>
   <data name="TopicActualizeSessions" xml:space="preserve"><value>Meeting summaries {0} of {1}…</value></data>
   <data name="TipSessionTopicActualize" xml:space="preserve"><value>This meeting belongs to a topic: redoes its summary in the topic's format, together with the other out-of-date summaries, the topic's «Summary» and graph. The dot means something is out of date</value></data>
+  <data name="SearchGroupTopics" xml:space="preserve"><value>Topics</value></data>
+  <data name="SearchGroupSessions" xml:space="preserve"><value>Meetings</value></data>
+  <data name="SearchGroupTopicSummaries" xml:space="preserve"><value>Topic summaries</value></data>
+  <data name="SearchGroupKnowledge" xml:space="preserve"><value>Knowledge base</value></data>
+  <data name="SearchGroupQuestions" xml:space="preserve"><value>Questions</value></data>
+  <data name="SearchInName" xml:space="preserve"><value>in the title</value></data>
+  <data name="SearchInSummary" xml:space="preserve"><value>in the summary</value></data>
+  <data name="SearchInTranscript" xml:space="preserve"><value>in the transcript</value></data>
+  <data name="SearchInEmail" xml:space="preserve"><value>in the email</value></data>
+  <data name="SearchInDialog" xml:space="preserve"><value>in the hints</value></data>
+  <data name="SearchInScreen" xml:space="preserve"><value>on screenshots</value></data>
+  <data name="SearchInText" xml:space="preserve"><value>in the text</value></data>
+  <data name="SearchNothing" xml:space="preserve"><value>Nothing found</value></data>
+  <data name="SearchMore" xml:space="preserve"><value>and {0} more: add a word to narrow the search</value></data>
 </root>

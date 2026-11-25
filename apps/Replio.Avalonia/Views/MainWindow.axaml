@@ -265,13 +265,64 @@
                     </StackPanel>
                 </Button>
 
-                <TextBox Grid.Column="1"
+                <TextBox x:Name="SearchBox"
+                         Grid.Column="1"
                          Margin="14,0"
                          Height="34"
                          VerticalContentAlignment="Center"
                          Foreground="{Binding SecondaryTextBrush}"
                          ToolTip.Tip="{Binding L[TipSearch]}"
                          Text="{Binding SessionQuery}" />
+                <!-- Search everything (MainViewModel.Search.cs): grouped results under the search box. -->
+                <Popup Grid.Column="1"
+                       PlacementTarget="{Binding #SearchBox}"
+                       Placement="Bottom"
+                       VerticalOffset="6"
+                       IsLightDismissEnabled="True"
+                       Width="{Binding #SearchBox.Bounds.Width}"
+                       IsOpen="{Binding IsSearchPopupOpen, Mode=TwoWay}">
+                    <Border MinWidth="420"
+                            Padding="6"
+                            CornerRadius="12"
+                            Background="{DynamicResource EchoSurfaceBrush}"
+                            BorderBrush="{DynamicResource EchoBorderBrush}"
+                            BorderThickness="1">
+                        <ScrollViewer MaxHeight="480" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
+                            <ItemsControl ItemsSource="{Binding SearchResults}">
+                                <ItemsControl.ItemTemplate>
+                                    <DataTemplate>
+                                        <Grid>
+                                            <TextBlock Margin="10,8,10,2"
+                                                       FontSize="12"
+                                                       FontWeight="SemiBold"
+                                                       Foreground="{DynamicResource EchoMutedBrush}"
+                                                       Text="{Binding Title}"
+                                                       IsVisible="{Binding IsHeader}" />
+                                            <Button Classes="searchResult"
+                                                    Cursor="Hand"
+                                                    HorizontalAlignment="Stretch"
+                                                    HorizontalContentAlignment="Stretch"
+                                                    Padding="10,6"
+                                                    Background="Transparent"
+                                                    BorderThickness="0"
+                                                    Command="{Binding #SearchBox.DataContext.OpenSearchResultCommand}"
+                                                    CommandParameter="{Binding}"
+                                                    IsVisible="{Binding IsResult}">
+                                                <StackPanel>
+                                                    <TextBlock FontSize="14" FontWeight="SemiBold" Foreground="{DynamicResource EchoTextBrush}" TextTrimming="CharacterEllipsis" Text="{Binding Title}" />
+                                                    <TextBlock Margin="0,1,0,0" FontSize="12" Foreground="{DynamicResource EchoAccentTextBrush}" TextTrimming="CharacterEllipsis" Text="{Binding Where}"
+                                                               IsVisible="{Binding HasWhere}" />
+                                                    <TextBlock Margin="0,2,0,0" FontSize="12" Foreground="{DynamicResource EchoMutedBrush}" TextWrapping="Wrap" MaxHeight="34" TextTrimming="CharacterEllipsis" Text="{Binding Snippet}"
+                                                               IsVisible="{Binding HasSnippet}" />
+                                                </StackPanel>
+                                            </Button>
+                                        </Grid>
+                                    </DataTemplate>
+                                </ItemsControl.ItemTemplate>
+                            </ItemsControl>
+                        </ScrollViewer>
+                    </Border>
+                </Popup>
 
                 <StackPanel Grid.Column="2" Orientation="Horizontal">
                     <Button Width="36"

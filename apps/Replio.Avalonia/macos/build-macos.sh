@@ -28,6 +28,11 @@ export AVALONIA_TELEMETRY_OPTOUT=1 DOTNET_CLI_TELEMETRY_OPTOUT=1
 echo "[build] Replio $VERSION for $RID"
 dotnet publish "$APP_PROJECT/Replio.Avalonia.csproj" -c Release -r "$RID" --self-contained true -o "$WORK/stage" -v q --nologo
 dotnet publish "$ROOT/apps/DesktopCapture/DesktopCapture.csproj" -c Release -r "$RID" --self-contained true -p:ReplioMac=true -o "$WORK/stage" -v q --nologo
+# The «replio» command for AI agents (MCP). It goes to Contents/MacOS/cli: next to «Replio» it would clash with the app
+# (the Mac file system ignores letter case), so it is a single self-contained file of its own (AgentGuide.FindCli).
+dotnet publish "$ROOT/apps/ReplioCli/ReplioCli.csproj" -c Release -r "$RID" --self-contained true \
+  -p:PublishSingleFile=true -p:EnableCompressionInSingleFile=true -p:IncludeNativeLibrariesForSelfExtract=true \
+  -o "$WORK/cli" -v q --nologo
 
 echo "[build] audio helper"
 swiftc -O -swift-version 5 -target "$SWIFT_TARGET" "$APP_PROJECT/macos/AudioHelper/main.swift" -o "$WORK/stage/replio-audio"
@@ -47,6 +52,8 @@ cp "$WORK/whisper-build/bin/whisper-cli" "$WORK/whisper-build/bin/whisper-server
 echo "[build] Replio.app"
 mkdir -p "$APP/Contents/MacOS" "$APP/Contents/Resources"
 cp -R "$WORK/stage/." "$APP/Contents/MacOS/"
+mkdir -p "$APP/Contents/MacOS/cli"
+cp "$WORK/cli/replio" "$APP/Contents/MacOS/cli/replio"
 sed "s/__VERSION__/$VERSION/g" "$APP_PROJECT/macos/Info.plist" > "$APP/Contents/Info.plist"
 
 ICONSET="$WORK/Replio.iconset"
@@ -61,7 +68,7 @@ done
 iconutil -c icns "$ICONSET" -o "$APP/Contents/Resources/Replio.icns"
 
 chmod +x "$APP/Contents/MacOS/Replio" "$APP/Contents/MacOS/DesktopCapture" "$APP/Contents/MacOS/replio-audio" \
-  "$APP/Contents/MacOS/whisper-cli" "$APP/Contents/MacOS/whisper-server"
+  "$APP/Contents/MacOS/whisper-cli" "$APP/Contents/MacOS/whisper-server" "$APP/Contents/MacOS/cli/replio"
 
 # Ad-hoc signature: Apple Silicon refuses to run unsigned code. Not notarized, so the first launch needs
 # System Settings → Privacy & Security → «Open Anyway» (see README-tester.md).
