@@ -1,7 +1,5 @@
 using Android.App;
 using Android.Runtime;
-using Avalonia;
-using Avalonia.Android;
 using Replio.Android.Platform;
 using Replio.Android.Platform.Calls;
 using ReplioDesktop.Services;
@@ -9,12 +7,12 @@ using ReplioDesktop.Services;
 namespace Replio.Android;
 
 /// <summary>
-/// The process: Avalonia and the app (its view model) start here, not with the screen, so the background service and
-/// the button over a call keep working after Android closes the app screen. Platform hooks that need no screen are
-/// set here; the ones that need it go through <see cref="MainActivity.Current"/>.
+/// The process: platform hooks that need no screen are set here, before any screen or service starts; the ones that
+/// need a screen go through <see cref="MainActivity.Current"/>. The app (its view model) is created with the first
+/// screen and stays for the life of the process, which the background service keeps alive after the screen closes.
 /// </summary>
 [Application]
-public class ReplioApplication : AvaloniaAndroidApplication<App>
+public class ReplioApplication : global::Android.App.Application
 {
     private static bool _hiddenFromCapture;
 
@@ -63,6 +61,4 @@ public class ReplioApplication : AvaloniaAndroidApplication<App>
 
         base.OnCreate();
     }
-
-    protected override AppBuilder CustomizeAppBuilder(AppBuilder builder) => base.CustomizeAppBuilder(builder);
 }

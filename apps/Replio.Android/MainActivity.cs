@@ -23,7 +23,7 @@ namespace Replio.Android;
     new[] { Intent.ActionSend, Intent.ActionSendMultiple },
     Categories = new[] { Intent.CategoryDefault },
     DataMimeTypes = new[] { "audio/*", "video/*" })]
-public class MainActivity : AvaloniaMainActivity
+public class MainActivity : AvaloniaMainActivity<App>
 {
     private const int PermissionRequestCode = 4101;
     private TaskCompletionSource<bool>? _permissionRequest;
