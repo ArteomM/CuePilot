@@ -61,6 +61,8 @@ public partial class MainViewModel
                 _settings.MicDeviceId = value.Id;
                 PersistSettingsQuietly();
                 AppendLog("[audio] Microphone set: " + (value.Id.Length == 0 ? "system default" : value.Name));
+                // During a recording the new microphone takes over at once, in the same meeting.
+                _captureOrchestrator.SwitchDevice("mic", value.Id);
             }
         }
     }
@@ -82,6 +84,7 @@ public partial class MainViewModel
                 _settings.OutputDeviceId = value.Id;
                 PersistSettingsQuietly();
                 AppendLog("[audio] Output device set: " + (value.Id.Length == 0 ? "system default" : value.Name));
+                _captureOrchestrator.SwitchDevice("system", value.Id);
             }
         }
     }
@@ -152,6 +155,35 @@ public partial class MainViewModel
         }
 
         select(chosen);
+    }
+
+    /// <summary>Live level while recording (loudest of the microphone and the computer, 0–1) for the floating bar.</summary>
+    public event Action<double>? LiveLevelChanged;
+
+    private void OnLiveLevel(double system, double mic) => LiveLevelChanged?.Invoke(Math.Max(system, mic));
+
+    /// <summary>
+    /// The quick device menu of the floating bar: both lists (filled if needed) with the current choice.
+    /// A device picked there is saved like in Settings and, during a recording, switched at once.
+    /// </summary>
+    public async Task<(IReadOnlyList<AudioDeviceOption> Mics, IReadOnlyList<AudioDeviceOption> Outputs)> GetAudioDevicesForMenuAsync()
+    {
+        await RefreshAudioDevicesAsync(force: MicDevices.Count == 0);
+        return (MicDevices.ToList(), HasOutputDeviceChoice ? OutputDevices.ToList() : []);
+    }
+
+    public void ChooseAudioDevice(bool microphone, AudioDeviceOption option)
+    {
+        if (microphone)
+        {
+            SelectedMicDevice = option;
+        }
+        else
+        {
+            SelectedOutputDevice = option;
+        }
+
+        OverlayNoticeRequested?.Invoke(string.Format(L[microphone ? "MicChosenNotice" : "OutputChosenNotice"], option.Name));
     }
 
     private void OnSettingsSectionChangedForAudio()

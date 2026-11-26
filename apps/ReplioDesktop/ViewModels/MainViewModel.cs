@@ -301,6 +301,7 @@ public partial class MainViewModel : ObservableObject
             OnCaptureProblemLine(line);
         });
         _captureOrchestrator.StatsUpdated += (_, stats) => RunOnUi(() => OnStatsUpdated(stats));
+        _captureOrchestrator.LevelUpdated += (system, mic) => RunOnUi(() => OnLiveLevel(system, mic));
         _captureOrchestrator.TranscriptReceived += (_, transcript) => RunOnUi(() => OnTranscriptReceived(transcript));
         _captureOrchestrator.RunningStateChanged += (_, running) => RunOnUi(() => OnRunningStateChanged(running));
         _visualContextCapture.KeyFrameCaptured += (_, frame) => RunOnUi(() => OnVisualFrameCaptured(frame));

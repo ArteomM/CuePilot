@@ -120,6 +120,10 @@ public partial class IndicatorWindow : Window
         _captureRunning = isRunning;
         HomeLogo.IsAnimating = isRunning;
         StopButton.Content = CaptureGlyph(isRunning);
+        if (!isRunning)
+        {
+            HomeLogo.Level = -1;
+        }
         StopButton.ToolTip = isRunning ? _localizer["IndicatorStopHint"] : _localizer["IndicatorStartHint"];
     }
 
@@ -133,6 +137,7 @@ public partial class IndicatorWindow : Window
         HideAskButton.Content = _overlayHidden ? _localizer["IndicatorAsk"] : _localizer["IndicatorHide"];
         HideAskButton.ToolTip = _overlayHidden ? _localizer["TipIndicatorAsk"] : _localizer["TipIndicatorHide"];
         HomeButton.ToolTip = _localizer["IndicatorHomeHint"];
+        DevicesButton.ToolTip = _localizer["TipIndicatorDevices"];
         CaptureButton.ToolTip = _localizer["IndicatorSnapshotHint"];
         StopButton.ToolTip = _captureRunning ? _localizer["IndicatorStopHint"] : _localizer["IndicatorStartHint"];
     }
@@ -222,4 +227,45 @@ public partial class IndicatorWindow : Window
     private static UIElement CaptureGlyph(bool isRunning) => isRunning
         ? new System.Windows.Shapes.Rectangle { Width = 11, Height = 11, RadiusX = 2.5, RadiusY = 2.5, Fill = GlyphBrush }
         : new System.Windows.Shapes.Path { Data = Geometry.Parse("M0,0 L10,6 L0,12 Z"), Fill = GlyphBrush, Margin = new Thickness(2, 0, 0, 0) };
+
+    /// <summary>The lists for the device menu: (microphones, output devices), each with the chosen one marked.</summary>
+    public Func<Task<(IReadOnlyList<AudioDeviceOption> Mics, IReadOnlyList<AudioDeviceOption> Outputs, string MicId, string OutputId)>>? DevicesProvider { get; set; }
+
+    /// <summary>A device was picked in the menu: (is microphone, option).</summary>
+    public event Action<bool, AudioDeviceOption>? DeviceChosen;
+
+    /// <summary>Live sound level while recording (0–1): the Replio mark moves like an equalizer; below zero it is still.</summary>
+    public void SetLevel(double level) => HomeLogo.Level = level;
+
+    private async void DevicesButton_OnClick(object sender, RoutedEventArgs e)
+    {
+        if (DevicesProvider == null)
+        {
+            return;
+        }
+
+        var menu = new ContextMenu { PlacementTarget = DevicesButton, Placement = System.Windows.Controls.Primitives.PlacementMode.Top };
+        menu.Items.Add(new MenuItem { Header = _localizer["AudioDevicesLoading"], IsEnabled = false });
+        DevicesButton.ContextMenu = menu;
+        menu.IsOpen = true;
+        (IReadOnlyList<AudioDeviceOption> mics, IReadOnlyList<AudioDeviceOption> outputs, string micId, string outputId) = await DevicesProvider();
+        menu.Items.Clear();
+        AddSection(menu, _localizer["AudioDeviceMic"], mics, micId, true);
+        if (outputs.Count > 0)
+        {
+            menu.Items.Add(new Separator());
+            AddSection(menu, _localizer["AudioDeviceOutput"], outputs, outputId, false);
+        }
+    }
+
+    private void AddSection(ContextMenu menu, string title, IReadOnlyList<AudioDeviceOption> options, string chosenId, bool microphone)
+    {
+        menu.Items.Add(new MenuItem { Header = title, IsEnabled = false, FontWeight = FontWeights.SemiBold });
+        foreach (AudioDeviceOption option in options)
+        {
+            var item = new MenuItem { Header = option.Name, IsCheckable = true, IsChecked = option.Id == chosenId };
+            item.Click += (_, _) => DeviceChosen?.Invoke(microphone, option);
+            menu.Items.Add(item);
+        }
+    }
 }

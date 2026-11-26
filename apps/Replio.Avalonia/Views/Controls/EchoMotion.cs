@@ -12,6 +12,19 @@ internal static class EchoMotion
     public static readonly Color Muted = Color.FromRgb(0x5C, 0x68, 0x78);
 
     public static readonly IImmutableSolidColorBrush AccentBrush = new ImmutableSolidColorBrush(Accent);
+
+    /// <summary>A peak (0–1) as it is heard: quiet speech already lifts the bars, loud speech fills them.</summary>
+    public static double Loudness(double peak) => peak <= 0 ? 0 : Math.Sqrt(Math.Min(1, peak * 4));
+
+    private static readonly double[] BarWeight = [0.55, 0.85, 1.0, 0.8, 0.5];
+    private static readonly double[] BarSpeed = [7.1, 9.3, 6.2, 8.4, 10.7];
+
+    /// <summary>Height of bar <paramref name="index"/> of the mark (in its 32-unit tile, centred at 16): 3 in silence, up to 22.</summary>
+    public static double BarHeight(int index, double loudness, double seconds)
+    {
+        double wobble = 0.72 + 0.28 * Math.Sin(seconds * BarSpeed[index] + index * 1.7);
+        return 3 + 19 * Math.Clamp(loudness * BarWeight[index] * wobble * 1.2, 0, 1);
+    }
 }
 
 /// <summary>
@@ -74,13 +87,29 @@ public class EchoLogo : EchoAnimatedControl
     public static readonly StyledProperty<bool> IsAnimatingProperty =
         AvaloniaProperty.Register<EchoLogo, bool>(nameof(IsAnimating));
 
+    /// <summary>
+    /// Live sound level (loudest sample, 0–1) while recording: the five bars move like an equalizer, so it is clear
+    /// at a glance that Replio hears something; flat bars mean silence. Below zero: the still mark.
+    /// </summary>
+    public static readonly StyledProperty<double> LevelProperty =
+        AvaloniaProperty.Register<EchoLogo, double>(nameof(Level), -1);
+
+    private double _shownLevel;
+
     private static readonly (double X, double Y, double H)[] Bars = [(7, 13, 6), (11.4, 9, 14), (15.8, 6, 20), (20.2, 10.5, 11), (24.6, 14, 4)];
     private static readonly IBrush Ink = new SolidColorBrush(Color.FromRgb(0x06, 0x2A, 0x1F));
 
     static EchoLogo()
     {
-        AffectsRender<EchoLogo>(IsAnimatingProperty);
+        AffectsRender<EchoLogo>(IsAnimatingProperty, LevelProperty);
         IsAnimatingProperty.Changed.AddClassHandler<EchoLogo>((logo, _) => logo.Restart());
+        LevelProperty.Changed.AddClassHandler<EchoLogo>((logo, _) => logo.RequestNextFrame());
+    }
+
+    public double Level
+    {
+        get => GetValue(LevelProperty);
+        set => SetValue(LevelProperty, value);
     }
 
     public bool IsAnimating
@@ -134,8 +163,27 @@ public class EchoLogo : EchoAnimatedControl
             // The site's mark: a mint tile with a sound wave (favicon.svg, 32×32) scaled into the 72×72 middle.
             const double k = 72 / 32.0;
             context.DrawRectangle(EchoMotion.AccentBrush, null, new RoundedRect(new Rect(24, 24, 72, 72), 9 * k));
-            foreach ((double x, double y, double h) in Bars)
+            bool live = Level >= 0 && IsRunning;
+            if (live)
             {
+                // Quick to rise, slower to fall: a word stays visible for a moment.
+                double target = EchoMotion.Loudness(Level);
+                _shownLevel += (target - _shownLevel) * (target > _shownLevel ? 0.5 : 0.12);
+            }
+            else
+            {
+                _shownLevel = 0;
+            }
+
+            for (int i = 0; i < Bars.Length; i++)
+            {
+                (double x, double y, double h) = Bars[i];
+                if (live)
+                {
+                    h = EchoMotion.BarHeight(i, _shownLevel, Seconds);
+                    y = 16 - h / 2;
+                }
+
                 context.DrawRectangle(Ink, null, new RoundedRect(new Rect(24 + x * k, 24 + y * k, 2.6 * k, h * k), 1.3 * k));
             }
         }

@@ -21,6 +21,19 @@ internal static class EchoMotion
         brush.Freeze();
         return brush;
     }
+
+    /// <summary>A peak (0–1) as it is heard: quiet speech already lifts the bars, loud speech fills them.</summary>
+    public static double Loudness(double peak) => peak <= 0 ? 0 : Math.Sqrt(Math.Min(1, peak * 4));
+
+    private static readonly double[] BarWeight = [0.55, 0.85, 1.0, 0.8, 0.5];
+    private static readonly double[] BarSpeed = [7.1, 9.3, 6.2, 8.4, 10.7];
+
+    /// <summary>Height of bar <paramref name="index"/> of the mark (in its 32-unit tile, centred at 16): 3 in silence, up to 22.</summary>
+    public static double BarHeight(int index, double loudness, double seconds)
+    {
+        double wobble = 0.72 + 0.28 * Math.Sin(seconds * BarSpeed[index] + index * 1.7);
+        return 3 + 19 * Math.Clamp(loudness * BarWeight[index] * wobble * 1.2, 0, 1);
+    }
 }
 
 /// <summary>
@@ -34,8 +47,23 @@ public class EchoLogo : UserControl
         typeof(EchoLogo),
         new PropertyMetadata(false, (d, _) => ((EchoLogo)d).UpdateAnimation()));
 
+    /// <summary>
+    /// Live sound level (loudest sample, 0–1) while recording: the five bars of the mark move like an equalizer,
+    /// so it is clear at a glance that Replio hears something; flat bars mean silence. Below zero: the still mark.
+    /// </summary>
+    public static readonly DependencyProperty LevelProperty = DependencyProperty.Register(
+        nameof(Level),
+        typeof(double),
+        typeof(EchoLogo),
+        new PropertyMetadata(-1d, (d, _) => ((EchoLogo)d).OnLevelChanged()));
+
+    private static readonly (double X, double Y, double H)[] Marks = [(7, 13, 6), (11.4, 9, 14), (15.8, 6, 20), (20.2, 10.5, 11), (24.6, 14, 4)];
     private readonly Ellipse[] _rings = new Ellipse[3];
+    private readonly Rectangle[] _bars = new Rectangle[5];
     private readonly Storyboard _storyboard = new();
+    private readonly System.Windows.Threading.DispatcherTimer _levelTimer = new() { Interval = TimeSpan.FromMilliseconds(40) };
+    private readonly DateTime _levelStartedAt = DateTime.UtcNow;
+    private double _shownLevel;
     private bool _running;
 
     public EchoLogo()
@@ -67,17 +95,64 @@ public class EchoLogo : UserControl
         Canvas.SetTop(tile, 24);
         canvas.Children.Add(tile);
         var ink = EchoMotion.Brush(Color.FromRgb(0x06, 0x2A, 0x1F));
-        foreach ((double x, double y, double h) in new[] { (7.0, 13.0, 6.0), (11.4, 9.0, 14.0), (15.8, 6.0, 20.0), (20.2, 10.5, 11.0), (24.6, 14.0, 4.0) })
+        for (int i = 0; i < Marks.Length; i++)
         {
+            (double x, double y, double h) = Marks[i];
             var bar = new Rectangle { Width = 2.6 * k, Height = h * k, RadiusX = 1.3 * k, RadiusY = 1.3 * k, Fill = ink };
             Canvas.SetLeft(bar, 24 + x * k);
             Canvas.SetTop(bar, 24 + y * k);
             canvas.Children.Add(bar);
+            _bars[i] = bar;
         }
 
+        _levelTimer.Tick += (_, _) => DrawLevel();
         Content = new Viewbox { Child = canvas, Stretch = Stretch.Uniform };
         Loaded += (_, _) => UpdateAnimation();
-        Unloaded += (_, _) => Stop();
+        Unloaded += (_, _) => { Stop(); _levelTimer.Stop(); };
+    }
+
+    public double Level
+    {
+        get => (double)GetValue(LevelProperty);
+        set => SetValue(LevelProperty, value);
+    }
+
+    private void OnLevelChanged()
+    {
+        if (Level >= 0 && EchoMotion.Enabled)
+        {
+            if (!_levelTimer.IsEnabled)
+            {
+                _levelTimer.Start();
+            }
+
+            return;
+        }
+
+        // Back to the still mark.
+        _levelTimer.Stop();
+        _shownLevel = 0;
+        const double k = 72 / 32.0;
+        for (int i = 0; i < _bars.Length; i++)
+        {
+            _bars[i].Height = Marks[i].H * k;
+            Canvas.SetTop(_bars[i], 24 + Marks[i].Y * k);
+        }
+    }
+
+    private void DrawLevel()
+    {
+        const double k = 72 / 32.0;
+        double target = EchoMotion.Loudness(Level);
+        // Quick to rise, slower to fall: a word stays visible for a moment.
+        _shownLevel += (target - _shownLevel) * (target > _shownLevel ? 0.6 : 0.2);
+        double seconds = (DateTime.UtcNow - _levelStartedAt).TotalSeconds;
+        for (int i = 0; i < _bars.Length; i++)
+        {
+            double h = EchoMotion.BarHeight(i, _shownLevel, seconds);
+            _bars[i].Height = h * k;
+            Canvas.SetTop(_bars[i], 24 + (16 - h / 2) * k);
+        }
     }
 
     public bool IsAnimating

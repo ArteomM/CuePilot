@@ -6,7 +6,7 @@
         FontSize="14"
         Title="Replio Indicator"
         Icon="avares://Replio/Assets/replio-icon.png"
-        Width="300"
+        Width="346"
         Height="54"
         SystemDecorations="None"
         TransparencyLevelHint="Transparent"
@@ -28,7 +28,7 @@
     </Window.Styles>
     <Border Margin="4" Background="#EB171B22" BorderBrush="#2A313C" BorderThickness="1" CornerRadius="16" Padding="6">
         <Grid>
-        <Grid ColumnDefinitions="Auto,*,Auto,Auto">
+        <Grid ColumnDefinitions="Auto,*,Auto,Auto,Auto">
             <Button Width="34"
                     Height="34"
                     Name="HomeButton"
@@ -60,6 +60,19 @@
                     Padding="0"
                     HorizontalContentAlignment="Center"
                     Content="📷" />
+
+            <!-- Quick choice of the microphone, also during a recording. -->
+            <Button Grid.Column="4"
+                    Width="38"
+                    Height="34"
+                    Margin="6,0,0,0"
+                    Name="DevicesButton"
+                    Classes="indicator"
+                    Padding="0"
+                    HorizontalContentAlignment="Center">
+                <Path Width="12" Height="17" Stretch="Uniform" Fill="#E9EEF5"
+                      Data="M6,0 C7.7,0 9,1.3 9,3 L9,9 C9,10.7 7.7,12 6,12 C4.3,12 3,10.7 3,9 L3,3 C3,1.3 4.3,0 6,0 Z M0,8 L1.4,8 C1.4,10.6 3.5,12.6 6,12.6 C8.5,12.6 10.6,10.6 10.6,8 L12,8 C12,11 9.8,13.5 6.8,13.9 L6.8,17 L5.2,17 L5.2,13.9 C2.2,13.5 0,11 0,8 Z" />
+            </Button>
         </Grid>
 
         <!-- What is left of the plan's limit, once it is 20 % or less (MainViewModel.Limits.cs). -->

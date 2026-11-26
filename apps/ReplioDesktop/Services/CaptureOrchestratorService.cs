@@ -16,12 +16,19 @@ public class CaptureOrchestratorService
         @"system\.avg=(?<sysAvg>[0-9\.,]+)KB/s.*system\.peak=(?<sysPeak>[0-9\.,]+).*mic\.avg=(?<micAvg>[0-9\.,]+)KB/s.*mic\.peak=(?<micPeak>[0-9\.,]+)(?:.*stt\.queue=(?<sttQueue>\d+))?(?:.*stt\.lag=(?<sttLag>[0-9\.,]+)s)?(?:.*stt\.cost=(?<sttCost>[0-9\.,]+))?",
         RegexOptions.Compiled | RegexOptions.IgnoreCase);
 
+    private static readonly Regex LevelRegex = new(
+        @"^\[level\]\s+system=(?<s>[0-9.]+)\s+mic=(?<m>[0-9.]+)",
+        RegexOptions.Compiled);
+
     private static readonly Regex SttRegex = new(
         @"^\[stt\]\[(?<source>system|mic)\]\s*(?<text>.*)$",
         RegexOptions.Compiled | RegexOptions.IgnoreCase);
 
     public event EventHandler<string>? LogLine;
     public event EventHandler<CaptureStats>? StatsUpdated;
+
+    /// <summary>Live levels (system, mic), 0–1, about 8 times a second while recording.</summary>
+    public event Action<double, double>? LevelUpdated;
     public event EventHandler<TranscriptLine>? TranscriptReceived;
     public event EventHandler<bool>? RunningStateChanged;
 
@@ -119,6 +126,29 @@ public class CaptureOrchestratorService
         Path.Combine(workingDirectory, "bin", "Release", PlatformPaths.CaptureTargetFramework, PlatformPaths.CaptureExecutableName)
     }.FirstOrDefault(File.Exists);
 
+    /// <summary>
+    /// Another microphone («mic») or output device («system») during the recording: DesktopCapture opens it and keeps
+    /// the same chunks and session. An empty id means the system default.
+    /// </summary>
+    public void SwitchDevice(string kind, string id)
+    {
+        Process? process = _process;
+        if (!IsRunning || process == null)
+        {
+            return;
+        }
+
+        try
+        {
+            process.StandardInput.WriteLine(kind + " " + (id ?? string.Empty).Replace("\n", string.Empty).Replace("\r", string.Empty));
+            process.StandardInput.Flush();
+        }
+        catch (Exception ex)
+        {
+            LogLine?.Invoke(this, "[service] Device switch failed: " + ex.Message);
+        }
+    }
+
     public void Stop()
     {
         Process? process = _process;
@@ -180,6 +210,18 @@ public class CaptureOrchestratorService
 
     private void HandleLine(string line)
     {
+        if (line.StartsWith("[level]", StringComparison.Ordinal))
+        {
+            // Many lines a second: parsed, never logged.
+            Match level = LevelRegex.Match(line);
+            if (level.Success)
+            {
+                LevelUpdated?.Invoke(ParseDouble(level.Groups["s"].Value), ParseDouble(level.Groups["m"].Value));
+            }
+
+            return;
+        }
+
         var statsMatch = StatsRegex.Match(line);
         if (statsMatch.Success)
         {

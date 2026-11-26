@@ -1,4 +1,5 @@
 using Avalonia.Controls;
+using Avalonia.Controls.Primitives;
 using Avalonia.Media;
 using Avalonia.Threading;
 using ReplioDesktop.Services;
@@ -72,6 +73,7 @@ public partial class IndicatorWindow : Window
             SetCaptureState(!_captureRunning);
         };
         CaptureButton.Click += (_, _) => SnapshotRequested?.Invoke();
+        DevicesButton.Click += async (_, _) => await ShowDevicesMenuAsync();
         HomeButton.Click += (_, _) => OpenMainRequested?.Invoke();
         PointerPressed += (_, e) =>
         {
@@ -135,6 +137,10 @@ public partial class IndicatorWindow : Window
     {
         _captureRunning = isRunning;
         HomeLogo.IsAnimating = isRunning;
+        if (!isRunning)
+        {
+            HomeLogo.Level = -1;
+        }
         StopButton.Content = CaptureGlyph(isRunning);
         ToolTip.SetTip(StopButton, isRunning ? _localizer["IndicatorStopHint"] : _localizer["IndicatorStartHint"]);
     }
@@ -149,6 +155,7 @@ public partial class IndicatorWindow : Window
         HideAskButton.Content = _overlayHidden ? _localizer["IndicatorAsk"] : _localizer["IndicatorHide"];
         ToolTip.SetTip(HideAskButton, _overlayHidden ? _localizer["TipIndicatorAsk"] : _localizer["TipIndicatorHide"]);
         ToolTip.SetTip(HomeButton, _localizer["IndicatorHomeHint"]);
+        ToolTip.SetTip(DevicesButton, _localizer["TipIndicatorDevices"]);
         ToolTip.SetTip(CaptureButton, _localizer["IndicatorSnapshotHint"]);
         ToolTip.SetTip(StopButton, _captureRunning ? _localizer["IndicatorStopHint"] : _localizer["IndicatorStartHint"]);
     }
@@ -200,4 +207,44 @@ public partial class IndicatorWindow : Window
     private static Control CaptureGlyph(bool isRunning) => isRunning
         ? new global::Avalonia.Controls.Shapes.Rectangle { Width = 11, Height = 11, RadiusX = 2.5, RadiusY = 2.5, Fill = GlyphBrush }
         : new global::Avalonia.Controls.Shapes.Path { Data = Geometry.Parse("M0,0 L10,6 L0,12 Z"), Fill = GlyphBrush, Margin = new global::Avalonia.Thickness(2, 0, 0, 0) };
+
+    /// <summary>The lists for the device menu: (microphones, output devices), each with the chosen one marked.</summary>
+    public Func<Task<(IReadOnlyList<AudioDeviceOption> Mics, IReadOnlyList<AudioDeviceOption> Outputs, string MicId, string OutputId)>>? DevicesProvider { get; set; }
+
+    /// <summary>A device was picked in the menu: (is microphone, option).</summary>
+    public event Action<bool, AudioDeviceOption>? DeviceChosen;
+
+    /// <summary>Live sound level while recording (0–1): the Replio mark moves like an equalizer; below zero it is still.</summary>
+    public void SetLevel(double level) => HomeLogo.Level = level;
+
+    private async Task ShowDevicesMenuAsync()
+    {
+        if (DevicesProvider == null)
+        {
+            return;
+        }
+
+        (IReadOnlyList<AudioDeviceOption> mics, IReadOnlyList<AudioDeviceOption> outputs, string micId, string outputId) = await DevicesProvider();
+        var menu = new ContextMenu { Placement = PlacementMode.Top };
+        AddSection(menu, _localizer["AudioDeviceMic"], mics, micId, true);
+        if (outputs.Count > 0)
+        {
+            menu.Items.Add(new Separator());
+            AddSection(menu, _localizer["AudioDeviceOutput"], outputs, outputId, false);
+        }
+
+        DevicesButton.ContextMenu = menu;
+        menu.Open(DevicesButton);
+    }
+
+    private void AddSection(ContextMenu menu, string title, IReadOnlyList<AudioDeviceOption> options, string chosenId, bool microphone)
+    {
+        menu.Items.Add(new MenuItem { Header = title, IsEnabled = false, FontWeight = FontWeight.SemiBold });
+        foreach (AudioDeviceOption option in options)
+        {
+            var item = new MenuItem { Header = (option.Id == chosenId ? "✓ " : "    ") + option.Name };
+            item.Click += (_, _) => DeviceChosen?.Invoke(microphone, option);
+            menu.Items.Add(item);
+        }
+    }
 }

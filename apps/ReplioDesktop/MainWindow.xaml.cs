@@ -193,6 +193,15 @@ public partial class MainWindow : Window
         _indicatorWindow.SnapshotRequested += _viewModel.TakeSnapshot;
         _indicatorWindow.OverlayShown = () => _assistOverlayWindow.IsVisible;
         _indicatorWindow.OpenMainRequested += OpenMainHome;
+        // The microphone button of the floating bar: the device lists, a pick is saved and switched during a recording.
+        _indicatorWindow.DevicesProvider = async () =>
+        {
+            (IReadOnlyList<AudioDeviceOption> mics, IReadOnlyList<AudioDeviceOption> outputs) = await _viewModel.GetAudioDevicesForMenuAsync();
+            return (mics, outputs, _viewModel.SelectedMicDevice?.Id ?? string.Empty, _viewModel.SelectedOutputDevice?.Id ?? string.Empty);
+        };
+        _indicatorWindow.DeviceChosen += (microphone, option) => _viewModel.ChooseAudioDevice(microphone, option);
+        // The Replio mark of the floating bar moves with the sound that is heard.
+        _viewModel.LiveLevelChanged += level => Dispatcher.Invoke(() => _indicatorWindow.SetLevel(level));
 
         DataContext = _viewModel;
         // Bindings with StringFormat (dates, minutes, KB/s) follow the UI language instead of en-US.
