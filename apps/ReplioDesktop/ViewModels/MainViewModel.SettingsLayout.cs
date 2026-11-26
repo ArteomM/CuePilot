@@ -51,6 +51,11 @@ public partial class MainViewModel
     private void InitializeSettingsLayout()
     {
         ResetHotkeysCommand = new RelayCommand(ResetHotkeys);
+        ToggleScreenShareCommand = new RelayCommand(() =>
+        {
+            HideInScreenShare = !HideInScreenShare;
+            ShowFeedback(L[HideInScreenShare ? "ScreenShareHiddenFeedback" : "ScreenShareShownFeedback"]);
+        });
         _settingsAutoSaveTimer = new UiTimer { Interval = TimeSpan.FromMilliseconds(700) };
         _settingsAutoSaveTimer.Tick += (_, _) =>
         {
@@ -100,6 +105,7 @@ public partial class MainViewModel
 
             _settingsSection = value;
             OnPropertyChanged();
+            OnSettingsSectionChangedForAudio();
             foreach (string name in new[]
             {
                 nameof(IsSettingsAccount), nameof(IsSettingsMeetings), nameof(IsSettingsSpeech), nameof(IsSettingsAi),
@@ -235,6 +241,12 @@ public partial class MainViewModel
         get => !ShowInScreenShare;
         set => ShowInScreenShare = !value;
     }
+
+    /// <summary>The badge in the header says what is true now: hidden from the share or seen by the participants.</summary>
+    public string ScreenShareBadgeText => ShowInScreenShare ? L["ShownInShareBadge"] : L["HiddenFromShareBadge"];
+
+    /// <summary>A click on the badge switches «Скрывать Replio при демонстрации экрана» (saved like the checkbox).</summary>
+    public RelayCommand ToggleScreenShareCommand { get; private set; } = null!;
 
     private void OnSettingsLayoutPlanChanged()
     {

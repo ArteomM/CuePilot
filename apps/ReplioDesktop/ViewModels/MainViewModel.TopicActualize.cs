@@ -1,4 +1,4 @@
-using ReplioDesktop.Models;
+﻿using ReplioDesktop.Models;
 using ReplioDesktop.Services;
 
 namespace ReplioDesktop.ViewModels;
@@ -128,9 +128,44 @@ public partial class MainViewModel
         OnPropertyChanged(nameof(ActualizeTopicButtonText));
     }
 
-    private async Task ActualizeTopicAsync(SessionSummary? alsoSession = null)
+    /// <summary>
+    /// After a meeting of a topic ends, the topic's «Сводка» and graph are rebuilt by themselves, so nobody has to
+    /// press «Актуализировать тему». The button shows the same progress (dots and the step) and stays off meanwhile.
+    /// Old meeting summaries are not redone here (that costs a call per meeting); the button still does it.
+    /// </summary>
+    private async Task AutoActualizeTopicAfterSessionAsync(string sessionId)
     {
-        SessionTopic? topic = SelectedTopic;
+        try
+        {
+            SessionTopic? topic = SessionTopicOf(_sessionLifecycleService.GetById(sessionId));
+            if (topic == null || !CanGenerateSummaryAutomatically())
+            {
+                return;
+            }
+
+            // A manual run (or the previous meeting's) may still be going: wait for it, then bring in this meeting.
+            for (int i = 0; i < 300 && IsTopicActualizing; i++)
+            {
+                await Task.Delay(TimeSpan.FromSeconds(1));
+            }
+
+            if (IsTopicActualizing || !_topics.Contains(topic))
+            {
+                return;
+            }
+
+            AppendLog("[topics] Meeting ended: actualizing its topic.");
+            await ActualizeTopicAsync(target: topic, automatic: true);
+        }
+        catch (Exception ex)
+        {
+            AppendLog("[topics] Automatic topic update skipped: " + ex.Message);
+        }
+    }
+
+    private async Task ActualizeTopicAsync(SessionSummary? alsoSession = null, SessionTopic? target = null, bool automatic = false)
+    {
+        SessionTopic? topic = target ?? SelectedTopic;
         if (topic == null || IsTopicActualizing)
         {
             return;
@@ -138,19 +173,28 @@ public partial class MainViewModel
 
         if (!TryValidateAssistSettings(out string settingsError))
         {
-            NotificationRequested?.Invoke(L["ErrorTitle"], settingsError, true);
+            if (!automatic)
+            {
+                NotificationRequested?.Invoke(L["ErrorTitle"], settingsError, true);
+            }
+
             return;
         }
 
+        bool isSelected = ReferenceEquals(SelectedTopic, topic);
         _isTopicActualizing = true;
         OnTopicActualizeStateChanged();
         try
         {
-            bool summaryOutdated = IsTopicKnowledgeStale || string.IsNullOrWhiteSpace(topic.KnowledgeText);
-            bool graphOutdated = IsGraphStale || !HasGraph;
+            // A meeting that just ended is not in the «Сводка» or the graph yet.
+            bool summaryOutdated = automatic || (isSelected && IsTopicKnowledgeStale) || string.IsNullOrWhiteSpace(topic.KnowledgeText);
+            bool graphOutdated = automatic || (isSelected && IsGraphStale) || (isSelected && !HasGraph) || topic.GraphUpdatedAt == null;
 
             // 1. Materials that are new or changed since their last parse (the topic may be switched meanwhile).
-            List<KnowledgeItemViewModel> unparsed = KnowledgeItems.Where(item => item.NeedsParsing && !item.IsBusy).ToList();
+            //    The list holds the selected topic's materials only.
+            List<KnowledgeItemViewModel> unparsed = isSelected
+                ? KnowledgeItems.Where(item => item.NeedsParsing && !item.IsBusy).ToList()
+                : [];
             if (unparsed.Count > 0)
             {
                 SetActualizeStep("TopicActualizeParsing");
@@ -170,7 +214,7 @@ public partial class MainViewModel
 
             // 2. Meeting summaries: never made by the AI, or made before the topic's «Формат итогов» changed
             //    (plus the meeting the button was pressed in).
-            List<SessionSummary> outdated = OutdatedSessionSummaries(topic);
+            List<SessionSummary> outdated = automatic ? [] : OutdatedSessionSummaries(topic);
             if (alsoSession != null && alsoSession.Status == SessionStatus.Completed && !outdated.Contains(alsoSession))
             {
                 outdated.Insert(0, alsoSession);
@@ -200,7 +244,7 @@ public partial class MainViewModel
             if (summaryOutdated || rebuildAll)
             {
                 SetActualizeStep("TopicActualizeSummary");
-                if (!await RefreshTopicKnowledgeAsync(topic))
+                if (!await RefreshTopicKnowledgeAsync(topic, quiet: automatic))
                 {
                     return;
                 }
@@ -208,7 +252,7 @@ public partial class MainViewModel
 
             // 4. Graph.
             SetActualizeStep("TopicActualizeGraph");
-            if (await BuildTopicGraphAsync(topic))
+            if (await BuildTopicGraphAsync(topic, quiet: automatic))
             {
                 ShowFeedback(L["TopicActualizeDone"]);
                 AppendLog("[topics] Topic actualized: summary and graph are up to date.");

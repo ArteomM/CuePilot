@@ -115,6 +115,8 @@ public partial class MainWindow : Window
         _viewModel.WindowModeRequested += ApplyWindowMode;
         // Back from the personal account in the browser: pick up a new plan without waiting for the timer.
         Activated += (_, _) => _viewModel.RefreshAccountIfStale(120);
+        // During a recording the main window comes back over the floating bar: move the bar off its input row.
+        Activated += (_, _) => Dispatcher.BeginInvoke(new Action(KeepIndicatorClearOfMainWindow), System.Windows.Threading.DispatcherPriority.Background);
         _viewModel.HotkeysChanged += RegisterHotkeys;
         _viewModel.ExitForUpdateRequested += () => Dispatcher.BeginInvoke(new Action(ExitFromTray));
         _viewModel.RestartRequested += () => Dispatcher.BeginInvoke(new Action(RestartApp));
@@ -191,6 +193,15 @@ public partial class MainWindow : Window
         _indicatorWindow.SnapshotRequested += _viewModel.TakeSnapshot;
         _indicatorWindow.OverlayShown = () => _assistOverlayWindow.IsVisible;
         _indicatorWindow.OpenMainRequested += OpenMainHome;
+        // The microphone button of the floating bar: the device lists, a pick is saved and switched during a recording.
+        _indicatorWindow.DevicesProvider = async () =>
+        {
+            (IReadOnlyList<AudioDeviceOption> mics, IReadOnlyList<AudioDeviceOption> outputs) = await _viewModel.GetAudioDevicesForMenuAsync();
+            return (mics, outputs, _viewModel.SelectedMicDevice?.Id ?? string.Empty, _viewModel.SelectedOutputDevice?.Id ?? string.Empty);
+        };
+        _indicatorWindow.DeviceChosen += (microphone, option) => _viewModel.ChooseAudioDevice(microphone, option);
+        // The Replio mark of the floating bar moves with the sound that is heard.
+        _viewModel.LiveLevelChanged += level => Dispatcher.Invoke(() => _indicatorWindow.SetLevel(level));
 
         DataContext = _viewModel;
         // Bindings with StringFormat (dates, minutes, KB/s) follow the UI language instead of en-US.
@@ -426,6 +437,7 @@ public partial class MainWindow : Window
         {
             _assistOverlayWindow.SetCaptureStatus(isActive);
             _indicatorWindow.SetCaptureState(isActive);
+            UpdateTrayForCapture(isActive);
 
             if (isActive)
             {
@@ -463,6 +475,46 @@ public partial class MainWindow : Window
                 Activate();
             }
         });
+    }
+
+    /// <summary>
+    /// The floating bar must not cover the main window (it sat on «Новая запись» and the question box): when they
+    /// overlap, the bar moves next to the window, below it, or above it, whichever fits on the screen.
+    /// </summary>
+    private void KeepIndicatorClearOfMainWindow()
+    {
+        if (!_indicatorWindow.IsVisible || WindowState != WindowState.Normal || !IsVisible)
+        {
+            return;
+        }
+
+        Rect area = SystemParameters.WorkArea;
+        var main = new Rect(Left, Top, ActualWidth, ActualHeight);
+        double width = _indicatorWindow.ActualWidth > 0 ? _indicatorWindow.ActualWidth : _indicatorWindow.Width;
+        double height = _indicatorWindow.ActualHeight > 0 ? _indicatorWindow.ActualHeight : _indicatorWindow.Height;
+        if (!main.IntersectsWith(new Rect(_indicatorWindow.Left, _indicatorWindow.Top, width, height)))
+        {
+            return;
+        }
+
+        const double gap = 12;
+        double top = Math.Clamp(main.Bottom - height, area.Top, area.Bottom - height);
+        System.Windows.Point[] candidates =
+        [
+            new(main.Right + gap, top),
+            new(main.Left - gap - width, top),
+            new(main.Left + (main.Width - width) / 2, main.Bottom + gap),
+            new(main.Left + (main.Width - width) / 2, main.Top - gap - height)
+        ];
+        foreach (System.Windows.Point candidate in candidates)
+        {
+            if (candidate.X >= area.Left && candidate.Y >= area.Top && candidate.X + width <= area.Right && candidate.Y + height <= area.Bottom)
+            {
+                _indicatorWindow.Left = candidate.X;
+                _indicatorWindow.Top = candidate.Y;
+                return;
+            }
+        }
     }
 
     private void PositionAuxWindows()
@@ -616,8 +668,19 @@ public partial class MainWindow : Window
 
     private void InitializeTrayIcon()
     {
+        // While a recording runs: «Открыть транскрипт», «Остановить запись», «Снимок экрана»; the icon blinks a red dot.
         var menu = new Forms.ContextMenuStrip();
-        menu.Items.Add(_viewModel.L["TrayOpen"], null, (_, _) => Dispatcher.Invoke(RestoreFromTray));
+        _trayOpenItem = (Forms.ToolStripMenuItem)menu.Items.Add(_viewModel.L["TrayOpen"], null, (_, _) => Dispatcher.Invoke(OpenFromTray));
+        _trayCaptureItem = (Forms.ToolStripMenuItem)menu.Items.Add(_viewModel.L["TrayStartRecording"], null, (_, _) => Dispatcher.Invoke(() =>
+        {
+            if (_viewModel.ToggleCaptureCommand.CanExecute(null))
+            {
+                _viewModel.ToggleCaptureCommand.Execute(null);
+            }
+        }));
+        _traySnapshotItem = (Forms.ToolStripMenuItem)menu.Items.Add(_viewModel.L["TraySnapshot"], null, (_, _) => Dispatcher.Invoke(_viewModel.TakeSnapshot));
+        _traySnapshotItem.Enabled = false;
+        menu.Items.Add(new Forms.ToolStripSeparator());
         menu.Items.Add(_viewModel.L["TrayExit"], null, (_, _) => Dispatcher.Invoke(ExitFromTray));
 
         System.Drawing.Icon trayIcon = SystemIcons.Application;
@@ -656,6 +719,8 @@ public partial class MainWindow : Window
             trayIcon = SystemIcons.Application;
         }
 
+        _trayIdleIcon = trayIcon;
+        _trayRecordingIcon = MakeRecordingTrayIcon(trayIcon) ?? trayIcon;
         _notifyIcon = new Forms.NotifyIcon
         {
             Text = "Replio",
@@ -664,7 +729,109 @@ public partial class MainWindow : Window
             ContextMenuStrip = menu
         };
 
-        _notifyIcon.DoubleClick += (_, _) => Dispatcher.Invoke(RestoreFromTray);
+        _notifyIcon.DoubleClick += (_, _) => Dispatcher.Invoke(OpenFromTray);
+        // One click opens the live transcript during a recording (the tooltip says so).
+        _notifyIcon.MouseClick += (_, e) =>
+        {
+            if (e.Button == Forms.MouseButtons.Left && _viewModel.IsCapturing)
+            {
+                Dispatcher.Invoke(OpenFromTray);
+            }
+        };
+        _trayBlinkTimer.Tick += (_, _) =>
+        {
+            if (_notifyIcon == null)
+            {
+                return;
+            }
+
+            _trayBlinkOn = !_trayBlinkOn;
+            _notifyIcon.Icon = _trayBlinkOn ? _trayRecordingIcon : _trayIdleIcon;
+        };
+    }
+
+    private Forms.ToolStripMenuItem? _trayOpenItem;
+    private Forms.ToolStripMenuItem? _trayCaptureItem;
+    private Forms.ToolStripMenuItem? _traySnapshotItem;
+    private System.Drawing.Icon? _trayIdleIcon;
+    private System.Drawing.Icon? _trayRecordingIcon;
+    private bool _trayBlinkOn;
+    private readonly System.Windows.Threading.DispatcherTimer _trayBlinkTimer = new() { Interval = TimeSpan.FromMilliseconds(650) };
+
+    /// <summary>During a recording: the session with its live transcript; otherwise the window as it was.</summary>
+    private void OpenFromTray()
+    {
+        if (_viewModel.IsCapturing && _viewModel.OpenActiveSessionCommand.CanExecute(null))
+        {
+            _viewModel.OpenActiveSessionCommand.Execute(null);
+        }
+
+        RestoreFromTray();
+    }
+
+    /// <summary>Menu, tooltip and the blinking icon follow the recording.</summary>
+    private void UpdateTrayForCapture(bool isActive)
+    {
+        if (_notifyIcon == null)
+        {
+            return;
+        }
+
+        if (_trayOpenItem != null)
+        {
+            _trayOpenItem.Text = _viewModel.L[isActive ? "TrayOpenTranscript" : "TrayOpen"];
+        }
+
+        if (_trayCaptureItem != null)
+        {
+            _trayCaptureItem.Text = _viewModel.L[isActive ? "TrayStopRecording" : "TrayStartRecording"];
+        }
+
+        if (_traySnapshotItem != null)
+        {
+            _traySnapshotItem.Enabled = isActive;
+        }
+
+        // NotifyIcon.Text is limited to 127 characters.
+        string tip = isActive ? _viewModel.L["TrayTooltipRecording"] : "Replio";
+        _notifyIcon.Text = tip.Length > 127 ? tip[..127] : tip;
+        if (isActive)
+        {
+            _trayBlinkOn = true;
+            _notifyIcon.Icon = _trayRecordingIcon;
+            _trayBlinkTimer.Start();
+        }
+        else
+        {
+            _trayBlinkTimer.Stop();
+            _trayBlinkOn = false;
+            _notifyIcon.Icon = _trayIdleIcon;
+        }
+    }
+
+    /// <summary>The tray icon with a red «recording» dot in the corner, drawn once.</summary>
+    private static System.Drawing.Icon? MakeRecordingTrayIcon(System.Drawing.Icon baseIcon)
+    {
+        try
+        {
+            using System.Drawing.Bitmap bitmap = baseIcon.ToBitmap();
+            using (System.Drawing.Graphics graphics = System.Drawing.Graphics.FromImage(bitmap))
+            {
+                graphics.SmoothingMode = System.Drawing.Drawing2D.SmoothingMode.AntiAlias;
+                float size = bitmap.Width * 0.5f;
+                float x = bitmap.Width - size, y = bitmap.Height - size;
+                using var white = new System.Drawing.SolidBrush(System.Drawing.Color.White);
+                using var red = new System.Drawing.SolidBrush(System.Drawing.Color.FromArgb(0xFF, 0x4D, 0x4F));
+                graphics.FillEllipse(white, x, y, size, size);
+                graphics.FillEllipse(red, x + size * 0.15f, y + size * 0.15f, size * 0.7f, size * 0.7f);
+            }
+
+            return System.Drawing.Icon.FromHandle(bitmap.GetHicon());
+        }
+        catch (Exception)
+        {
+            return null;
+        }
     }
 
     private void RestoreFromTray()

@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Threading;
@@ -10,31 +11,211 @@ using NAudio.Wave;
 namespace DesktopCapture
 {
     /// <summary>
-    /// The two audio streams DesktopCapture records. Windows: WASAPI loopback and the default microphone.
+    /// The two audio streams DesktopCapture records. Windows: WASAPI loopback of an output device and a microphone.
     /// macOS: the replio-audio helper (ScreenCaptureKit for system audio, AVAudioEngine for the microphone),
     /// which sits next to DesktopCapture and streams raw 32-bit float mono PCM to stdout.
+    /// The devices chosen in Settings come first («--mic-device», «--system-device»). A device that does not open
+    /// never stops the recording: the next one is used, and with none at all that stream stays silent
+    /// («[mic-error]», «[system-error]», «[mic-fallback]», «[system-fallback]» tell the app).
     /// </summary>
     internal static class AudioSources
     {
+        /// <summary>Settings: the microphone (Windows endpoint id, macOS device UID); empty = the system default.</summary>
+        public static string PreferredMicId { get; set; } = string.Empty;
+
+        /// <summary>Settings: the output device whose sound is recorded (Windows only); empty = the system default.</summary>
+        public static string PreferredOutputId { get; set; } = string.Empty;
+
         public static IWaveIn CreateSystemCapture()
         {
 #if WINDOWS
-            return new WasapiLoopbackCapture();
+            using (var enumerator = new MMDeviceEnumerator())
+            {
+                List<MMDevice> candidates = Candidates(enumerator, DataFlow.Render, PreferredOutputId, Role.Multimedia, Role.Console);
+                foreach (MMDevice device in candidates)
+                {
+                    try
+                    {
+                        // WASAPI opens the device only on start: try it before handing it out.
+                        using (var probe = new WasapiLoopbackCapture(device))
+                        {
+                            probe.StartRecording();
+                            probe.StopRecording();
+                        }
+
+                        if (!ReferenceEquals(device, candidates[0]))
+                        {
+                            Console.WriteLine("[system-fallback] " + candidates[0].FriendlyName + " → " + device.FriendlyName);
+                        }
+
+                        return new WasapiLoopbackCapture(device);
+                    }
+                    catch (Exception ex)
+                    {
+                        Console.WriteLine("[system-error] " + device.FriendlyName + ": " + ex.Message);
+                    }
+                }
+
+                Console.WriteLine("[system-error] no output device could be recorded; the computer sound stays silent.");
+                return new SilentCapture();
+            }
 #else
             return new HelperProcessCapture("system");
 #endif
         }
 
+        /// <summary>
+        /// The chosen microphone, then the one for calls, the default one and any other active one. A Bluetooth
+        /// headset whose microphone cannot connect (0x800704D6, busy with a phone or another app) used to crash
+        /// the whole recording on start. With no microphone at all the caller records the computer's sound only.
+        /// </summary>
         public static IWaveIn CreateMicCapture()
         {
 #if WINDOWS
             using (var enumerator = new MMDeviceEnumerator())
             {
-                return new WasapiCapture(enumerator.GetDefaultAudioEndpoint(DataFlow.Capture, Role.Communications));
+                List<MMDevice> candidates = Candidates(enumerator, DataFlow.Capture, PreferredMicId, Role.Communications, Role.Multimedia);
+                Exception last = null;
+                foreach (MMDevice device in candidates)
+                {
+                    try
+                    {
+                        using (var probe = new WasapiCapture(device))
+                        {
+                            probe.StartRecording();
+                            probe.StopRecording();
+                        }
+
+                        if (!ReferenceEquals(device, candidates[0]))
+                        {
+                            Console.WriteLine("[mic-fallback] " + candidates[0].FriendlyName + " → " + device.FriendlyName);
+                        }
+
+                        return new WasapiCapture(device);
+                    }
+                    catch (Exception ex)
+                    {
+                        last = ex;
+                        Console.WriteLine("[mic-error] " + device.FriendlyName + ": " + ex.Message);
+                    }
+                }
+
+                throw new InvalidOperationException("no microphone could be opened", last);
             }
 #else
-            return new HelperProcessCapture("mic");
+            return new HelperProcessCapture("mic", PreferredMicId);
 #endif
+        }
+
+#if WINDOWS
+        /// <summary>The chosen device (if it is active), then the defaults of the given roles, then every other active one.</summary>
+        private static List<MMDevice> Candidates(MMDeviceEnumerator enumerator, DataFlow flow, string preferredId, params Role[] roles)
+        {
+            var list = new List<MMDevice>();
+            void Add(Func<MMDevice> get)
+            {
+                try
+                {
+                    MMDevice device = get();
+                    if (device != null && device.State == DeviceState.Active && !list.Exists(d => d.ID == device.ID))
+                    {
+                        list.Add(device);
+                    }
+                }
+                catch (Exception)
+                {
+                    // No such device or no default of this role.
+                }
+            }
+
+            if (!string.IsNullOrWhiteSpace(preferredId))
+            {
+                Add(() => enumerator.GetDevice(preferredId));
+            }
+
+            foreach (Role role in roles)
+            {
+                Add(() => enumerator.GetDefaultAudioEndpoint(flow, role));
+            }
+
+            foreach (MMDevice device in enumerator.EnumerateAudioEndPoints(flow, DeviceState.Active))
+            {
+                MMDevice each = device;
+                Add(() => each);
+            }
+
+            return list;
+        }
+
+        /// <summary>The output device for the sound check melody: the chosen one, else the default.</summary>
+        public static MMDevice OutputDevice(MMDeviceEnumerator enumerator) =>
+            Candidates(enumerator, DataFlow.Render, PreferredOutputId, Role.Multimedia).Find(_ => true);
+#endif
+
+        /// <summary>
+        /// «--list-devices»: one line per device, «[device]&lt;TAB&gt;input|output&lt;TAB&gt;1|0 (default)&lt;TAB&gt;id&lt;TAB&gt;name».
+        /// macOS lists the microphones of the helper; the computer's sound there is all apps at once, so no outputs.
+        /// </summary>
+        public static int ListDevices()
+        {
+#if WINDOWS
+            using (var enumerator = new MMDeviceEnumerator())
+            {
+                foreach ((DataFlow flow, string kind, Role role) in new[] { (DataFlow.Capture, "input", Role.Communications), (DataFlow.Render, "output", Role.Multimedia) })
+                {
+                    string defaultId = string.Empty;
+                    try
+                    {
+                        defaultId = enumerator.GetDefaultAudioEndpoint(flow, role).ID;
+                    }
+                    catch (Exception)
+                    {
+                    }
+
+                    foreach (MMDevice device in enumerator.EnumerateAudioEndPoints(flow, DeviceState.Active))
+                    {
+                        Console.WriteLine("[device]\t" + kind + "\t" + (device.ID == defaultId ? "1" : "0") + "\t" + device.ID + "\t" + device.FriendlyName);
+                    }
+                }
+            }
+
+            return 0;
+#else
+            using (var helper = Process.Start(new ProcessStartInfo(HelperProcessCapture.HelperPath, "list-devices")
+            {
+                UseShellExecute = false,
+                RedirectStandardOutput = true,
+                CreateNoWindow = true
+            }))
+            {
+                string output = helper.StandardOutput.ReadToEnd();
+                helper.WaitForExit(5000);
+                Console.Write(output);
+                return helper.ExitCode;
+            }
+#endif
+        }
+    }
+
+    /// <summary>A stream that never delivers sound: stands in for a device that could not be opened.</summary>
+    internal sealed class SilentCapture : IWaveIn
+    {
+        public WaveFormat WaveFormat { get; set; } = WaveFormat.CreateIeeeFloatWaveFormat(48000, 1);
+
+#pragma warning disable CS0067 // Never raised: there is no sound.
+        public event EventHandler<WaveInEventArgs> DataAvailable;
+#pragma warning restore CS0067
+
+        public event EventHandler<StoppedEventArgs> RecordingStopped;
+
+        public void StartRecording()
+        {
+        }
+
+        public void StopRecording() => RecordingStopped?.Invoke(this, new StoppedEventArgs(null));
+
+        public void Dispose()
+        {
         }
     }
 
@@ -72,9 +253,12 @@ namespace DesktopCapture
         private Thread _reader;
         private volatile bool _stopping;
 
-        public HelperProcessCapture(string source)
+        private readonly string _device;
+
+        public HelperProcessCapture(string source, string device = "")
         {
             _source = source;
+            _device = device ?? string.Empty;
             WaveFormat = WaveFormat.CreateIeeeFloatWaveFormat(SampleRate, 1);
         }
 
@@ -98,7 +282,8 @@ namespace DesktopCapture
                 StartInfo = new ProcessStartInfo
                 {
                     FileName = HelperPath,
-                    Arguments = _source,
+                    // «mic <UID>»: the microphone chosen in Settings (the helper falls back to the default one).
+                    Arguments = _device.Length > 0 ? _source + " \"" + _device.Replace("\"", string.Empty) + "\"" : _source,
                     UseShellExecute = false,
                     RedirectStandardInput = true,
                     RedirectStandardOutput = true,

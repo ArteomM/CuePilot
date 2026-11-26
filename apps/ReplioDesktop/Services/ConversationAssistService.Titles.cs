@@ -28,7 +28,7 @@ public partial class ConversationAssistService
             "no quotes, no Markdown, no final period.";
         string topicNote = string.IsNullOrWhiteSpace(topicName)
             ? string.Empty
-            : $"The meeting belongs to the topic «{topicName.Trim()}». The app puts the topic name in front of the title itself, so do not repeat it.\n";
+            : $"The meeting belongs to the group «{topicName.Trim()}». The app puts the group name in front of the title itself, so do not repeat it.\n";
         string userPrompt =
             "Give this meeting a short but clear title (3 to 7 words, at most 60 characters) based on its summary below. " +
             "Name what the meeting was about or what it decided, the way a colleague would find it in a list later. " +

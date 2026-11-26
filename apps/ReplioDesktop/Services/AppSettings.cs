@@ -89,6 +89,12 @@ public class AppSettings
     public string SttApiModel { get; set; } = PolzaSttModel;
     public string SttApiKey { get; set; } = string.Empty;
     public string SttGlossary { get; set; } = string.Empty;
+
+    /// <summary>Settings → «Речь» → «Устройства»: the microphone (Windows endpoint id, macOS UID); empty = as in the system.</summary>
+    public string MicDeviceId { get; set; } = string.Empty;
+
+    /// <summary>The output device whose sound is recorded (Windows); empty = as in the system.</summary>
+    public string OutputDeviceId { get; set; } = string.Empty;
     public double SttSilenceThreshold { get; set; } = 0.004;
     public int SttMaxLagSeconds { get; set; } = 60;
     public bool KeepAudioChunks { get; set; }

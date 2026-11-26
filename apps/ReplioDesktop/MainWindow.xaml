@@ -885,7 +885,11 @@
                                 <TextBlock FontSize="26" FontWeight="ExtraBold" VerticalAlignment="Center" Foreground="{DynamicResource EchoTextBrush}"><Run Text="Repl" /><Run Foreground="{DynamicResource EchoAccentTextBrush}" Text="io" /></TextBlock>
                             </StackPanel>
 
-                            <Border Grid.Column="1" Margin="22,0,0,0" Height="32" Padding="12,0" CornerRadius="16" VerticalAlignment="Center" BorderThickness="1" ToolTip="{Binding L[ScreenShareBadgeHint]}">
+                            <!-- A click switches «Скрывать Replio при демонстрации экрана». -->
+                            <Border Grid.Column="1" Margin="22,0,0,0" Height="32" Padding="12,0" CornerRadius="16" VerticalAlignment="Center" BorderThickness="1" Cursor="Hand" ToolTip="{Binding L[ScreenShareBadgeHint]}">
+                                <Border.InputBindings>
+                                    <MouseBinding MouseAction="LeftClick" Command="{Binding ToggleScreenShareCommand}" />
+                                </Border.InputBindings>
                                 <Border.Style>
                                     <Style TargetType="Border">
                                         <Setter Property="Background" Value="{DynamicResource EchoAccentSoftBrush}" />
@@ -939,8 +943,8 @@
                                             </Ellipse.Style>
                                         </Ellipse>
                                     </Grid>
-                                    <!-- The text stays the same; the dot lights up while the windows are hidden from the share. -->
-                                    <TextBlock Margin="9,0,0,0" FontSize="13" FontWeight="SemiBold" VerticalAlignment="Center" Text="{Binding L[HiddenFromShareBadge]}">
+                                    <!-- «Скрыт от демонстрации» with a lit dot, or «Виден при демонстрации» with a grey one. -->
+                                    <TextBlock Margin="9,0,0,0" FontSize="13" FontWeight="SemiBold" VerticalAlignment="Center" Text="{Binding ScreenShareBadgeText}">
                                         <TextBlock.Style>
                                             <Style TargetType="TextBlock">
                                                 <Setter Property="Foreground" Value="{DynamicResource EchoBadgeTextBrush}" />
@@ -1246,48 +1250,6 @@
                                                FontWeight="SemiBold"
                                                Foreground="{DynamicResource EchoAccentTextBrush}"
                                                Text="{Binding ActionFeedbackText}" />
-                                    <!-- Selection and bulk actions belong to the session list. -->
-                                    <StackPanel Orientation="Horizontal" Visibility="{Binding ShowSessionsPanel, Converter={StaticResource BoolToVisibility}}">
-                                        <StackPanel Orientation="Horizontal" Style="{StaticResource HiddenWhenSelectionMode}">
-                                            <Button Height="34"
-                                                    Padding="14,0"
-                                                    Command="{Binding ToggleSelectionModeCommand}"
-                                                    ToolTip="{Binding L[TipSelectMode]}"
-                                                    Content="{Binding L[SelectSessions]}" />
-                                        </StackPanel>
-                                        <StackPanel Orientation="Horizontal" Style="{StaticResource VisibleWhenSelectionMode}">
-                                            <Button Height="34"
-                                                    Padding="14,0"
-                                                    Command="{Binding SelectAllSessionsCommand}"
-                                                    ToolTip="{Binding L[TipSelectAll]}"
-                                                    Content="{Binding L[SelectAllSessions]}" />
-                                            <Button x:Name="MoveCheckedButton"
-                                                    Height="34"
-                                                    Margin="8,0,0,0"
-                                                    Padding="14,0"
-                                                    IsEnabled="{Binding HasCheckedSessions}"
-                                                    Click="MoveCheckedButton_OnClick"
-                                                    ToolTip="{Binding L[TipMoveChecked]}"
-                                                    Content="{Binding L[MoveToTopic]}" />
-                                            <Button Height="34"
-                                                    Margin="8,0,0,0"
-                                                    Padding="14,0"
-                                                    Background="{DynamicResource EchoDangerSoftBrush}"
-                                                    BorderBrush="{DynamicResource EchoDangerBorderBrush}"
-                                                    Foreground="{DynamicResource EchoDangerTextBrush}"
-                                                    Command="{Binding DeleteCheckedSessionsCommand}"
-                                                    ToolTip="{Binding L[TipDeleteChecked]}"
-                                                    Content="{Binding DeleteCheckedText}" />
-                                            <Button Height="34"
-                                                    Margin="8,0,0,0"
-                                                    Padding="14,0"
-                                                    Style="{StaticResource EchoAccentButtonStyle}"
-                                                    FontSize="14"
-                                                    Command="{Binding ToggleSelectionModeCommand}"
-                                                    ToolTip="{Binding L[TipSelectDone]}"
-                                                    Content="{Binding L[SelectDone]}" />
-                                        </StackPanel>
-                                    </StackPanel>
                                 </StackPanel>
                             </Grid>
 
@@ -1379,7 +1341,53 @@
 
                             <!-- «Сессии»: the session list (also the whole view for «Все сессии» and «Без темы»). -->
                             <Grid Grid.Row="2" Visibility="{Binding ShowSessionsPanel, Converter={StaticResource BoolToVisibility}}">
-                                <TextBlock
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="Auto" />
+                                    <RowDefinition Height="*" />
+                                </Grid.RowDefinitions>
+                                <!-- «Выбрать несколько»: selection and bulk actions, in the list's own row (not in the header). -->
+                                <StackPanel Grid.Row="0" Margin="0,10,0,0" HorizontalAlignment="Right" Orientation="Horizontal" Visibility="{Binding ShowSessionsPanel, Converter={StaticResource BoolToVisibility}}">
+                                    <StackPanel Orientation="Horizontal" Style="{StaticResource HiddenWhenSelectionMode}">
+                                        <Button Height="34"
+                                                Padding="14,0"
+                                                Command="{Binding ToggleSelectionModeCommand}"
+                                                ToolTip="{Binding L[TipSelectMode]}"
+                                                Content="{Binding L[SelectSessions]}" />
+                                    </StackPanel>
+                                    <StackPanel Orientation="Horizontal" Style="{StaticResource VisibleWhenSelectionMode}">
+                                        <Button Height="34"
+                                                Padding="14,0"
+                                                Command="{Binding SelectAllSessionsCommand}"
+                                                ToolTip="{Binding L[TipSelectAll]}"
+                                                Content="{Binding L[SelectAllSessions]}" />
+                                        <Button x:Name="MoveCheckedButton"
+                                                Height="34"
+                                                Margin="8,0,0,0"
+                                                Padding="14,0"
+                                                IsEnabled="{Binding HasCheckedSessions}"
+                                                Click="MoveCheckedButton_OnClick"
+                                                ToolTip="{Binding L[TipMoveChecked]}"
+                                                Content="{Binding L[MoveToTopic]}" />
+                                        <Button Height="34"
+                                                Margin="8,0,0,0"
+                                                Padding="14,0"
+                                                Background="{DynamicResource EchoDangerSoftBrush}"
+                                                BorderBrush="{DynamicResource EchoDangerBorderBrush}"
+                                                Foreground="{DynamicResource EchoDangerTextBrush}"
+                                                Command="{Binding DeleteCheckedSessionsCommand}"
+                                                ToolTip="{Binding L[TipDeleteChecked]}"
+                                                Content="{Binding DeleteCheckedText}" />
+                                        <Button Height="34"
+                                                Margin="8,0,0,0"
+                                                Padding="14,0"
+                                                Style="{StaticResource EchoAccentButtonStyle}"
+                                                FontSize="14"
+                                                Command="{Binding ToggleSelectionModeCommand}"
+                                                ToolTip="{Binding L[TipSelectDone]}"
+                                                Content="{Binding L[SelectDone]}" />
+                                    </StackPanel>
+                                </StackPanel>
+                                <TextBlock Grid.Row="1"
                                            Margin="2,24,0,0"
                                            MaxWidth="520"
                                            HorizontalAlignment="Left"
@@ -1399,8 +1407,8 @@
                                     </TextBlock.Style>
                                 </TextBlock>
 
-                                <ListBox
-                                         Margin="0,6,0,0"
+                                <ListBox Grid.Row="1"
+                                         Margin="0,0,0,0"
                                          ItemsSource="{Binding CompletedSessionsView}"
                                          ItemContainerStyle="{StaticResource PlainListBoxItemStyle}"
                                          VirtualizingPanel.IsVirtualizing="True"
@@ -1424,11 +1432,11 @@
                                     </ListBox.GroupStyle>
                                     <ListBox.ItemTemplate>
                                         <DataTemplate>
+                                            <!-- «×» sits inside the card on its right edge, so cards line up with the header above. -->
                                             <Grid Margin="0,0,0,10" Background="Transparent">
                                                 <Grid.ColumnDefinitions>
                                                     <ColumnDefinition Width="Auto" />
                                                     <ColumnDefinition Width="*" />
-                                                    <ColumnDefinition Width="Auto" />
                                                 </Grid.ColumnDefinitions>
                                                 <CheckBox Margin="2,0,14,0"
                                                           VerticalAlignment="Center"
@@ -1495,17 +1503,18 @@
                                                                        Text="{Binding Usage.SessionDurationText}" />
                                                         </Border>
                                                         <TextBlock Grid.Column="3"
-                                                                   Margin="18,0,0,0"
+                                                                   Margin="18,0,40,0"
                                                                    VerticalAlignment="Center"
                                                                    Foreground="{DynamicResource EchoMutedBrush}"
                                                                    FontSize="15"
                                                                    Text="{Binding StartedAt, StringFormat={}{0:t}}" />
                                                     </Grid>
                                                 </Button>
-                                                <Button Grid.Column="2"
-                                                        Width="34"
-                                                        Height="34"
-                                                        Margin="10,0,0,0"
+                                                <Button Grid.Column="1"
+                                                        Width="30"
+                                                        Height="30"
+                                                        Margin="0,0,12,0"
+                                                        HorizontalAlignment="Right"
                                                         VerticalAlignment="Center"
                                                         Style="{StaticResource DeleteSessionButtonStyle}"
                                                         FontSize="18"
@@ -2233,6 +2242,7 @@
                                 <Grid.RowDefinitions>
                                     <RowDefinition Height="Auto" />
                                     <RowDefinition Height="*" />
+                                    <RowDefinition Height="Auto" />
                                 </Grid.RowDefinitions>
                                 <Grid>
                                     <Grid.ColumnDefinitions>
@@ -2304,14 +2314,6 @@
                                                        Foreground="{DynamicResource EchoMutedBrush}"
                                                        Text="{Binding L[GraphEmptyHint]}" />
                                         </StackPanel>
-                                        <TextBlock Margin="0,0,14,10"
-                                                   HorizontalAlignment="Right"
-                                                   VerticalAlignment="Bottom"
-                                                   IsHitTestVisible="False"
-                                                   FontSize="11.5"
-                                                   Foreground="{DynamicResource EchoSoftTextBrush}"
-                                                   Text="{Binding L[GraphControlsHint]}"
-                                                   Visibility="{Binding HasGraph, Converter={StaticResource BoolToVisibility}}" />
 
                                         <!-- Details of the clicked node. -->
                                         <Border x:Name="GraphDetailsPanel"
@@ -2391,6 +2393,15 @@
                                         </Border>
                                     </Grid>
                                 </Border>
+                                <!-- Under the graph, so it never covers the legend or the nodes. -->
+                                <TextBlock Grid.Row="2"
+                                           Margin="4,8,4,0"
+                                           HorizontalAlignment="Right"
+                                           TextWrapping="Wrap"
+                                           FontSize="11.5"
+                                           Foreground="{DynamicResource EchoSoftTextBrush}"
+                                           Text="{Binding L[GraphControlsHint]}"
+                                           Visibility="{Binding HasGraph, Converter={StaticResource BoolToVisibility}}" />
                             </Grid>
                         </Grid>
                     </Grid>
@@ -2694,7 +2705,8 @@
                                          Text="{Binding CurrentFollowUpEmail, Mode=OneWay}" />
                             </Grid>
                         </TabItem>
-                        <TabItem Tag="Usage" Header="{Binding L[TabUsage]}" ToolTip="{Binding L[TipTabUsage]}">
+                        <!-- «Статистика» (tokens and cost) is not shown to users; kept for diagnostics. -->
+                        <TabItem Tag="Usage" Header="{Binding L[TabUsage]}" ToolTip="{Binding L[TipTabUsage]}" Visibility="Collapsed">
                             <ScrollViewer Margin="10"
                                           VerticalScrollBarVisibility="Auto"
                                           HorizontalScrollBarVisibility="Disabled">
@@ -3136,12 +3148,58 @@
                                         <TextBlock Style="{StaticResource SettingsHintStyle}" Margin="0,8,0,0" Text="{Binding L[TipSpeechLanguage]}" />
                                     </StackPanel>
                                 </Border>
+                                <!-- Devices: the microphone and the output device whose sound is recorded (Windows). -->
+                                <Border Style="{StaticResource SettingsCardStyle}">
+                                    <StackPanel>
+                                        <TextBlock Style="{StaticResource SettingsCardTitleStyle}" Text="{Binding L[AudioDevicesTitle]}" />
+                                        <Grid Margin="0,2,0,0">
+                                            <Grid.ColumnDefinitions>
+                                                <ColumnDefinition Width="230" />
+                                                <ColumnDefinition Width="*" />
+                                            </Grid.ColumnDefinitions>
+                                            <Grid.RowDefinitions>
+                                                <RowDefinition Height="Auto" />
+                                                <RowDefinition Height="Auto" />
+                                            </Grid.RowDefinitions>
+                                            <TextBlock VerticalAlignment="Center" Foreground="{DynamicResource EchoSoftTextBrush}" Text="{Binding L[AudioDeviceMic]}" />
+                                            <ComboBox Grid.Column="1" MinWidth="300" MaxWidth="460" HorizontalAlignment="Left" ToolTip="{Binding L[TipAudioDeviceMic]}"
+                                                      ItemsSource="{Binding MicDevices}" DisplayMemberPath="Name" SelectedItem="{Binding SelectedMicDevice, Mode=TwoWay}" />
+                                            <TextBlock Grid.Row="1" Margin="0,10,0,0" VerticalAlignment="Center" Foreground="{DynamicResource EchoSoftTextBrush}" Text="{Binding L[AudioDeviceOutput]}"
+                                                       Visibility="{Binding HasOutputDeviceChoice, Converter={StaticResource BoolToVisibility}}" />
+                                            <ComboBox Grid.Row="1" Grid.Column="1" Margin="0,10,0,0" MinWidth="300" MaxWidth="460" HorizontalAlignment="Left" ToolTip="{Binding L[TipAudioDeviceOutput]}"
+                                                      ItemsSource="{Binding OutputDevices}" DisplayMemberPath="Name" SelectedItem="{Binding SelectedOutputDevice, Mode=TwoWay}"
+                                                      Visibility="{Binding HasOutputDeviceChoice, Converter={StaticResource BoolToVisibility}}" />
+                                        </Grid>
+                                        <StackPanel Margin="0,10,0,0" Orientation="Horizontal">
+                                            <Button Height="32" Padding="14,0" Command="{Binding RefreshAudioDevicesCommand}" Content="{Binding L[AudioDevicesRefresh]}" />
+                                            <TextBlock Margin="12,0,0,0" VerticalAlignment="Center" Foreground="{DynamicResource EchoMutedBrush}" Text="{Binding AudioDevicesStatus}" />
+                                        </StackPanel>
+                                        <TextBlock Style="{StaticResource SettingsHintStyle}" Margin="0,8,0,0" Text="{Binding L[AudioDevicesHint]}" />
+                                    </StackPanel>
+                                </Border>
                                 <Border Style="{StaticResource SettingsCardStyle}">
                                     <StackPanel>
                                         <TextBlock Style="{StaticResource SettingsCardTitleStyle}" Text="{Binding L[SoundCheckTitle]}" />
                                         <Button HorizontalAlignment="Left" MinWidth="170" Height="34" Padding="14,0" Command="{Binding RunAudioCaptureTestCommand}"
-                                                ToolTip="{Binding L[TipTestAudioCapture]}" Content="{Binding L[TestAudioCapture]}" />
+                                                ToolTip="{Binding L[TipTestAudioCapture]}" Content="{Binding SoundCheckButtonText}" />
                                         <TextBlock Style="{StaticResource SettingsHintStyle}" Margin="0,8,0,0" Text="{Binding L[SoundCheckHint]}" />
+                                        <!-- Live bars of the check: the microphone and the computer's sound (the melody Replio plays). -->
+                                        <Grid Margin="0,10,0,0" MaxWidth="460" HorizontalAlignment="Left" Visibility="{Binding ShowSoundCheckLevels, Converter={StaticResource BoolToVisibility}}">
+                                            <Grid.ColumnDefinitions>
+                                                <ColumnDefinition Width="150" />
+                                                <ColumnDefinition Width="300" />
+                                            </Grid.ColumnDefinitions>
+                                            <Grid.RowDefinitions>
+                                                <RowDefinition Height="Auto" />
+                                                <RowDefinition Height="Auto" />
+                                            </Grid.RowDefinitions>
+                                            <TextBlock VerticalAlignment="Center" FontSize="13" Foreground="{DynamicResource EchoSoftTextBrush}" Text="{Binding L[SoundCheckMicLabel]}" />
+                                            <ProgressBar Grid.Column="1" Height="8" Minimum="0" Maximum="1" Value="{Binding SoundCheckMicLevel, Mode=OneWay}" />
+                                            <TextBlock Grid.Row="1" Margin="0,8,0,0" VerticalAlignment="Center" FontSize="13" Foreground="{DynamicResource EchoSoftTextBrush}" Text="{Binding L[SoundCheckSystemLabel]}" />
+                                            <ProgressBar Grid.Row="1" Grid.Column="1" Margin="0,8,0,0" Height="8" Minimum="0" Maximum="1" Value="{Binding SoundCheckSystemLevel, Mode=OneWay}" />
+                                        </Grid>
+                                        <TextBlock Margin="0,8,0,0" MaxWidth="560" HorizontalAlignment="Left" Foreground="{DynamicResource EchoTextBrush}" TextWrapping="Wrap" Text="{Binding SoundCheckStatus}"
+                                                   Visibility="{Binding ShowSoundCheckLevels, Converter={StaticResource BoolToVisibility}}" />
                                         <TextBlock Margin="0,8,0,0" Foreground="{DynamicResource EchoTextBrush}" TextWrapping="Wrap" Text="{Binding AudioHealthMessage}" />
                                         <StackPanel Visibility="{Binding IsCapturing, Converter={StaticResource BoolToVisibility}}">
                                             <TextBlock Margin="0,4,0,0" FontSize="13" Foreground="{DynamicResource EchoMutedBrush}" Text="{Binding SystemStatsText}" />

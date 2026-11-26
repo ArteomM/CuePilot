@@ -83,7 +83,7 @@ public partial class MainWindow : Window
             () => Execute(_viewModel.RecapCommand),
             enabled => _viewModel.SmartModeEnabled = enabled);
         _assistOverlayWindow.SetSmartMode(_viewModel.SmartModeEnabled);
-        _assistOverlayWindow.HotkeyHint = _viewModel.ToggleOverlayHotkeyText;
+        _assistOverlayWindow.HotkeyHint = HotkeyDisplay.Format(_viewModel.ToggleOverlayHotkeyText);
 
         _viewModel.ToggleOverlayRequested += ToggleAssistOverlay;
         _viewModel.ShowOverlayRequested += ShowAssistOverlay;
@@ -91,6 +91,8 @@ public partial class MainWindow : Window
         _viewModel.WindowModeRequested += ApplyWindowMode;
         // Back from the personal account in the browser: pick up a new plan without waiting for the timer.
         Activated += (_, _) => _viewModel.RefreshAccountIfStale(120);
+        // During a recording the main window comes back over the floating bar: move the bar off its input row.
+        Activated += (_, _) => Dispatcher.UIThread.Post(KeepIndicatorClearOfMainWindow, DispatcherPriority.Background);
         _viewModel.RestartRequested += () => global::Avalonia.Threading.Dispatcher.UIThread.Post(() =>
         {
             try
@@ -136,7 +138,7 @@ public partial class MainWindow : Window
                     OnUi(() => _assistOverlayWindow.SetSmartMode(_viewModel.SmartModeEnabled));
                     break;
                 case nameof(MainViewModel.ToggleOverlayHotkeyText):
-                    OnUi(() => _assistOverlayWindow.HotkeyHint = _viewModel.ToggleOverlayHotkeyText);
+                    OnUi(() => _assistOverlayWindow.HotkeyHint = HotkeyDisplay.Format(_viewModel.ToggleOverlayHotkeyText));
                     break;
                 case nameof(MainViewModel.SelectedMainPage):
                     OnUi(AnimatePageSwitch);
@@ -171,11 +173,28 @@ public partial class MainWindow : Window
         _indicatorWindow.SnapshotRequested += _viewModel.TakeSnapshot;
         _indicatorWindow.OverlayShown = () => _assistOverlayWindow.IsVisible;
         _indicatorWindow.OpenMainRequested += OpenMainHome;
+        // The microphone button of the floating bar: the device lists, a pick is saved and switched during a recording.
+        _indicatorWindow.DevicesProvider = async () =>
+        {
+            (IReadOnlyList<AudioDeviceOption> mics, IReadOnlyList<AudioDeviceOption> outputs) = await _viewModel.GetAudioDevicesForMenuAsync();
+            return (mics, outputs, _viewModel.SelectedMicDevice?.Id ?? string.Empty, _viewModel.SelectedOutputDevice?.Id ?? string.Empty);
+        };
+        _indicatorWindow.DeviceChosen += (microphone, option) => _viewModel.ChooseAudioDevice(microphone, option);
+        // The Replio mark of the floating bar moves with the sound that is heard.
+        _viewModel.LiveLevelChanged += level => OnUi(() => _indicatorWindow.SetLevel(level));
         // A press on a floating window takes the focus from this one: remember first whether this window was in front.
         _indicatorWindow.AddHandler(PointerPressedEvent, (_, _) => RememberFrontStateAtAuxPress(), RoutingStrategies.Tunnel, handledEventsToo: true);
         _assistOverlayWindow.AddHandler(PointerPressedEvent, (_, _) => RememberFrontStateAtAuxPress(), RoutingStrategies.Tunnel, handledEventsToo: true);
 
         DataContext = _viewModel;
+        // The badge in the header switches «Скрывать Replio при демонстрации экрана».
+        ShareBadge.PointerReleased += (_, e) =>
+        {
+            if (e.InitialPressMouseButton == MouseButton.Left)
+            {
+                Execute(_viewModel.ToggleScreenShareCommand);
+            }
+        };
         _shownPage = _viewModel.SelectedMainPage;
         SessionTabs.SelectionChanged += SessionTabs_OnSelectionChanged;
         SyncSessionTab();
@@ -377,6 +396,7 @@ public partial class MainWindow : Window
         {
             _assistOverlayWindow.SetCaptureStatus(isActive);
             _indicatorWindow.SetCaptureState(isActive);
+            UpdateTrayForCapture(isActive);
 
             if (isActive)
             {
@@ -440,6 +460,46 @@ public partial class MainWindow : Window
     {
         double scale = window.Screens.ScreenFromWindow(window)?.Scaling ?? window.Screens.Primary?.Scaling ?? 1;
         return new Point(window.Position.X / scale, window.Position.Y / scale);
+    }
+
+    /// <summary>
+    /// The floating bar must not cover the main window (it sat on «Новая запись» and the question box): when they
+    /// overlap, the bar moves next to the window, below it, or above it, whichever fits on the screen.
+    /// </summary>
+    private void KeepIndicatorClearOfMainWindow()
+    {
+        if (!_indicatorWindow.IsVisible || WindowState == WindowState.Minimized || !IsVisible)
+        {
+            return;
+        }
+
+        Rect area = WorkArea();
+        Point mainAt = PlaceOf(this);
+        var main = new Rect(mainAt.X, mainAt.Y, Bounds.Width, Bounds.Height);
+        Point barAt = PlaceOf(_indicatorWindow);
+        double width = _indicatorWindow.Width, height = _indicatorWindow.Height;
+        if (!main.Intersects(new Rect(barAt.X, barAt.Y, width, height)))
+        {
+            return;
+        }
+
+        const double gap = 12;
+        double top = Math.Clamp(main.Bottom - height, area.Top, area.Bottom - height);
+        Point[] candidates =
+        [
+            new(main.Right + gap, top),
+            new(main.Left - gap - width, top),
+            new(main.Left + (main.Width - width) / 2, main.Bottom + gap),
+            new(main.Left + (main.Width - width) / 2, main.Top - gap - height)
+        ];
+        foreach (Point candidate in candidates)
+        {
+            if (candidate.X >= area.Left && candidate.Y >= area.Top && candidate.X + width <= area.Right && candidate.Y + height <= area.Bottom)
+            {
+                Place(_indicatorWindow, candidate.X, candidate.Y);
+                return;
+            }
+        }
     }
 
     private void PositionAuxWindows()
@@ -575,28 +635,124 @@ public partial class MainWindow : Window
         });
     }
 
-    /// <summary>The tray icon of Windows; on macOS it is the icon in the menu bar.</summary>
+    /// <summary>
+    /// The tray icon of Windows; on macOS it is the icon in the menu bar. While a recording runs it blinks a red dot,
+    /// and its menu has «Открыть транскрипт», «Остановить запись» and «Снимок экрана», so the folded app can be driven
+    /// from there; the tooltip says that a click opens the live transcript.
+    /// </summary>
     private void InitializeTrayIcon()
     {
         var menu = new NativeMenu();
-        var open = new NativeMenuItem(_viewModel.L["TrayOpen"]);
-        open.Click += (_, _) => OnUi(RestoreFromTray);
+        _trayOpenItem = new NativeMenuItem(_viewModel.L["TrayOpen"]);
+        _trayOpenItem.Click += (_, _) => OpenMainHome();
+        _trayCaptureItem = new NativeMenuItem(_viewModel.L["TrayStartRecording"]);
+        _trayCaptureItem.Click += (_, _) => OnUi(() => Execute(_viewModel.ToggleCaptureCommand));
+        _traySnapshotItem = new NativeMenuItem(_viewModel.L["TraySnapshot"]) { IsEnabled = false };
+        _traySnapshotItem.Click += (_, _) => OnUi(_viewModel.TakeSnapshot);
         var exit = new NativeMenuItem(_viewModel.L["TrayExit"]);
         exit.Click += (_, _) => OnUi(ExitFromTray);
-        menu.Items.Add(open);
+        menu.Items.Add(_trayOpenItem);
+        menu.Items.Add(_trayCaptureItem);
+        menu.Items.Add(_traySnapshotItem);
+        menu.Items.Add(new NativeMenuItemSeparator());
         menu.Items.Add(exit);
 
+        _trayIdleIcon = new WindowIcon(AssetLoader.Open(new Uri("avares://Replio/Assets/replio-icon.png")));
+        _trayRecordingIcon = MakeRecordingTrayIcon() ?? _trayIdleIcon;
         _trayIcon = new TrayIcon
         {
             ToolTipText = "Replio",
-            Icon = new WindowIcon(AssetLoader.Open(new Uri("avares://Replio/Assets/replio-icon.png"))),
+            Icon = _trayIdleIcon,
             Menu = menu,
             IsVisible = true
         };
-        _trayIcon.Clicked += (_, _) => OnUi(RestoreFromTray);
+        _trayIcon.Clicked += (_, _) => OpenMainHome();
         if (Application.Current is { } app)
         {
             TrayIcon.SetIcons(app, [_trayIcon]);
+        }
+
+        _trayBlinkTimer.Tick += (_, _) =>
+        {
+            if (_trayIcon == null)
+            {
+                return;
+            }
+
+            _trayBlinkOn = !_trayBlinkOn;
+            _trayIcon.Icon = _trayBlinkOn ? _trayRecordingIcon : _trayIdleIcon;
+        };
+    }
+
+    private NativeMenuItem? _trayOpenItem;
+    private NativeMenuItem? _trayCaptureItem;
+    private NativeMenuItem? _traySnapshotItem;
+    private WindowIcon? _trayIdleIcon;
+    private WindowIcon? _trayRecordingIcon;
+    private bool _trayBlinkOn;
+    private readonly DispatcherTimer _trayBlinkTimer = new() { Interval = TimeSpan.FromMilliseconds(650) };
+
+    /// <summary>Menu, tooltip and the blinking icon follow the recording.</summary>
+    private void UpdateTrayForCapture(bool isActive)
+    {
+        if (_trayIcon == null)
+        {
+            return;
+        }
+
+        if (_trayOpenItem != null)
+        {
+            _trayOpenItem.Header = _viewModel.L[isActive ? "TrayOpenTranscript" : "TrayOpen"];
+        }
+
+        if (_trayCaptureItem != null)
+        {
+            _trayCaptureItem.Header = _viewModel.L[isActive ? "TrayStopRecording" : "TrayStartRecording"];
+        }
+
+        if (_traySnapshotItem != null)
+        {
+            _traySnapshotItem.IsEnabled = isActive;
+        }
+
+        _trayIcon.ToolTipText = isActive ? _viewModel.L["TrayTooltipRecording"] : "Replio";
+        if (isActive)
+        {
+            _trayBlinkOn = true;
+            _trayIcon.Icon = _trayRecordingIcon;
+            _trayBlinkTimer.Start();
+        }
+        else
+        {
+            _trayBlinkTimer.Stop();
+            _trayBlinkOn = false;
+            _trayIcon.Icon = _trayIdleIcon;
+        }
+    }
+
+    /// <summary>The app icon with a red «recording» dot in the corner, drawn once.</summary>
+    private static WindowIcon? MakeRecordingTrayIcon()
+    {
+        try
+        {
+            using var source = new global::Avalonia.Media.Imaging.Bitmap(AssetLoader.Open(new Uri("avares://Replio/Assets/replio-icon.png")));
+            var size = new PixelSize(64, 64);
+            using var target = new global::Avalonia.Media.Imaging.RenderTargetBitmap(size, new Vector(96, 96));
+            using (DrawingContext dc = target.CreateDrawingContext())
+            {
+                dc.DrawImage(source, new Rect(0, 0, 64, 64));
+                dc.DrawEllipse(Brushes.White, null, new Point(49, 49), 15, 15);
+                dc.DrawEllipse(new SolidColorBrush(Color.Parse("#FF4D4F")), null, new Point(49, 49), 12, 12);
+            }
+
+            var stream = new MemoryStream();
+            target.Save(stream);
+            stream.Position = 0;
+            return new WindowIcon(stream);
+        }
+        catch (Exception)
+        {
+            return null;
         }
     }
 

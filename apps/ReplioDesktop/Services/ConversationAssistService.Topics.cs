@@ -64,17 +64,17 @@ public partial class ConversationAssistService
 
         string documentContext = BuildDocumentOverview(documents, 40000);
         string systemPrompt =
-            "You maintain a knowledge base for a topic: a series of related meetings plus documents attached to it. " +
+            "You maintain a knowledge base for a group: a series of related meetings plus documents attached to it (in Russian it is called «группа», never «тема»). " +
             "Merge facts across all sessions and documents, resolve contradictions in favour of the most recent session, " +
             "be factual and terse, keep names, numbers and terminology exactly as given. Write in Russian.";
         string fullPrompt =
-            $"Topic: {topicName}\n" +
-            $"Sessions in this topic (oldest first): {sessions.Count}\n\n" +
+            $"Group: {topicName}\n" +
+            $"Sessions in this group (oldest first): {sessions.Count}\n\n" +
             (sessions.Count > 0 ? context.ToString() : "(no sessions yet)\n") + "\n" +
             $"Attached documents and notes: {documents.Count}\n\n" +
             (documents.Count > 0 ? documentContext : "(none)\n") + "\n" +
             "Produce the shared knowledge base in exactly this Markdown structure (keep the headings exactly as written):\n\n" +
-            "## Общий контекст\n<3-5 sentences: what this topic is about and where it stands now>\n\n" +
+            "## Общий контекст\n<3-5 sentences: what this group of meetings is about and where it stands now>\n\n" +
             "## Ключевые факты и решения\n- ...\n\n" +
             "## Цифры и данные из документов\n- <figure, date or requirement> (документ)\n\n" +
             "## Открытые вопросы и задачи\n- <task> (ответственный, срок — if known)\n\n" +
@@ -145,16 +145,16 @@ public partial class ConversationAssistService
         string conflictsHeading = english ? "Discrepancies" : "Расхождения";
         string clarifyHeading = english ? "To clarify" : "Что уточнить";
         string systemPrompt =
-            "You answer questions about a topic (a series of related meetings plus attached documents) using only the data provided. " +
+            "You answer questions about a group (a series of related meetings plus attached documents; in Russian «группа», not «тема») using only the data provided. " +
             "Sessions are listed newest first and labelled [S1], [S2], …; [S1] is the most recent. Documents are labelled [D1], [D2], …. " +
             "The saved knowledge base may be outdated: when it disagrees with session data, trust the session data and the most recent session. " +
             "The knowledge graph excerpt (when given) lists the entities named in the question and what they are linked to; use it to find related people, tasks, decisions and documents in the data, " +
             "but take facts and sources from the sessions and documents. " +
             "Keep names, numbers and terminology exactly as given. Do not invent facts; if the data does not answer the question, say so. Write in Russian.";
         string fullPrompt =
-            $"Topic: {topicName}\n" +
+            $"Group: {topicName}\n" +
             $"Today: {DateTime.Now:yyyy-MM-dd HH:mm}\n" +
-            $"Sessions in this topic: {sessions.Count}; documents: {documents.Count}\n\n" +
+            $"Sessions in this group: {sessions.Count}; documents: {documents.Count}\n\n" +
             "Saved knowledge base (may be outdated):\n" +
             (string.IsNullOrWhiteSpace(knowledgeText) ? "(none)" : Cap(knowledgeText.Trim(), 12000)) + "\n\n" +
             "Session data (newest first):\n" +
@@ -202,11 +202,11 @@ public partial class ConversationAssistService
         }
 
         string systemPrompt =
-            "You build a knowledge graph of a topic (meetings plus documents), like an Obsidian graph. " +
+            "You build a knowledge graph of a group (meetings plus documents), like an Obsidian graph. " +
             "Extract the important entities and the relations between them. Use the names exactly as written in the data. " +
             "Merge duplicates (the same person written differently is one node). Return JSON only.";
         string fullPrompt =
-            $"Topic: {topicName}\n\n" +
+            $"Group: {topicName}\n\n" +
             "Knowledge base:\n" + (string.IsNullOrWhiteSpace(knowledgeText) ? "(none)" : Cap(knowledgeText.Trim(), 10000)) + "\n\n" +
             "Sessions:\n" + (context.Length > 0 ? context.ToString() : "(none)\n") + "\n" +
             "Documents:\n" + (documents.Count > 0 ? BuildDocumentOverview(documents, 30000) : "(none)\n") + "\n" +
@@ -215,7 +215,7 @@ public partial class ConversationAssistService
             "\"description\":\"<one sentence in Russian>\",\"sources\":[\"<exact session title or document name as in the headings, without the [S1]/[D1] mark>\"]}]," +
             "\"edges\":[{\"source\":\"n1\",\"target\":\"n2\",\"label\":\"<relation, 1-3 words in Russian>\"}]}\n" +
             "Rules: 15-70 nodes ranked by importance; every node has at least one edge; no edges to missing ids; " +
-            "labels <= 40 characters; documents attached to the topic are nodes of type document; JSON only, no Markdown fences.";
+            "labels <= 40 characters; documents attached to the group are nodes of type document; JSON only, no Markdown fences.";
 
         LlmResponse response = await CompleteAsync(options, AssistModelTier.Analysis, systemPrompt, fullPrompt, [], cancellationToken);
         TopicGraph graph = ParseGraph(response.Text);

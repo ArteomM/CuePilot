@@ -1,6 +1,6 @@
 # Replio для macOS: как запустить тестовую сборку
 
-Нужен macOS 13 Ventura или новее. Установочный файл `Replio-…-mac-arm64.dmg` для Mac на Apple Silicon (M1–M4), `…-mac-x64.dmg` для Mac на Intel (какой у вас процессор, видно в меню  → «Об этом Mac»).
+Нужен macOS 13 Ventura или новее. Установочный файл `Replio-…-mac-arm64.dmg` для Mac на Apple Silicon (M1 и новее), `…-mac-x64.dmg` для Mac на Intel (какой у вас процессор, видно в меню  → «Об этом Mac»).
 
 ## Установка
 

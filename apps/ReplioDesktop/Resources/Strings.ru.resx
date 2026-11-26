@@ -12,7 +12,7 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, ...</value>
   </resheader>
-  <data name="MainWindowTitle" xml:space="preserve"><value>Replio Desktop</value></data>
+  <data name="MainWindowTitle" xml:space="preserve"><value>Replio</value></data>
   <data name="MainHeader" xml:space="preserve"><value>Replio — десктопный суфлер</value></data>
   <data name="StartCapture" xml:space="preserve"><value>Запустить захват</value></data>
   <data name="StopCapture" xml:space="preserve"><value>Остановить захват</value></data>
@@ -59,8 +59,8 @@
   <data name="OverlayWindowTitle" xml:space="preserve"><value>Replio</value></data>
   <data name="OverlayTitle" xml:space="preserve"><value>Replio</value></data>
   <data name="OverlayPrompt" xml:space="preserve"><value>Спросите о разговоре или контексте экрана</value></data>
-  <data name="OverlayStatusRunning" xml:space="preserve"><value>● идёт запись</value></data>
-  <data name="OverlayStatusIdle" xml:space="preserve"><value>○ запись остановлена</value></data>
+  <data name="OverlayStatusRunning" xml:space="preserve"><value>● запись</value></data>
+  <data name="OverlayStatusIdle" xml:space="preserve"><value>○ запись выкл.</value></data>
   <data name="OverlaySuggestionPlaceholder" xml:space="preserve"><value>Здесь появится предпросмотр подсказки.</value></data>
   <data name="PermissionWizardTitle" xml:space="preserve"><value>Мастер разрешений Replio</value></data>
   <data name="WizardStep1Title" xml:space="preserve"><value>Шаг 1: Разрешения на захват аудио</value></data>
@@ -216,7 +216,7 @@
   <data name="IndicatorAsk" xml:space="preserve"><value>Показать</value></data>
   <data name="WhatsNewButtonText" xml:space="preserve"><value>Что нового в Replio {0} ↗</value></data>
   <data name="WhatsNewTitle" xml:space="preserve"><value>Replio {0} — что изменилось</value></data>
-  <data name="WhatsNewBody" xml:space="preserve"><value>Replio 1.1.3:&#x0a;• Настройки разложены по разделам: «Аккаунт», «Встречи», «Речь», «ИИ-помощник», «Окна и вид», «Горячие клавиши», «Данные и обновления». Изменения сохраняются сами, кнопки «Сохранить» больше нет.&#x0a;• Каждый тариф видит только то, что ему доступно: на «Локальном» речь распознаётся на компьютере, на «Про» и «Команде» можно выбрать качество распознавания.&#x0a;• «Встречи (по умолчанию)» в настройках действуют во всех темах, где не настроено своё.&#x0a;• Имена и термины теперь можно задать и для каждой темы на вкладке «Как помогать»: они добавляются к общему списку и лучше распознаются.&#x0a;• Тариф «Приватный»: ИИ и распознавание речи идут через сервер компании, который администратор один раз подключает в кабинете на replio.ru.&#x0a;• Переключатель «Глубокий режим» убран: он ничего не менял.&#x0a;&#x0a;Replio 1.1.2:&#x0a;• «Режимы» заменены вкладкой темы «Как помогать»: тип встречи (продажа, собеседование, переговоры, планёрка, консультация или свой вариант), как подсказывать и какие разделы добавить в итоги. Для встреч без темы это настраивается в «Настройках».&#x0a;• Поиск в шапке ищет везде: темы, сводки, итоги, транскрипты, письма, базу знаний и вопросы. Клик открывает нужное место.&#x0a;• «Актуализировать тему» заодно переделывает устаревшие итоги встреч темы, а во встрече из темы заменяет «Обновить итоги».&#x0a;• Полоса лимита в шапке показывает, сколько осталось на сегодня и на месяц. Она желтеет, когда остаётся мало, и краснеет у самого края.&#x0a;• «Справка» открывается небольшим окном с короткими карточками и картинками.&#x0a;• В «Настройках» появились кнопка «Открыть кабинет» и «Папка данных»: храните встречи, темы и базу знаний в Яндекс Диске, OneDrive или iCloud Drive, чтобы они были на всех ваших компьютерах.&#x0a;• Новый логотип, как на сайте. Тариф из личного кабинета подхватывается сам.&#x0a;&#x0a;Replio 1.1.0 — первая версия.&#x0a;• Подсказки во время звонка: «Что сказать», «Что ответить», «Что спросить» и уточняющие вопросы в отдельном окне, которое скрыто от демонстрации экрана.&#x0a;• Итоги встречи, письмо по итогам и транскрипт с кнопками «Копировать»; снимки экрана сохраняются вместе со встречей.&#x0a;• Темы: сессии, база знаний (документы, папки, аудио и видео, свой текст), «Сводка», «Вопросы» с источниками и граф связей. Одна кнопка «Актуализировать тему» разбирает новые материалы, обновляет сводку и граф.&#x0a;• Язык речи определяется автоматически для каждой стороны разговора; его можно выбрать и вручную в настройках.&#x0a;• Аккаунт Replio: вход через replio.ru, ключ хранится на компьютере в зашифрованном виде. Подсказки, итоги и распознавание работают по вашему тарифу.&#x0a;• Обновления приходят прямо в приложение: при новой версии появится кнопка «Обновить». Настройки и ключ при обновлении сохраняются.&#x0a;• Команда replio и MCP-сервер для ИИ-агентов (Claude Code, Codex, Cursor): подробности в %AppData%\Replio\AGENTS.md.</value></data>
+  <data name="WhatsNewBody" xml:space="preserve"><value>Replio 1.1.4:&#x0a;• Темы теперь называются группами: «Новая группа», «Актуализировать группу», «Без группы». Всё содержимое на месте.&#x0a;• «Проверить звук» больше не начинает запись: Replio играет мелодию и показывает уровни микрофона и звука компьютера, как в приложениях для созвонов.&#x0a;• В «Настройки → Речь» можно выбрать микрофон (на Windows — и устройство, откуда записываются собеседники). Если устройство занято или отключено, запись не обрывается: Replio берёт другое.&#x0a;• На мини-панели записи значок Replio двигается, как эквалайзер, когда звук слышен, а кнопка с микрофоном меняет устройства прямо во время записи.&#x0a;• Записи, в которых не распознано ни одной фразы, больше не обрабатываются: они называются «Пустая запись», и Replio предлагает их удалить.&#x0a;• Группа обновляется сама после каждой встречи: сводка и граф готовы без кнопки «Актуализировать группу». Пока идёт обновление, кнопка показывает прогресс.&#x0a;• Значок «Скрыт от демонстрации» показывает настоящее состояние и переключается щелчком.&#x0a;• Граф: подписи больше не наезжают друг на друга, легенда и подсказка вынесены под граф.&#x0a;• Значок Replio в трее во время записи мигает, в его меню есть «Открыть транскрипт», «Остановить запись» и «Снимок экрана».&#x0a;• Панель записи не закрывает поле ввода главного окна, вкладка «Статистика» убрана, кнопка «Выбрать несколько» стоит над списком встреч.&#x0a;• Новые встречи, группы и база знаний хранятся в папке .replio в папке пользователя, как .claude у Claude. Прежние данные остаются на месте, перенести их можно в «Настройки → Данные и обновления».&#x0a;&#x0a;Replio 1.1.3:&#x0a;• Настройки разложены по разделам: «Аккаунт», «Встречи», «Речь», «Помощник», «Окна и вид», «Горячие клавиши», «Данные и обновления». Изменения сохраняются сами, кнопки «Сохранить» больше нет.&#x0a;• Каждый тариф видит только то, что ему доступно: на «Локальном» речь распознаётся на компьютере, на «Про» и «Команде» можно выбрать качество распознавания.&#x0a;• «Встречи (по умолчанию)» в настройках действуют во всех группах, где не настроено своё.&#x0a;• Имена и термины теперь можно задать и для каждой группы на вкладке «Как помогать»: они добавляются к общему списку и лучше распознаются.&#x0a;• Тариф «Приватный»: подсказки Replio и распознавание речи идут через сервер компании, который администратор один раз подключает в кабинете на replio.ru.&#x0a;• Переключатель «Глубокий режим» убран: он ничего не менял.&#x0a;&#x0a;Replio 1.1.2:&#x0a;• «Режимы» заменены вкладкой группы «Как помогать»: тип встречи (продажа, собеседование, переговоры, планёрка, консультация или свой вариант), как подсказывать и какие разделы добавить в итоги. Для встреч без группы это настраивается в «Настройках».&#x0a;• Поиск в шапке ищет везде: группы, сводки, итоги, транскрипты, письма, базу знаний и вопросы. Клик открывает нужное место.&#x0a;• «Актуализировать группу» заодно переделывает устаревшие итоги встреч группы, а во встрече из группы заменяет «Обновить итоги».&#x0a;• Полоса лимита в шапке показывает, сколько осталось на сегодня и на месяц. Она желтеет, когда остаётся мало, и краснеет у самого края.&#x0a;• «Справка» открывается небольшим окном с короткими карточками и картинками.&#x0a;• В «Настройках» появились кнопка «Открыть кабинет» и «Папка данных»: храните встречи, группы и базу знаний в Яндекс Диске, OneDrive или iCloud Drive, чтобы они были на всех ваших компьютерах.&#x0a;• Новый логотип, как на сайте. Тариф из личного кабинета подхватывается сам.&#x0a;&#x0a;Replio 1.1.0 — первая версия.&#x0a;• Подсказки во время звонка: «Что сказать», «Что ответить», «Что спросить» и уточняющие вопросы в отдельном окне, которое скрыто от демонстрации экрана.&#x0a;• Итоги встречи, письмо по итогам и транскрипт с кнопками «Копировать»; снимки экрана сохраняются вместе со встречей.&#x0a;• Группы: сессии, база знаний (документы, папки, аудио и видео, свой текст), «Сводка», «Вопросы» с источниками и граф связей. Одна кнопка «Актуализировать группу» разбирает новые материалы, обновляет сводку и граф.&#x0a;• Язык речи определяется автоматически для каждой стороны разговора; его можно выбрать и вручную в настройках.&#x0a;• Аккаунт Replio: вход через replio.ru, ключ хранится на компьютере в зашифрованном виде. Подсказки, итоги и распознавание работают по вашему тарифу.&#x0a;• Обновления приходят прямо в приложение: при новой версии появится кнопка «Обновить». Настройки и ключ при обновлении сохраняются.&#x0a;• Команда replio и MCP-сервер для ИИ-агентов (Claude Code, Codex, Cursor): подробности в %AppData%\Replio\AGENTS.md.</value></data>
   <data name="SmartModeToggle" xml:space="preserve"><value>Глубокий режим</value></data>
   <data name="HotkeysTitle" xml:space="preserve"><value>Горячие клавиши</value></data>
   <data name="OpenAiKeyMissing" xml:space="preserve"><value>Не задан API-ключ. Укажите его в Настройках → API-ключ или положите строку ApiKey=... в файл %AppData%\Replio\secrets.txt (либо задайте переменную POLZA_API_KEY).</value></data>
@@ -237,7 +237,7 @@
   <data name="SettingsSttModel" xml:space="preserve"><value>Модель распознавания</value></data>
   <data name="SettingsSttApiKey" xml:space="preserve"><value>Ключ доступа</value></data>
   <data name="SettingsSttGlossary" xml:space="preserve"><value>Имена и термины</value></data>
-  <data name="SettingsSttGlossaryHint" xml:space="preserve"><value>Слова, которые распознавание пишет с ошибками: имена коллег, ваша компания, продукты. Действуют на всех встречах. Слова для конкретной темы добавляйте в теме на вкладке «Как помогать». Через запятую или с новой строки.</value></data>
+  <data name="SettingsSttGlossaryHint" xml:space="preserve"><value>Слова, которые распознавание пишет с ошибками: имена коллег, ваша компания, продукты. Действуют на всех встречах. Слова для конкретной группы добавляйте в группе на вкладке «Как помогать». Через запятую или с новой строки.</value></data>
   <data name="SettingsSttHint" xml:space="preserve"><value>Поле можно оставить пустым. Если API недоступен, фрагмент распознаётся локально через whisper.cpp.</value></data>
   <data name="OverlayActionWhatToSay" xml:space="preserve"><value>• Что сказать</value></data>
   <data name="SmartToggleShort" xml:space="preserve"><value>Глубже</value></data>
@@ -256,7 +256,7 @@
   <data name="SnapshotTakenNotice" xml:space="preserve"><value>📷 Снимок сохранён и добавлен в контекст</value></data>
   <data name="SnapshotSkippedNotice" xml:space="preserve"><value>📷 Снимок не сделан</value></data>
   <data name="SnapshotSavedNotice" xml:space="preserve"><value>📷 Снимок {0} сохранён</value></data>
-  <data name="SnapshotDisabledNotice" xml:space="preserve"><value>📷 Снимки выключены: включите «Снимки экрана как контекст для ИИ» в настройках</value></data>
+  <data name="SnapshotDisabledNotice" xml:space="preserve"><value>📷 Снимки выключены: включите «Снимки экрана как контекст для Replio» в настройках</value></data>
   <data name="ActionAsk" xml:space="preserve"><value>Вопрос</value></data>
   <data name="ActionSummary" xml:space="preserve"><value>Итоги</value></data>
   <data name="ActionSessionTitle" xml:space="preserve"><value>Название сессии</value></data>
@@ -289,39 +289,39 @@
   <data name="VisualNoFrames" xml:space="preserve"><value>Снимков пока нет.</value></data>
   <data name="VisualFramesCount" xml:space="preserve"><value>Снимков: {0}</value></data>
   <data name="UsageMode" xml:space="preserve"><value>Тип встречи</value></data>
-  <data name="UsageCostLlm" xml:space="preserve"><value>Запросы к ИИ</value></data>
+  <data name="UsageCostLlm" xml:space="preserve"><value>Запросы к Replio</value></data>
   <data name="UsageCostStt" xml:space="preserve"><value>Распознавание речи (API)</value></data>
   <data name="UsageCostTotal" xml:space="preserve"><value>Итого за сессию</value></data>
-  <data name="UsageAiRequests" xml:space="preserve"><value>Запросов к ИИ</value></data>
+  <data name="UsageAiRequests" xml:space="preserve"><value>Запросов к Replio</value></data>
   <data name="UsageAiRequestsWithVisual" xml:space="preserve"><value>Запросов со снимками экрана</value></data>
-  <data name="UsageAiImagesSent" xml:space="preserve"><value>Снимков отправлено в ИИ</value></data>
+  <data name="UsageAiImagesSent" xml:space="preserve"><value>Снимков отправлено в Replio</value></data>
   <data name="UsageVisualFrames" xml:space="preserve"><value>Снимков сохранено</value></data>
   <data name="UsageManualSnapshots" xml:space="preserve"><value>Ручных снимков</value></data>
-  <data name="UsageLastAiRequest" xml:space="preserve"><value>Последний запрос к ИИ</value></data>
+  <data name="UsageLastAiRequest" xml:space="preserve"><value>Последний запрос к Replio</value></data>
   <data name="UsageLastTokens" xml:space="preserve"><value>Токены последнего запроса</value></data>
   <data name="UsageAssistDialogEmpty" xml:space="preserve"><value>Запросов к ассистенту пока не было.</value></data>
   <data name="TrayOpen" xml:space="preserve"><value>Открыть Replio</value></data>
   <data name="TrayExit" xml:space="preserve"><value>Выход</value></data>
   <data name="IndicatorStopHint" xml:space="preserve"><value>Остановить запись</value></data>
   <data name="IndicatorStartHint" xml:space="preserve"><value>Начать запись</value></data>
-  <data name="IndicatorHomeHint" xml:space="preserve"><value>Открыть главное окно Replio</value></data>
-  <data name="IndicatorSnapshotHint" xml:space="preserve"><value>Снимок экрана (Ctrl+Shift+S): сохраняется во встрече и учитывается в следующем вопросе к ИИ.</value></data>
+  <data name="IndicatorHomeHint" xml:space="preserve"><value>Открыть транскрипт встречи в реальном времени. Значок двигается, когда Replio слышит звук</value></data>
+  <data name="IndicatorSnapshotHint" xml:space="preserve"><value>Снимок экрана (Ctrl+Shift+S): сохраняется во встрече и учитывается в следующем вопросе к Replio.</value></data>
   <data name="HiddenFromShareBadge" xml:space="preserve"><value>Скрыт от демонстрации</value></data>
-  <data name="ScreenShareBadgeHint" xml:space="preserve"><value>Индикатор горит: окна Replio скрыты от демонстрации экрана, записи и скриншотов. Не горит: участники созвона их видят. Меняется в «Настройках», раздел «Демонстрация экрана».</value></data>
+  <data name="ScreenShareBadgeHint" xml:space="preserve"><value>Нажмите, чтобы переключить. Зелёная точка: окна Replio скрыты от демонстрации экрана, записи и скриншотов. Серая: участники созвона их видят.</value></data>
   <data name="StartReplio" xml:space="preserve"><value>Запустить Replio</value></data>
   <data name="TabSummary" xml:space="preserve"><value>Итоги</value></data>
   <data name="SummaryDiscussionTitle" xml:space="preserve"><value>Обсуждение</value></data>
   <data name="TabTranscript" xml:space="preserve"><value>Транскрипт</value></data>
   <data name="TabUsage" xml:space="preserve"><value>Статистика</value></data>
   <data name="NewRecording" xml:space="preserve"><value>Новая запись</value></data>
-  <data name="SettingsSectionAi" xml:space="preserve"><value>Контекст для ИИ</value></data>
-  <data name="SettingsScreenContext" xml:space="preserve"><value>Показывать ИИ мой экран</value></data>
+  <data name="SettingsSectionAi" xml:space="preserve"><value>Контекст для Replio</value></data>
+  <data name="SettingsScreenContext" xml:space="preserve"><value>Показывать Replio мой экран</value></data>
   <data name="SettingsAutoSnapshots" xml:space="preserve"><value>Снимать, когда экран меняется</value></data>
   <data name="SettingsSnapshotInterval" xml:space="preserve"><value>Проверять экран каждые, мс</value></data>
   <data name="SettingsSnapshotBuffer" xml:space="preserve"><value>Хранить снимков в сессии</value></data>
-  <data name="SettingsSnapshotsPerRequest" xml:space="preserve"><value>Снимков в одном запросе к ИИ</value></data>
-  <data name="SettingsSnapshotsHint" xml:space="preserve"><value>Во время записи Replio прикладывает к вопросам снимки экрана: ИИ видит презентацию или документ. Кнопка 📷 делает снимок сразу.</value></data>
-  <data name="SettingsSectionLlm" xml:space="preserve"><value>Модель ИИ</value></data>
+  <data name="SettingsSnapshotsPerRequest" xml:space="preserve"><value>Снимков в одном запросе к Replio</value></data>
+  <data name="SettingsSnapshotsHint" xml:space="preserve"><value>Во время записи Replio прикладывает к вопросам снимки экрана: Replio видит презентацию или документ. Кнопка 📷 делает снимок сразу.</value></data>
+  <data name="SettingsSectionLlm" xml:space="preserve"><value>Модель Replio</value></data>
   <data name="SettingsApiKey" xml:space="preserve"><value>Ключ доступа</value></data>
   <data name="SettingsProviderPreset" xml:space="preserve"><value>Сервис</value></data>
   <data name="SettingsProvider" xml:space="preserve"><value>Название сервиса</value></data>
@@ -373,111 +373,111 @@
   <data name="DeleteCheckedConfirmTitle" xml:space="preserve"><value>Удаление сессий</value></data>
   <data name="DeleteCheckedConfirmMessage" xml:space="preserve"><value>Удалить выбранные сессии ({0})? Расшифровки, итоги и снимки экрана будут удалены без возможности восстановления.</value></data>
   <data name="DeleteCheckedSessions" xml:space="preserve"><value>Удалить ({0})</value></data>
-  <data name="DeleteTopicConfirmTitle" xml:space="preserve"><value>Удаление темы</value></data>
-  <data name="DeleteTopicConfirmMessage" xml:space="preserve"><value>Удалить тему «{0}» и её базу знаний? Сами сессии останутся в истории без темы.</value></data>
+  <data name="DeleteTopicConfirmTitle" xml:space="preserve"><value>Удаление группы</value></data>
+  <data name="DeleteTopicConfirmMessage" xml:space="preserve"><value>Удалить группу «{0}» и её базу знаний? Сами сессии останутся в истории без группы.</value></data>
   <data name="FollowUpEmailAgain" xml:space="preserve"><value>Составить заново</value></data>
   <data name="FollowUpEmailBusy" xml:space="preserve"><value>Составляю письмо по итогам встречи…</value></data>
   <data name="FollowUpEmailHint" xml:space="preserve"><value>Здесь появится черновик письма участникам: тема, краткое резюме, задачи с ответственными и сроками. Нажмите «Письмо по итогам» — письмо составляется по итогам и расшифровке этой сессии.</value></data>
   <data name="FollowUpEmailReadyHint" xml:space="preserve"><value>Черновик готов: проверьте, скопируйте и вставьте в почту. Он сохранён в сессии.</value></data>
   <data name="FollowUpEmailTitle" xml:space="preserve"><value>Письмо по итогам</value></data>
   <data name="MenuDeleteSession" xml:space="preserve"><value>Удалить сессию</value></data>
-  <data name="MenuMoveToNewTopic" xml:space="preserve"><value>В новую тему…</value></data>
-  <data name="MenuMoveToTopic" xml:space="preserve"><value>В тему «{0}»</value></data>
+  <data name="MenuMoveToNewTopic" xml:space="preserve"><value>В новую группу…</value></data>
+  <data name="MenuMoveToTopic" xml:space="preserve"><value>В группу «{0}»</value></data>
   <data name="MenuOpenSession" xml:space="preserve"><value>Открыть</value></data>
-  <data name="MenuRemoveFromTopic" xml:space="preserve"><value>Убрать из темы</value></data>
-  <data name="MoveToTopic" xml:space="preserve"><value>В тему…</value></data>
+  <data name="MenuRemoveFromTopic" xml:space="preserve"><value>Убрать из группы</value></data>
+  <data name="MoveToTopic" xml:space="preserve"><value>В группу…</value></data>
   <data name="SelectAllSessions" xml:space="preserve"><value>Выбрать все</value></data>
   <data name="SelectDone" xml:space="preserve"><value>Готово</value></data>
-  <data name="SelectSessions" xml:space="preserve"><value>Выбрать</value></data>
+  <data name="SelectSessions" xml:space="preserve"><value>Выбрать несколько</value></data>
   <data name="SessionsDeletedFeedback" xml:space="preserve"><value>Удалено сессий: {0}</value></data>
   <data name="SessionsMovedFeedback" xml:space="preserve"><value>Перемещено: {0} → «{1}»</value></data>
-  <data name="SettingsLanguageHint" xml:space="preserve"><value>English: интерфейс и ответы ИИ на английском; выбранный вручную язык речи тоже станет английским. Действует со следующей записи.</value></data>
+  <data name="SettingsLanguageHint" xml:space="preserve"><value>English: интерфейс и ответы Replio на английском; выбранный вручную язык речи тоже станет английским. Действует со следующей записи.</value></data>
   <data name="SettingsSectionAppearance" xml:space="preserve"><value>Вид</value></data>
   <data name="SettingsTheme" xml:space="preserve"><value>Тема оформления</value></data>
   <data name="TabEmail" xml:space="preserve"><value>Письмо</value></data>
   <data name="ThemeDark" xml:space="preserve"><value>Ночная</value></data>
   <data name="ThemeLight" xml:space="preserve"><value>Дневная</value></data>
   <data name="TipAsk" xml:space="preserve"><value>Задать вопрос по разговору. Вопрос и ответ появятся и в оверлее (Ctrl+Enter)</value></data>
-  <data name="TipAskBox" xml:space="preserve"><value>Введите вопрос к ИИ о текущем разговоре и нажмите Enter</value></data>
-  <data name="TipCheckSession" xml:space="preserve"><value>Отметить сессию для удаления или переноса в тему</value></data>
+  <data name="TipAskBox" xml:space="preserve"><value>Введите вопрос к Replio о текущем разговоре и нажмите Enter</value></data>
+  <data name="TipCheckSession" xml:space="preserve"><value>Отметить сессию для удаления или переноса в группу</value></data>
   <data name="TipClose" xml:space="preserve"><value>Закрыть</value></data>
   <data name="TipCopyTranscript" xml:space="preserve"><value>Скопировать весь транскрипт встречи в буфер обмена: время, имя и текст каждой реплики</value></data>
   <data name="TipCopyEmail" xml:space="preserve"><value>Скопировать письмо в буфер обмена, чтобы вставить в почту</value></data>
   <data name="TipCopySummary" xml:space="preserve"><value>Скопировать текст итогов в буфер обмена — например, чтобы вставить в мессенджер или почту</value></data>
-  <data name="TipCopyTopicKnowledge" xml:space="preserve"><value>Скопировать базу знаний темы в буфер обмена</value></data>
-  <data name="TipCreateTopic" xml:space="preserve"><value>Создать тему — раздел, в котором собираются связанные сессии и их общая база знаний</value></data>
+  <data name="TipCopyTopicKnowledge" xml:space="preserve"><value>Скопировать базу знаний группы в буфер обмена</value></data>
+  <data name="TipCreateTopic" xml:space="preserve"><value>Создать группу — раздел, в котором собираются связанные сессии и их общая база знаний</value></data>
   <data name="TipDeleteChecked" xml:space="preserve"><value>Удалить отмеченные сессии без возможности восстановления</value></data>
   <data name="TipDeleteSession" xml:space="preserve"><value>Удалить сессию</value></data>
-  <data name="TipDeleteTopic" xml:space="preserve"><value>Удалить тему. Сессии останутся в истории</value></data>
+  <data name="TipDeleteTopic" xml:space="preserve"><value>Удалить группу. Сессии останутся в истории</value></data>
   <data name="TipFollowUpEmail" xml:space="preserve"><value>Составить черновик письма участникам по итогам встречи: краткое резюме, задачи, ответственные и сроки. Откроется на вкладке «Письмо»</value></data>
   <data name="TipFollowUpEmailAgain" xml:space="preserve"><value>Составить письмо заново по текущим итогам</value></data>
   <data name="TipGoHome" xml:space="preserve"><value>На главный экран со списком сессий</value></data>
   <data name="TipIndicatorAsk" xml:space="preserve"><value>Показать оверлей с подсказками</value></data>
   <data name="TipIndicatorHide" xml:space="preserve"><value>Скрыть оверлей с подсказками</value></data>
-  <data name="TipLanguageEn" xml:space="preserve"><value>Интерфейс и ответы ИИ — на английском</value></data>
-  <data name="TipLanguageRu" xml:space="preserve"><value>Интерфейс на русском, распознавание речи и ответы ИИ — на русском</value></data>
+  <data name="TipLanguageEn" xml:space="preserve"><value>Интерфейс и ответы Replio — на английском</value></data>
+  <data name="TipLanguageRu" xml:space="preserve"><value>Интерфейс на русском, распознавание речи и ответы Replio — на русском</value></data>
   <data name="TipModes" xml:space="preserve"><value>Режимы: свой промпт и шаблон заметок для разных типов встреч</value></data>
-  <data name="TipMoveChecked" xml:space="preserve"><value>Перенести отмеченные сессии в тему. Можно и перетащить их на тему слева</value></data>
+  <data name="TipMoveChecked" xml:space="preserve"><value>Перенести отмеченные сессии в группу. Можно и перетащить их на группу слева</value></data>
   <data name="TipNewRecording" xml:space="preserve"><value>Начать новую запись разговора</value></data>
-  <data name="TipOpenSession" xml:space="preserve"><value>Открыть сессию. Перетащите карточку на тему слева, чтобы сгруппировать; правый клик — меню</value></data>
+  <data name="TipOpenSession" xml:space="preserve"><value>Открыть сессию. Перетащите карточку на группу слева, чтобы добавить её туда; правый клик — меню</value></data>
   <data name="TipOverlayFollowUp" xml:space="preserve"><value>Предложить уточняющие вопросы по последней теме разговора</value></data>
   <data name="TipOverlayRecap" xml:space="preserve"><value>Кратко: о чём говорили последние минуты</value></data>
   <data name="TipOverlayWhatToAsk" xml:space="preserve"><value>Подсказать, какой вопрос задать собеседнику сейчас</value></data>
   <data name="TipOverlayWhatToSay" xml:space="preserve"><value>Подсказать, что ответить собеседнику сейчас</value></data>
-  <data name="TipRefreshTopicKnowledge" xml:space="preserve"><value>Пересобрать общую базу знаний по всем сессиям темы. Нужна после добавления или удаления сессий</value></data>
+  <data name="TipRefreshTopicKnowledge" xml:space="preserve"><value>Пересобрать общую базу знаний по всем сессиям группы. Нужна после добавления или удаления сессий</value></data>
   <data name="TipRegenerate" xml:space="preserve"><value>Заново составить итоги по всей расшифровке. Текущие итоги будут заменены</value></data>
   <data name="TipRenameSession" xml:space="preserve"><value>Нажмите, чтобы переименовать сессию</value></data>
-  <data name="TipRenameTopic" xml:space="preserve"><value>Переименовать тему</value></data>
+  <data name="TipRenameTopic" xml:space="preserve"><value>Переименовать группу</value></data>
   <data name="TipSaveSettings" xml:space="preserve"><value>Сохранить настройки. Ключ API и ваши значения при обновлении не перезаписываются</value></data>
-  <data name="TipSearch" xml:space="preserve"><value>Поиск по всему: темы и их сводки, названия, итоги, расшифровки и письма встреч, база знаний и вопросы. Должны найтись все слова, в любом порядке</value></data>
+  <data name="TipSearch" xml:space="preserve"><value>Поиск по всему: группы и их сводки, названия, итоги, расшифровки и письма встреч, база знаний и вопросы. Должны найтись все слова, в любом порядке</value></data>
   <data name="TipSelectAll" xml:space="preserve"><value>Отметить все сессии в списке (повторное нажатие снимет отметки)</value></data>
   <data name="TipSelectDone" xml:space="preserve"><value>Выйти из режима выбора</value></data>
-  <data name="TipSelectMode" xml:space="preserve"><value>Отметить несколько сессий, чтобы удалить их или перенести в тему</value></data>
-  <data name="TipSettings" xml:space="preserve"><value>Настройки: оформление, язык, ИИ, распознавание речи, горячие клавиши</value></data>
-  <data name="TipSmartMode" xml:space="preserve"><value>ИИ дольше думает над каждым ответом: точнее, но медленнее и дороже</value></data>
+  <data name="TipSelectMode" xml:space="preserve"><value>Отметить несколько сессий, чтобы удалить их или перенести в группу</value></data>
+  <data name="TipSettings" xml:space="preserve"><value>Настройки: оформление, язык, помощник, распознавание речи, горячие клавиши</value></data>
+  <data name="TipSmartMode" xml:space="preserve"><value>Replio дольше думает над каждым ответом: точнее, но медленнее и дороже</value></data>
   <data name="TipStartCapture" xml:space="preserve"><value>Начать запись разговора и подсказки в реальном времени (Ctrl+Shift+/)</value></data>
   <data name="TipTabEmail" xml:space="preserve"><value>Черновик письма участникам по итогам встречи</value></data>
   <data name="TipTabSummary" xml:space="preserve"><value>Итоги: задачи, ключевые моменты, участники</value></data>
   <data name="TipTabTranscript" xml:space="preserve"><value>Расшифровка разговора</value></data>
-  <data name="TipTabUsage" xml:space="preserve"><value>Статистика: длительность, запросы к ИИ, стоимость</value></data>
-  <data name="TipTestAudioCapture" xml:space="preserve"><value>Покажет, слышит ли Replio ваш микрофон и звук компьютера (голос собеседника). Работает во время записи</value></data>
+  <data name="TipTabUsage" xml:space="preserve"><value>Статистика: длительность, запросы к Replio, стоимость</value></data>
+  <data name="TipTestAudioCapture" xml:space="preserve"><value>Проверка без записи: мелодия для динамиков, уровни микрофона и звука компьютера</value></data>
   <data name="TipTestMicrophone" xml:space="preserve"><value>Проверить микрофон</value></data>
   <data name="TipThemeDark" xml:space="preserve"><value>Тёмная тема — графит и мята</value></data>
   <data name="TipThemeLight" xml:space="preserve"><value>Светлая тема для работы днём</value></data>
   <data name="TipToggleTheme" xml:space="preserve"><value>Переключить дневную и ночную тему</value></data>
   <data name="TipTopicRow" xml:space="preserve"><value>Показать сессии. Перетащите сюда карточки сессий, чтобы перенести их</value></data>
-  <data name="TipTopicStale" xml:space="preserve"><value>Добавлены или удалены сессии — нажмите «Актуализировать тему»</value></data>
+  <data name="TipTopicStale" xml:space="preserve"><value>Добавлены или удалены сессии — нажмите «Актуализировать группу»</value></data>
   <data name="TipWhatsNew" xml:space="preserve"><value>Что изменилось в этой версии</value></data>
   <data name="TopicAllSessions" xml:space="preserve"><value>Все сессии</value></data>
-  <data name="TopicCreate" xml:space="preserve"><value>+ Новая тема</value></data>
-  <data name="TopicDelete" xml:space="preserve"><value>Удалить тему</value></data>
-  <data name="TopicEmptyHint" xml:space="preserve"><value>Здесь пока нет сессий. Перетащите карточки сессий из раздела «Все сессии» на название темы слева или выберите несколько и нажмите «В тему…».</value></data>
-  <data name="TopicKnowledgeBusy" xml:space="preserve"><value>Собираю общую базу знаний по сессиям темы…</value></data>
-  <data name="TopicKnowledgeEmpty" xml:space="preserve"><value>Базы знаний ещё нет — нажмите «Актуализировать тему»</value></data>
+  <data name="TopicCreate" xml:space="preserve"><value>+ Новая группа</value></data>
+  <data name="TopicDelete" xml:space="preserve"><value>Удалить группу</value></data>
+  <data name="TopicEmptyHint" xml:space="preserve"><value>Здесь пока нет сессий. Перетащите карточки сессий из раздела «Все сессии» на название группы слева или выберите несколько и нажмите «В группу…».</value></data>
+  <data name="TopicKnowledgeBusy" xml:space="preserve"><value>Собираю общую базу знаний по сессиям группы…</value></data>
+  <data name="TopicKnowledgeEmpty" xml:space="preserve"><value>Базы знаний ещё нет — нажмите «Актуализировать группу»</value></data>
   <data name="TopicKnowledgeEmptyAnswer" xml:space="preserve"><value>Модель вернула пустой ответ.</value></data>
-  <data name="TopicKnowledgeStale" xml:space="preserve"><value>Состав сессий изменился — нажмите «Актуализировать тему»</value></data>
-  <data name="TopicKnowledgeTitle" xml:space="preserve"><value>Общий контекст и база знаний темы</value></data>
+  <data name="TopicKnowledgeStale" xml:space="preserve"><value>Состав сессий изменился — нажмите «Актуализировать группу»</value></data>
+  <data name="TopicKnowledgeTitle" xml:space="preserve"><value>Общий контекст и база знаний группы</value></data>
   <data name="TopicKnowledgeUpToDate" xml:space="preserve"><value>Актуально на {0} · сессий: {1} · материалов: {2}</value></data>
   <data name="TopicAsk" xml:space="preserve"><value>Спросить</value></data>
-  <data name="TopicAskPlaceholder" xml:space="preserve"><value>Задайте вопрос по теме — например, о чём договорились по срокам</value></data>
-  <data name="TopicAskBusy" xml:space="preserve"><value>Собираю актуальные данные по сессиям темы и ищу ответ…</value></data>
+  <data name="TopicAskPlaceholder" xml:space="preserve"><value>Задайте вопрос по группе — например, о чём договорились по срокам</value></data>
+  <data name="TopicAskBusy" xml:space="preserve"><value>Собираю актуальные данные по сессиям группы и ищу ответ…</value></data>
   <data name="TopicAskAnswered" xml:space="preserve"><value>Вопрос: «{0}» · {1}</value></data>
-  <data name="TipTopicAsk" xml:space="preserve"><value>Ответить на вопрос по актуальным итогам и расшифровкам сессий темы. Расхождения в словах участников на последних встречах будут подсвечены отдельно</value></data>
-  <data name="TipTopicAskBox" xml:space="preserve"><value>Вопрос о теме: ответ строится по всем сессиям и базе знаний. Enter — отправить, Shift+Enter — новая строка</value></data>
+  <data name="TipTopicAsk" xml:space="preserve"><value>Ответить на вопрос по актуальным итогам и расшифровкам сессий группы. Расхождения в словах участников на последних встречах будут подсвечены отдельно</value></data>
+  <data name="TipTopicAskBox" xml:space="preserve"><value>Вопрос о группе: ответ строится по всем сессиям и базе знаний. Enter — отправить, Shift+Enter — новая строка</value></data>
   <data name="TipCopyTopicAnswer" xml:space="preserve"><value>Скопировать ответ в буфер обмена</value></data>
-  <data name="TopicNewName" xml:space="preserve"><value>Новая тема</value></data>
-  <data name="TopicNoSessions" xml:space="preserve"><value>Перетащите сюда сессии, и тема соберёт по ним общую базу знаний</value></data>
+  <data name="TopicNewName" xml:space="preserve"><value>Новая группа</value></data>
+  <data name="TopicNoSessions" xml:space="preserve"><value>Перетащите сюда сессии, и группа соберёт по ним общую базу знаний</value></data>
   <data name="TopicRefreshKnowledge" xml:space="preserve"><value>Актуализировать</value></data>
   <data name="TopicRename" xml:space="preserve"><value>Переименовать</value></data>
-  <data name="TopicUnsorted" xml:space="preserve"><value>Без темы</value></data>
-  <data name="TopicsDragHint" xml:space="preserve"><value>Перетащите сессию на тему, чтобы сгруппировать</value></data>
-  <data name="TopicsTitle" xml:space="preserve"><value>ТЕМЫ</value></data>
-  <data name="TipHotkeyAsk" xml:space="preserve"><value>Задать вопрос ИИ из любого окна. Формат: Ctrl+Enter</value></data>
+  <data name="TopicUnsorted" xml:space="preserve"><value>Без группы</value></data>
+  <data name="TopicsDragHint" xml:space="preserve"><value>Перетащите сессию на группу, чтобы добавить её туда</value></data>
+  <data name="TopicsTitle" xml:space="preserve"><value>ГРУППЫ</value></data>
+  <data name="TipHotkeyAsk" xml:space="preserve"><value>Задать вопрос Replio из любого окна. Формат: Ctrl+Enter</value></data>
   <data name="TipHotkeyClearChat" xml:space="preserve"><value>Очистить диалог в оверлее</value></data>
   <data name="TipHotkeyMove" xml:space="preserve"><value>Двигать оверлей по экрану: влево, вправо, вверх, вниз</value></data>
   <data name="TipHotkeyScroll" xml:space="preserve"><value>Прокрутить ответы в оверлее вверх и вниз</value></data>
   <data name="TipHotkeyShowHide" xml:space="preserve"><value>Показать или скрыть оверлей с подсказками</value></data>
-  <data name="TipHotkeySnapshot" xml:space="preserve"><value>Сделать снимок экрана для контекста ИИ во время записи</value></data>
+  <data name="TipHotkeySnapshot" xml:space="preserve"><value>Сделать снимок экрана для контекста Replio во время записи</value></data>
   <data name="TipHotkeyStartStop" xml:space="preserve"><value>Начать или остановить запись разговора</value></data>
   <data name="TipApiKey" xml:space="preserve"><value>Ключ выбранного сервиса. Хранится только на этом компьютере</value></data>
   <data name="TipBaseUrl" xml:space="preserve"><value>Адрес API провайдера, например https://polza.ai/api/v1</value></data>
@@ -485,12 +485,12 @@
   <data name="TipKeyHeader" xml:space="preserve"><value>HTTP-заголовок, в котором передаётся ключ, обычно Authorization</value></data>
   <data name="TipKeyPrefix" xml:space="preserve"><value>Префикс перед ключом в заголовке, обычно Bearer</value></data>
   <data name="TipModel" xml:space="preserve"><value>Модель для подсказок во время разговора. Выберите из списка или впишите название так, как у сервиса</value></data>
-  <data name="TipProviderPreset" xml:space="preserve"><value>Сервис, через который работает ИИ. Polza.ai по умолчанию</value></data>
+  <data name="TipProviderPreset" xml:space="preserve"><value>Сервис, через который работает Replio. Polza.ai по умолчанию</value></data>
   <data name="TipProvider" xml:space="preserve"><value>Название провайдера для своего набора настроек</value></data>
   <data name="TipSnapshotBuffer" xml:space="preserve"><value>Сколько последних снимков экрана хранить для контекста</value></data>
   <data name="TipSnapshotInterval" xml:space="preserve"><value>Как часто проверять экран на изменения, в миллисекундах</value></data>
-  <data name="TipSnapshotsPerRequest" xml:space="preserve"><value>Сколько снимков экрана отправлять ИИ в одном запросе (больше — точнее, но дороже)</value></data>
-  <data name="TipSttApiKey" xml:space="preserve"><value>Ключ сервиса распознавания. Пусто: тот же ключ, что у сервиса ИИ, если сервис тот же</value></data>
+  <data name="TipSnapshotsPerRequest" xml:space="preserve"><value>Сколько снимков экрана отправлять Replio в одном запросе (больше — точнее, но дороже)</value></data>
+  <data name="TipSttApiKey" xml:space="preserve"><value>Ключ сервиса распознавания. Пусто: тот же ключ, что у сервиса подсказок, если сервис тот же</value></data>
   <data name="TipSttGlossary" xml:space="preserve"><value>Имена и термины, которые распознавание должно писать правильно</value></data>
   <data name="TipSttModel" xml:space="preserve"><value>Модель распознавания у выбранного сервиса. Выберите из списка или впишите название так, как у сервиса</value></data>
   <data name="SettingsModelPickerHint" xml:space="preserve"><value>Модель можно выбрать из списка сервиса (▾) или вписать самому.</value></data>
@@ -513,8 +513,8 @@
   <data name="ModelNoteSttWhisper" xml:space="preserve"><value>классический Whisper</value></data>
   <data name="ModelNoteSttFast" xml:space="preserve"><value>быстрая</value></data>
   <data name="ModelPrice" xml:space="preserve"><value>{0} / {1} {2} за 1 млн токенов</value></data>
-  <data name="TipLanguage" xml:space="preserve"><value>Язык интерфейса, распознавания речи и ответов ИИ</value></data>
-  <data name="TipScreenContext" xml:space="preserve"><value>Добавлять к вопросам ИИ снимок экрана, чтобы он видел презентацию или документ</value></data>
+  <data name="TipLanguage" xml:space="preserve"><value>Язык интерфейса, распознавания речи и ответов Replio</value></data>
+  <data name="TipScreenContext" xml:space="preserve"><value>Добавлять к вопросам Replio снимок экрана, чтобы он видел презентацию или документ</value></data>
   <data name="TipAutoSnapshots" xml:space="preserve"><value>Автоматически делать снимки, когда экран заметно меняется</value></data>
   <data name="DialogDelete" xml:space="preserve"><value>Удалить</value></data>
   <data name="DialogYes" xml:space="preserve"><value>Да</value></data>
@@ -529,36 +529,36 @@
   <data name="TopicTabKnowledge" xml:space="preserve"><value>База знаний</value></data>
   <data name="TopicTabQuestions" xml:space="preserve"><value>Вопросы</value></data>
   <data name="TopicTabGraph" xml:space="preserve"><value>Граф</value></data>
-  <data name="TipTopicTabSessions" xml:space="preserve"><value>Сессии этой темы. Перетащите сюда сессии из «Все сессии» или «Без темы»</value></data>
-  <data name="TipTopicTabKnowledge" xml:space="preserve"><value>Прикреплённые к теме файлы, папки и тексты, разобранные в Markdown</value></data>
-  <data name="TipTopicTabQuestions" xml:space="preserve"><value>Вопросы к ИИ о теме: ответы по сессиям и базе знаний, с источниками и расхождениями</value></data>
-  <data name="TipTopicTabGraph" xml:space="preserve"><value>Сущности темы и связи между ними: люди, компании, проекты, задачи, решения, документы</value></data>
+  <data name="TipTopicTabSessions" xml:space="preserve"><value>Сессии этой группы. Перетащите сюда сессии из «Все сессии» или «Без группы»</value></data>
+  <data name="TipTopicTabKnowledge" xml:space="preserve"><value>Прикреплённые к группе файлы, папки и тексты, разобранные в Markdown</value></data>
+  <data name="TipTopicTabQuestions" xml:space="preserve"><value>Вопросы к Replio о группе: ответы по сессиям и базе знаний, с источниками и расхождениями</value></data>
+  <data name="TipTopicTabGraph" xml:space="preserve"><value>Сущности группы и связи между ними: люди, компании, проекты, задачи, решения, документы</value></data>
   <data name="KnowledgeAddFiles" xml:space="preserve"><value>+ Документы</value></data>
   <data name="KnowledgeAddFolder" xml:space="preserve"><value>+ Папка</value></data>
   <data name="KnowledgeAddNote" xml:space="preserve"><value>+ Текст</value></data>
   <data name="TipKnowledgeAddFiles" xml:space="preserve"><value>Прикрепить документы: PDF, Word (doc, docx), Excel (xls, xlsx), картинки (jpg, png), txt, md. Файлы можно и перетащить сюда или вставить через Ctrl+V</value></data>
   <data name="TipKnowledgeAddFolder" xml:space="preserve"><value>Прикрепить папку: будут разобраны все поддерживаемые файлы в ней и во вложенных папках. Папку можно и перетащить сюда или вставить через Ctrl+V</value></data>
   <data name="TipKnowledgeAddNote" xml:space="preserve"><value>Добавить свой текст: договорённости, контекст, требования. Он сразу попадает в базу знаний. Скопированный текст можно и перетащить сюда или вставить через Ctrl+V</value></data>
-  <data name="KnowledgeAddFilesTitle" xml:space="preserve"><value>Прикрепить документы к теме</value></data>
-  <data name="KnowledgeAddFolderTitle" xml:space="preserve"><value>Прикрепить папку к теме</value></data>
+  <data name="KnowledgeAddFilesTitle" xml:space="preserve"><value>Прикрепить документы к группе</value></data>
+  <data name="KnowledgeAddFolderTitle" xml:space="preserve"><value>Прикрепить папку к группе</value></data>
   <data name="KnowledgeFileFilterName" xml:space="preserve"><value>Документы (PDF, Word, Excel, картинки, текст)</value></data>
   <data name="KnowledgeListHint" xml:space="preserve"><value>Перетащите сюда документы, аудио, видео, папки или текст, вставьте их через Ctrl+V или воспользуйтесь кнопками выше. Replio разберёт их в Markdown (речь из аудио и видео станет текстом) и будет использовать в сводке, ответах и графе.</value></data>
   <data name="KnowledgeParseAll" xml:space="preserve"><value>Разобрать всё новое</value></data>
   <data name="TipKnowledgeParseAll" xml:space="preserve"><value>Разобрать все новые и изменившиеся материалы по очереди</value></data>
   <data name="KnowledgeOpenFolder" xml:space="preserve"><value>Открыть папку базы знаний</value></data>
-  <data name="TipKnowledgeOpenFolder" xml:space="preserve"><value>Открыть в проводнике папку, где Replio хранит разобранные .md файлы этой темы</value></data>
+  <data name="TipKnowledgeOpenFolder" xml:space="preserve"><value>Открыть в проводнике папку, где Replio хранит разобранные .md файлы этой группы</value></data>
   <data name="KnowledgeParse" xml:space="preserve"><value>Разобрать</value></data>
   <data name="KnowledgeReparse" xml:space="preserve"><value>Разобрать заново</value></data>
-  <data name="TipKnowledgeParse" xml:space="preserve"><value>Прочитать материал и сохранить его в разобранном виде (Markdown). Картинки и сканы распознаёт ИИ, речь в аудио и видео распознаётся по настройкам распознавания речи</value></data>
+  <data name="TipKnowledgeParse" xml:space="preserve"><value>Прочитать материал и сохранить его в разобранном виде (Markdown). Картинки и сканы распознаёт Replio, речь в аудио и видео распознаётся по настройкам распознавания речи</value></data>
   <data name="KnowledgeRemove" xml:space="preserve"><value>Удалить</value></data>
-  <data name="TipKnowledgeRemove" xml:space="preserve"><value>Убрать материал из базы знаний темы. Оригинал на диске не удаляется</value></data>
+  <data name="TipKnowledgeRemove" xml:space="preserve"><value>Убрать материал из базы знаний группы. Оригинал на диске не удаляется</value></data>
   <data name="KnowledgeEditNote" xml:space="preserve"><value>Изменить</value></data>
   <data name="TipKnowledgeEditNote" xml:space="preserve"><value>Изменить текст заметки; после сохранения она разбирается заново</value></data>
   <data name="KnowledgeOpenOriginal" xml:space="preserve"><value>Открыть</value></data>
   <data name="TipKnowledgeOpenOriginal" xml:space="preserve"><value>Открыть оригинальный файл или папку</value></data>
   <data name="TipKnowledgeCopy" xml:space="preserve"><value>Скопировать разобранный текст в буфер обмена</value></data>
   <data name="KnowledgeAddedFeedback" xml:space="preserve"><value>Добавлено: {0}</value></data>
-  <data name="KnowledgeAlreadyAdded" xml:space="preserve"><value>Уже прикреплено к теме</value></data>
+  <data name="KnowledgeAlreadyAdded" xml:space="preserve"><value>Уже прикреплено к группе</value></data>
   <data name="KnowledgeDropHint" xml:space="preserve"><value>Отпустите, чтобы добавить в базу знаний</value></data>
   <data name="KnowledgeDropSubHint" xml:space="preserve"><value>Каждый файл и папка станут отдельной записью, текст станет заметкой</value></data>
   <data name="KnowledgeAddedSkippedFeedback" xml:space="preserve"><value>Добавлено: {0}. Пропущено: {1}, такой формат не поддерживается</value></data>
@@ -569,10 +569,10 @@
   <data name="KnowledgeParsing" xml:space="preserve"><value>Разбираю…</value></data>
   <data name="KnowledgeParsingFile" xml:space="preserve"><value>Разбираю {0} из {1}: {2}</value></data>
   <data name="KnowledgeRemoveConfirmTitle" xml:space="preserve"><value>Убрать из базы знаний?</value></data>
-  <data name="KnowledgeRemoveConfirmMessage" xml:space="preserve"><value>«{0}» и его разобранный текст будут убраны из темы. Из графа сразу исчезнет то, что было только в этом материале, сводка темы обновится. Оригинальные файлы на диске останутся.</value></data>
+  <data name="KnowledgeRemoveConfirmMessage" xml:space="preserve"><value>«{0}» и его разобранный текст будут убраны из группы. Из графа сразу исчезнет то, что было только в этом материале, сводка группы обновится. Оригинальные файлы на диске останутся.</value></data>
   <data name="KnowledgeSkippedHeading" xml:space="preserve"><value>Не удалось разобрать</value></data>
   <data name="KnowledgeSourceEmpty" xml:space="preserve"><value>Ещё не разобрано. Нажмите «Разобрать», и здесь появится текст, который Replio будет использовать.</value></data>
-  <data name="KnowledgeSummaryEmpty" xml:space="preserve"><value>Сводка ещё не собрана. Нажмите «Актуализировать тему»: Replio объединит сессии и материалы темы в одну базу знаний и построит граф.</value></data>
+  <data name="KnowledgeSummaryEmpty" xml:space="preserve"><value>Сводка ещё не собрана. Нажмите «Актуализировать группу»: Replio объединит сессии и материалы группы в одну базу знаний и построит граф.</value></data>
   <data name="KnowledgeSourceLabel" xml:space="preserve"><value>Источник</value></data>
   <data name="KnowledgeTooManyImages" xml:space="preserve"><value>Слишком много картинок в папке: распознаются первые 40</value></data>
   <data name="KnowledgeStatusNew" xml:space="preserve"><value>Новый, не разобран</value></data>
@@ -581,30 +581,30 @@
   <data name="KnowledgeStatusMissing" xml:space="preserve"><value>Оригинал не найден на диске</value></data>
   <data name="KnowledgeStatusParsed" xml:space="preserve"><value>Разобран {0} · {1} симв.</value></data>
   <data name="KnowledgeStatusParsedFolder" xml:space="preserve"><value>Разобрана {0} · файлов: {1}, пропущено: {2}</value></data>
-  <data name="KnowledgeSummaryTitle" xml:space="preserve"><value>Сводка темы</value></data>
+  <data name="KnowledgeSummaryTitle" xml:space="preserve"><value>Сводка группы</value></data>
   <data name="NoteDialogAddTitle" xml:space="preserve"><value>Добавить текст в базу знаний</value></data>
   <data name="NoteDialogEditTitle" xml:space="preserve"><value>Изменить заметку</value></data>
   <data name="NoteDialogHint" xml:space="preserve"><value>Договорённости, контекст, требования — всё, что Replio должен учитывать в сводке, ответах и графе.</value></data>
-  <data name="NoteDialogTitlePlaceholder" xml:space="preserve"><value>Название заметки</value></data>
-  <data name="NoteDialogTextPlaceholder" xml:space="preserve"><value>Текст заметки</value></data>
+  <data name="NoteDialogTitlePlaceholder" xml:space="preserve"><value>Название (необязательно)</value></data>
+  <data name="NoteDialogTextPlaceholder" xml:space="preserve"><value>Текст</value></data>
   <data name="NoteDialogAdd" xml:space="preserve"><value>Добавить</value></data>
   <data name="NoteDialogSave" xml:space="preserve"><value>Сохранить</value></data>
-  <data name="QuestionsEmptyTitle" xml:space="preserve"><value>Спросите о теме</value></data>
-  <data name="QuestionsEmptyHint" xml:space="preserve"><value>Ответ собирается из итогов и расшифровок всех сессий темы, из базы знаний и графа: связанные люди, задачи и документы находятся, даже если в вопросе их нет. Свежие встречи важнее старых, расхождения между людьми выделяются отдельно.</value></data>
+  <data name="QuestionsEmptyTitle" xml:space="preserve"><value>Спросите о группе</value></data>
+  <data name="QuestionsEmptyHint" xml:space="preserve"><value>Ответ собирается из итогов и расшифровок всех сессий группы, из базы знаний и графа: связанные люди, задачи и документы находятся, даже если в вопросе их нет. Свежие встречи важнее старых, расхождения между людьми выделяются отдельно.</value></data>
   <data name="QuestionSuggestion1" xml:space="preserve"><value>О чём договорились на последней встрече?</value></data>
   <data name="QuestionSuggestion2" xml:space="preserve"><value>Где расхождения в словах участников?</value></data>
   <data name="QuestionSuggestion3" xml:space="preserve"><value>Какие задачи открыты и у кого?</value></data>
   <data name="QuestionSuggestion4" xml:space="preserve"><value>Какие сроки и цифры уже зафиксированы?</value></data>
   <data name="GraphBuild" xml:space="preserve"><value>Построить граф</value></data>
   <data name="GraphRebuild" xml:space="preserve"><value>Обновить граф</value></data>
-  <data name="TipGraphBuild" xml:space="preserve"><value>ИИ выделит сущности темы и связи между ними по сессиям и базе знаний. По графу «Вопросы» находят связанные факты</value></data>
+  <data name="TipGraphBuild" xml:space="preserve"><value>Replio выделит сущности группы и связи между ними по сессиям и базе знаний. По графу «Вопросы» находят связанные факты</value></data>
   <data name="GraphBusy" xml:space="preserve"><value>Строю граф…</value></data>
   <data name="GraphEmpty" xml:space="preserve"><value>Граф ещё не построен</value></data>
   <data name="GraphUpToDate" xml:space="preserve"><value>Узлов: {0} · связей: {1} · {2}</value></data>
-  <data name="GraphStale" xml:space="preserve"><value>есть новые данные, нажмите «Актуализировать тему»</value></data>
+  <data name="GraphStale" xml:space="preserve"><value>есть новые данные, нажмите «Актуализировать группу»</value></data>
   <data name="GraphEmptyAnswer" xml:space="preserve"><value>Модель не нашла сущностей для графа.</value></data>
-  <data name="GraphEmptyTitle" xml:space="preserve"><value>Граф связей темы</value></data>
-  <data name="GraphEmptyHint" xml:space="preserve"><value>Нажмите «Актуализировать тему»: Replio найдёт людей, компании, проекты, задачи, решения и документы и покажет, как они связаны.</value></data>
+  <data name="GraphEmptyTitle" xml:space="preserve"><value>Граф связей группы</value></data>
+  <data name="GraphEmptyHint" xml:space="preserve"><value>Нажмите «Актуализировать группу»: Replio найдёт людей, компании, проекты, задачи, решения и документы и покажет, как они связаны.</value></data>
   <data name="GraphSearchPlaceholder" xml:space="preserve"><value>Найти на графе</value></data>
   <data name="TipGraphSearch" xml:space="preserve"><value>Подсветить узлы, в названии или описании которых есть этот текст</value></data>
   <data name="GraphControlsHint" xml:space="preserve"><value>Колесо — масштаб · перетаскивание — перемещение · двойной щелчок — показать всё</value></data>
@@ -623,24 +623,24 @@
   <data name="KnowledgeSourcesSummary" xml:space="preserve"><value>Материалов: {0}</value></data>
   <data name="TipKnowledgeSelect" xml:space="preserve"><value>Отметить несколько материалов, чтобы убрать их разом</value></data>
   <data name="TipKnowledgeSelectAll" xml:space="preserve"><value>Отметить все материалы или снять все отметки</value></data>
-  <data name="TipKnowledgeRemoveChecked" xml:space="preserve"><value>Убрать отмеченные материалы из темы: их разобранный текст удалится, граф и сводка обновятся. Оригиналы на диске останутся</value></data>
-  <data name="TipKnowledgeRemoveRow" xml:space="preserve"><value>Убрать материал из темы (клавиша Delete)</value></data>
-  <data name="KnowledgeRemoveManyConfirmMessage" xml:space="preserve"><value>Убрать из темы материалов: {0}? Их разобранный текст удалится, из графа сразу исчезнет то, что было только в них, сводка темы обновится. Оригинальные файлы на диске останутся.</value></data>
+  <data name="TipKnowledgeRemoveChecked" xml:space="preserve"><value>Убрать отмеченные материалы из группы: их разобранный текст удалится, граф и сводка обновятся. Оригиналы на диске останутся</value></data>
+  <data name="TipKnowledgeRemoveRow" xml:space="preserve"><value>Убрать материал из группы (клавиша Delete)</value></data>
+  <data name="KnowledgeRemoveManyConfirmMessage" xml:space="preserve"><value>Убрать из группы материалов: {0}? Их разобранный текст удалится, из графа сразу исчезнет то, что было только в них, сводка группы обновится. Оригинальные файлы на диске останутся.</value></data>
   <data name="KnowledgeRemovedFeedback" xml:space="preserve"><value>Убрано материалов: {0}</value></data>
-  <data name="KnowledgeAutoRefreshFailed" xml:space="preserve"><value>Сводку темы обновить не удалось. Нажмите «Актуализировать тему», когда будет связь и баланс</value></data>
+  <data name="KnowledgeAutoRefreshFailed" xml:space="preserve"><value>Сводку группы обновить не удалось. Нажмите «Актуализировать группу», когда будет связь и баланс</value></data>
   <data name="KnowledgeParseTimeout" xml:space="preserve"><value>Разбор шёл дольше 10 минут и был остановлен. Попробуйте ещё раз или разделите файл на части</value></data>
   <data name="UsageCostHeader" xml:space="preserve"><value>Стоимость · {0}</value></data>
   <data name="UsageDialogHeader" xml:space="preserve"><value>Диалог с ассистентом · {0}</value></data>
-  <data name="TipUsageCost" xml:space="preserve"><value>Сколько стоила сессия: запросы к ИИ и распознавание речи</value></data>
+  <data name="TipUsageCost" xml:space="preserve"><value>Сколько стоила сессия: запросы к Replio и распознавание речи</value></data>
   <data name="TipUsageDialog" xml:space="preserve"><value>Все запросы к ассистенту за сессию и его ответы</value></data>
   <data name="UsageLastTokensValue" xml:space="preserve"><value>запрос {0}, ответ {1}, всего {2}</value></data>
   <data name="TopicAnswerCost" xml:space="preserve"><value>Стоимость ответа: {0}</value></data>
-  <data name="KnowledgeRemovedUpdatingFeedback" xml:space="preserve"><value>Убрано материалов: {0}. Сводка темы обновляется</value></data>
+  <data name="KnowledgeRemovedUpdatingFeedback" xml:space="preserve"><value>Убрано материалов: {0}. Сводка группы обновляется</value></data>
   <data name="SmartModeHint" xml:space="preserve"><value>Точнее в сложных разговорах, но ответ приходит на несколько секунд позже и расходует больше лимита. Для обычных звонков можно не включать.</value></data>
-  <data name="SettingsSttGlossaryExample" xml:space="preserve"><value>Например: Артём, Polza.ai, Replio, KPI, Сбербанк</value></data>
+  <data name="SettingsSttGlossaryExample" xml:space="preserve"><value>Например: Анна, Replio, CRM, KPI, ООО «Вектор»</value></data>
   <data name="HotkeysRegisterFailedMessage" xml:space="preserve"><value>Эти горячие клавиши уже заняты другой программой, поэтому Replio не может их использовать:&#x0a;{0}&#x0a;&#x0a;Поменяйте их в «Настройки → Горячие клавиши» или закройте программу, которая их заняла.</value></data>
   <data name="TopicTabSummary" xml:space="preserve"><value>Сводка</value></data>
-  <data name="TipTopicTabSummary" xml:space="preserve"><value>Общая сводка темы по всем её сессиям и материалам. Точка — сводку пора актуализировать</value></data>
+  <data name="TipTopicTabSummary" xml:space="preserve"><value>Общая сводка группы по всем её сессиям и материалам. Точка — сводку пора актуализировать</value></data>
   <data name="QuestionsSummary" xml:space="preserve"><value>Вопросов: {0}</value></data>
   <data name="QuestionsRemoveChecked" xml:space="preserve"><value>Удалить выбранные ({0})</value></data>
   <data name="TipQuestionsSelect" xml:space="preserve"><value>Отметить несколько вопросов, чтобы удалить их разом</value></data>
@@ -659,7 +659,7 @@
   <data name="MacPermissionOpenSettings" xml:space="preserve"><value>Открыть настройки</value></data>
   <data name="KnowledgeAddMedia" xml:space="preserve"><value>+ Медиа</value></data>
   <data name="TipKnowledgeAddMedia" xml:space="preserve"><value>Прикрепить аудио или видео (mp3, wav, m4a, ogg, mp4, mov, mkv и др.). «Разобрать» распознаёт речь так же, как на встречах (Настройки → Речь), и сохраняет текст с отметками времени и ссылкой на файл. Файлы можно и перетащить сюда</value></data>
-  <data name="KnowledgeAddMediaTitle" xml:space="preserve"><value>Прикрепить аудио или видео к теме</value></data>
+  <data name="KnowledgeAddMediaTitle" xml:space="preserve"><value>Прикрепить аудио или видео к группе</value></data>
   <data name="KnowledgeMediaFilterName" xml:space="preserve"><value>Аудио и видео</value></data>
   <data name="KnowledgeExtractingAudio" xml:space="preserve"><value>Извлекаю звук…</value></data>
   <data name="KnowledgeTranscribing" xml:space="preserve"><value>Распознаю речь: {0} из {1}</value></data>
@@ -682,14 +682,14 @@
   <data name="ScreenshotsHint" xml:space="preserve"><value>Нажмите на снимок, чтобы открыть его в программе просмотра. Итоги и транскрипт ссылаются на эти снимки.</value></data>
   <data name="TipOpenScreenshot" xml:space="preserve"><value>Открыть снимок в программе просмотра</value></data>
   <data name="ScreenshotMissing" xml:space="preserve"><value>Файл снимка не найден: возможно, его удалили.</value></data>
-  <data name="RecordingInTopicNotice" xml:space="preserve"><value>Запись идёт в тему «{0}»</value></data>
-  <data name="TopicActualize" xml:space="preserve"><value>Актуализировать тему</value></data>
+  <data name="RecordingInTopicNotice" xml:space="preserve"><value>Запись идёт в группу «{0}»</value></data>
+  <data name="TopicActualize" xml:space="preserve"><value>Актуализировать группу</value></data>
   <data name="TopicActualizeBusy" xml:space="preserve"><value>Актуализация…</value></data>
   <data name="TopicActualizeParsing" xml:space="preserve"><value>Разбираю материалы…</value></data>
   <data name="TopicActualizeSummary" xml:space="preserve"><value>Обновляю сводку…</value></data>
   <data name="TopicActualizeGraph" xml:space="preserve"><value>Строю граф…</value></data>
-  <data name="TopicActualizeDone" xml:space="preserve"><value>Тема актуальна: сводка и граф обновлены</value></data>
-  <data name="TipTopicActualize" xml:space="preserve"><value>Разбирает новые и изменившиеся материалы, обновляет устаревшие итоги встреч (которых ещё нет или которые составлены до смены формата итогов темы), пересобирает «Сводку» по всем сессиям и материалам темы, затем граф. Точка на кнопке: с прошлой актуализации что-то изменилось</value></data>
+  <data name="TopicActualizeDone" xml:space="preserve"><value>Группа актуальна: сводка и граф обновлены</value></data>
+  <data name="TipTopicActualize" xml:space="preserve"><value>Обновляет сводку и граф группы по всем её встречам и материалам. После каждой встречи группа обновляется сама.</value></data>
   <data name="SpeechLanguageAuto" xml:space="preserve"><value>Автоопределение</value></data>
   <data name="SettingsSpeechLanguage" xml:space="preserve"><value>Язык речи</value></data>
   <data name="TipSpeechLanguage" xml:space="preserve"><value>Автоопределение: Replio узнаёт язык каждой стороны (вас и собеседника) по первым фразам и держит его до конца записи. Выберите язык, если разговор всегда на нём</value></data>
@@ -707,29 +707,29 @@
   <data name="AccountSignInExpired" xml:space="preserve"><value>Код входа устарел. Нажмите «Войти через replio.ru» ещё раз.</value></data>
   <data name="AccountSignInDenied" xml:space="preserve"><value>Вход отклонён на сайте.</value></data>
   <data name="AccountSignInFailed" xml:space="preserve"><value>Не удалось войти: {0}</value></data>
-  <data name="AccountSignInRequired" xml:space="preserve"><value>Войдите в Replio в настройках: ИИ и распознавание речи работают по вашему тарифу.</value></data>
+  <data name="AccountSignInRequired" xml:space="preserve"><value>Войдите в Replio в настройках: подсказки и распознавание речи работают по вашему тарифу.</value></data>
   <data name="AccountRefresh" xml:space="preserve"><value>Обновить</value></data>
   <data name="TipAccountRefresh" xml:space="preserve"><value>Заново загрузить тариф и остаток минут</value></data>
   <data name="AccountUpgrade" xml:space="preserve"><value>Сменить тариф</value></data>
   <data name="TipAccountUpgrade" xml:space="preserve"><value>Откроет тарифы на replio.ru</value></data>
   <data name="AccountSignOut" xml:space="preserve"><value>Выйти</value></data>
-  <data name="TipAccountSignOut" xml:space="preserve"><value>Удалит ключ с этого компьютера и отзовёт его на сервере. Сессии и темы останутся</value></data>
+  <data name="TipAccountSignOut" xml:space="preserve"><value>Удалит ключ с этого компьютера и отзовёт его на сервере. Сессии и группы останутся</value></data>
   <data name="AccountSignOutTitle" xml:space="preserve"><value>Выйти из Replio?</value></data>
-  <data name="AccountSignOutConfirm" xml:space="preserve"><value>Ключ этого компьютера будет отозван. Сессии, темы и база знаний останутся на компьютере. Войти снова можно в любой момент.</value></data>
+  <data name="AccountSignOutConfirm" xml:space="preserve"><value>Ключ этого компьютера будет отозван. Сессии, группы и база знаний останутся на компьютере. Войти снова можно в любой момент.</value></data>
   <data name="AccountLoading" xml:space="preserve"><value>Загружаю тариф…</value></data>
   <data name="AccountUnknown" xml:space="preserve"><value>Тариф пока не загрузился.</value></data>
   <data name="AccountRefreshFailed" xml:space="preserve"><value>Не удалось загрузить тариф: {0}</value></data>
   <data name="AccountPlan" xml:space="preserve"><value>Тариф «{0}»</value></data>
   <data name="AccountMinutes" xml:space="preserve"><value>осталось {0} мин</value></data>
   <data name="AccountMinutesOf" xml:space="preserve"><value>осталось {0} из {1} мин</value></data>
-  <data name="AccountAiLeft" xml:space="preserve"><value>бюджет ИИ: осталось {0}%</value></data>
+  <data name="AccountAiLeft" xml:space="preserve"><value>бюджет Replio: осталось {0}%</value></data>
   <data name="AccountUntil" xml:space="preserve"><value>до {0}</value></data>
   <data name="AccountDevices" xml:space="preserve"><value>устройств {0} из {1}</value></data>
   <data name="AccountModelsSummary" xml:space="preserve"><value>Подсказки: {0} · Итоги и вопросы: {1} · Распознавание: {2}</value></data>
   <data name="AccountModelDefault" xml:space="preserve"><value>по тарифу</value></data>
   <data name="AccountSttLocal" xml:space="preserve"><value>на этом компьютере</value></data>
   <data name="TipReplioFastModel" xml:space="preserve"><value>Чем быстрее модель, тем раньше появится подсказка</value></data>
-  <data name="TipReplioAnalysisModel" xml:space="preserve"><value>Модель для итогов, писем, вопросов по теме и графа</value></data>
+  <data name="TipReplioAnalysisModel" xml:space="preserve"><value>Модель для итогов, писем, вопросов по группе и графа</value></data>
   <data name="TipReplioSttModel" xml:space="preserve"><value>Распознавание речи через Replio</value></data>
   <data name="SttStatusReplio" xml:space="preserve"><value>Распознавание: Replio</value></data>
   <data name="UpdateBanner" xml:space="preserve"><value>Доступна версия {0}</value></data>
@@ -752,14 +752,14 @@
   <data name="UpdateCheckButton" xml:space="preserve"><value>Проверить обновления</value></data>
   <data name="UpdateCheckToolTip" xml:space="preserve"><value>Replio проверяет replio.ru при запуске и раз в день. Настройки, ключ и сессии при обновлении сохраняются.</value></data>
   <data name="HelpButton" xml:space="preserve"><value>Справка</value></data>
-  <data name="TipHelp" xml:space="preserve"><value>Как пользоваться Replio: запись, подсказки, темы, горячие клавиши, подключение к ИИ-агентам</value></data>
+  <data name="TipHelp" xml:space="preserve"><value>Как пользоваться Replio: запись, подсказки, группы, горячие клавиши, подключение к ИИ-агентам</value></data>
   <data name="HelpCopyMcp" xml:space="preserve"><value>Скопировать команду для Claude Code</value></data>
   <data name="HelpCopied" xml:space="preserve"><value>Команда скопирована</value></data>
   <data name="HelpOpenAgents" xml:space="preserve"><value>Открыть инструкцию для агентов</value></data>
   <data name="DataFolderTitle" xml:space="preserve"><value>Папка данных</value></data>
-  <data name="DataFolderHint" xml:space="preserve"><value>Встречи, темы, база знаний и снимки. Чтобы они были на всех ваших компьютерах, выберите папку в Яндекс Диске, OneDrive или iCloud Drive: облако само синхронизирует её. На серверы Replio данные не попадают. Настройки и ключ остаются на каждом компьютере свои.</value></data>
+  <data name="DataFolderHint" xml:space="preserve"><value>Встречи, группы, база знаний и снимки. Чтобы они были на всех ваших компьютерах, выберите папку в Яндекс Диске, OneDrive или iCloud Drive: облако само синхронизирует её. На серверы Replio данные не попадают. Настройки и ключ остаются на каждом компьютере свои.</value></data>
   <data name="DataFolderChoose" xml:space="preserve"><value>Выбрать папку…</value></data>
-  <data name="DataFolderReset" xml:space="preserve"><value>Вернуть по умолчанию</value></data>
+  <data name="DataFolderReset" xml:space="preserve"><value>Перенести в папку по умолчанию</value></data>
   <data name="DataFolderOpen" xml:space="preserve"><value>Открыть папку</value></data>
   <data name="DataFolderRestart" xml:space="preserve"><value>Перезапустить Replio</value></data>
   <data name="DataFolderPickTitle" xml:space="preserve"><value>Папка для данных Replio (например, в Яндекс Диске)</value></data>
@@ -798,12 +798,12 @@
   <data name="MeetingPresetFormat_negotiation" xml:space="preserve"><value>Позиции сторон: чего хотим мы и чего хочет другая сторона.&#x0a;Уступки и условия: что предложено, что принято, что отклонено.&#x0a;Открытые вопросы: что ещё не согласовано.</value></data>
   <data name="MeetingPresetGuidance_standup" xml:space="preserve"><value>Это рабочая планёрка. Помогай фиксировать задачи: кто, что и к какому сроку. Замечай задачи без ответственного или без срока и подсказывай их уточнить. Отвечай коротко.</value></data>
   <data name="MeetingPresetFormat_standup" xml:space="preserve"><value>Статус: что сделано с прошлой встречи.&#x0a;Блокеры: что мешает и кто поможет это снять.</value></data>
-  <data name="MeetingPresetGuidance_consulting" xml:space="preserve"><value>Это консультация, консультирую я. Помогай точно понять ситуацию клиента и подсказывай уточняющие вопросы. Опирайся на базу знаний темы. Предупреждай о рисках и о том, что нужно проверить.</value></data>
+  <data name="MeetingPresetGuidance_consulting" xml:space="preserve"><value>Это консультация, консультирую я. Помогай точно понять ситуацию клиента и подсказывай уточняющие вопросы. Опирайся на базу знаний группы. Предупреждай о рисках и о том, что нужно проверить.</value></data>
   <data name="MeetingPresetFormat_consulting" xml:space="preserve"><value>Ситуация клиента: суть запроса и важные факты.&#x0a;Рекомендации: что посоветовали и почему.&#x0a;Что проверить: какие данные или документы нужны.</value></data>
-  <data name="MeetingStyleInheritedHint" xml:space="preserve"><value>Для встреч этой темы действуют настройки по умолчанию из «Настройки → Встречи»: {0}. Выберите вариант выше, чтобы задать теме свои.</value></data>
+  <data name="MeetingStyleInheritedHint" xml:space="preserve"><value>Для встреч этой группы действуют настройки по умолчанию из «Настройки → Встречи»: {0}. Выберите вариант выше, чтобы задать группе свои.</value></data>
   <data name="TopicTabMeetings" xml:space="preserve"><value>Как помогать</value></data>
-  <data name="TipTopicTabMeetings" xml:space="preserve"><value>Как Replio помогает на встречах этой темы: подсказки во время разговора и формат итогов</value></data>
-  <data name="MeetingStyleTitle" xml:space="preserve"><value>Как Replio помогает на встречах этой темы</value></data>
+  <data name="TipTopicTabMeetings" xml:space="preserve"><value>Как Replio помогает на встречах этой группы: подсказки во время разговора и формат итогов</value></data>
+  <data name="MeetingStyleTitle" xml:space="preserve"><value>Как Replio помогает на встречах этой группы</value></data>
   <data name="MeetingStyleIntro" xml:space="preserve"><value>Выберите тип встреч, и Replio будет подсказывать и подводить итоги под него. Тексты можно поправить под себя.</value></data>
   <data name="MeetingStylePresetLabel" xml:space="preserve"><value>Тип встреч</value></data>
   <data name="MeetingGuidanceLabel" xml:space="preserve"><value>Как помогать на встречах</value></data>
@@ -811,12 +811,12 @@
   <data name="SummaryFormatLabel" xml:space="preserve"><value>Что добавить в итоги</value></data>
   <data name="SummaryFormatHint" xml:space="preserve"><value>Какие разделы добавить в итоги после задач, ключевых моментов и участников, по одному на строку: «Название: что в нём». Пусто — только обычные разделы.</value></data>
   <data name="SettingsSectionMeetings" xml:space="preserve"><value>Встречи (по умолчанию)</value></data>
-  <data name="SettingsMeetingsHint" xml:space="preserve"><value>Так Replio помогает на всех встречах: без темы и в темах, где не настроено своё. Тему можно настроить отдельно на её вкладке «Как помогать».</value></data>
+  <data name="SettingsMeetingsHint" xml:space="preserve"><value>Так Replio помогает на всех встречах: без группы и в группах, где не настроено своё. Группу можно настроить отдельно на её вкладке «Как помогать».</value></data>
   <data name="TopicActualizeSessions" xml:space="preserve"><value>Итоги встреч {0} из {1}…</value></data>
-  <data name="TipSessionTopicActualize" xml:space="preserve"><value>Встреча относится к теме: итоги этой встречи обновятся в формате темы вместе с другими устаревшими итогами, «Сводкой» и графом темы. Точка: что-то устарело</value></data>
-  <data name="SearchGroupTopics" xml:space="preserve"><value>Темы</value></data>
+  <data name="TipSessionTopicActualize" xml:space="preserve"><value>Обновляет итоги этой встречи, сводку и граф её группы. После встречи группа обновляется сама.</value></data>
+  <data name="SearchGroupTopics" xml:space="preserve"><value>Группы</value></data>
   <data name="SearchGroupSessions" xml:space="preserve"><value>Встречи</value></data>
-  <data name="SearchGroupTopicSummaries" xml:space="preserve"><value>Сводки тем</value></data>
+  <data name="SearchGroupTopicSummaries" xml:space="preserve"><value>Сводки групп</value></data>
   <data name="SearchGroupKnowledge" xml:space="preserve"><value>База знаний</value></data>
   <data name="SearchGroupQuestions" xml:space="preserve"><value>Вопросы</value></data>
   <data name="SearchInName" xml:space="preserve"><value>в названии</value></data>
@@ -839,23 +839,23 @@
   <data name="HelpTopicRecordTitle" xml:space="preserve"><value>Запись встречи</value></data>
   <data name="HelpTopicRecordBody" xml:space="preserve"><value>- Нажмите **Запустить Replio** на главном экране или {START}.&#x0a;- Записываются звук собеседников и ваш микрофон.&#x0a;- Поверх окон появится небольшая панель. При демонстрации экрана собеседники её не видят.&#x0a;- Остановить запись: та же кнопка или {START}. Итоги и название встречи Replio подготовит сам.</value></data>
   <data name="HelpTopicHintsTitle" xml:space="preserve"><value>Подсказки во время звонка</value></data>
-  <data name="HelpTopicHintsBody" xml:space="preserve"><value>- Окно подсказок открывается и прячется сочетанием {OVERLAY}.&#x0a;- **Что сказать**, **Что спросить**, **Уточняющие вопросы**, **Кратко**: ответ по последним репликам.&#x0a;- Свой вопрос: напишите его и нажмите Enter или {ASK}.&#x0a;- Снимок экрана для ИИ: кнопка 📷 или {SNAPSHOT}.</value></data>
+  <data name="HelpTopicHintsBody" xml:space="preserve"><value>- Окно подсказок открывается и прячется сочетанием {OVERLAY}.&#x0a;- **Что сказать**, **Что спросить**, **Уточняющие вопросы**, **Кратко**: ответ по последним репликам.&#x0a;- Свой вопрос: напишите его и нажмите Enter или {ASK}.&#x0a;- Снимок экрана для Replio: кнопка 📷 или {SNAPSHOT}.</value></data>
   <data name="HelpTopicAfterTitle" xml:space="preserve"><value>После встречи</value></data>
-  <data name="HelpTopicAfterBody" xml:space="preserve"><value>- Откройте встречу в списке на главном экране.&#x0a;- Вкладки: **Итоги**, **Транскрипт**, **Снимки**, **Письмо** и **Статистика**.&#x0a;- На каждой вкладке есть **Копировать**.&#x0a;- Встречу можно переименовать, перенести в тему или удалить.</value></data>
-  <data name="HelpTopicTopicsTitle" xml:space="preserve"><value>Темы и база знаний</value></data>
-  <data name="HelpTopicTopicsBody" xml:space="preserve"><value>- **+ Новая тема**: всё по одному проекту или клиенту. Встречи переносятся в тему перетаскиванием.&#x0a;- **База знаний**: **+ Документы**, **+ Папка**, **+ Медиа** или **+ Текст**. Файлы можно просто перетащить или вставить ({PASTE}).&#x0a;- **Актуализировать тему** обновит устаревшие итоги встреч, затем **Сводку** и **Граф**. Во встрече темы эта кнопка стоит вместо «Обновить итоги».&#x0a;- На вкладке **Вопросы** спросите о теме: ответ будет по всем встречам и материалам.</value></data>
+  <data name="HelpTopicAfterBody" xml:space="preserve"><value>- Откройте встречу в списке на главном экране.&#x0a;- Вкладки: **Итоги**, **Транскрипт**, **Снимки**, **Письмо** и **Статистика**.&#x0a;- На каждой вкладке есть **Копировать**.&#x0a;- Встречу можно переименовать, перенести в группу или удалить.</value></data>
+  <data name="HelpTopicTopicsTitle" xml:space="preserve"><value>Группы и база знаний</value></data>
+  <data name="HelpTopicTopicsBody" xml:space="preserve"><value>- **+ Новая группа**: всё по одному проекту или клиенту. Встречи переносятся в группу перетаскиванием.&#x0a;- **База знаний**: **+ Документы**, **+ Папка**, **+ Медиа** или **+ Текст**. Файлы можно просто перетащить или вставить ({PASTE}).&#x0a;- **Актуализировать группу** обновит устаревшие итоги встреч, затем **Сводку** и **Граф**. Во встрече группы эта кнопка стоит вместо «Обновить итоги».&#x0a;- На вкладке **Вопросы** спросите о группе: ответ будет по всем встречам и материалам.</value></data>
   <data name="HelpTopicHotkeysTitle" xml:space="preserve"><value>Горячие клавиши</value></data>
   <data name="HelpTopicHotkeysBody" xml:space="preserve"><value>{HOTKEYS}&#x0a;&#x0a;Сочетания меняются в **Настройках** → **Горячие клавиши**.</value></data>
   <data name="HelpTopicDataTitle" xml:space="preserve"><value>Папка данных и облако</value></data>
-  <data name="HelpTopicDataBody" xml:space="preserve"><value>- Встречи, темы и база знаний лежат в **папке данных**: **Настройки** → **Данные и обновления**.&#x0a;- Выберите папку в Яндекс Диске, OneDrive или iCloud Drive, и встречи будут на всех ваших компьютерах.&#x0a;- На серверы Replio данные не попадают. Настройки и ключ входа у каждого компьютера свои.</value></data>
+  <data name="HelpTopicDataBody" xml:space="preserve"><value>- Встречи, группы и база знаний лежат в **папке данных**: **Настройки** → **Данные и обновления**.&#x0a;- Выберите папку в Яндекс Диске, OneDrive или iCloud Drive, и встречи будут на всех ваших компьютерах.&#x0a;- На серверы Replio данные не попадают. Настройки и ключ входа у каждого компьютера свои.</value></data>
   <data name="HelpTopicAgentsTitle" xml:space="preserve"><value>ИИ-агенты (MCP)</value></data>
   <data name="HelpTopicAgentsBody" xml:space="preserve"><value>{MAC_WARNING}Replio отдаёт ваши встречи локальным ИИ-агентам: Claude Code, Codex, Cursor. Данные читаются только на этом компьютере.&#x0a;&#x0a;**Claude Code.** Выполните в терминале или нажмите **Скопировать команду для Claude Code** ниже:&#x0a;&#x0a;```&#x0a;{MCP_CLAUDE}&#x0a;```&#x0a;&#x0a;**Cursor и другие MCP-клиенты.** Добавьте в настройки MCP (`mcp.json`):&#x0a;&#x0a;```&#x0a;{MCP_JSON}&#x0a;```&#x0a;&#x0a;После подключения можно попросить агента: «найди вчерашнюю встречу и составь список задач».&#x0a;&#x0a;**Терминал:** `{CLI} list`, `{CLI} show last`, `{CLI} guide`.</value></data>
   <data name="HelpTopicTroubleTitle" xml:space="preserve"><value>Если что-то не работает</value></data>
   <data name="HelpTopicTroubleBody" xml:space="preserve"><value>- **Нет подсказок или итогов.** Проверьте вход и остаток в **Настройки** → **Аккаунт**.&#x0a;- **Не слышно собеседника.** Во время записи откройте **Настройки** → **Речь** → **Проверить звук**. Звук собеседника должен идти через динамики или наушники этого компьютера.&#x0a;- **Не срабатывает горячая клавиша.** Её заняла другая программа: задайте другое сочетание в **Настройки** → **Горячие клавиши**.&#x0a;- Вопросы и предложения: hello@replio.ru.</value></data>
-  <data name="HelpTopicMeetingsTitle" xml:space="preserve"><value>Как Replio помогает в теме</value></data>
-  <data name="HelpTopicMeetingsBody" xml:space="preserve"><value>- Откройте тему → вкладка **Как помогать**.&#x0a;- Выберите **тип встреч**: продажа, собеседование, переговоры, планёрка, консультация или обычная встреча.&#x0a;- **Как помогать на встречах**: на что обращать внимание в подсказках. **Что добавить в итоги**: какие разделы добавить в итоги.&#x0a;- **Имена и термины темы**: имена участников, компании и термины, чтобы распознавание писало их правильно.&#x0a;- Тексты можно поправить под себя, тогда вариант станет **Свой вариант**.&#x0a;- Темы без своих настроек и встречи без темы идут по **Настройки → Встречи**.</value></data>
+  <data name="HelpTopicMeetingsTitle" xml:space="preserve"><value>Как Replio помогает в группе</value></data>
+  <data name="HelpTopicMeetingsBody" xml:space="preserve"><value>- Откройте группу → вкладка **Как помогать**.&#x0a;- Выберите **тип встреч**: продажа, собеседование, переговоры, планёрка, консультация или обычная встреча.&#x0a;- **Как помогать на встречах**: на что обращать внимание в подсказках. **Что добавить в итоги**: какие разделы добавить в итоги.&#x0a;- **Имена и термины группы**: имена участников, компании и термины, чтобы распознавание писало их правильно.&#x0a;- Тексты можно поправить под себя, тогда вариант станет **Свой вариант**.&#x0a;- Группы без своих настроек и встречи без группы идут по **Настройки → Встречи**.</value></data>
   <data name="HelpTopicSearchTitle" xml:space="preserve"><value>Поиск</value></data>
-  <data name="HelpTopicSearchBody" xml:space="preserve"><value>- Пишите в строке поиска вверху: Replio ищет по темам и их сводкам, названиям, итогам, расшифровкам и письмам встреч, по базе знаний и вопросам.&#x0a;- Должны найтись все слова, в любом порядке.&#x0a;- Нажмите на результат, и откроется нужное место. **Enter** открывает первый результат, **Esc** закрывает список.</value></data>
+  <data name="HelpTopicSearchBody" xml:space="preserve"><value>- Пишите в строке поиска вверху: Replio ищет по группам и их сводкам, названиям, итогам, расшифровкам и письмам встреч, по базе знаний и вопросам.&#x0a;- Должны найтись все слова, в любом порядке.&#x0a;- Нажмите на результат, и откроется нужное место. **Enter** открывает первый результат, **Esc** закрывает список.</value></data>
   <data name="AccountOpenCabinet" xml:space="preserve"><value>Открыть кабинет</value></data>
   <data name="TipAccountOpenCabinet" xml:space="preserve"><value>Откроет личный кабинет на replio.ru в браузере: тариф, оплаты, устройства</value></data>
   <data name="LimitShort" xml:space="preserve"><value>Лимит · {0}%</value></data>
@@ -867,7 +867,7 @@
   <data name="LimitTipMonthUntil" xml:space="preserve"><value>В месяце осталось {0}% (до {1})</value></data>
   <data name="LimitTipMinutes" xml:space="preserve"><value>Часов встреч осталось: {0}</value></data>
   <data name="LimitTipMinutesOf" xml:space="preserve"><value>Часов встреч осталось: {0} из {1}</value></data>
-  <data name="LimitTipDayRule" xml:space="preserve"><value>За один день можно потратить до пятой части месячного лимита ИИ.</value></data>
+  <data name="LimitTipDayRule" xml:space="preserve"><value>За один день можно потратить до пятой части месячного лимита Replio.</value></data>
   <data name="LimitTipClick" xml:space="preserve"><value>Нажмите, чтобы открыть кабинет на replio.ru.</value></data>
   <data name="LimitResetMidnight" xml:space="preserve"><value>в полночь по Москве</value></data>
   <data name="LimitResetAt" xml:space="preserve"><value>в {0}</value></data>
@@ -882,14 +882,14 @@
   <data name="SettingsNav_account" xml:space="preserve"><value>Аккаунт</value></data>
   <data name="SettingsNav_meetings" xml:space="preserve"><value>Встречи</value></data>
   <data name="SettingsNav_speech" xml:space="preserve"><value>Речь</value></data>
-  <data name="SettingsNav_ai" xml:space="preserve"><value>ИИ-помощник</value></data>
+  <data name="SettingsNav_ai" xml:space="preserve"><value>Помощник</value></data>
   <data name="SettingsNav_windows" xml:space="preserve"><value>Окна и вид</value></data>
   <data name="SettingsNav_hotkeys" xml:space="preserve"><value>Горячие клавиши</value></data>
   <data name="SettingsNav_data" xml:space="preserve"><value>Данные и обновления</value></data>
   <data name="SettingsNavHint_account" xml:space="preserve"><value>Тариф, остаток и вход</value></data>
   <data name="SettingsNavHint_meetings" xml:space="preserve"><value>Как Replio помогает на всех встречах</value></data>
   <data name="SettingsNavHint_speech" xml:space="preserve"><value>Где распознаётся речь, язык и проверка звука</value></data>
-  <data name="SettingsNavHint_ai" xml:space="preserve"><value>Модели и снимки экрана для ИИ</value></data>
+  <data name="SettingsNavHint_ai" xml:space="preserve"><value>Модели и снимки экрана для Replio</value></data>
   <data name="SettingsNavHint_windows" xml:space="preserve"><value>Тема, язык и демонстрация экрана</value></data>
   <data name="SettingsNavHint_hotkeys" xml:space="preserve"><value>Работают из любого окна</value></data>
   <data name="SettingsNavHint_data" xml:space="preserve"><value>Где хранятся встречи и версия Replio</value></data>
@@ -912,7 +912,7 @@
   <data name="SttOnComputerHint" xml:space="preserve"><value>Звук никуда не отправляется.</value></data>
   <data name="SttLanguageTitle" xml:space="preserve"><value>Язык и словарь</value></data>
   <data name="SoundCheckTitle" xml:space="preserve"><value>Проверка звука</value></data>
-  <data name="SoundCheckHint" xml:space="preserve"><value>Покажет уровни микрофона и звука компьютера, пока идёт запись.</value></data>
+  <data name="SoundCheckHint" xml:space="preserve"><value>Replio сыграет короткую мелодию и 12 секунд покажет, слышит ли он ваш микрофон и звук компьютера. Ничего не записывается.</value></data>
   <data name="SpeechModelMissingStatusOwn" xml:space="preserve"><value>Модель не скачана, поэтому на этом компьютере речь не распознаётся. Скачайте «Сбалансированную» или выберите «Через свой сервис».</value></data>
   <data name="SpeechModelName_small_q8_0" xml:space="preserve"><value>Сбалансированная</value></data>
   <data name="SpeechModelName_large_v3_turbo_q5_0" xml:space="preserve"><value>Точная</value></data>
@@ -925,19 +925,81 @@
   <data name="AiModelSmartName" xml:space="preserve"><value>Умная</value></data>
   <data name="AiModelsUpgradeHint" xml:space="preserve"><value>Выбор моделей есть на тарифах «Про», «Команда» и «Локальный».</value></data>
   <data name="AiModelsSignInHint" xml:space="preserve"><value>Подсказки и итоги заработают после входа в аккаунт.</value></data>
-  <data name="AiServiceTitle" xml:space="preserve"><value>Сервис ИИ</value></data>
+  <data name="AiServiceTitle" xml:space="preserve"><value>Сервис моделей</value></data>
   <data name="AiAdvanced" xml:space="preserve"><value>Дополнительно</value></data>
   <data name="ScreenContextTitle" xml:space="preserve"><value>Экран</value></data>
   <data name="HideInScreenShare" xml:space="preserve"><value>Скрывать Replio при демонстрации экрана</value></data>
   <data name="HotkeysHint" xml:space="preserve"><value>Нажмите на поле и впишите сочетание, например Ctrl+Shift+O. Сочетание с ошибкой не применяется, пока его не исправят.</value></data>
   <data name="HotkeysReset" xml:space="preserve"><value>Вернуть стандартные</value></data>
   <data name="TipHotkeysReset" xml:space="preserve"><value>Вернуть сочетания, которые стоят после установки</value></data>
-  <data name="TopicGlossaryLabel" xml:space="preserve"><value>Имена и термины темы</value></data>
-  <data name="TopicGlossaryHint" xml:space="preserve"><value>Имена участников, компании, продукты и термины этой темы. На встречах темы они добавляются к общему списку из «Настройки → Встречи». Через запятую или с новой строки.</value></data>
-  <data name="TopicGlossaryExample" xml:space="preserve"><value>Например: Иван Петров, KEGOC, ТЭО, Астана</value></data>
-  <data name="CompanyServiceTitle" xml:space="preserve"><value>ИИ и речь: сервер вашей компании</value></data>
+  <data name="TopicGlossaryLabel" xml:space="preserve"><value>Имена и термины группы</value></data>
+  <data name="TopicGlossaryHint" xml:space="preserve"><value>Имена участников, компании, продукты и термины этой группы. На встречах группы они добавляются к общему списку из «Настройки → Встречи». Через запятую или с новой строки.</value></data>
+  <data name="TopicGlossaryExample" xml:space="preserve"><value>Например: Анна Смирнова, ООО «Вектор», дорожная карта, MVP</value></data>
+  <data name="CompanyServiceTitle" xml:space="preserve"><value>Подсказки и речь: сервер вашей компании</value></data>
   <data name="CompanyServiceText" xml:space="preserve"><value>Его один раз настраивает администратор компании в кабинете на replio.ru. Ключи и адреса здесь не нужны.</value></data>
   <data name="CompanyServiceNotReady" xml:space="preserve"><value>Администратор компании ещё не подключил сервер в кабинете на replio.ru. Пока он этого не сделает, подсказки и итоги не работают.</value></data>
   <data name="CompanySpeechLocal" xml:space="preserve"><value>Речь распознаётся на этом компьютере: скачайте модель ниже.</value></data>
   <data name="CompanySpeechService" xml:space="preserve"><value>Речь распознаётся на сервере компании.</value></data>
+  <data name="EmptySessionTitle" xml:space="preserve"><value>Пустая запись</value></data>
+  <data name="EmptySessionSummary" xml:space="preserve"><value>В записи нет распознанной речи, поэтому итоги не составлялись. Проверьте, что Replio слышит ваш микрофон и звук собеседников.</value></data>
+  <data name="EmptySessionDeleteTitle" xml:space="preserve"><value>Пустая запись</value></data>
+  <data name="EmptySessionDeleteMessage" xml:space="preserve"><value>В этой записи нет распознанной речи. Удалить её?</value></data>
+  <data name="EmptySessionNoSummary" xml:space="preserve"><value>В записи нет распознанной речи: итоги составить не из чего.</value></data>
+  <data name="ShownInShareBadge" xml:space="preserve"><value>Виден при демонстрации</value></data>
+  <data name="ScreenShareHiddenFeedback" xml:space="preserve"><value>Replio скрыт от демонстрации экрана</value></data>
+  <data name="ScreenShareShownFeedback" xml:space="preserve"><value>Replio виден при демонстрации экрана</value></data>
+  <data name="KnowledgeSelectHint" xml:space="preserve"><value>Выберите материал слева, чтобы увидеть его текст.</value></data>
+  <data name="KnowledgeNothingYet" xml:space="preserve"><value>Здесь появятся разобранные материалы</value></data>
+  <data name="TrayOpenTranscript" xml:space="preserve"><value>Открыть транскрипт</value></data>
+  <data name="TrayStartRecording" xml:space="preserve"><value>Начать запись</value></data>
+  <data name="TrayStopRecording" xml:space="preserve"><value>Остановить запись</value></data>
+  <data name="TraySnapshot" xml:space="preserve"><value>Снимок экрана</value></data>
+  <data name="TrayTooltipRecording" xml:space="preserve"><value>Replio: идёт запись. Нажмите, чтобы открыть транскрипт</value></data>
+  <data name="UpdateDownload" xml:space="preserve"><value>Скачать</value></data>
+  <data name="UpdateMacDownloadStarted" xml:space="preserve"><value>Новая версия скачивается в браузере. Откройте файл .dmg и перетащите Replio в «Программы», заменив старую версию.</value></data>
+  <data name="WizardStep1Description_Mac" xml:space="preserve"><value>Разрешите Replio доступ к микрофону и проверьте, что нужный микрофон выбран в «Системные настройки → Звук → Вход».</value></data>
+  <data name="VisualStatusManualOnly_Mac" xml:space="preserve"><value>Только ручные снимки (📷 или ⌃⇧S).</value></data>
+  <data name="IndicatorSnapshotHint_Mac" xml:space="preserve"><value>Снимок экрана (⌃⇧S): сохраняется во встрече и учитывается в следующем вопросе к Replio.</value></data>
+  <data name="TipAsk_Mac" xml:space="preserve"><value>Задать вопрос по разговору. Вопрос и ответ появятся и в оверлее (⌃↩)</value></data>
+  <data name="TipStartCapture_Mac" xml:space="preserve"><value>Начать запись разговора и подсказки в реальном времени (⌃⇧/)</value></data>
+  <data name="TipHotkeyAsk_Mac" xml:space="preserve"><value>Задать вопрос Replio из любого окна. Формат: Ctrl+Enter (Ctrl — это клавиша ⌃ Control)</value></data>
+  <data name="TipKnowledgeAddFiles_Mac" xml:space="preserve"><value>Прикрепить документы: PDF, Word (doc, docx), Excel (xls, xlsx), картинки (jpg, png), txt, md. Файлы можно и перетащить сюда или вставить через ⌘V</value></data>
+  <data name="TipKnowledgeAddFolder_Mac" xml:space="preserve"><value>Прикрепить папку: будут разобраны все поддерживаемые файлы в ней и во вложенных папках. Папку можно и перетащить сюда или вставить через ⌘V</value></data>
+  <data name="TipKnowledgeAddNote_Mac" xml:space="preserve"><value>Добавить свой текст: договорённости, контекст, требования. Он сразу попадает в базу знаний. Скопированный текст можно и перетащить сюда или вставить через ⌘V</value></data>
+  <data name="KnowledgeListHint_Mac" xml:space="preserve"><value>Перетащите сюда документы, аудио, видео, папки или текст, вставьте их через ⌘V или воспользуйтесь кнопками выше. Replio разберёт их в Markdown (речь из аудио и видео станет текстом) и будет использовать в сводке, ответах и графе.</value></data>
+  <data name="HotkeysHint_Mac" xml:space="preserve"><value>Нажмите на поле и впишите сочетание, например Ctrl+Shift+O. На Mac: Ctrl — клавиша ⌃ Control, Alt — ⌥ Option, Win — ⌘ Command, Shift — ⇧. Сочетание с ошибкой не применяется, пока его не исправят.</value></data>
+  <data name="OpenAiKeyMissing_Mac" xml:space="preserve"><value>Не задан API-ключ. Укажите его в Настройках → API-ключ или положите строку ApiKey=... в файл ~/Library/Application Support/Replio/secrets.txt (либо задайте переменную POLZA_API_KEY).</value></data>
+  <data name="ShowInTaskbar_Mac" xml:space="preserve"><value>Показывать в Dock</value></data>
+  <data name="WhatsNewBody_Mac" xml:space="preserve"><value>Replio 1.1.4:&#x0a;• Темы теперь называются группами: «Новая группа», «Актуализировать группу», «Без группы». Всё содержимое на месте.&#x0a;• «Проверить звук» больше не начинает запись: Replio играет мелодию и показывает уровни микрофона и звука компьютера, как в приложениях для созвонов.&#x0a;• В «Настройки → Речь» можно выбрать микрофон (на Windows — и устройство, откуда записываются собеседники). Если устройство занято или отключено, запись не обрывается: Replio берёт другое.&#x0a;• На мини-панели записи значок Replio двигается, как эквалайзер, когда звук слышен, а кнопка с микрофоном меняет устройства прямо во время записи.&#x0a;• Записи, в которых не распознано ни одной фразы, больше не обрабатываются: они называются «Пустая запись», и Replio предлагает их удалить.&#x0a;• Группа обновляется сама после каждой встречи: сводка и граф готовы без кнопки «Актуализировать группу». Пока идёт обновление, кнопка показывает прогресс.&#x0a;• Значок «Скрыт от демонстрации» показывает настоящее состояние и переключается щелчком.&#x0a;• Граф: подписи больше не наезжают друг на друга, легенда и подсказка вынесены под граф.&#x0a;• Значок Replio в строке меню во время записи мигает, в его меню есть «Открыть транскрипт», «Остановить запись» и «Снимок экрана».&#x0a;• Панель записи не закрывает поле ввода главного окна, вкладка «Статистика» убрана, кнопка «Выбрать несколько» стоит над списком встреч.&#x0a;• Новые встречи, группы и база знаний хранятся в папке .replio в папке пользователя, как .claude у Claude. Прежние данные остаются на месте, перенести их можно в «Настройки → Данные и обновления».&#x0a;• Сочетания клавиш показаны значками ⌃ ⌥ ⇧ ⌘, второй значок Replio в Dock больше не прыгает, а в «Данных и обновлениях» появилась проверка новой версии.&#x0a;&#x0a;Replio 1.1.3:&#x0a;• Настройки разложены по разделам: «Аккаунт», «Встречи», «Речь», «Помощник», «Окна и вид», «Горячие клавиши», «Данные и обновления». Изменения сохраняются сами, кнопки «Сохранить» больше нет.&#x0a;• Каждый тариф видит только то, что ему доступно: на «Локальном» речь распознаётся на компьютере, на «Про» и «Команде» можно выбрать качество распознавания.&#x0a;• «Встречи (по умолчанию)» в настройках действуют во всех группах, где не настроено своё.&#x0a;• Имена и термины теперь можно задать и для каждой группы на вкладке «Как помогать»: они добавляются к общему списку и лучше распознаются.&#x0a;• Тариф «Приватный»: подсказки Replio и распознавание речи идут через сервер компании, который администратор один раз подключает в кабинете на replio.ru.&#x0a;• Переключатель «Глубокий режим» убран: он ничего не менял.&#x0a;&#x0a;Replio 1.1.2:&#x0a;• «Режимы» заменены вкладкой группы «Как помогать»: тип встречи (продажа, собеседование, переговоры, планёрка, консультация или свой вариант), как подсказывать и какие разделы добавить в итоги. Для встреч без группы это настраивается в «Настройках».&#x0a;• Поиск в шапке ищет везде: группы, сводки, итоги, транскрипты, письма, базу знаний и вопросы. Клик открывает нужное место.&#x0a;• «Актуализировать группу» заодно переделывает устаревшие итоги встреч группы, а во встрече из группы заменяет «Обновить итоги».&#x0a;• Полоса лимита в шапке показывает, сколько осталось на сегодня и на месяц. Она желтеет, когда остаётся мало, и краснеет у самого края.&#x0a;• «Справка» открывается небольшим окном с короткими карточками и картинками.&#x0a;• В «Настройках» появились кнопка «Открыть кабинет» и «Папка данных»: храните встречи, группы и базу знаний в Яндекс Диске, OneDrive или iCloud Drive, чтобы они были на всех ваших компьютерах.&#x0a;• Новый логотип, как на сайте. Тариф из личного кабинета подхватывается сам.&#x0a;&#x0a;Replio 1.1.0 — первая версия.&#x0a;• Подсказки во время звонка: «Что сказать», «Что ответить», «Что спросить» и уточняющие вопросы в отдельном окне, которое скрыто от демонстрации экрана.&#x0a;• Итоги встречи, письмо по итогам и транскрипт с кнопками «Копировать»; снимки экрана сохраняются вместе со встречей.&#x0a;• Группы: сессии, база знаний (документы, папки, аудио и видео, свой текст), «Сводка», «Вопросы» с источниками и граф связей. Одна кнопка «Актуализировать группу» разбирает новые материалы, обновляет сводку и граф.&#x0a;• Язык речи определяется автоматически для каждой стороны разговора; его можно выбрать и вручную в настройках.&#x0a;• Аккаунт Replio: вход через replio.ru, ключ хранится на компьютере в зашифрованном виде. Подсказки, итоги и распознавание работают по вашему тарифу.&#x0a;• Обновления приходят прямо в приложение: при новой версии появится кнопка «Обновить». Настройки и ключ при обновлении сохраняются.&#x0a;• Команда replio и MCP-сервер для ИИ-агентов (Claude Code, Codex, Cursor): подробности в ~/Library/Application Support/Replio/AGENTS.md.</value></data>
+  <data name="SoundCheckStop" xml:space="preserve"><value>Остановить проверку</value></data>
+  <data name="SoundCheckRunningHint" xml:space="preserve"><value>Слышите мелодию? Скажите что-нибудь в микрофон: полоски должны двигаться.</value></data>
+  <data name="SoundCheckMicLabel" xml:space="preserve"><value>Микрофон</value></data>
+  <data name="SoundCheckSystemLabel" xml:space="preserve"><value>Звук компьютера</value></data>
+  <data name="SoundCheckMicOk" xml:space="preserve"><value>Микрофон работает.</value></data>
+  <data name="SoundCheckMicSilent" xml:space="preserve"><value>Микрофон молчит: проверьте, что он подключён и выбран в настройках звука компьютера.</value></data>
+  <data name="SoundCheckSystemOk" xml:space="preserve"><value>Звук компьютера Replio слышит, значит услышит и собеседников.</value></data>
+  <data name="SoundCheckSystemSilent" xml:space="preserve"><value>Мелодию Replio не услышал: проверьте громкость и что звук идёт в динамики или наушники по умолчанию.</value></data>
+  <data name="SoundCheckMicSilent_Mac" xml:space="preserve"><value>Микрофон молчит: разрешите Replio доступ к микрофону в «Системные настройки → Конфиденциальность и безопасность → Микрофон» и проверьте «Звук → Вход».</value></data>
+  <data name="SoundCheckSystemSilent_Mac" xml:space="preserve"><value>Мелодию Replio не услышал: разрешите Replio «Запись экрана и системного звука» в «Системные настройки → Конфиденциальность и безопасность» и проверьте громкость.</value></data>
+  <data name="CaptureFailedToStart" xml:space="preserve"><value>Запись не началась: {0}</value></data>
+  <data name="MicFallbackNotice" xml:space="preserve"><value>Основной микрофон недоступен, пишу с другого: {0}</value></data>
+  <data name="MicUnavailableNotice" xml:space="preserve"><value>Микрофон недоступен: записываю только звук компьютера. Проверьте микрофон в «Настройки → Речь → Проверить звук».</value></data>
+  <data name="AudioDevicesTitle" xml:space="preserve"><value>Устройства</value></data>
+  <data name="AudioDeviceMic" xml:space="preserve"><value>Микрофон</value></data>
+  <data name="AudioDeviceOutput" xml:space="preserve"><value>Звук собеседников с устройства</value></data>
+  <data name="TipAudioDeviceMic" xml:space="preserve"><value>Микрофон, на который вы говорите во время встречи</value></data>
+  <data name="TipAudioDeviceOutput" xml:space="preserve"><value>Динамики или наушники, в которых вы слышите собеседников: Replio записывает их звук</value></data>
+  <data name="AudioDevicesRefresh" xml:space="preserve"><value>Обновить список</value></data>
+  <data name="AudioDevicesLoading" xml:space="preserve"><value>Ищу устройства…</value></data>
+  <data name="AudioDevicesNoMic" xml:space="preserve"><value>Микрофонов не найдено.</value></data>
+  <data name="AudioDevicesFailed" xml:space="preserve"><value>Список устройств получить не удалось. Запись пойдёт на устройствах по умолчанию.</value></data>
+  <data name="AudioDevicesHint" xml:space="preserve"><value>«Как в системе» следует за устройством по умолчанию. Если выбранное устройство отключено или занято, Replio возьмёт другое и не прервёт запись.</value></data>
+  <data name="AudioDevicesHint_Mac" xml:space="preserve"><value>«Как в системе» следует за микрофоном по умолчанию. Звук собеседников Replio записывает из всех приложений сразу, поэтому устройство вывода выбирать не нужно.</value></data>
+  <data name="AudioDeviceSystemDefault" xml:space="preserve"><value>Как в системе</value></data>
+  <data name="AudioDeviceSystemDefaultNamed" xml:space="preserve"><value>Как в системе ({0})</value></data>
+  <data name="AudioDeviceMissing" xml:space="preserve"><value>Выбранное устройство не подключено</value></data>
+  <data name="MicChosenNotice" xml:space="preserve"><value>Микрофон: {0}</value></data>
+  <data name="OutputChosenNotice" xml:space="preserve"><value>Звук собеседников: {0}</value></data>
+  <data name="TipIndicatorDevices" xml:space="preserve"><value>Микрофон и устройство, откуда записываются собеседники. Можно сменить прямо во время записи</value></data>
+  <data name="TipIndicatorDevices_Mac" xml:space="preserve"><value>Микрофон. Можно сменить прямо во время записи</value></data>
 </root>

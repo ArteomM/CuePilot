@@ -40,6 +40,10 @@ public class GraphView : Control
     private Vector _offset;
     private bool _offsetInitialized;
     private double _alpha;
+
+    /// <summary>Height of the band with the legend at the bottom; the graph is fitted above it.</summary>
+    private const double LegendBandHeight = 34;
+    private const double LabelMaxWidth = 180;
     private bool _animating;
     private bool _attached;
     private SimNode? _hovered;
@@ -133,11 +137,13 @@ public class GraphView : Control
             return;
         }
 
-        double minX = _nodes.Min(n => n.X), maxX = _nodes.Max(n => n.X);
-        double minY = _nodes.Min(n => n.Y), maxY = _nodes.Max(n => n.Y);
+        // The whole box of every node (circle and label) fits above the legend band, with a margin.
+        double minX = _nodes.Min(n => n.X - n.HalfWidth), maxX = _nodes.Max(n => n.X + n.HalfWidth);
+        double minY = _nodes.Min(n => n.Y - n.Radius - 6), maxY = _nodes.Max(n => n.Y + n.Radius + n.LabelHeight + 8);
         double width = Math.Max(1, maxX - minX), height = Math.Max(1, maxY - minY);
-        _zoom = Math.Clamp(Math.Min((ActualWidth - 120) / width, (ActualHeight - 120) / height), 0.2, 2.2);
-        _offset = new Vector(ActualWidth / 2 - (minX + width / 2) * _zoom, ActualHeight / 2 - (minY + height / 2) * _zoom);
+        double areaHeight = Math.Max(10, ActualHeight - LegendBandHeight);
+        _zoom = Math.Clamp(Math.Min((ActualWidth - 48) / width, (areaHeight - 40) / height), 0.2, 2.2);
+        _offset = new Vector(ActualWidth / 2 - (minX + width / 2) * _zoom, areaHeight / 2 - (minY + height / 2) * _zoom);
         _offsetInitialized = true;
         InvalidateVisual();
     }
@@ -207,7 +213,14 @@ public class GraphView : Control
         {
             node.Degree = _neighbours[node].Count;
             node.Radius = 5 + Math.Sqrt(node.Degree) * 2.6;
+            // About 7 px a character at 12 px; longer labels wrap into two lines of up to 180 px.
+            double width = node.Data.Label.Length * 7.0;
+            node.LabelWidth = Math.Min(LabelMaxWidth, width);
+            node.LabelHeight = width > LabelMaxWidth ? 32 : 16;
         }
+
+        // Saved layouts from before labels were pushed apart start untangled too.
+        SeparateLabels(200);
 
         _offsetInitialized = false;
         _alpha = allPlaced ? 0.05 : 1;
@@ -311,7 +324,60 @@ public class GraphView : Control
             node.Y += Math.Clamp(node.Vy, -40, 40);
         }
 
+        SeparateLabels(2);
         _alpha *= 0.985;
+    }
+
+    /// <summary>
+    /// Pushes apart nodes whose boxes (circle plus label) overlap, along the axis where they overlap less,
+    /// so labels do not lie on top of each other. A dragged node stays where the mouse holds it.
+    /// </summary>
+    private void SeparateLabels(int passes)
+    {
+        int count = _nodes.Count;
+        for (int pass = 0; pass < passes; pass++)
+        {
+            bool moved = false;
+            for (int i = 0; i < count; i++)
+            {
+                SimNode a = _nodes[i];
+                for (int j = i + 1; j < count; j++)
+                {
+                    SimNode b = _nodes[j];
+                    double dx = a.X - b.X, dy = a.BoxCenterY - b.BoxCenterY;
+                    double overlapX = a.HalfWidth + b.HalfWidth - Math.Abs(dx);
+                    double overlapY = a.HalfHeight + b.HalfHeight - Math.Abs(dy);
+                    if (overlapX <= 0 || overlapY <= 0)
+                    {
+                        continue;
+                    }
+
+                    moved = true;
+                    double shiftX = 0, shiftY = 0;
+                    if (overlapY <= overlapX)
+                    {
+                        shiftY = (dy >= 0 ? 1 : -1) * Math.Min(overlapY, 30);
+                    }
+                    else
+                    {
+                        shiftX = (dx >= 0 ? 1 : -1) * Math.Min(overlapX, 30);
+                    }
+
+                    // Each takes half; the dragged node does not move, the other takes all.
+                    double shareA = a == _dragged ? 0 : b == _dragged ? 1 : 0.5;
+                    double shareB = 1 - shareA;
+                    a.X += shiftX * shareA;
+                    a.Y += shiftY * shareA;
+                    b.X -= shiftX * shareB;
+                    b.Y -= shiftY * shareB;
+                }
+            }
+
+            if (!moved)
+            {
+                return;
+            }
+        }
     }
 
     private void WriteBack()
@@ -438,8 +504,14 @@ public class GraphView : Control
 
     private void DrawLegend(DrawingContext dc, Typeface typeface, IBrush textBrush)
     {
+        // Its own band under the graph: nodes panned below it go behind the band, never under the legend text.
+        IBrush band = FindBrush("EchoSurfaceBrush", Brushes.Black);
+        IBrush line = FindBrush("EchoBorderBrush", Brushes.DimGray);
+        double top = ActualHeight - LegendBandHeight;
+        dc.DrawRectangle(band, null, new Rect(0, top, ActualWidth, LegendBandHeight));
+        dc.DrawLine(new Pen(line, 1), new Point(0, top + 0.5), new Point(ActualWidth, top + 0.5));
         var types = _nodes.Select(n => n.Data.Type.ToLowerInvariant()).Distinct().OrderBy(t => t).ToList();
-        double x = 14, y = ActualHeight - 26;
+        double x = 14, y = top + (LegendBandHeight - 15) / 2;
         foreach (string type in types)
         {
             string name = TypeNames.TryGetValue(type, out string? localized) ? localized : type;
@@ -600,5 +672,14 @@ public class GraphView : Control
         public double Vy { get; set; }
         public int Degree { get; set; }
         public double Radius { get; set; } = 6;
+
+        /// <summary>Estimated size of the label under the node (at zoom 1), for pushing labels apart.</summary>
+        public double LabelWidth { get; set; }
+        public double LabelHeight { get; set; }
+
+        /// <summary>The node with its label: a box around the circle and the text under it.</summary>
+        public double HalfWidth => Math.Max(Radius + 4, LabelWidth / 2 + 6);
+        public double HalfHeight => (2 * Radius + LabelHeight + 10) / 2;
+        public double BoxCenterY => Y + (LabelHeight + 4) / 2;
     }
 }

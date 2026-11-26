@@ -9,7 +9,15 @@ public class LocalizationService : ObservableObject
     private readonly ResourceManager _resourceManager = new("ReplioDesktop.Resources.Strings", typeof(LocalizationService).Assembly);
     private CultureInfo _currentCulture = CultureInfo.CurrentUICulture;
 
-    public string this[string key] => _resourceManager.GetString(key, _currentCulture) ?? key;
+    private static readonly bool IsMac = OperatingSystem.IsMacOS();
+
+    /// <summary>
+    /// On macOS a string with a «_Mac» twin (KeyName_Mac) uses the twin: Mac key symbols (⌘V, ⌃⇧S) and Mac places
+    /// instead of Ctrl and Windows settings. Every _Mac string exists in both languages.
+    /// </summary>
+    public string this[string key] =>
+        (IsMac ? _resourceManager.GetString(key + "_Mac", _currentCulture) : null) ??
+        _resourceManager.GetString(key, _currentCulture) ?? key;
 
     public string CurrentLanguageCode => _currentCulture.TwoLetterISOLanguageName;
 

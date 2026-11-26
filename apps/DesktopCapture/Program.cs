@@ -31,6 +31,24 @@ namespace DesktopCapture
         private static readonly SttMetrics Metrics = new SttMetrics();
         private static volatile bool SttApiUsesJsonBody;
 
+        // Loudest samples since the last «[level]» line (live level thread).
+        private static float LiveSystemPeak;
+        private static float LiveMicPeak;
+
+        private static void RaisePeak(ref float target, float value)
+        {
+            float current;
+            do
+            {
+                current = Volatile.Read(ref target);
+                if (value <= current)
+                {
+                    return;
+                }
+            }
+            while (Interlocked.CompareExchange(ref target, value, current) != current);
+        }
+
         static void Main(string[] args)
         {
             Console.OutputEncoding = new UTF8Encoding(encoderShouldEmitUTF8Identifier: false);
@@ -43,6 +61,22 @@ namespace DesktopCapture
             }
 
             var options = ParseOptions(args);
+            AudioSources.PreferredMicId = options.MicDevice ?? string.Empty;
+            AudioSources.PreferredOutputId = options.SystemDevice ?? string.Empty;
+            if (options.ListDevices)
+            {
+                // Settings → «Речь»: the microphones and output devices to choose from.
+                Environment.ExitCode = AudioSources.ListDevices();
+                return;
+            }
+
+            if (options.MeterSeconds > 0)
+            {
+                // Sound check: levels only, no recognition and no files (Meter.cs).
+                Environment.ExitCode = RunMeter(options.MeterSeconds, options.PlayFile);
+                return;
+            }
+
             if (!string.IsNullOrWhiteSpace(options.OutputPath))
             {
                 options.OutputPath = Path.GetFullPath(options.OutputPath);
@@ -124,9 +158,11 @@ namespace DesktopCapture
                 worker.Start();
             }
 
-            using (IWaveIn systemCapture = AudioSources.CreateSystemCapture())
+            using (IWaveIn firstSystemCapture = AudioSources.CreateSystemCapture())
             using (var renderEndpoint = new RenderEndpointProbe())
             {
+                // Replaced when the app switches the output device during the recording («system <id>» on stdin).
+                IWaveIn systemCapture = firstSystemCapture;
                 AudioEndpointSnapshot renderBefore = null;
                 AudioEndpointSnapshot renderAfter = null;
                 bool deviceCheckPass = false;
@@ -183,15 +219,18 @@ namespace DesktopCapture
                     }
                 }
 
-                systemCapture.DataAvailable += (sender, eventArgs) =>
+                void AttachSystem(IWaveIn capture, bool first)
                 {
-                    if (systemWriter != null)
+                capture.DataAvailable += (sender, eventArgs) =>
+                {
+                    if (first && systemWriter != null)
                     {
                         systemWriter.Write(eventArgs.Buffer, 0, eventArgs.BytesRecorded);
                     }
 
-                    var monoSamples = DecodeToMonoFloat(eventArgs.Buffer, eventArgs.BytesRecorded, systemCapture.WaveFormat);
+                    var monoSamples = DecodeToMonoFloat(eventArgs.Buffer, eventArgs.BytesRecorded, capture.WaveFormat);
                     float localPeak = FindPeak(monoSamples);
+                    RaisePeak(ref LiveSystemPeak, localPeak);
 
                     lock (sync)
                     {
@@ -201,9 +240,9 @@ namespace DesktopCapture
                     }
                 };
 
-                systemCapture.RecordingStopped += (sender, eventArgs) =>
+                capture.RecordingStopped += (sender, eventArgs) =>
                 {
-                    if (systemWriter != null)
+                    if (first && systemWriter != null)
                     {
                         systemWriter.Dispose();
                     }
@@ -214,18 +253,22 @@ namespace DesktopCapture
                         Console.WriteLine("System capture stopped with error: " + eventArgs.Exception.Message);
                     }
                 };
+                }
 
-                if (micCapture != null)
+                AttachSystem(systemCapture, true);
+
+                void AttachMic(IWaveIn capture, bool first)
                 {
-                    micCapture.DataAvailable += (sender, eventArgs) =>
+                    capture.DataAvailable += (sender, eventArgs) =>
                     {
-                        if (micWriter != null)
+                        if (first && micWriter != null)
                         {
                             micWriter.Write(eventArgs.Buffer, 0, eventArgs.BytesRecorded);
                         }
 
-                        var monoSamples = DecodeToMonoFloat(eventArgs.Buffer, eventArgs.BytesRecorded, micCapture.WaveFormat);
+                        var monoSamples = DecodeToMonoFloat(eventArgs.Buffer, eventArgs.BytesRecorded, capture.WaveFormat);
                         float localPeak = FindPeak(monoSamples);
+                        RaisePeak(ref LiveMicPeak, localPeak);
                         lock (sync)
                         {
                             micStats.TotalBytes += eventArgs.BytesRecorded;
@@ -234,9 +277,9 @@ namespace DesktopCapture
                         }
                     };
 
-                    micCapture.RecordingStopped += (sender, eventArgs) =>
+                    capture.RecordingStopped += (sender, eventArgs) =>
                     {
-                        if (micWriter != null)
+                        if (first && micWriter != null)
                         {
                             micWriter.Dispose();
                         }
@@ -247,6 +290,89 @@ namespace DesktopCapture
                             Console.WriteLine("Mic capture stopped with error: " + eventArgs.Exception.Message);
                         }
                     };
+                }
+
+                if (micCapture != null)
+                {
+                    AttachMic(micCapture, true);
+                }
+
+                // «mic <id>» / «system <id>» on stdin: another device during the recording, same session and chunks.
+                // The new device is opened first; if it does not open, the current one keeps recording.
+                object switchGate = new object();
+                void SwitchDevice(string kind, string id)
+                {
+                    lock (switchGate)
+                    {
+                        bool mic = kind == "mic";
+                        if (mic)
+                        {
+                            AudioSources.PreferredMicId = id;
+                        }
+                        else
+                        {
+                            AudioSources.PreferredOutputId = id;
+                        }
+
+                        IWaveIn next;
+                        try
+                        {
+                            next = mic ? AudioSources.CreateMicCapture() : AudioSources.CreateSystemCapture();
+                        }
+                        catch (Exception ex)
+                        {
+                            Console.WriteLine("[" + kind + "-error] " + ex.Message);
+                            return;
+                        }
+
+                        IWaveIn old = mic ? micCapture : systemCapture;
+                        try
+                        {
+                            old?.StopRecording();
+                        }
+                        catch (Exception)
+                        {
+                        }
+
+                        lock (sync)
+                        {
+                            // Samples waiting for the next chunk stay unless the new device has another rate.
+                            if (mic && (micChunkState == null || micChunkState.SampleRate != next.WaveFormat.SampleRate))
+                            {
+                                micChunkState = new ChunkState(next.WaveFormat);
+                            }
+                            else if (!mic && systemChunkState.SampleRate != next.WaveFormat.SampleRate)
+                            {
+                                systemChunkState = new ChunkState(next.WaveFormat);
+                            }
+                        }
+
+                        if (mic)
+                        {
+                            AttachMic(next, false);
+                            micCapture = next;
+                        }
+                        else
+                        {
+                            AttachSystem(next, false);
+                            systemCapture = next;
+                        }
+
+                        try
+                        {
+                            next.StartRecording();
+                            Console.WriteLine("[" + kind + "-switched] " + id);
+                        }
+                        catch (Exception ex)
+                        {
+                            Console.WriteLine("[" + kind + "-error] " + ex.Message);
+                        }
+
+                        if (old != null && !ReferenceEquals(old, firstSystemCapture))
+                        {
+                            old.Dispose();
+                        }
+                    }
                 }
 
                 Console.WriteLine("Replio DesktopCapture prototype started.");
@@ -297,11 +423,42 @@ namespace DesktopCapture
                     Console.WriteLine("Mic stream is disabled (default capture endpoint not found).");
                 }
 
-                systemCapture.StartRecording();
+                // A device that fails to start leaves its stream silent; the recording itself goes on.
+                try
+                {
+                    systemCapture.StartRecording();
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine("[system-error] " + ex.Message);
+                }
+
                 if (micCapture != null)
                 {
-                    micCapture.StartRecording();
+                    try
+                    {
+                        micCapture.StartRecording();
+                    }
+                    catch (Exception ex)
+                    {
+                        Console.WriteLine("[mic-error] " + ex.Message);
+                        Console.WriteLine("Microphone capture is unavailable: " + ex.Message);
+                    }
                 }
+
+                // Live level for the Replio icon of the floating bar: «[level] system=… mic=…» about 8 times a second
+                // (parsed by the app, not logged). The loudest sample since the last line, 0–1.
+                var levelThread = new Thread(() =>
+                {
+                    while (run)
+                    {
+                        Thread.Sleep(120);
+                        float s = Interlocked.Exchange(ref LiveSystemPeak, 0f);
+                        float m = Interlocked.Exchange(ref LiveMicPeak, 0f);
+                        Console.WriteLine(string.Format(System.Globalization.CultureInfo.InvariantCulture, "[level] system={0:0.000} mic={1:0.000}", s, m));
+                    }
+                }) { IsBackground = true, Name = "live-level" };
+                levelThread.Start();
 
                 var statsThread = new Thread(() =>
                 {
@@ -386,7 +543,20 @@ namespace DesktopCapture
 
                 var inputThread = new Thread(() =>
                 {
-                    Console.ReadLine();
+                    // An empty line (or a closed stdin) stops; «mic <id>» and «system <id>» switch a device.
+                    while (true)
+                    {
+                        string command = Console.ReadLine();
+                        if (command != null && (command.StartsWith("mic ", StringComparison.Ordinal) || command.StartsWith("system ", StringComparison.Ordinal)))
+                        {
+                            int space = command.IndexOf(' ');
+                            SwitchDevice(command.Substring(0, space), command.Substring(space + 1).Trim());
+                            continue;
+                        }
+
+                        break;
+                    }
+
                     if (!stopRequested)
                     {
                         stopRequested = true;
@@ -399,10 +569,18 @@ namespace DesktopCapture
                 stopSignal.WaitOne();
                 run = false;
 
-                systemCapture.StopRecording();
-                if (micCapture != null)
+                lock (switchGate)
                 {
-                    micCapture.StopRecording();
+                    systemCapture.StopRecording();
+                    if (micCapture != null)
+                    {
+                        micCapture.StopRecording();
+                    }
+
+                    if (!ReferenceEquals(systemCapture, firstSystemCapture))
+                    {
+                        systemCapture.Dispose();
+                    }
                 }
 
                 Thread.Sleep(250);
@@ -1447,6 +1625,29 @@ namespace DesktopCapture
                         i++;
                         options.TranscribeFilePath = i < args.Length ? args[i] : null;
                         break;
+                    case "--mic-device":
+                        i++;
+                        options.MicDevice = i < args.Length ? args[i] : null;
+                        break;
+                    case "--system-device":
+                        i++;
+                        options.SystemDevice = i < args.Length ? args[i] : null;
+                        break;
+                    case "--list-devices":
+                        options.ListDevices = true;
+                        break;
+                    case "--play":
+                        i++;
+                        options.PlayFile = i < args.Length ? args[i] : null;
+                        break;
+                    case "--meter":
+                        i++;
+                        if (i < args.Length && int.TryParse(args[i], out int meterSeconds) && meterSeconds > 0)
+                        {
+                            options.MeterSeconds = meterSeconds;
+                        }
+
+                        break;
                     default:
                         if (!arg.StartsWith("--") && string.IsNullOrWhiteSpace(options.OutputPath))
                         {
@@ -1808,6 +2009,19 @@ namespace DesktopCapture
 
             /// <summary>Audio or video file to transcribe instead of recording (see FileTranscription.cs).</summary>
             public string TranscribeFilePath;
+
+            /// <summary>Sound check: print the levels for this many seconds and exit (see Meter.cs).</summary>
+            public int MeterSeconds;
+
+            /// <summary>Sound check: a WAV to play on the chosen output device while the levels are shown (Windows).</summary>
+            public string PlayFile;
+
+            /// <summary>Devices chosen in Settings (empty: the system defaults); see AudioSources.</summary>
+            public string MicDevice;
+            public string SystemDevice;
+
+            /// <summary>Print the microphones and output devices and exit.</summary>
+            public bool ListDevices;
 
             /// <summary>The same options with another recognition language (auto mode locks per source).</summary>
             public RuntimeOptions WithLanguage(string language)

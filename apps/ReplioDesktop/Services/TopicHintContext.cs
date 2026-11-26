@@ -31,18 +31,18 @@ public static class TopicHintContext
         }
 
         var text = new StringBuilder();
-        text.Append(english ? "Topic: " : "Тема: ").AppendLine(topicName.Trim());
+        text.Append(english ? "Group: " : "Группа: ").AppendLine(topicName.Trim());
         if (overview.Length > 0)
         {
             text.AppendLine()
-                .AppendLine(english ? "Topic overview (all its meetings and documents):" : "Сводка по теме (все встречи и документы):")
+                .AppendLine(english ? "Group overview (all its meetings and documents):" : "Сводка группы (все встречи и документы):")
                 .AppendLine(Limit(overview, MaxTopicSummaryChars));
         }
 
         if (withSummary.Count > 0)
         {
             text.AppendLine()
-                .AppendLine(english ? "Summaries of earlier meetings on this topic, newest first:" : "Итоги прошлых встреч по теме, новые первыми:");
+                .AppendLine(english ? "Summaries of earlier meetings in this group, newest first:" : "Итоги прошлых встреч группы, новые первыми:");
             int perSession = Math.Clamp((MaxTotalChars - text.Length) / withSummary.Count, MinPerSessionChars, MaxPerSessionChars);
             var skipped = new List<TopicSessionDigest>();
             foreach (TopicSessionDigest session in withSummary)
@@ -77,7 +77,7 @@ public static class TopicHintContext
     public static string PromptBlock(string topicContext) =>
         string.IsNullOrWhiteSpace(topicContext)
             ? string.Empty
-            : "Topic context: the current meeting belongs to a topic; below are the topic overview and summaries of its earlier meetings. " +
+            : "Group context: the current meeting belongs to a group of meetings; below are the group overview and summaries of its earlier meetings. " +
               "Use them for background (people, decisions, open tasks, figures) and to avoid asking what is already settled. " +
               "The current transcript wins when they disagree.\n" + topicContext + "\n\n";
 

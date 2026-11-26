@@ -297,8 +297,11 @@ public partial class MainViewModel : ObservableObject
             {
                 OnSpeechLanguageDetected(line);
             }
+
+            OnCaptureProblemLine(line);
         });
         _captureOrchestrator.StatsUpdated += (_, stats) => RunOnUi(() => OnStatsUpdated(stats));
+        _captureOrchestrator.LevelUpdated += (system, mic) => RunOnUi(() => OnLiveLevel(system, mic));
         _captureOrchestrator.TranscriptReceived += (_, transcript) => RunOnUi(() => OnTranscriptReceived(transcript));
         _captureOrchestrator.RunningStateChanged += (_, running) => RunOnUi(() => OnRunningStateChanged(running));
         _visualContextCapture.KeyFrameCaptured += (_, frame) => RunOnUi(() => OnVisualFrameCaptured(frame));
@@ -906,6 +909,7 @@ public partial class MainViewModel : ObservableObject
             _showInScreenShare = value;
             OnPropertyChanged();
             OnPropertyChanged(nameof(HideInScreenShare));
+            OnPropertyChanged(nameof(ScreenShareBadgeText));
         }
     }
 
@@ -1672,7 +1676,9 @@ public partial class MainViewModel : ObservableObject
                 SttApiModel = sttApiModel,
                 SttApiKey = sttApiKey,
                 SttExtraHeaders = useApiStt && IsManagedAi ? ReplioApi.HeadersLine(_settings.ReplioDeviceId, session.Id) : string.Empty,
-                SttGlossary = SttGlossaryFor(SelectedTopic)
+                SttGlossary = SttGlossaryFor(SelectedTopic),
+                MicDevice = _settings.MicDeviceId ?? string.Empty,
+                SystemDevice = OperatingSystem.IsWindows() ? _settings.OutputDeviceId ?? string.Empty : string.Empty
             });
             _lastSttCostSeen = 0;
             _detectedSpeechLanguages.Clear();
@@ -1709,13 +1715,23 @@ public partial class MainViewModel : ObservableObject
             string sessionId = _currentSessionId;
             _currentSessionId = string.Empty;
             SessionSummary? active = _sessionLifecycleService.GetById(sessionId);
-            string sessionSummary = await BuildFinalSessionSummaryAsync(active);
-            _sessionLifecycleService.Complete(sessionId, sessionSummary);
-            _currentSessionSummary = sessionSummary;
-            RefreshSessionList();
-            CurrentSessionSummary = _currentSessionSummary;
-            // Not named during the call: the name comes from the summary, in the background.
-            _ = AutoTitleSessionAsync(sessionId, sessionSummary);
+            if (IsEmptyRecording(active))
+            {
+                // Nothing was heard: no AI summary, name or topic update for it (they cost the plan and say nothing).
+                CompleteEmptySession(sessionId);
+            }
+            else
+            {
+                string sessionSummary = await BuildFinalSessionSummaryAsync(active);
+                _sessionLifecycleService.Complete(sessionId, sessionSummary);
+                _currentSessionSummary = sessionSummary;
+                RefreshSessionList();
+                CurrentSessionSummary = _currentSessionSummary;
+                // Not named during the call: the name comes from the summary, in the background.
+                _ = AutoTitleSessionAsync(sessionId, sessionSummary);
+                // A meeting of a topic brings the topic's «Сводка» and graph up to date by itself.
+                _ = AutoActualizeTopicAfterSessionAsync(sessionId);
+            }
         }
         SelectedSessionTab = "Summary";
         SelectedMainPage = "Home";
@@ -1838,8 +1854,9 @@ public partial class MainViewModel : ObservableObject
         AudioMeterLevel = Math.Clamp((stats.MicAverageKb + stats.SystemAverageKb) / 30d, 0, 1);
         AudioHealthMessage = AudioMeterLevel < 0.08 ? L["AudioHealthNoSystem"] : L["AudioHealthListening"];
         AccumulateSttCost(stats.SttCostRub);
+        // Sound levels only: tokens and cost are not shown to users.
         OverlayStatsChanged?.Invoke(
-            $"{L["OverlayStatsSystem"]} {stats.SystemAverageKb:0.0} {L["UnitKbPerSecond"]} | {L["OverlayStatsMic"]} {stats.MicAverageKb:0.0} {L["UnitKbPerSecond"]}{sttSuffix}{tokenSuffix}");
+            $"{L["OverlayStatsSystem"]} {stats.SystemAverageKb:0.0} {L["UnitKbPerSecond"]} | {L["OverlayStatsMic"]} {stats.MicAverageKb:0.0} {L["UnitKbPerSecond"]}{sttSuffix}");
 
         if (stats.SttLagSeconds >= 20 && DateTime.Now - _lastSttLagWarningAt > TimeSpan.FromMinutes(1))
         {
@@ -1885,6 +1902,20 @@ public partial class MainViewModel : ObservableObject
 
     private void OnRunningStateChanged(bool running)
     {
+        if (running)
+        {
+            StopSoundCheckForCapture();
+            _captureRunningSince = DateTime.UtcNow;
+            _captureCrashLine = string.Empty;
+        }
+        else if (DateTime.UtcNow - _captureRunningSince < TimeSpan.FromSeconds(8) && _captureCrashLine.Length > 0)
+        {
+            // The recording ended by itself right after it started: say why instead of silently closing the panel.
+            string reason = _captureCrashLine;
+            _captureCrashLine = string.Empty;
+            NotificationRequested?.Invoke(L["ErrorTitle"], string.Format(L["CaptureFailedToStart"], reason), true);
+        }
+
         IsCapturing = running;
         CaptureStatusText = running ? L["CaptureStatusCapturing"] : L["CaptureStatusIdle"];
         PrivacyBadgeText = running ? L["PrivacyOn"] : L["PrivacyOff"];
@@ -1894,8 +1925,36 @@ public partial class MainViewModel : ObservableObject
         _captureSnapshotCommand.RaiseCanExecuteChanged();
     }
 
+    private DateTime _captureRunningSince = DateTime.MinValue;
+    private string _captureCrashLine = string.Empty;
+
+    /// <summary>Lines of DesktopCapture that the user should know about: no microphone, another one used, a crash.</summary>
+    private void OnCaptureProblemLine(string line)
+    {
+        if (line.StartsWith("[mic-fallback]", StringComparison.Ordinal))
+        {
+            OverlayNoticeRequested?.Invoke(string.Format(L["MicFallbackNotice"], line["[mic-fallback]".Length..].Trim()));
+        }
+        else if (line.StartsWith("Microphone capture is unavailable", StringComparison.Ordinal))
+        {
+            OverlayNoticeRequested?.Invoke(L["MicUnavailableNotice"]);
+        }
+        else if (line.StartsWith("[stderr] Unhandled exception.", StringComparison.Ordinal))
+        {
+            string text = line["[stderr] Unhandled exception.".Length..].Trim();
+            int colon = text.IndexOf(": ", StringComparison.Ordinal);
+            _captureCrashLine = colon > 0 && colon < 120 ? text[(colon + 2)..] : text;
+            if (_captureCrashLine.Length > 300)
+            {
+                _captureCrashLine = _captureCrashLine[..300];
+            }
+        }
+    }
+
     private void ApplyLocalization()
     {
+        OnPropertyChanged(nameof(ScreenShareBadgeText));
+        OnPropertyChanged(nameof(SoundCheckButtonText));
         CaptureStatusText = IsCapturing ? L["CaptureStatusCapturing"] : L["CaptureStatusIdle"];
         PrivacyBadgeText = IsCapturing ? L["PrivacyOn"] : L["PrivacyOff"];
 
@@ -2310,20 +2369,6 @@ public partial class MainViewModel : ObservableObject
         };
     }
 
-    private void RunAudioCaptureTest()
-    {
-        Diagnostics.Refresh();
-        if (!Diagnostics.IsReadyForCapture)
-        {
-            AudioHealthMessage = L["AudioTestNotReady"];
-            return;
-        }
-
-        AudioHealthMessage = IsCapturing
-            ? $"{L["AudioTestRunning"]} {SystemStatsText} | {MicStatsText}"
-            : L["AudioTestStartCaptureHint"];
-    }
-
     private void OpenSession(object? parameter)
     {
         if (parameter is not SessionSummary session)
@@ -2475,7 +2520,7 @@ public partial class MainViewModel : ObservableObject
                 OverlaySuggestionChanged?.Invoke(BestResponseText);
                 _sessionLifecycleService.AddSuggestion(session.Id);
                 SelectedMainPage = "Session";
-                SelectedSessionTab = session.Status == SessionStatus.Active ? "Transcript" : "Usage";
+                SelectedSessionTab = session.Status == SessionStatus.Active ? "Transcript" : "Summary";
                 MainWindowAttentionRequested?.Invoke();
             },
             $"[assist] WhatShouldISay generated (smart={SmartModeEnabled}).",
@@ -2484,6 +2529,13 @@ public partial class MainViewModel : ObservableObject
 
     private Task RegenerateSummaryAsync()
     {
+        if (SelectedSession is { Status: SessionStatus.Completed } selected && IsEmptyRecording(selected))
+        {
+            // Nothing to summarise: the AI would only say that the transcript is empty.
+            ShowFeedback(L["EmptySessionNoSummary"]);
+            return Task.CompletedTask;
+        }
+
         return RunAssistAsync(
             L["ActionSummary"],
             L["ActionSummaryRequest"],
@@ -2722,7 +2774,8 @@ public partial class MainViewModel : ObservableObject
 
     private void OpenActiveSession()
     {
-        if (SelectedSession != null)
+        // During a recording «open» means the live transcript, even if another meeting was open before.
+        if (SelectedSession != null && (string.IsNullOrWhiteSpace(_currentSessionId) || SelectedSession.Id == _currentSessionId))
         {
             SelectedMainPage = "Session";
             SelectedSessionTab = GetDefaultSessionTab(SelectedSession);

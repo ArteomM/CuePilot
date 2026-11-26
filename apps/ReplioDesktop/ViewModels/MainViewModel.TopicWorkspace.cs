@@ -145,7 +145,8 @@ public partial class MainViewModel
     /// <summary>What to do when the selected item has no text yet.</summary>
     public string KnowledgeEmptyText => _selectedKnowledgeItem switch
     {
-        null => string.Empty,
+        // Nothing attached yet: say what this panel is for; materials but none picked: say how to see one.
+        null => KnowledgeItems.Count > 0 ? L["KnowledgeSelectHint"] : L["KnowledgeNothingYet"],
         { IsBusy: true, CanStop: true } item => item.StatusText,
         { IsBusy: true } => L["KnowledgeParsing"],
         { State: KnowledgeItemState.Failed } item => item.StatusText,
@@ -1464,7 +1465,8 @@ public partial class MainViewModel
         TopicGraphChanged?.Invoke();
     }
 
-    private async Task<bool> BuildTopicGraphAsync(SessionTopic? topic = null)
+    /// <summary><paramref name="quiet"/>: an automatic rebuild shows a short note on failure instead of an error window.</summary>
+    private async Task<bool> BuildTopicGraphAsync(SessionTopic? topic = null, bool quiet = false)
     {
         topic ??= SelectedTopic;
         if (topic == null || IsGraphBusy)
@@ -1474,11 +1476,15 @@ public partial class MainViewModel
 
         if (!TryValidateAssistSettings(out string settingsError))
         {
-            NotificationRequested?.Invoke(L["ErrorTitle"], settingsError, true);
+            if (!quiet)
+            {
+                NotificationRequested?.Invoke(L["ErrorTitle"], settingsError, true);
+            }
+
             return false;
         }
 
-        List<SessionSummary> sessions = CompletedSessions.Where(s => s.TopicId == topic.Id).ToList();
+        List<SessionSummary> sessions = CompletedSessions.Where(s => s.TopicId == topic.Id && !IsEmptyRecording(s)).ToList();
         IsGraphBusy = true;
         try
         {
@@ -1492,9 +1498,11 @@ public partial class MainViewModel
             }
 
             // Keep the positions of nodes that survived, so a rebuild does not scatter the picture.
-            if (_currentGraph != null)
+            // The graph on screen belongs to the selected topic; another topic's old graph is read from disk.
+            TopicGraph? oldGraph = ReferenceEquals(SelectedTopic, topic) ? _currentGraph : await Task.Run(() => _knowledgeStore.ReadGraph(topic.Id));
+            if (oldGraph != null)
             {
-                Dictionary<string, GraphNodeData> previous = _currentGraph.Nodes
+                Dictionary<string, GraphNodeData> previous = oldGraph.Nodes
                     .GroupBy(n => n.Label.ToLowerInvariant())
                     .ToDictionary(g => g.Key, g => g.First());
                 foreach (GraphNodeData node in graph.Nodes)
@@ -1523,7 +1531,15 @@ public partial class MainViewModel
         }
         catch (Exception ex)
         {
-            NotificationRequested?.Invoke(L["ErrorTitle"], $"{L["OpenAiRequestFailed"]}\n{ex.Message}", true);
+            if (quiet)
+            {
+                ShowFeedback(L["KnowledgeAutoRefreshFailed"]);
+            }
+            else
+            {
+                NotificationRequested?.Invoke(L["ErrorTitle"], $"{L["OpenAiRequestFailed"]}\n{ex.Message}", true);
+            }
+
             AppendLog("[graph] Build failed: " + ex.Message);
             return false;
         }
