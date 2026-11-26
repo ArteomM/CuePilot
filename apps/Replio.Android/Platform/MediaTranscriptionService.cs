@@ -91,7 +91,7 @@ public static class MediaTranscriptionService
         using ISpeechRecognizer speech = request.UseApiStt
             ? new SpeechApiClient(request.SttApiUrl, request.SttApiKey, request.SttApiModel, request.Language, request.SttGlossary, request.SttExtraHeaders)
             : !string.IsNullOrWhiteSpace(request.WhisperModel) && LocalWhisper.IsAvailable
-                ? new LocalWhisperRecognizer(request.WhisperModel, request.Language, request.SttGlossary, request.SttExtraHeaders)
+                ? new LocalWhisperRecognizer(request.WhisperModel, request.Language, request.SttGlossary)
                 : throw new InvalidOperationException("No speech recognition: turn on the API or download a speech model in Settings.");
         var result = new MediaTranscriptionResult();
         log?.Invoke($"[media] Transcribing {Path.GetFileName(request.MediaPath)} ({speech.Name}).");

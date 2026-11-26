@@ -109,8 +109,8 @@ public partial class MainView
             {
                 Content = CallText.Get("SetupTurnOn"),
                 MinHeight = 44,
-                Padding = new Avalonia.Thickness(16, 0),
-                Margin = new Avalonia.Thickness(10, 0, 0, 0),
+                Padding = new global::Avalonia.Thickness(16, 0),
+                Margin = new global::Avalonia.Thickness(10, 0, 0, 0),
                 VerticalAlignment = VerticalAlignment.Center
             };
             button.Classes.Add("accent");

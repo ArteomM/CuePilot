@@ -296,7 +296,7 @@ public sealed class PhoneAudioSource : IPcmSource
             var format = new AudioFormat.Builder()
                 .SetEncoding(Encoding.Pcm16bit)!
                 .SetSampleRate(SampleRate)!
-                .SetChannelMask(ChannelIn.Mono)!
+                .SetChannelMask((ChannelOut)(int)ChannelIn.Mono)!
                 .Build();
             AudioRecord record = new AudioRecord.Builder()
                 .SetAudioFormat(format)!
