@@ -15,8 +15,14 @@ namespace Replio.Android;
     Icon = "@mipmap/icon",
     MainLauncher = true,
     LaunchMode = LaunchMode.SingleTask,
+    Exported = true,
     WindowSoftInputMode = global::Android.Views.SoftInput.AdjustResize,
     ConfigurationChanges = ConfigChanges.Orientation | ConfigChanges.ScreenSize | ConfigChanges.UiMode | ConfigChanges.ScreenLayout | ConfigChanges.SmallestScreenSize)]
+// Audio and video shared from another app (a call recording, a voice message) go into the topic and are transcribed.
+[IntentFilter(
+    new[] { Intent.ActionSend, Intent.ActionSendMultiple },
+    Categories = new[] { Intent.CategoryDefault },
+    DataMimeTypes = new[] { "audio/*", "video/*" })]
 public class MainActivity : AvaloniaMainActivity
 {
     private const int PermissionRequestCode = 4101;
@@ -37,6 +43,40 @@ public class MainActivity : AvaloniaMainActivity
         SetHiddenFromScreenCapture(ReplioApplication.HiddenFromCapture);
         // Replio stays in the background from the first start on and waits for calls.
         ReplioService.Start(this);
+        HandleShared(Intent);
+    }
+
+    protected override void OnNewIntent(Intent? intent)
+    {
+        base.OnNewIntent(intent);
+        HandleShared(intent);
+    }
+
+    private void HandleShared(Intent? intent)
+    {
+        if (intent?.Action is not (Intent.ActionSend or Intent.ActionSendMultiple))
+        {
+            return;
+        }
+
+        var uris = new List<global::Android.Net.Uri>();
+#pragma warning disable CA1422 // The typed GetParcelableExtra exists only since Android 13.
+        if (intent.Action == Intent.ActionSend && intent.GetParcelableExtra(Intent.ExtraStream) is global::Android.Net.Uri one)
+        {
+            uris.Add(one);
+        }
+        else if (intent.GetParcelableArrayListExtra(Intent.ExtraStream) is { } many)
+        {
+            uris.AddRange(many.OfType<global::Android.Net.Uri>());
+        }
+#pragma warning restore CA1422
+
+        if (uris.Count > 0)
+        {
+            CallAssistant.Instance.ImportShared(uris);
+        }
+
+        intent.SetAction(Intent.ActionMain);
     }
 
     protected override void OnResume()
@@ -45,6 +85,7 @@ public class MainActivity : AvaloniaMainActivity
         Current = this;
         // Back from the system settings (accessibility, battery): the setup card shows what is on now.
         CallAssistant.Instance.NotifyChanged();
+        CallAssistant.Instance.ImportPhoneRecordings();
     }
 
     protected override void OnDestroy()
@@ -80,6 +121,25 @@ public class MainActivity : AvaloniaMainActivity
         return _permissionRequest.Task;
     }
 
+    /// <summary>Asks for one more permission (the phone's call recordings); true when granted.</summary>
+    public Task<bool> RequestPermissionAsync(string permission)
+    {
+        if (CheckSelfPermission(permission) == Permission.Granted)
+        {
+            return Task.FromResult(true);
+        }
+
+        _otherRequest?.TrySetResult(false);
+        _otherRequest = new TaskCompletionSource<bool>();
+        _otherPermission = permission;
+        RequestPermissions([permission], OtherPermissionRequestCode);
+        return _otherRequest.Task;
+    }
+
+    private const int OtherPermissionRequestCode = 4103;
+    private TaskCompletionSource<bool>? _otherRequest;
+    private string _otherPermission = string.Empty;
+
     public override void OnRequestPermissionsResult(int requestCode, string[] permissions, Permission[] grantResults)
     {
         base.OnRequestPermissionsResult(requestCode, permissions, grantResults);
@@ -88,6 +148,13 @@ public class MainActivity : AvaloniaMainActivity
             _permissionRequest?.TrySetResult(HasMicrophonePermission);
             _permissionRequest = null;
         }
+        else if (requestCode == OtherPermissionRequestCode)
+        {
+            _otherRequest?.TrySetResult(CheckSelfPermission(_otherPermission) == Permission.Granted);
+            _otherRequest = null;
+        }
+
+        CallAssistant.Instance.NotifyChanged();
     }
 
     /// <summary>Opens a link or a file outside the app (a browser, a player).</summary>

@@ -450,6 +450,13 @@ internal sealed class OverlayController
             _assistant.Recap();
         });
 
+        View playback = Tile(context, PhoneAudioSource.HasProjection ? "●" : "○",
+            CallText.Get(PhoneAudioSource.HasProjection ? "MenuPlaybackOn" : "MenuPlayback"), primary: false, () =>
+            {
+                HideMenu();
+                _assistant.TogglePlayback();
+            });
+
         first.AddView(say, CallUi.Weighted(1, h));
         first.AddView(auto, CallUi.Weighted(1, h));
         second.AddView(shot, CallUi.Weighted(1, h));
@@ -460,6 +467,9 @@ internal sealed class OverlayController
         var secondParams = CallUi.Fill();
         secondParams.TopMargin = gap;
         grid.AddView(second, secondParams);
+        var thirdParams = CallUi.Fill(CallUi.Dp(context, 64));
+        thirdParams.TopMargin = gap;
+        grid.AddView(playback, thirdParams);
         return grid;
     }
 

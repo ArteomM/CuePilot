@@ -42,6 +42,40 @@ public partial class MainViewModel
         AddKnowledgeSources(topic, files.Select(MediaSource));
     }
 
+    /// <summary>
+    /// Adds recordings made outside Replio (the phone's own call recorder, a file shared to Replio) to the chosen
+    /// topic, or to a topic named <paramref name="fallbackTopicName"/> when none is chosen, and starts transcribing them
+    /// like «+ Медиа». Used by the Android app; returns the topic.
+    /// </summary>
+    public SessionTopic ImportMediaFiles(IReadOnlyList<string> paths, string fallbackTopicName)
+    {
+        SessionTopic? topic = SelectedTopic ?? _topics.FirstOrDefault(t => string.Equals(t.Name, fallbackTopicName, StringComparison.CurrentCultureIgnoreCase));
+        if (topic == null)
+        {
+            topic = new SessionTopic { Name = fallbackTopicName };
+            _topics.Add(topic);
+            SaveTopics();
+            RebuildTopicItems();
+        }
+
+        if (!ReferenceEquals(SelectedTopic, topic))
+        {
+            SelectedTopicItem = TopicItems.FirstOrDefault(item => item.Topic == topic);
+        }
+
+        AddKnowledgeSources(topic, paths.Select(MediaSource));
+        var added = new HashSet<string>(paths, StringComparer.Ordinal);
+        foreach (KnowledgeItemViewModel item in KnowledgeItems.Where(i => added.Contains(i.Source.Path)).ToList())
+        {
+            if (ParseKnowledgeItemCommand.CanExecute(item))
+            {
+                ParseKnowledgeItemCommand.Execute(item);
+            }
+        }
+
+        return topic;
+    }
+
     private static KnowledgeSource MediaSource(string path) => new()
     {
         Kind = KnowledgeSourceKind.Media,

@@ -28,7 +28,7 @@ public class ReplioApplication : AvaloniaAndroidApplication<App>
 
     public override void OnCreate()
     {
-        CaptureOrchestratorService.PcmSourceFactory = () => new AndroidMicrophone();
+        CaptureOrchestratorService.PcmSourceFactory = () => new PhoneAudioSource();
         MediaTranscriptionService.DecoderFactory = path => new AndroidMediaDecoder(path);
         LocalWhisper.JavaLoader = name =>
         {

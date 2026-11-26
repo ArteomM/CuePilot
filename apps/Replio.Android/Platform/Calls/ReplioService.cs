@@ -26,6 +26,7 @@ public class ReplioService : Service
     private const int NotificationId = 4102;
     private PowerManager.WakeLock? _wakeLock;
     private bool _microphone;
+    private global::Android.Media.Projection.MediaProjection? _projection;
 
     public static ReplioService? Instance { get; private set; }
 
@@ -172,6 +173,69 @@ public class ReplioService : Service
         }
     }
 
+    /// <summary>
+    /// The user allowed capturing the sound of other apps: the service takes the «media projection» type first
+    /// (Android 14 demands it before the projection exists), then the sound is mixed into the recording.
+    /// </summary>
+    public bool EnableProjection(int resultCode, Intent data)
+    {
+        try
+        {
+            _projectionAllowed = true;
+            ShowNotification(force: true);
+            var manager = (global::Android.Media.Projection.MediaProjectionManager?)GetSystemService(MediaProjectionService);
+            _projection = manager?.GetMediaProjection(resultCode, data);
+            if (_projection == null)
+            {
+                _projectionAllowed = false;
+                return false;
+            }
+
+            _projection.RegisterCallback(new ProjectionCallback(this), new Handler(Looper.MainLooper!));
+            PhoneAudioSource.SetProjection(_projection);
+            return true;
+        }
+        catch (Exception ex)
+        {
+            PhonePlatform.Log("[service] Sound of other apps refused: " + ex.Message);
+            _projectionAllowed = false;
+            _projection = null;
+            ShowNotification(force: true);
+            return false;
+        }
+    }
+
+    public void DisableProjection()
+    {
+        global::Android.Media.Projection.MediaProjection? projection = _projection;
+        _projection = null;
+        _projectionAllowed = false;
+        PhoneAudioSource.SetProjection(null);
+        try
+        {
+            projection?.Stop();
+        }
+        catch (Exception)
+        {
+            // Already stopped by the system.
+        }
+    }
+
+    private bool _projectionAllowed;
+
+    private sealed class ProjectionCallback(ReplioService service) : global::Android.Media.Projection.MediaProjection.Callback
+    {
+        public override void OnStop()
+        {
+            if (service._projection != null)
+            {
+                service._projection = null;
+                service._projectionAllowed = false;
+                PhoneAudioSource.SetProjection(null);
+            }
+        }
+    }
+
     private void Demote()
     {
         if (!_microphone)
@@ -179,6 +243,7 @@ public class ReplioService : Service
             return;
         }
 
+        DisableProjection();
         _microphone = false;
         ReleaseWakeLock();
         ShowNotification(force: true);
@@ -208,11 +273,18 @@ public class ReplioService : Service
             ForegroundService type = _microphone
                 ? ForegroundService.TypeMicrophone | ForegroundService.TypeSpecialUse
                 : ForegroundService.TypeSpecialUse;
+            if (_projectionAllowed)
+            {
+                type |= ForegroundService.TypeMediaProjection;
+            }
+
             StartForeground(NotificationId, notification, type);
         }
-        else if (_microphone && Build.VERSION.SdkInt >= BuildVersionCodes.R)
+        else if ((_microphone || _projectionAllowed) && Build.VERSION.SdkInt >= BuildVersionCodes.R)
         {
-            StartForeground(NotificationId, notification, ForegroundService.TypeMicrophone);
+            ForegroundService type = (_microphone ? ForegroundService.TypeMicrophone : 0) |
+                                     (_projectionAllowed ? ForegroundService.TypeMediaProjection : 0);
+            StartForeground(NotificationId, notification, type);
         }
         else
         {
@@ -332,6 +404,62 @@ public class RecordTrampolineActivity : Activity
         catch (Exception ex)
         {
             PhonePlatform.Log("[service] Recording could not be started: " + ex.Message);
+        }
+
+        Finish();
+        OverridePendingTransition(0, 0);
+    }
+}
+
+/// <summary>
+/// Asks Android for the sound of other apps (the system «start recording or casting?» dialog), then hands the
+/// permission to the background service. Android asks again for every recording; it cannot be remembered.
+/// </summary>
+[Activity(
+    Theme = "@android:style/Theme.Translucent.NoTitleBar",
+    ExcludeFromRecents = true,
+    TaskAffinity = "ru.replio.app.projection",
+    LaunchMode = LaunchMode.SingleInstance)]
+public class PlaybackConsentActivity : Activity
+{
+    private const int RequestCode = 4110;
+
+    public static void Launch(Context context)
+    {
+        var intent = new Intent(context, typeof(PlaybackConsentActivity));
+        intent.AddFlags(ActivityFlags.NewTask | ActivityFlags.NoAnimation);
+        try
+        {
+            (ReplioAccessibilityService.Instance as Context ?? context).StartActivity(intent);
+        }
+        catch (Exception ex)
+        {
+            PhonePlatform.Log("[audio] Consent screen could not be opened: " + ex.Message);
+        }
+    }
+
+    protected override void OnCreate(Bundle? savedInstanceState)
+    {
+        base.OnCreate(savedInstanceState);
+        var manager = (global::Android.Media.Projection.MediaProjectionManager?)GetSystemService(MediaProjectionService);
+        Intent? request = manager?.CreateScreenCaptureIntent();
+        if (request == null)
+        {
+            Finish();
+            return;
+        }
+
+        StartActivityForResult(request, RequestCode);
+    }
+
+    protected override void OnActivityResult(int requestCode, [GeneratedEnum] Result resultCode, Intent? data)
+    {
+        base.OnActivityResult(requestCode, resultCode, data);
+        if (requestCode == RequestCode && resultCode == Result.Ok && data != null && ReplioService.Instance is { } service)
+        {
+            bool ok = service.EnableProjection((int)resultCode, data);
+            CallAssistant.Toast(CallText.Get(ok ? "PlaybackOn" : "PlaybackFailed"));
+            CallAssistant.Instance.NotifyChanged();
         }
 
         Finish();

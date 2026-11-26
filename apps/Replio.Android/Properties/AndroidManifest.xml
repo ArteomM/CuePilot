@@ -5,6 +5,10 @@
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE_MICROPHONE" />
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE_SPECIAL_USE" />
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE_MEDIA_PROJECTION" />
+    <!-- The phone's own call recordings (Samsung, Xiaomi…) are picked up after a call. -->
+    <uses-permission android:name="android.permission.READ_MEDIA_AUDIO" />
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" android:maxSdkVersion="32" />
     <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
     <uses-permission android:name="android.permission.WAKE_LOCK" />
     <!-- The Replio button over a call when the «Слушать звонок» accessibility service is off. -->
@@ -22,7 +26,7 @@
         <!-- Replio in the background: waits for a call (quiet notification), records with the microphone type. -->
         <service android:name="ru.replio.app.ReplioService"
                  android:exported="false"
-                 android:foregroundServiceType="microphone|specialUse">
+                 android:foregroundServiceType="microphone|specialUse|mediaProjection">
             <property android:name="android.app.PROPERTY_SPECIAL_USE_FGS_SUBTYPE"
                       android:value="Waits for a phone or video call to start and shows the Replio button over it, so the user can record and get hints during the call." />
         </service>

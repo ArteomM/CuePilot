@@ -64,6 +64,18 @@ public partial class MainView
         AddSetupRow(CallText.Get("SetupListen"), listen ? null : CallText.Get("SetupListenHint"), listen,
             () => ReplioAccessibilityService.OpenSettings(MainActivity.Current ?? context));
         AddSetupRow(CallText.Get("SetupBattery"), null, battery, () => RequestIgnoreBatteryOptimizations(MainActivity.Current ?? context));
+        bool recordings = CallRecordingImporter.HasPermission(context);
+        AddSetupRow(CallText.Get("SetupRecordings"), recordings ? null : CallText.Get("SetupRecordingsHint"), recordings, async () =>
+        {
+            if (MainActivity.Current is { } activity)
+            {
+                await activity.RequestPermissionAsync(CallRecordingImporter.Permission);
+                // Recordings from now on are picked up, older ones are left alone.
+                CallRecordingImporter.MarkNow();
+            }
+
+            UpdateCallCard();
+        });
         CallSpeakerNote.Text = CallText.Get("SetupSpeaker");
     }
 

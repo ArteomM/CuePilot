@@ -30,6 +30,11 @@ public sealed class CallAssistant
     private CallAssistant()
     {
         _overlay = new OverlayController(this);
+        AudioSourceStatus.Changed += () => OnMain(() =>
+        {
+            _overlay.Refresh();
+            StateChanged?.Invoke();
+        });
     }
 
     public static CallAssistant Instance { get; } = new();
@@ -93,17 +98,22 @@ public sealed class CallAssistant
                 return CallText.Get("HintIdle");
             }
 
+            string source = AudioSourceStatus.Describe();
+            string hearing;
             if (!InCall)
             {
-                return _monitor?.StatusText ?? string.Empty;
+                hearing = _monitor?.StatusText ?? string.Empty;
             }
-
-            if (ReplioAccessibilityService.Instance == null)
+            else if (AudioSourceStatus.Silenced || ReplioAccessibilityService.Instance == null)
             {
-                return CallText.Get("HearNothing");
+                hearing = CallText.Get("HearNothing");
+            }
+            else
+            {
+                hearing = _watcher?.IsSpeakerOn() == true ? CallText.Get("HearBoth") : CallText.Get("HearMe");
             }
 
-            return _watcher?.IsSpeakerOn() == true ? CallText.Get("HearBoth") : CallText.Get("HearMe");
+            return source.Length == 0 ? hearing : hearing.Length == 0 ? source : source + "\n" + hearing;
         }
     }
 
@@ -199,6 +209,10 @@ public sealed class CallAssistant
             {
                 _overlay.HideAll();
             }
+
+            // The phone's own recorder saves its file a few seconds after the call.
+            _main.PostDelayed(ImportPhoneRecordings, 8000);
+            _main.PostDelayed(ImportPhoneRecordings, 40000);
         }
 
         ReplioService.Refresh();
@@ -403,6 +417,78 @@ public sealed class CallAssistant
             Toast(CallText.Get("SnapshotFailed"));
         }
     });
+
+    // ---------------------------------------------------------------- other sound sources
+
+    /// <summary>Sound of other apps (video, broadcasts): asks Android each time, or turns it off.</summary>
+    public void TogglePlayback()
+    {
+        if (PhoneAudioSource.HasProjection)
+        {
+            ReplioService.Instance?.DisableProjection();
+            StateChanged?.Invoke();
+            return;
+        }
+
+        if (!PhoneAudioSource.PlaybackSupported)
+        {
+            Toast(CallText.Get("PlaybackFailed"));
+            return;
+        }
+
+        PlaybackConsentActivity.Launch(global::Android.App.Application.Context);
+    }
+
+    /// <summary>Recordings the phone made of the call itself go into the topic and get transcribed.</summary>
+    public void ImportPhoneRecordings()
+    {
+        Context context = global::Android.App.Application.Context;
+        if (_viewModel == null || !CallRecordingImporter.HasPermission(context))
+        {
+            return;
+        }
+
+        string folder = Path.Combine(MainViewModel.ImportsDirectory, "calls");
+        Task.Run(() => CallRecordingImporter.CollectNew(context, folder)).ContinueWith(task =>
+        {
+            if (task.Result.Count > 0)
+            {
+                OnMain(() => Import(task.Result, "ImportedRecording"));
+            }
+        }, TaskScheduler.Default);
+    }
+
+    /// <summary>Audio or video shared to Replio from another app.</summary>
+    public void ImportShared(IReadOnlyList<global::Android.Net.Uri> uris)
+    {
+        Context context = global::Android.App.Application.Context;
+        string folder = Path.Combine(MainViewModel.ImportsDirectory, "shared");
+        Task.Run(() => CallRecordingImporter.CopyShared(context, uris, folder)).ContinueWith(task =>
+        {
+            if (task.Result.Count > 0)
+            {
+                OnMain(() => Import(task.Result, "ImportedShared"));
+            }
+        }, TaskScheduler.Default);
+    }
+
+    private void Import(IReadOnlyList<string> paths, string messageKey)
+    {
+        if (_viewModel == null)
+        {
+            return;
+        }
+
+        try
+        {
+            ReplioDesktop.Models.SessionTopic topic = _viewModel.ImportMediaFiles(paths, CallText.Get("ImportTopic"));
+            Toast(CallText.Format(messageKey, topic.Name));
+        }
+        catch (Exception ex)
+        {
+            PhonePlatform.Log("[calls] Import failed: " + ex.Message);
+        }
+    }
 
     public void OpenApp()
     {
