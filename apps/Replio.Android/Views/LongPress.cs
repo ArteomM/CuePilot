@@ -4,13 +4,16 @@ using Avalonia.Input;
 using Avalonia.Interactivity;
 using Avalonia.Threading;
 using Avalonia.VisualTree;
+using Replio.Android.Platform;
 
 namespace Replio.Android.Views;
 
 /// <summary>
 /// Press and hold, as in Android apps: on a control with the class «longPress» (a session card, a group chip, a hint)
 /// the control sinks slowly under the finger; after about half a second the phone vibrates, the control springs back
-/// and its menu slides up. The tap that would follow is swallowed. Moving the finger (scrolling) cancels it.
+/// and its menu slides up. The tap that would follow is swallowed. The menu opens only if the finger stayed where it
+/// pressed the whole time: any slide (a scroll, a pull on a short list that does not scroll) cancels it, checked both
+/// here and on Android's own touch stream (<see cref="TouchTracker"/>).
 /// </summary>
 public sealed class LongPress
 {
@@ -33,9 +36,12 @@ public sealed class LongPress
         _onLongPress = onLongPress;
         _timer = new DispatcherTimer { Interval = Delay };
         _timer.Tick += (_, _) => Fire();
+        TouchTracker.MovedAway += () => Dispatcher.UIThread.Post(Cancel);
         root.AddHandler(InputElement.PointerPressedEvent, OnPressed, RoutingStrategies.Tunnel, handledEventsToo: true);
         root.AddHandler(InputElement.PointerMovedEvent, OnMoved, RoutingStrategies.Tunnel, handledEventsToo: true);
         root.AddHandler(InputElement.PointerReleasedEvent, OnReleased, RoutingStrategies.Tunnel, handledEventsToo: true);
+        root.AddHandler(Gestures.ScrollGestureEvent, (_, _) => Cancel(), RoutingStrategies.Bubble, handledEventsToo: true);
+        root.AddHandler(ScrollViewer.ScrollChangedEvent, (_, _) => Cancel(), RoutingStrategies.Bubble, handledEventsToo: true);
     }
 
     private void OnPressed(object? sender, PointerPressedEventArgs e)
@@ -57,6 +63,12 @@ public sealed class LongPress
     {
         if (_target == null || !_timer.IsEnabled)
         {
+            return;
+        }
+
+        if (TouchTracker.Moved)
+        {
+            Cancel();
             return;
         }
 
@@ -107,10 +119,18 @@ public sealed class LongPress
             return;
         }
 
+        // The finger slid or is already up: a scroll or a pull, not a hold.
+        if (TouchTracker.Active && (TouchTracker.Moved || !TouchTracker.IsDown))
+        {
+            Cancel();
+            return;
+        }
+
         _fired = true;
+        PhonePlatform.Log("[ui] long press");
         try
         {
-            Replio.Android.Platform.PhonePlatform.Haptic();
+            PhonePlatform.Haptic();
         }
         catch (Exception)
         {

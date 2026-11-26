@@ -1589,15 +1589,17 @@
         <Grid x:Name="CallSetupSheet" Background="#99000000" IsVisible="False" PointerPressed="CallSetupSheetBackdrop_OnPointerPressed">
             <Border x:Name="CallSetupPanel"
                     VerticalAlignment="Bottom"
-                    Padding="16,14,16,20"
+                    Padding="16,10,16,20"
                     CornerRadius="22,22,0,0"
                     Background="{DynamicResource EchoSurfaceBrush}">
-                <Grid RowDefinitions="Auto,*">
-                    <Grid ColumnDefinitions="*,Auto">
+                <Grid RowDefinitions="Auto,Auto,*">
+                    <!-- The handle: pull the sheet down to close it (SheetDrag). -->
+                    <Border Width="40" Height="4" Margin="0,0,0,6" CornerRadius="2" HorizontalAlignment="Center" Background="{DynamicResource EchoBorderBrush}" />
+                    <Grid Grid.Row="1" ColumnDefinitions="*,Auto">
                         <TextBlock x:Name="CallSetupTitle" FontSize="18" FontWeight="ExtraBold" VerticalAlignment="Center" Foreground="{DynamicResource EchoTextBrush}" />
                         <Button Grid.Column="1" Classes="ghost icon" Click="CloseCallSetup_OnClick" Content="✕" />
                     </Grid>
-                    <ScrollViewer Grid.Row="1" Margin="0,8,0,0" HorizontalScrollBarVisibility="Disabled" VerticalScrollBarVisibility="Auto">
+                    <ScrollViewer Grid.Row="2" Margin="0,8,0,0" HorizontalScrollBarVisibility="Disabled" VerticalScrollBarVisibility="Auto">
                         <StackPanel Margin="0,0,12,0" Spacing="14">
                             <!-- On / off for the whole calls mode: off, no button on calls and no «Ждёт звонка». -->
                             <Border Padding="16,10,10,10" CornerRadius="18" BorderThickness="1" Background="{DynamicResource EchoSurfaceAltBrush}" BorderBrush="{DynamicResource EchoBorderBrush}">

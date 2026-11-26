@@ -30,6 +30,9 @@ internal static class Motion
     // A newer Show or Hide of the same overlay wins over an older one that has not finished yet.
     private static readonly ConditionalWeakTable<Control, StrongBox<int>> Generations = new();
 
+    // Sheets the finger has just pulled down: they leave at the finger's speed, not from a standstill.
+    private static readonly ConditionalWeakTable<Control, object> Flung = new();
+
     private static int Next(Control layer) => ++Generations.GetValue(layer, _ => new StrongBox<int>()).Value;
 
     private static bool Current(Control layer, int generation) =>
@@ -101,9 +104,11 @@ internal static class Motion
             return;
         }
 
+        bool flung = Flung.TryGetValue(panel, out _);
+        Flung.Remove(panel);
         layer.Transitions = new Transitions { Fade(200) };
         panel.Transitions = kind == Kind.Sheet
-            ? new Transitions { Move(220, new CubicEaseIn()) }
+            ? new Transitions { flung ? Move(200, new CubicEaseOut()) : Move(220, new CubicEaseIn()) }
             : new Transitions { Move(180, new CubicEaseIn()), Fade(160) };
         layer.Opacity = 0;
         if (kind == Kind.Sheet)
@@ -127,6 +132,22 @@ internal static class Motion
             done?.Invoke();
         }, TimeSpan.FromMilliseconds(230));
     }
+
+    /// <summary>The finger took hold of a sheet: it follows the finger with no delay.</summary>
+    public static void BeginDrag(Control panel) => panel.Transitions = null;
+
+    /// <summary>The sheet <paramref name="y"/> pixels below its place.</summary>
+    public static void DragTo(Control panel, double y) => panel.RenderTransform = TranslateY(Math.Max(0, y));
+
+    /// <summary>Let go too early: the sheet glides back up.</summary>
+    public static void SnapBack(Control panel)
+    {
+        panel.Transitions = new Transitions { Move(260, new QuinticEaseOut()) };
+        panel.RenderTransform = Rest;
+    }
+
+    /// <summary>Let go far enough: the next <see cref="Hide"/> of this sheet keeps the finger's momentum.</summary>
+    public static void MarkFlung(Control panel) => Flung.AddOrUpdate(panel, new object());
 
     /// <summary>A page that just opened fades in and slides a little from the side it came from.</summary>
     public static void Enter(Control page, double fromX)

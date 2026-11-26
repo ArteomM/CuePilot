@@ -335,7 +335,27 @@ internal sealed class OverlayController
         }
 
         Context context = _host;
-        var root = new MenuRoot(context, () => HideMenu());
+        MenuRoot? root = null;
+        root = new MenuRoot(
+            context,
+            () => HideMenu(),
+            left =>
+            {
+                // Pulled down: the call behind brightens with the distance.
+                if (_menu is { } menu && ReferenceEquals(menu, root) && _menuParams is { } mp)
+                {
+                    mp.DimAmount = 0.45f * left;
+                    Update(menu, mp, _windows);
+                }
+            },
+            () =>
+            {
+                if (_menu is { } menu && ReferenceEquals(menu, root) && _menuParams is { } mp)
+                {
+                    menu.Animate()?.TranslationY(0).SetDuration(240).SetInterpolator(new DecelerateInterpolator(2f))?.Start();
+                    AnimateDim(menu, mp, mp.DimAmount, 0.45f, 240, _windows);
+                }
+            });
         root.Orientation = Orientation.Vertical;
         int pad = CallUi.Dp(context, 16);
         root.SetPadding(pad, CallUi.Dp(context, 10), pad, CallUi.Dp(context, 16));
@@ -972,28 +992,179 @@ internal sealed class OverlayController
         view = null;
     }
 
-    /// <summary>The menu sheet: a tap outside it or the back button closes it.</summary>
+    /// <summary>
+    /// The menu sheet: a tap outside it or the back button closes it, and so does pulling it down by any spot, like a
+    /// bottom sheet (over the group list only when that list is at its top). A pull that stops short glides back.
+    /// </summary>
     private sealed class MenuRoot : LinearLayout
     {
-        private readonly Action _close;
+        private const float FlickDpPerMs = 0.55f;
 
-        public MenuRoot(Context context, Action close)
+        private readonly Action _close;
+        private readonly Action<float> _dragged;
+        private readonly Action _settle;
+        private readonly int _slop;
+        private float _downX;
+        private float _downY;
+        private float _lastY;
+        private long _lastTime;
+        private float _speed;
+        private bool _dragging;
+
+        public MenuRoot(Context context, Action close, Action<float> dragged, Action settle)
             : base(context)
         {
             _close = close;
+            _dragged = dragged;
+            _settle = settle;
+            _slop = ViewConfiguration.Get(context)?.ScaledTouchSlop ?? CallUi.Dp(context, 8);
             Focusable = true;
             FocusableInTouchMode = true;
         }
 
+        public override bool OnInterceptTouchEvent(MotionEvent? e)
+        {
+            if (e == null)
+            {
+                return false;
+            }
+
+            switch (e.ActionMasked)
+            {
+                case MotionEventActions.Down:
+                    Down(e);
+                    break;
+                case MotionEventActions.Move:
+                    return TryStart(e);
+            }
+
+            return false;
+        }
+
         public override bool OnTouchEvent(MotionEvent? e)
         {
-            if (e?.Action == MotionEventActions.Outside)
+            if (e == null)
+            {
+                return false;
+            }
+
+            if (e.Action == MotionEventActions.Outside)
             {
                 _close();
                 return true;
             }
 
+            switch (e.ActionMasked)
+            {
+                case MotionEventActions.Down:
+                    // On the sheet itself (the handle, the gaps): keep the touch so a pull can follow.
+                    Down(e);
+                    return true;
+                case MotionEventActions.Move:
+                    if (_dragging || TryStart(e))
+                    {
+                        Drag(e);
+                    }
+
+                    return true;
+                case MotionEventActions.Up:
+                case MotionEventActions.Cancel:
+                    if (_dragging)
+                    {
+                        _dragging = false;
+                        float density = Resources?.DisplayMetrics?.Density ?? 1f;
+                        if (TranslationY > Height * 0.25f || _speed / density > FlickDpPerMs)
+                        {
+                            PhonePlatform.Log("[calls] menu pulled down");
+                            _close();
+                        }
+                        else
+                        {
+                            _settle();
+                        }
+                    }
+
+                    return true;
+            }
+
             return base.OnTouchEvent(e);
+        }
+
+        private void Down(MotionEvent e)
+        {
+            _downX = e.RawX;
+            _downY = e.RawY;
+            _lastY = e.RawY;
+            _lastTime = e.EventTime;
+            _speed = 0;
+            _dragging = false;
+        }
+
+        private bool TryStart(MotionEvent e)
+        {
+            if (_dragging)
+            {
+                return true;
+            }
+
+            float dy = e.RawY - _downY;
+            float dx = e.RawX - _downX;
+            if (dy <= _slop || dy <= Math.Abs(dx) * 1.2f || ScrolledUnder(this, _downX, _downY))
+            {
+                return false;
+            }
+
+            _dragging = true;
+            _downY += _slop; // no jump by the slop distance
+            Animate()?.Cancel();
+            return true;
+        }
+
+        private void Drag(MotionEvent e)
+        {
+            float offset = Math.Max(0, e.RawY - _downY);
+            long dt = e.EventTime - _lastTime;
+            if (dt > 0)
+            {
+                _speed = _speed * 0.4f + (e.RawY - _lastY) / dt * 0.6f;
+            }
+
+            _lastY = e.RawY;
+            _lastTime = e.EventTime;
+            TranslationY = offset;
+            _dragged(1f - Math.Min(1f, offset / Math.Max(1, Height)));
+        }
+
+        /// <summary>A list under the finger that is scrolled down: the pull scrolls it instead.</summary>
+        private static bool ScrolledUnder(ViewGroup group, float rawX, float rawY)
+        {
+            int[] spot = new int[2];
+            for (int i = 0; i < group.ChildCount; i++)
+            {
+                View? child = group.GetChildAt(i);
+                if (child == null || child.Visibility != ViewStates.Visible)
+                {
+                    continue;
+                }
+
+                child.GetLocationOnScreen(spot);
+                if (rawX < spot[0] || rawX > spot[0] + child.Width || rawY < spot[1] || rawY > spot[1] + child.Height)
+                {
+                    continue;
+                }
+
+                if (child is ScrollView list && list.CanScrollVertically(-1))
+                {
+                    return true;
+                }
+
+                if (child is ViewGroup inner && ScrolledUnder(inner, rawX, rawY))
+                {
+                    return true;
+                }
+            }
+
+            return false;
         }
 
         public override bool DispatchKeyEvent(KeyEvent? e)

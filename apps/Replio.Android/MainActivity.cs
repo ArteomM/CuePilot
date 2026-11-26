@@ -54,6 +54,12 @@ public class MainActivity : AvaloniaMainActivity<App>
         ShowDemoPage(Intent);
     }
 
+    public override bool DispatchTouchEvent(global::Android.Views.MotionEvent? ev)
+    {
+        TouchTracker.Track(ev, this);
+        return base.DispatchTouchEvent(ev);
+    }
+
     protected override void OnNewIntent(Intent? intent)
     {
         base.OnNewIntent(intent);

@@ -43,10 +43,36 @@ shot() {
 }
 
 shot home
-for page in group actions session live livetext setup settings about callmenu callhint; do
+for page in group actions session live livetext setup settings about; do
   adb shell am start -n "$ACTIVITY" --es replio_demo "$page" > /dev/null
   sleep 5
   shot "$page"
+done
+
+# Touch on the home page (Views/LongPress.cs, Views/SheetDrag.cs): a slow pull on a card must not open its menu
+# (dragcard: no sheet), holding still must (holdcard: the sheet), and pulling the sheet down closes it (sheetdrag).
+adb shell am start -n "$ACTIVITY" --es replio_demo home > /dev/null
+sleep 5
+adb shell input swipe 540 1050 540 1400 1000
+sleep 2
+shot dragcard
+adb shell input swipe 540 1050 540 1050 1100
+sleep 2
+shot holdcard
+adb shell input swipe 540 1300 540 2200 250
+sleep 2
+shot sheetdrag
+
+for page in callmenu callhint; do
+  adb shell am start -n "$ACTIVITY" --es replio_demo "$page" > /dev/null
+  sleep 5
+  shot "$page"
+  if [ "$page" = callmenu ]; then
+    # The menu over a call closes when pulled down by a tile (callmenudrag: only the Replio button is left).
+    adb shell input swipe 787 1300 787 2200 250
+    sleep 2
+    shot callmenudrag
+  fi
 done
 adb shell input keyevent KEYCODE_BACK
 sleep 1
@@ -55,6 +81,8 @@ PID="$(adb shell pidof "$PACKAGE" | tr -d '\r')"
 adb logcat -d > logcat.txt
 echo "----- logcat (app, runtime, crashes) -----"
 grep -E "FATAL EXCEPTION|AndroidRuntime|monodroid|mono-rt|DOTNET|Avalonia|Replio|$PACKAGE" logcat.txt | grep -v "AiAiEcho\|FontLog\|ImsResolver\|CarrierSvc" | tail -150
+echo "----- touch -----"
+grep -E "\[ui\] (long press|sheet pulled)|\[calls\] menu pulled|\[demo\] page" logcat.txt | tail -30 || true
 echo "----- self-test -----"
 grep -F "[selftest]" logcat.txt || echo "(no self-test lines)"
 

@@ -144,6 +144,8 @@ public partial class MainView : UserControl
         _chat.CollectionChanged += (_, _) => UpdateAssistEmpty();
         ResetChat();
         _ = new LongPress(this, OnLongPress);
+        _ = new SheetDrag(DialogLayer, DialogCard, () => _dialogKind == Motion.Kind.Sheet, CloseDialog);
+        _ = new SheetDrag(CallSetupSheet, CallSetupPanel, () => true, CloseCallSetup);
         SetUpLive();
 
         AskTextBox.KeyDown += (_, e) =>
