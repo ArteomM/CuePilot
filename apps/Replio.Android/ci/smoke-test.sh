@@ -13,6 +13,9 @@ adb shell settings put system screen_off_timeout 1800000 || true
 adb shell svc power stayon true || true
 adb shell input keyevent KEYCODE_WAKEUP || true
 adb shell wm dismiss-keyguard || true
+# The emulator's own launcher sometimes stops answering and its «isn't responding» box covers the screenshots.
+adb shell settings put secure anr_show_background 0 || true
+adb shell settings put global hide_error_dialogs 1 || true
 # The extra makes the app send one speech API request with a made-up key (Platform/SelfTest.cs).
 ACTIVITY="$(adb shell cmd package resolve-activity --brief -c android.intent.category.LAUNCHER "$PACKAGE" | tr -d '\r' | tail -1)"
 echo "Launcher activity: $ACTIVITY"
@@ -32,6 +35,8 @@ done
 sleep 6
 
 shot() {
+  adb shell am broadcast -a android.intent.action.CLOSE_SYSTEM_DIALOGS > /dev/null 2>&1 || true
+  sleep 1
   adb exec-out screencap -p > "shots/$1.png" || rm -f "shots/$1.png"
 }
 
