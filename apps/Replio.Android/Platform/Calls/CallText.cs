@@ -65,7 +65,7 @@ public static class CallText
         ["SetupTurnOn"] = ("Включить", "Turn on"),
         ["SetupSpeaker"] = ("Собеседника слышно, когда включена громкая связь. Без неё Replio слышит только вас: так устроен Android.", "The other side is heard on speakerphone. Without it Replio hears only you: that's how Android works."),
         ["SetupPaused"] = ("Ожидание звонков выключено", "Waiting for calls is off"),
-        ["SetupWatch"] = ("Replio на звонках", "Replio on calls"),
+        ["SetupWatch"] = ("Показывать кнопку на звонках", "Show the button on calls"),
         ["SetupWatchOn"] = ("Кнопка Replio появляется на каждом звонке", "The Replio button appears on every call"),
         ["SetupWatchOff"] = ("Выключено: Replio не появляется на звонках и не висит в уведомлениях", "Off: Replio stays away from calls and the notifications"),
         ["SetupChange"] = ("Изменить", "Change"),

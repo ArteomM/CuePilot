@@ -410,8 +410,9 @@ internal sealed class OverlayController
         topic.Click += (_, _) => ShowMenu(topics: !topics);
         CallUi.Pressable(topic, 16);
         top.AddView(topic, CallUi.Weighted(1, CallUi.Dp(context, 48)));
-        TextView collapse = CallUi.Button(context, "⌄", CallUi.Surface, CallUi.Text, 16);
-        collapse.TextSize = 22;
+        TextView collapse = CallUi.Button(context, "✕", CallUi.Surface, CallUi.Text, 16);
+        collapse.TextSize = 18;
+        collapse.SetPadding(0, 0, 0, 0);
         collapse.ContentDescription = "Свернуть";
         collapse.Click += (_, _) => HideMenu();
         CallUi.Pressable(collapse, 16);
