@@ -41,6 +41,11 @@ else
   echo "::warning::The speech API self-test gave no answer (network on the emulator?)"
 fi
 
+if grep -A3 "FATAL EXCEPTION" logcat.txt | grep -q "$PACKAGE"; then
+  echo "::error::Replio crashed (FATAL EXCEPTION in logcat)"
+  exit 1
+fi
+
 if [ -z "$PID" ]; then
   echo "::error::Replio is not running 50 s after start"
   exit 1
