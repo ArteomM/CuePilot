@@ -99,6 +99,37 @@ public partial class MainView
             UpdateCallCard();
         });
         CallSpeakerNote.Text = CallText.Get("SetupSpeaker");
+
+        // The card stays two lines high; the steps open in a sheet that scrolls.
+        int left = (mic ? 0 : 1) + (listen ? 0 : 1) + (battery ? 0 : 1);
+        CallSetupTitle.Text = CallText.Get("SetupTitle");
+        CallSetupButton.Content = left > 0 ? CallText.Format("SetupOpenLeft", left) : CallText.Get("SetupOpen");
+        CallSetupButton.Classes.Set("accent", left > 0);
+        if (left == 0 && !assistant.IsRecording && !assistant.InCall)
+        {
+            CallStatusText.Text = CallText.Get("SetupReadyShort");
+        }
+        else if (left > 0 && !assistant.IsRecording && !assistant.InCall)
+        {
+            CallStatusText.Text = CallText.Get("SetupNeededShort");
+        }
+    }
+
+    private void CallSetup_OnClick(object? sender, global::Avalonia.Interactivity.RoutedEventArgs e)
+    {
+        UpdateCallCard();
+        CallSetupPanel.MaxHeight = Math.Max(320, Bounds.Height * 0.85);
+        CallSetupSheet.IsVisible = true;
+    }
+
+    private void CloseCallSetup_OnClick(object? sender, global::Avalonia.Interactivity.RoutedEventArgs e) => CallSetupSheet.IsVisible = false;
+
+    private void CallSetupSheetBackdrop_OnPointerPressed(object? sender, global::Avalonia.Input.PointerPressedEventArgs e)
+    {
+        if (ReferenceEquals(e.Source, CallSetupSheet))
+        {
+            CallSetupSheet.IsVisible = false;
+        }
     }
 
     private void AddSetupRow(string title, string? hint, bool done, Action turnOn, string? buttonText = null)

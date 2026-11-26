@@ -40,7 +40,7 @@ public class MainActivity : AvaloniaMainActivity<App>
         }
 
         base.OnCreate(savedInstanceState);
-        SetHiddenFromScreenCapture(ReplioApplication.HiddenFromCapture);
+        SetHiddenFromScreenCapture(false);
         // Replio stays in the background from the first start on and waits for calls.
         ReplioService.Start(this);
         HandleShared(Intent);

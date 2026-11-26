@@ -55,12 +55,13 @@ public partial class MainView : UserControl
         if (!localWhisper)
         {
             _viewModel.UseApiStt = true;
-            UseApiSttBox.IsVisible = false;
             SpeechModelsSection.IsVisible = false;
             SttHintText.Text = MobileText.Get("PhoneApiOnlyHint");
+            SttHintText.IsVisible = true;
         }
 
-        PhonePlatform.SetHiddenFromScreenCapture(!_viewModel.ShowInScreenShare);
+        // A phone has no meeting windows to hide from a screen share: Replio is always visible in recordings and screenshots.
+        PhonePlatform.SetHiddenFromScreenCapture(false);
         UpdateHardwareText();
         SetUpGraph();
 
@@ -116,9 +117,6 @@ public partial class MainView : UserControl
                         UpdateHardwareText();
                         UpdateGraphTypeNames();
                     });
-                    break;
-                case nameof(MainViewModel.ShowInScreenShare):
-                    PhonePlatform.SetHiddenFromScreenCapture(!_viewModel.ShowInScreenShare);
                     break;
                 case nameof(MainViewModel.IsEditingTopicName) when _viewModel.IsEditingTopicName:
                     Dispatcher.UIThread.Post(() =>
@@ -241,6 +239,12 @@ public partial class MainView : UserControl
             return true;
         }
 
+        if (CallSetupSheet.IsVisible)
+        {
+            CallSetupSheet.IsVisible = false;
+            return true;
+        }
+
         if (_viewModel.SelectedMainPage != "Home")
         {
             Execute(_viewModel.GoHomeCommand);
@@ -279,7 +283,6 @@ public partial class MainView : UserControl
         PageTitleText.Text = page switch
         {
             "Session" => MobileText.Get("SessionTitle"),
-            "Modes" => MobileText.Get("Modes"),
             "Settings" => _viewModel.L["SettingsTab"],
             _ => string.Empty
         };

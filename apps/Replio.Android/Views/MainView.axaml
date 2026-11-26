@@ -251,52 +251,6 @@
             <Setter Property="FontWeight" Value="Bold" />
         </Style>
         <!-- Screen-share badge: always «Скрыт от демонстрации»; mint with a lit dot while hidden, plain with a grey dot while visible. -->
-        <Style Selector="Border#ShareBadge">
-            <Setter Property="Background" Value="{DynamicResource EchoAccentSoftBrush}" />
-            <Setter Property="BorderBrush" Value="{DynamicResource EchoAccentSoftBorderBrush}" />
-        </Style>
-        <Style Selector="Border#ShareBadge.shown">
-            <Setter Property="Background" Value="{DynamicResource EchoSurfaceBrush}" />
-            <Setter Property="BorderBrush" Value="{DynamicResource EchoBorderBrush}" />
-        </Style>
-        <Style Selector="Ellipse#ShareBadgeHalo">
-            <Setter Property="Fill" Value="{DynamicResource EchoAccentBrush}" />
-            <Style.Animations>
-                <Animation Duration="0:0:2.2" IterationCount="Infinite">
-                    <KeyFrame Cue="0%">
-                        <Setter Property="Opacity" Value="0.45" />
-                        <Setter Property="ScaleTransform.ScaleX" Value="0.6" />
-                        <Setter Property="ScaleTransform.ScaleY" Value="0.6" />
-                    </KeyFrame>
-                    <KeyFrame Cue="100%">
-                        <Setter Property="Opacity" Value="0" />
-                        <Setter Property="ScaleTransform.ScaleX" Value="1.4" />
-                        <Setter Property="ScaleTransform.ScaleY" Value="1.4" />
-                    </KeyFrame>
-                </Animation>
-            </Style.Animations>
-        </Style>
-        <Style Selector="Ellipse#ShareBadgeHalo.shown">
-            <Setter Property="IsVisible" Value="False" />
-        </Style>
-        <Style Selector="Ellipse#ShareBadgeDot">
-            <Setter Property="Fill" Value="{DynamicResource EchoAccentBrush}" />
-        </Style>
-        <Style Selector="Ellipse#ShareBadgeDot.shown">
-            <Setter Property="Fill" Value="{DynamicResource EchoMutedBrush}" />
-        </Style>
-        <Style Selector="TextBlock#ShareBadgeText">
-            <Setter Property="Foreground" Value="{DynamicResource EchoBadgeTextBrush}" />
-        </Style>
-        <Style Selector="TextBlock#ShareBadgeText.shown">
-            <Setter Property="Foreground" Value="{DynamicResource EchoSoftTextBrush}" />
-        </Style>
-        <Style Selector="ListBox#ModesList ListBoxItem TextBlock.modeCheck">
-            <Setter Property="IsVisible" Value="False" />
-        </Style>
-        <Style Selector="ListBox#ModesList ListBoxItem:selected TextBlock.modeCheck">
-            <Setter Property="IsVisible" Value="True" />
-        </Style>
         <Style Selector="Button.chip">
             <Setter Property="Height" Value="44" />
             <Setter Property="FontSize" Value="15" />
@@ -334,7 +288,7 @@
                                 VerticalAlignment="Center"
                                 IsVisible="{Binding SelectedMainPage, Converter={x:Static controls:EqualsConverter.Instance}, ConverterParameter=Home}">
                         <controls:EchoLogo Width="34" Height="34" Margin="-2,0,6,0" IsAnimating="{Binding IsCapturing}" />
-                        <TextBlock FontSize="21" FontWeight="ExtraBold" VerticalAlignment="Center" Foreground="{DynamicResource EchoTextBrush}"><Run Text="Cue" /><Run Foreground="{DynamicResource EchoAccentTextBrush}" Text="Pilot" /></TextBlock>
+                        <TextBlock FontSize="21" FontWeight="ExtraBold" VerticalAlignment="Center" Foreground="{DynamicResource EchoTextBrush}"><Run Text="Repl" /><Run Foreground="{DynamicResource EchoAccentTextBrush}" Text="io" /></TextBlock>
                     </StackPanel>
                     <Button x:Name="BackButton"
                             Classes="ghost icon"
@@ -358,39 +312,6 @@
                                TextTrimming="CharacterEllipsis"
                                Foreground="{DynamicResource EchoTextBrush}" />
 
-                    <!-- Same badge as on the computer: lit while Replio is hidden from screen recording, casting and screenshots. -->
-                    <Border x:Name="ShareBadge"
-                            Grid.Column="2"
-                            Height="32"
-                            Padding="10,0"
-                            VerticalAlignment="Center"
-                            CornerRadius="16"
-                            BorderThickness="1"
-                            Classes.shown="{Binding ShowInScreenShare}"
-                            IsVisible="{Binding SelectedMainPage, Converter={x:Static controls:EqualsConverter.Instance}, ConverterParameter=Home}">
-                        <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
-                            <Grid Width="14" Height="14" VerticalAlignment="Center">
-                                <Ellipse x:Name="ShareBadgeHalo"
-                                         Width="14"
-                                         Height="14"
-                                         Opacity="0.35"
-                                         RenderTransformOrigin="0.5,0.5"
-                                         Classes.shown="{Binding ShowInScreenShare}">
-                                    <Ellipse.RenderTransform>
-                                        <ScaleTransform />
-                                    </Ellipse.RenderTransform>
-                                </Ellipse>
-                                <Ellipse x:Name="ShareBadgeDot" Width="8" Height="8" Classes.shown="{Binding ShowInScreenShare}" />
-                            </Grid>
-                            <TextBlock x:Name="ShareBadgeText"
-                                       Margin="8,0,0,0"
-                                       VerticalAlignment="Center"
-                                       FontSize="12.5"
-                                       FontWeight="SemiBold"
-                                       Classes.shown="{Binding ShowInScreenShare}"
-                                       Text="{Binding L[HiddenFromShareBadge]}" />
-                        </StackPanel>
-                    </Border>
                     <Button Grid.Column="2"
                             Classes="ghost icon"
                             Click="SessionPageMenu_OnClick"
@@ -408,15 +329,14 @@
                     <!-- Topics: «Все сессии», «Без темы» and the user's topics as chips. -->
                     <StackPanel Grid.Row="0">
                     <!-- Replio on calls: waits in the background; the setup steps while something is still off. -->
-                    <Border x:Name="CallCard" Classes="card" Margin="12,12,12,0" CornerRadius="20" Padding="16">
+                    <Border x:Name="CallCard" Classes="card" Margin="12,10,12,0" CornerRadius="18" Padding="14,12">
                         <StackPanel Spacing="10">
                             <StackPanel Orientation="Horizontal" Spacing="10">
                                 <Ellipse x:Name="CallStatusDot" Width="10" Height="10" VerticalAlignment="Center" Fill="{DynamicResource EchoAccentBrush}" />
                                 <TextBlock x:Name="CallStatusTitle" FontSize="16" FontWeight="Bold" VerticalAlignment="Center" />
                             </StackPanel>
-                            <TextBlock x:Name="CallStatusText" FontSize="14" TextWrapping="Wrap" Foreground="{DynamicResource EchoMutedBrush}" />
-                            <StackPanel x:Name="CallSetupList" Spacing="8" />
-                            <TextBlock x:Name="CallSpeakerNote" FontSize="12" TextWrapping="Wrap" Foreground="{DynamicResource EchoMutedBrush}" />
+                            <TextBlock x:Name="CallStatusText" FontSize="13.5" TextWrapping="Wrap" MaxLines="2" TextTrimming="CharacterEllipsis" Foreground="{DynamicResource EchoMutedBrush}" />
+                            <Button x:Name="CallSetupButton" Height="44" HorizontalAlignment="Stretch" Click="CallSetup_OnClick" />
                         </StackPanel>
                     </Border>
                     <Grid Margin="12,12,12,0" ColumnDefinitions="*,Auto">
@@ -523,7 +443,8 @@
                                     <TextBlock Margin="6,0,0,0" Foreground="{DynamicResource EchoMutedBrush}" Text="{Binding TopicQuestionsCount}" />
                                 </StackPanel>
                             </RadioButton>
-                            <RadioButton GroupName="TopicTab" Classes="pill" Margin="0,0,12,0" IsChecked="{Binding IsTopicTabGraph, Mode=TwoWay}" Content="{Binding L[TopicTabGraph]}" />
+                            <RadioButton GroupName="TopicTab" Classes="pill" IsChecked="{Binding IsTopicTabGraph, Mode=TwoWay}" Content="{Binding L[TopicTabGraph]}" />
+                            <RadioButton GroupName="TopicTab" Classes="pill" Margin="0,0,12,0" IsChecked="{Binding IsTopicTabMeetings, Mode=TwoWay}" Content="{Binding L[TopicTabMeetings]}" />
                         </StackPanel>
                     </ScrollViewer>
 
@@ -832,6 +753,34 @@
                             </ListBox>
                         </Grid>
 
+                        <!-- «Как помогать»: the group's meeting type, hint guidance, summary format and names (MainViewModel.MeetingStyle.cs). -->
+                        <ScrollViewer HorizontalScrollBarVisibility="Disabled" VerticalScrollBarVisibility="Auto" IsVisible="{Binding ShowMeetingsPanel}">
+                            <StackPanel Margin="0,0,0,96">
+                                <Border Classes="card" Padding="14">
+                                    <StackPanel DataContext="{Binding TopicMeetingStyle}">
+                                        <TextBlock FontSize="17" FontWeight="ExtraBold" Foreground="{DynamicResource EchoTextBrush}" Text="{Binding $parent[UserControl].DataContext.L[MeetingStyleTitle]}" />
+                                        <TextBlock Classes="hint" Text="{Binding $parent[UserControl].DataContext.L[MeetingStyleIntro]}" />
+                                        <TextBlock Classes="label" Text="{Binding $parent[UserControl].DataContext.L[MeetingStylePresetLabel]}" />
+                                        <ComboBox HorizontalAlignment="Stretch" MinHeight="44" ItemsSource="{Binding Presets}" DisplayMemberBinding="{Binding Name}" SelectedItem="{Binding SelectedPreset, Mode=TwoWay}" />
+                                        <TextBlock Classes="hint" Text="{Binding InheritedText}" IsVisible="{Binding IsInherited}" />
+                                        <StackPanel IsVisible="{Binding HasOwnTexts}">
+                                            <TextBlock Classes="label" FontWeight="SemiBold" Text="{Binding $parent[UserControl].DataContext.L[MeetingGuidanceLabel]}" />
+                                            <TextBlock Classes="hint" Margin="0,0,0,6" Text="{Binding $parent[UserControl].DataContext.L[MeetingGuidanceHint]}" />
+                                            <TextBox MinHeight="96" AcceptsReturn="True" TextWrapping="Wrap" VerticalContentAlignment="Top" Text="{Binding Guidance, Mode=TwoWay}" />
+                                            <TextBlock Classes="label" FontWeight="SemiBold" Text="{Binding $parent[UserControl].DataContext.L[SummaryFormatLabel]}" />
+                                            <TextBlock Classes="hint" Margin="0,0,0,6" Text="{Binding $parent[UserControl].DataContext.L[SummaryFormatHint]}" />
+                                            <TextBox MinHeight="96" AcceptsReturn="True" TextWrapping="Wrap" VerticalContentAlignment="Top" Text="{Binding SummaryFormat, Mode=TwoWay}" />
+                                        </StackPanel>
+                                        <StackPanel DataContext="{Binding $parent[UserControl].DataContext}">
+                                            <TextBlock Classes="label" FontWeight="SemiBold" Text="{Binding L[TopicGlossaryLabel]}" />
+                                            <TextBlock Classes="hint" Margin="0,0,0,6" Text="{Binding L[TopicGlossaryHint]}" />
+                                            <TextBox MinHeight="70" AcceptsReturn="True" TextWrapping="Wrap" VerticalContentAlignment="Top" Watermark="{Binding L[TopicGlossaryExample]}" Text="{Binding TopicSttGlossary, Mode=TwoWay}" />
+                                        </StackPanel>
+                                    </StackPanel>
+                                </Border>
+                            </StackPanel>
+                        </ScrollViewer>
+
                         <!-- «Граф». -->
                         <Grid RowDefinitions="Auto,Auto,*" IsVisible="{Binding ShowGraphPanel}">
                             <Grid ColumnDefinitions="*,Auto">
@@ -1122,120 +1071,161 @@
                     </Border>
                 </Grid>
 
-                <!-- ===== Modes: the conversation mode with its prompt, context file and notes template, as on the computer. ===== -->
-                <ScrollViewer x:Name="ModesPage"
-                              HorizontalScrollBarVisibility="Disabled"
-                              VerticalScrollBarVisibility="Auto"
-                              IsVisible="{Binding SelectedMainPage, Converter={x:Static controls:EqualsConverter.Instance}, ConverterParameter=Modes}">
-                    <StackPanel Margin="16,8,16,28">
-                        <Border Margin="0,6,0,0" Classes="card" Padding="8">
-                            <StackPanel>
-                                <ListBox x:Name="ModesList"
-                                         BorderThickness="0"
-                                         Background="Transparent"
-                                         ItemsSource="{Binding ModeOptions}"
-                                         SelectedItem="{Binding ModeEditorName, Mode=TwoWay}">
-                                    <ListBox.ItemTemplate>
-                                        <DataTemplate>
-                                            <Grid Margin="6,8" ColumnDefinitions="*,Auto">
-                                                <TextBlock FontSize="16" Foreground="{DynamicResource EchoTextBrush}" Text="{Binding}" />
-                                                <TextBlock Grid.Column="1"
-                                                           Classes="modeCheck"
-                                                           Margin="8,0,0,0"
-                                                           FontSize="18"
-                                                           Foreground="{DynamicResource EchoAccentTextBrush}"
-                                                           Text="✓" />
-                                            </Grid>
-                                        </DataTemplate>
-                                    </ListBox.ItemTemplate>
-                                </ListBox>
-                                <Button Margin="0,6,0,0" HorizontalAlignment="Stretch" Command="{Binding NewModeCommand}" Content="+ Новый режим" />
-                            </StackPanel>
-                        </Border>
-
-                        <Grid Margin="0,18,0,0" ColumnDefinitions="*,Auto">
-                            <TextBlock FontSize="24" FontWeight="ExtraBold" VerticalAlignment="Center" TextTrimming="CharacterEllipsis" Foreground="{DynamicResource EchoTextBrush}" Text="{Binding ModeEditorTitle}" />
-                            <Button Grid.Column="1" Classes="accent" Padding="14,0" Command="{Binding SetModeActiveCommand}" Content="{Binding ModeActionButtonText}" />
-                        </Grid>
-                        <TextBlock Classes="label" FontWeight="SemiBold" Text="Реальное время (prompt)" />
-                        <TextBox Height="210"
-                                 Padding="12,8"
-                                 AcceptsReturn="True"
-                                 TextWrapping="Wrap"
-                                 VerticalContentAlignment="Top"
-                                 ScrollViewer.VerticalScrollBarVisibility="Auto"
-                                 Text="{Binding ModeEditorRealtimePrompt, Mode=TwoWay}" />
-                        <TextBlock Classes="label" FontWeight="SemiBold" Text="Файлы контекста" />
-                        <Border Classes="card">
-                            <StackPanel>
-                                <TextBlock TextWrapping="Wrap" Foreground="{DynamicResource EchoSoftTextBrush}" Text="{Binding ModeEditorReferenceFile}" />
-                                <Button Margin="0,12,0,0" Padding="16,0" HorizontalAlignment="Left" Command="{Binding UploadModeReferenceFileCommand}" Content="Загрузить файл" />
-                            </StackPanel>
-                        </Border>
-                        <TextBlock Classes="label" FontWeight="SemiBold" Text="Шаблон заметок" />
-                        <TextBox Height="140"
-                                 Padding="12,8"
-                                 AcceptsReturn="True"
-                                 TextWrapping="Wrap"
-                                 VerticalContentAlignment="Top"
-                                 ScrollViewer.VerticalScrollBarVisibility="Auto"
-                                 Text="{Binding ModeEditorNotesTemplate, Mode=TwoWay}" />
-                    </StackPanel>
-                </ScrollViewer>
-
-                <!-- ===== Settings: cards from what matters most on the phone (recording) to the look; «Сохранить» stays at the bottom. ===== -->
+                <!-- ===== Settings: the computer's sections (MainViewModel.SettingsLayout.cs) as pills on top; each plan sees
+                     only what it can use; changes are saved by themselves. No hotkeys, windows or data folder on a phone. ===== -->
                 <Grid x:Name="SettingsPage"
-                      RowDefinitions="*,Auto"
+                      RowDefinitions="Auto,*"
                       IsVisible="{Binding SelectedMainPage, Converter={x:Static controls:EqualsConverter.Instance}, ConverterParameter=Settings}">
-                    <ScrollViewer x:Name="SettingsScroll" HorizontalScrollBarVisibility="Disabled" VerticalScrollBarVisibility="Auto">
-                        <StackPanel Margin="12,0,12,24">
-                            <Border Classes="settingsCard">
-                                <StackPanel>
-                                    <!-- Recording check: a few seconds from the microphone recognized with the engine of a recording. -->
-                                    <TextBlock Classes="section" Text="{Binding [TestMicTitle], Source={x:Static platform:MobileText.Instance}}" />
-                                    <TextBlock Classes="hint" Margin="0,0,0,8" Text="{Binding [TestMicHint], Source={x:Static platform:MobileText.Instance}}" />
-                                    <Button x:Name="MicTestButton"
-                                            Classes="accent"
-                                            Height="52"
-                                            HorizontalAlignment="Stretch"
-                                            FontSize="16"
-                                            Click="MicTest_OnClick"
-                                            Content="{Binding [TestMicButton], Source={x:Static platform:MobileText.Instance}}" />
-                                    <ProgressBar x:Name="MicTestLevel" Margin="0,10,0,0" Height="8" CornerRadius="4" Minimum="0" Maximum="1" IsVisible="False" />
-                                    <TextBlock x:Name="MicTestResult" Margin="0,10,0,0" FontSize="14.5" LineHeight="21" TextWrapping="Wrap" Foreground="{DynamicResource EchoTextBrush}" IsVisible="False" />
-                                    <TextBlock Classes="section" Text="{Binding L[SettingsSttTitle]}" />
-                                    <CheckBox x:Name="UseApiSttBox" IsChecked="{Binding UseApiStt, Mode=TwoWay}">
-                                        <TextBlock TextWrapping="Wrap" Text="{Binding L[SettingsUseApiStt]}" />
-                                    </CheckBox>
-                                    <TextBlock x:Name="SttHintText" Classes="hint" Margin="0,6,0,4" Text="{Binding [PhoneSttHint], Source={x:Static platform:MobileText.Instance}}" />
-                                    <!-- Same order as for the AI model: provider, key, model. Dimmed while recognition stays on the phone. -->
-                                    <StackPanel IsEnabled="{Binding UseApiStt}">
-                                        <TextBlock Classes="label" Text="{Binding L[SettingsProviderPreset]}" />
-                                        <ComboBox HorizontalAlignment="Stretch" MinHeight="44" ItemsSource="{Binding SttApiPresets}" SelectedItem="{Binding SelectedSttPreset, Mode=TwoWay}" />
-                                        <StackPanel IsVisible="{Binding SttBaseUrlFieldVisibility}">
-                                            <TextBlock Classes="label" Text="{Binding L[SettingsBaseUrl]}" />
-                                            <TextBox Text="{Binding SttApiBaseUrl}" />
+                    <ScrollViewer Margin="12,10,0,0" HorizontalScrollBarVisibility="Hidden" VerticalScrollBarVisibility="Disabled">
+                        <StackPanel Orientation="Horizontal">
+                            <RadioButton GroupName="SettingsNav" Classes="pill" IsChecked="{Binding IsSettingsAccount, Mode=TwoWay}" Content="{Binding L[SettingsNav_account]}" />
+                            <RadioButton GroupName="SettingsNav" Classes="pill" IsChecked="{Binding IsSettingsMeetings, Mode=TwoWay}" Content="{Binding L[SettingsNav_meetings]}" />
+                            <RadioButton GroupName="SettingsNav" Classes="pill" IsChecked="{Binding IsSettingsSpeech, Mode=TwoWay}" Content="{Binding L[SettingsNav_speech]}" />
+                            <RadioButton GroupName="SettingsNav" Classes="pill" IsChecked="{Binding IsSettingsAi, Mode=TwoWay}" Content="{Binding L[SettingsNav_ai]}" />
+                            <RadioButton GroupName="SettingsNav" Classes="pill" IsChecked="{Binding IsSettingsWindows, Mode=TwoWay}" Content="{Binding [SettingsNavLook], Source={x:Static platform:MobileText.Instance}}" />
+                            <RadioButton GroupName="SettingsNav" Classes="pill" Margin="0,0,12,0" IsChecked="{Binding IsSettingsData, Mode=TwoWay}" Content="{Binding [SettingsNavAbout], Source={x:Static platform:MobileText.Instance}}" />
+                        </StackPanel>
+                    </ScrollViewer>
+                    <ScrollViewer x:Name="SettingsScroll" Grid.Row="1" HorizontalScrollBarVisibility="Disabled" VerticalScrollBarVisibility="Auto">
+                        <StackPanel Margin="12,0,12,28">
+                            <TextBlock Margin="4,10,0,0" FontSize="13" TextWrapping="Wrap" Foreground="{DynamicResource EchoMutedBrush}" Text="{Binding SettingsSaveStatus}" />
+
+                            <!-- ===== Аккаунт ===== -->
+                            <StackPanel IsVisible="{Binding IsSettingsAccount}">
+                                <Border Classes="settingsCard">
+                                    <StackPanel>
+                                        <TextBlock FontSize="20" FontWeight="ExtraBold" TextWrapping="Wrap" Foreground="{DynamicResource EchoTextBrush}" Text="{Binding AccountPlanTitle}" IsVisible="{Binding IsSignedIn}" />
+                                        <TextBlock Margin="0,4,0,0" FontSize="14" TextWrapping="Wrap" Foreground="{DynamicResource EchoSoftTextBrush}" Text="{Binding AccountPlanDetails}" IsVisible="{Binding IsSignedIn}" />
+                                        <TextBlock Margin="0,4,0,0" FontSize="14" TextWrapping="Wrap" Foreground="{DynamicResource EchoSoftTextBrush}" Text="{Binding AccountStatusText}" />
+                                        <StackPanel Margin="0,12,0,0" Spacing="8" IsVisible="{Binding IsSignedOut}">
+                                            <Button Classes="accent" Height="48" HorizontalAlignment="Stretch" Command="{Binding SignInCommand}" Content="{Binding L[AccountSignIn]}" />
+                                            <Button Height="44" HorizontalAlignment="Stretch" Command="{Binding OpenCabinetCommand}" Content="{Binding L[AccountOpenCabinet]}" />
                                         </StackPanel>
-                                        <TextBlock Classes="label" Text="{Binding L[SettingsSttApiKey]}" />
-                                        <TextBox PasswordChar="•" Text="{Binding SttApiKey}" />
-                                        <TextBlock Classes="hint" Text="{Binding SttKeySourceText}" />
-                                        <TextBlock Classes="label" Text="{Binding L[SettingsSttModel]}" />
-                                        <controls:ModelPicker Text="{Binding SttApiModel, Mode=TwoWay}" Options="{Binding SpeechModelOptions}" Status="{Binding SpeechModelsStatus}" LoadCommand="{Binding LoadSpeechModelsCommand}" />
+                                        <StackPanel Margin="0,12,0,0" Spacing="8" IsVisible="{Binding IsSigningIn}">
+                                            <StackPanel Orientation="Horizontal">
+                                                <controls:EchoThinkingDots Margin="0,0,10,0" VerticalAlignment="Center" />
+                                                <Border Padding="12,6" CornerRadius="8" Background="{DynamicResource EchoSurfaceAltBrush}" BorderBrush="{DynamicResource EchoBorderBrush}" BorderThickness="1">
+                                                    <TextBlock FontSize="18" FontWeight="Bold" Foreground="{DynamicResource EchoTextBrush}" Text="{Binding SignInCode}" />
+                                                </Border>
+                                            </StackPanel>
+                                            <UniformGrid Columns="2">
+                                                <Button Margin="0,0,4,0" Height="44" HorizontalAlignment="Stretch" Command="{Binding OpenSignInPageCommand}" Content="{Binding L[AccountOpenPage]}" />
+                                                <Button Margin="4,0,0,0" Height="44" HorizontalAlignment="Stretch" Command="{Binding CancelSignInCommand}" Content="{Binding L[AccountCancel]}" />
+                                            </UniformGrid>
+                                        </StackPanel>
+                                        <StackPanel Margin="0,12,0,0" Spacing="8" IsVisible="{Binding IsSignedIn}">
+                                            <Button Classes="accent" Height="48" HorizontalAlignment="Stretch" Command="{Binding OpenCabinetCommand}" Content="{Binding L[AccountOpenCabinet]}" />
+                                            <Button Height="44" HorizontalAlignment="Stretch" Command="{Binding OpenUpgradeCommand}" Content="{Binding L[AccountUpgrade]}" />
+                                            <UniformGrid Columns="2">
+                                                <Button Margin="0,0,4,0" Height="44" HorizontalAlignment="Stretch" Command="{Binding RefreshAccountCommand}" Content="{Binding L[AccountRefresh]}" />
+                                                <Button Margin="4,0,0,0" Height="44" HorizontalAlignment="Stretch" Command="{Binding SignOutCommand}" Content="{Binding L[AccountSignOut]}" />
+                                            </UniformGrid>
+                                        </StackPanel>
                                     </StackPanel>
-                                    <TextBlock Classes="hint" Text="{Binding SttStatusText}" />
-                                    <TextBlock Classes="label" Text="{Binding L[SettingsSttGlossary]}" />
-                                    <TextBox MinHeight="70" AcceptsReturn="True" TextWrapping="Wrap" Watermark="{Binding L[SettingsSttGlossaryExample]}" Text="{Binding SttGlossary}" />
-                                    <TextBlock Classes="hint" Text="{Binding L[SettingsSttGlossaryHint]}" />
-                                </StackPanel>
-                            </Border>
-                            <Border Classes="settingsCard">
-                                <StackPanel>
-                                    <!-- whisper.cpp models for recognition on the phone, downloaded once, like on the computer. -->
-                                    <StackPanel x:Name="SpeechModelsSection">
+                                </Border>
+                            </StackPanel>
+
+                            <!-- ===== Встречи (по умолчанию): every group without its own «Как помогать». ===== -->
+                            <StackPanel IsVisible="{Binding IsSettingsMeetings}">
+                                <Border Classes="settingsCard">
+                                    <StackPanel DataContext="{Binding DefaultMeetingStyle}">
+                                        <TextBlock Classes="section" Text="{Binding $parent[UserControl].DataContext.L[SettingsSectionMeetings]}" />
+                                        <TextBlock Classes="hint" Margin="0,0,0,6" Text="{Binding $parent[UserControl].DataContext.L[SettingsMeetingsHint]}" />
+                                        <TextBlock Classes="label" Text="{Binding $parent[UserControl].DataContext.L[MeetingStylePresetLabel]}" />
+                                        <ComboBox HorizontalAlignment="Stretch" MinHeight="44" ItemsSource="{Binding Presets}" DisplayMemberBinding="{Binding Name}" SelectedItem="{Binding SelectedPreset, Mode=TwoWay}" />
+                                        <TextBlock Classes="label" FontWeight="SemiBold" Text="{Binding $parent[UserControl].DataContext.L[MeetingGuidanceLabel]}" />
+                                        <TextBlock Classes="hint" Margin="0,0,0,6" Text="{Binding $parent[UserControl].DataContext.L[MeetingGuidanceHint]}" />
+                                        <TextBox MinHeight="96" AcceptsReturn="True" TextWrapping="Wrap" VerticalContentAlignment="Top" Text="{Binding Guidance, Mode=TwoWay}" />
+                                        <TextBlock Classes="label" FontWeight="SemiBold" Text="{Binding $parent[UserControl].DataContext.L[SummaryFormatLabel]}" />
+                                        <TextBlock Classes="hint" Margin="0,0,0,6" Text="{Binding $parent[UserControl].DataContext.L[SummaryFormatHint]}" />
+                                        <TextBox MinHeight="96" AcceptsReturn="True" TextWrapping="Wrap" VerticalContentAlignment="Top" Text="{Binding SummaryFormat, Mode=TwoWay}" />
+                                        <StackPanel DataContext="{Binding $parent[UserControl].DataContext}">
+                                            <TextBlock Classes="label" FontWeight="SemiBold" Text="{Binding L[SettingsSttGlossary]}" />
+                                            <TextBlock Classes="hint" Margin="0,0,0,6" Text="{Binding L[SettingsSttGlossaryHint]}" />
+                                            <TextBox MinHeight="70" AcceptsReturn="True" TextWrapping="Wrap" VerticalContentAlignment="Top" Watermark="{Binding L[SettingsSttGlossaryExample]}" Text="{Binding SttGlossary}" />
+                                        </StackPanel>
+                                    </StackPanel>
+                                </Border>
+                            </StackPanel>
+
+                            <!-- ===== Речь ===== -->
+                            <StackPanel IsVisible="{Binding IsSettingsSpeech}">
+                                <!-- Recording check: a few seconds from the microphone recognized like in a recording. -->
+                                <Border Classes="settingsCard">
+                                    <StackPanel>
+                                        <TextBlock Classes="section" Text="{Binding [TestMicTitle], Source={x:Static platform:MobileText.Instance}}" />
+                                        <TextBlock Classes="hint" Margin="0,0,0,8" Text="{Binding [TestMicHint], Source={x:Static platform:MobileText.Instance}}" />
+                                        <Button x:Name="MicTestButton" Classes="accent" Height="52" HorizontalAlignment="Stretch" FontSize="16" Click="MicTest_OnClick"
+                                                Content="{Binding [TestMicButton], Source={x:Static platform:MobileText.Instance}}" />
+                                        <ProgressBar x:Name="MicTestLevel" Margin="0,10,0,0" Height="8" CornerRadius="4" Minimum="0" Maximum="1" IsVisible="False" />
+                                        <TextBlock x:Name="MicTestResult" Margin="0,10,0,0" FontSize="14.5" LineHeight="21" TextWrapping="Wrap" Foreground="{DynamicResource EchoTextBrush}" IsVisible="False" />
+                                        <TextBlock x:Name="SttHintText" Classes="hint" IsVisible="False" />
+                                    </StackPanel>
+                                </Border>
+                                <!-- Бесплатный, Старт: in the Replio cloud, nothing to choose. -->
+                                <Border Classes="settingsCard" IsVisible="{Binding ShowSttCloudInfo}">
+                                    <StackPanel>
+                                        <TextBlock Classes="section" Text="{Binding L[SttWhereTitle]}" />
+                                        <TextBlock FontWeight="SemiBold" TextWrapping="Wrap" Foreground="{DynamicResource EchoTextBrush}" Text="{Binding SttCloudInfoTitle}" />
+                                        <TextBlock Margin="0,2,0,0" TextWrapping="Wrap" Foreground="{DynamicResource EchoSoftTextBrush}" Text="{Binding L[SttCloudPrivacy]}" />
+                                        <TextBlock Classes="hint" Text="{Binding SttCloudInfoHint}" />
+                                    </StackPanel>
+                                </Border>
+                                <!-- Про, Команда: Стандарт or Точная. -->
+                                <Border Classes="settingsCard" IsVisible="{Binding ShowSttQualityChoice}">
+                                    <StackPanel>
+                                        <TextBlock Classes="section" Text="{Binding L[SttQualityTitle]}" />
+                                        <ComboBox HorizontalAlignment="Stretch" MinHeight="44" ItemsSource="{Binding ReplioSttModels}" SelectedItem="{Binding SelectedReplioSttModel, Mode=TwoWay}" />
+                                        <TextBlock Classes="hint" Text="{Binding L[SttQualityHint]}" />
+                                    </StackPanel>
+                                </Border>
+                                <!-- Локальный: only on this device. -->
+                                <Border Classes="settingsCard" IsVisible="{Binding IsLocalSpeechPlan}">
+                                    <StackPanel>
+                                        <TextBlock Classes="section" Text="{Binding L[SttWhereTitle]}" />
+                                        <TextBlock FontWeight="SemiBold" Foreground="{DynamicResource EchoTextBrush}" Text="{Binding [SttLocalPhoneTitle], Source={x:Static platform:MobileText.Instance}}" />
+                                        <TextBlock Margin="0,2,0,0" TextWrapping="Wrap" Foreground="{DynamicResource EchoSoftTextBrush}" Text="{Binding [SttLocalPhoneText], Source={x:Static platform:MobileText.Instance}}" />
+                                    </StackPanel>
+                                </Border>
+                                <!-- Приватный: the company's own server. -->
+                                <Border Classes="settingsCard" IsVisible="{Binding IsCompanyPlan}">
+                                    <StackPanel>
+                                        <TextBlock FontWeight="SemiBold" Foreground="{DynamicResource EchoTextBrush}" Text="{Binding L[CompanyServiceTitle]}" />
+                                        <TextBlock Margin="0,2,0,0" TextWrapping="Wrap" Foreground="{DynamicResource EchoSoftTextBrush}" Text="{Binding CompanyServiceText}" />
+                                        <TextBlock Margin="0,6,0,0" TextWrapping="Wrap" Foreground="{DynamicResource EchoSoftTextBrush}" Text="{Binding CompanySpeechText}" />
+                                    </StackPanel>
+                                </Border>
+                                <!-- Developer mode: on the phone or through an own service. -->
+                                <Border Classes="settingsCard" IsVisible="{Binding ShowSttWhereChoice}">
+                                    <StackPanel>
+                                        <TextBlock Classes="section" Text="{Binding L[SttWhereChoiceTitle]}" />
+                                        <StackPanel Orientation="Horizontal">
+                                            <RadioButton GroupName="SttWhere" Classes="pill" IsChecked="{Binding IsSttOnComputer, Mode=TwoWay}" Content="{Binding [SttOnPhone], Source={x:Static platform:MobileText.Instance}}" />
+                                            <RadioButton GroupName="SttWhere" Classes="pill" IsChecked="{Binding IsSttOwnService, Mode=TwoWay}" Content="{Binding L[SttOwnService]}" />
+                                        </StackPanel>
+                                        <StackPanel IsVisible="{Binding ShowSttServiceSettings}">
+                                            <TextBlock Classes="label" Text="{Binding L[SettingsProviderPreset]}" />
+                                            <ComboBox HorizontalAlignment="Stretch" MinHeight="44" ItemsSource="{Binding SttApiPresets}" SelectedItem="{Binding SelectedSttPreset, Mode=TwoWay}" />
+                                            <StackPanel IsVisible="{Binding SttBaseUrlFieldVisibility}">
+                                                <TextBlock Classes="label" Text="{Binding L[SettingsBaseUrl]}" />
+                                                <TextBox Text="{Binding SttApiBaseUrl}" />
+                                            </StackPanel>
+                                            <TextBlock Classes="label" Text="{Binding L[SettingsSttApiKey]}" />
+                                            <TextBox PasswordChar="•" Text="{Binding SttApiKey}" />
+                                            <TextBlock Classes="hint" Text="{Binding SttKeySourceText}" />
+                                            <TextBlock Classes="label" Text="{Binding L[SettingsSttModel]}" />
+                                            <controls:ModelPicker Text="{Binding SttApiModel, Mode=TwoWay}" Options="{Binding SpeechModelOptions}" Status="{Binding SpeechModelsStatus}" LoadCommand="{Binding LoadSpeechModelsCommand}" />
+                                            <TextBlock Classes="hint" Text="{Binding L[SttOwnServiceHint]}" />
+                                        </StackPanel>
+                                    </StackPanel>
+                                </Border>
+                                <!-- whisper.cpp models for recognition on the phone, downloaded once. -->
+                                <Border x:Name="SpeechModelsSection" Classes="settingsCard" IsVisible="{Binding ShowSpeechModels}">
+                                    <StackPanel>
                                         <TextBlock Classes="section" Text="{Binding L[SpeechModelTitle]}" />
                                         <TextBlock Classes="hint" Margin="0,0,0,0" Text="{Binding [PhoneSpeechIntro], Source={x:Static platform:MobileText.Instance}}" />
                                         <TextBlock x:Name="PhoneHardwareText" Classes="hint" />
-                                        <TextBlock Margin="0,6,0,0" FontSize="14" TextWrapping="Wrap" Foreground="{DynamicResource EchoTextBrush}" Text="{Binding SpeechModelStatusText}" />
+                                        <TextBlock Margin="0,6,0,0" FontSize="14" TextWrapping="Wrap" Foreground="{DynamicResource EchoTextBrush}" Text="{Binding SpeechModelStatusText}" IsVisible="{Binding IsSpeechModelMissing}" />
                                         <ItemsControl Margin="0,10,0,0" ItemsSource="{Binding SpeechModels}">
                                             <ItemsControl.ItemTemplate>
                                                 <DataTemplate>
@@ -1248,12 +1238,7 @@
                                                                 </StackPanel>
                                                                 <TextBlock Grid.Column="1" FontSize="13" FontWeight="SemiBold" VerticalAlignment="Center" Foreground="{DynamicResource EchoAccentTextBrush}" Text="{Binding StatusText}" />
                                                             </Grid>
-                                                            <Border Margin="0,6,0,0"
-                                                                    Padding="8,1"
-                                                                    HorizontalAlignment="Left"
-                                                                    CornerRadius="9"
-                                                                    Background="{DynamicResource EchoAccentSoftBrush}"
-                                                                    IsVisible="{Binding RecommendedVisibility}">
+                                                            <Border Margin="0,6,0,0" Padding="8,1" HorizontalAlignment="Left" CornerRadius="9" Background="{DynamicResource EchoAccentSoftBrush}" IsVisible="{Binding RecommendedVisibility}">
                                                                 <TextBlock FontSize="11.5" Foreground="{DynamicResource EchoBadgeTextBrush}" Text="{Binding $parent[UserControl].DataContext.L[SpeechModelRecommended]}" />
                                                             </Border>
                                                             <TextBlock Margin="0,6,0,0" FontSize="13.5" LineHeight="19" TextWrapping="Wrap" Foreground="{DynamicResource EchoSoftTextBrush}" Text="{Binding Info.PhoneDescription}" />
@@ -1271,87 +1256,123 @@
                                             </ItemsControl.ItemTemplate>
                                         </ItemsControl>
                                     </StackPanel>
-                                </StackPanel>
-                            </Border>
-                            <Border Classes="settingsCard">
-                                <StackPanel>
-                                    <TextBlock Classes="section" Text="{Binding L[SettingsSectionLlm]}" />
-                                    <TextBlock Classes="label" Text="{Binding L[SettingsProviderPreset]}" />
-                                    <ComboBox HorizontalAlignment="Stretch" MinHeight="44" ItemsSource="{Binding ApiProviderPresets}" SelectedItem="{Binding SelectedApiPreset, Mode=TwoWay}" />
-                                    <StackPanel IsVisible="{Binding ProviderFieldVisibility}">
-                                        <TextBlock Classes="label" Text="{Binding L[SettingsProvider]}" />
-                                        <TextBox Text="{Binding ApiProvider}" />
+                                </Border>
+                                <Border Classes="settingsCard">
+                                    <StackPanel>
+                                        <TextBlock Classes="section" Text="{Binding L[SettingsSpeechLanguage]}" />
+                                        <ComboBox HorizontalAlignment="Stretch" MinHeight="44" ItemsSource="{Binding SpeechLanguageOptions}" SelectedItem="{Binding SelectedSpeechLanguage, Mode=TwoWay}" />
+                                        <TextBlock Classes="hint" Text="{Binding L[TipSpeechLanguage]}" />
                                     </StackPanel>
-                                    <StackPanel IsVisible="{Binding BaseUrlFieldVisibility}">
-                                        <TextBlock Classes="label" Text="{Binding L[SettingsBaseUrl]}" />
-                                        <TextBox Text="{Binding OpenAiBaseUrl}" />
+                                </Border>
+                            </StackPanel>
+
+                            <!-- ===== Replio-помощник ===== -->
+                            <StackPanel IsVisible="{Binding IsSettingsAi}">
+                                <Border Classes="settingsCard" IsVisible="{Binding IsManagedAi}">
+                                    <StackPanel>
+                                        <TextBlock Classes="section" Text="{Binding L[AiModelsTitle]}" />
+                                        <StackPanel IsVisible="{Binding ShowReplioModelNames}">
+                                            <TextBlock Classes="label" Text="{Binding L[AiHintsModelLabel]}" />
+                                            <TextBlock FontSize="15" FontWeight="SemiBold" Foreground="{DynamicResource EchoTextBrush}" Text="{Binding ReplioFastModelName}" />
+                                            <TextBlock Classes="label" Text="{Binding L[AiAnalysisModelLabel]}" />
+                                            <TextBlock FontSize="15" FontWeight="SemiBold" Foreground="{DynamicResource EchoTextBrush}" Text="{Binding ReplioAnalysisModelName}" />
+                                            <TextBlock Classes="hint" Text="{Binding AiModelsHint}" />
+                                        </StackPanel>
+                                        <StackPanel IsVisible="{Binding ShowReplioModelChoice}">
+                                            <TextBlock Classes="label" Text="{Binding L[AiHintsModelLabel]}" />
+                                            <ComboBox HorizontalAlignment="Stretch" MinHeight="44" ItemsSource="{Binding ReplioFastModels}" SelectedItem="{Binding SelectedReplioFastModel, Mode=TwoWay}" />
+                                            <TextBlock Classes="label" Text="{Binding L[AiAnalysisModelLabel]}" />
+                                            <ComboBox HorizontalAlignment="Stretch" MinHeight="44" ItemsSource="{Binding ReplioAnalysisModels}" SelectedItem="{Binding SelectedReplioAnalysisModel, Mode=TwoWay}" />
+                                            <TextBlock Classes="hint" Text="{Binding L[TipReplioFastModel]}" />
+                                        </StackPanel>
                                     </StackPanel>
-                                    <StackPanel IsVisible="{Binding EndpointPathFieldVisibility}">
-                                        <TextBlock Classes="label" Text="{Binding L[SettingsEndpointPath]}" />
-                                        <TextBox Text="{Binding ChatCompletionsPath}" />
+                                </Border>
+                                <Border Classes="settingsCard" IsVisible="{Binding IsCompanyPlan}">
+                                    <StackPanel>
+                                        <TextBlock FontWeight="SemiBold" Foreground="{DynamicResource EchoTextBrush}" Text="{Binding L[CompanyServiceTitle]}" />
+                                        <TextBlock Margin="0,2,0,0" TextWrapping="Wrap" Foreground="{DynamicResource EchoSoftTextBrush}" Text="{Binding CompanyServiceText}" />
                                     </StackPanel>
-                                    <StackPanel IsVisible="{Binding ApiKeyHeaderFieldVisibility}">
-                                        <TextBlock Classes="label" Text="{Binding L[SettingsKeyHeader]}" />
-                                        <TextBox Text="{Binding ApiKeyHeaderName}" />
+                                </Border>
+                                <!-- Developer mode: own AI service. -->
+                                <Border Classes="settingsCard" IsVisible="{Binding ShowOwnProviderSettings}">
+                                    <StackPanel>
+                                        <TextBlock Classes="section" Text="{Binding L[AiServiceTitle]}" />
+                                        <TextBlock Classes="label" Text="{Binding L[SettingsProviderPreset]}" />
+                                        <ComboBox HorizontalAlignment="Stretch" MinHeight="44" ItemsSource="{Binding ApiProviderPresets}" SelectedItem="{Binding SelectedApiPreset, Mode=TwoWay}" />
+                                        <StackPanel IsVisible="{Binding BaseUrlFieldVisibility}">
+                                            <TextBlock Classes="label" Text="{Binding L[SettingsBaseUrl]}" />
+                                            <TextBox Text="{Binding OpenAiBaseUrl}" />
+                                        </StackPanel>
+                                        <StackPanel IsVisible="{Binding ApiKeyFieldVisibility}">
+                                            <TextBlock Classes="label" Text="{Binding L[SettingsApiKey]}" />
+                                            <TextBox PasswordChar="•" Text="{Binding OpenAiApiKey}" />
+                                        </StackPanel>
+                                        <TextBlock Classes="label" Text="{Binding L[SettingsModel]}" />
+                                        <controls:ModelPicker Text="{Binding OpenAiModel, Mode=TwoWay}" Options="{Binding ChatModelOptions}" Status="{Binding ChatModelsStatus}" LoadCommand="{Binding LoadChatModelsCommand}" />
+                                        <TextBlock Classes="label" Text="{Binding L[SettingsAnalysisModel]}" />
+                                        <controls:ModelPicker Text="{Binding AnalysisModel, Mode=TwoWay}" Options="{Binding ChatModelOptions}" Status="{Binding ChatModelsStatus}" LoadCommand="{Binding LoadChatModelsCommand}" />
+                                        <TextBlock Classes="hint" Text="{Binding L[SettingsModelPickerHint]}" />
+                                        <StackPanel IsVisible="{Binding EndpointPathFieldVisibility}">
+                                            <StackPanel IsVisible="{Binding ProviderFieldVisibility}">
+                                                <TextBlock Classes="label" Text="{Binding L[SettingsProvider]}" />
+                                                <TextBox Text="{Binding ApiProvider}" />
+                                            </StackPanel>
+                                            <TextBlock Classes="label" Text="{Binding L[SettingsEndpointPath]}" />
+                                            <TextBox Text="{Binding ChatCompletionsPath}" />
+                                            <StackPanel IsVisible="{Binding ApiKeyHeaderFieldVisibility}">
+                                                <TextBlock Classes="label" Text="{Binding L[SettingsKeyHeader]}" />
+                                                <TextBox Text="{Binding ApiKeyHeaderName}" />
+                                            </StackPanel>
+                                            <StackPanel IsVisible="{Binding ApiKeyPrefixFieldVisibility}">
+                                                <TextBlock Classes="label" Text="{Binding L[SettingsKeyPrefix]}" />
+                                                <TextBox Text="{Binding ApiKeyPrefix}" />
+                                            </StackPanel>
+                                        </StackPanel>
                                     </StackPanel>
-                                    <StackPanel IsVisible="{Binding ApiKeyPrefixFieldVisibility}">
-                                        <TextBlock Classes="label" Text="{Binding L[SettingsKeyPrefix]}" />
-                                        <TextBox Text="{Binding ApiKeyPrefix}" />
+                                </Border>
+                                <Border Classes="settingsCard">
+                                    <StackPanel>
+                                        <TextBlock Classes="section" Text="{Binding L[ScreenContextTitle]}" />
+                                        <CheckBox IsChecked="{Binding CaptureScreenContextEnabled, Mode=TwoWay}">
+                                            <TextBlock TextWrapping="Wrap" Text="{Binding [PhoneScreenContext], Source={x:Static platform:MobileText.Instance}}" />
+                                        </CheckBox>
+                                        <TextBlock Classes="hint" Text="{Binding [PhoneScreenContextHint], Source={x:Static platform:MobileText.Instance}}" />
                                     </StackPanel>
-                                    <StackPanel IsVisible="{Binding ApiKeyFieldVisibility}">
-                                        <TextBlock Classes="label" Text="{Binding L[SettingsApiKey]}" />
-                                        <TextBox PasswordChar="•" Text="{Binding OpenAiApiKey}" />
+                                </Border>
+                            </StackPanel>
+
+                            <!-- ===== Вид ===== -->
+                            <StackPanel IsVisible="{Binding IsSettingsWindows}">
+                                <Border Classes="settingsCard">
+                                    <StackPanel>
+                                        <TextBlock Classes="section" Text="{Binding L[SettingsSectionAppearance]}" />
+                                        <TextBlock Classes="label" Text="{Binding L[SettingsTheme]}" />
+                                        <StackPanel Orientation="Horizontal">
+                                            <RadioButton GroupName="ThemeMode" Classes="pill" IsChecked="{Binding IsDarkTheme, Mode=TwoWay}" Content="{Binding L[ThemeDark]}" />
+                                            <RadioButton GroupName="ThemeMode" Classes="pill" IsChecked="{Binding IsLightTheme, Mode=TwoWay}" Content="{Binding L[ThemeLight]}" />
+                                        </StackPanel>
+                                        <TextBlock Classes="label" Text="{Binding L[SettingsLanguage]}" />
+                                        <StackPanel Orientation="Horizontal">
+                                            <RadioButton GroupName="UiLanguage" Classes="pill" IsChecked="{Binding IsRussianUi, Mode=TwoWay}" Content="Русский (RU)" />
+                                            <RadioButton GroupName="UiLanguage" Classes="pill" IsChecked="{Binding IsEnglishUi, Mode=TwoWay}" Content="English (EN)" />
+                                        </StackPanel>
+                                        <TextBlock Classes="hint" Text="{Binding L[SettingsLanguageHint]}" />
                                     </StackPanel>
-                                    <TextBlock Classes="label" Text="{Binding L[SettingsModel]}" />
-                                    <controls:ModelPicker Text="{Binding OpenAiModel, Mode=TwoWay}" Options="{Binding ChatModelOptions}" Status="{Binding ChatModelsStatus}" LoadCommand="{Binding LoadChatModelsCommand}" />
-                                    <TextBlock Classes="label" Text="{Binding L[SettingsAnalysisModel]}" />
-                                    <controls:ModelPicker Text="{Binding AnalysisModel, Mode=TwoWay}" Options="{Binding ChatModelOptions}" Status="{Binding ChatModelsStatus}" LoadCommand="{Binding LoadChatModelsCommand}" />
-                                    <TextBlock Classes="hint" Text="{Binding L[SettingsModelPickerHint]}" />
-                                    <TextBlock Classes="section" Text="{Binding L[SettingsSectionAi]}" />
-                                    <CheckBox IsChecked="{Binding SmartModeEnabled, Mode=TwoWay}">
-                                        <TextBlock TextWrapping="Wrap" Text="{Binding L[SmartModeToggle]}" />
-                                    </CheckBox>
-                                    <TextBlock Classes="hint" Text="{Binding L[SmartModeHint]}" />
-                                </StackPanel>
-                            </Border>
-                            <Border Classes="settingsCard">
-                                <StackPanel>
-                                    <TextBlock Classes="section" Text="{Binding L[SettingsSectionAppearance]}" />
-                                    <TextBlock Classes="label" Text="{Binding L[SettingsTheme]}" />
-                                    <StackPanel Orientation="Horizontal">
-                                        <RadioButton GroupName="ThemeMode" Classes="pill" IsChecked="{Binding IsDarkTheme, Mode=TwoWay}" Content="{Binding L[ThemeDark]}" />
-                                        <RadioButton GroupName="ThemeMode" Classes="pill" IsChecked="{Binding IsLightTheme, Mode=TwoWay}" Content="{Binding L[ThemeLight]}" />
+                                </Border>
+                            </StackPanel>
+
+                            <!-- ===== О приложении ===== -->
+                            <StackPanel IsVisible="{Binding IsSettingsData}">
+                                <Border Classes="settingsCard">
+                                    <StackPanel>
+                                        <TextBlock Classes="section" Text="Replio" />
+                                        <TextBlock FontSize="15" FontWeight="SemiBold" Foreground="{DynamicResource EchoTextBrush}" Text="{Binding AppVersion}" />
+                                        <Button Margin="0,12,0,0" Height="44" HorizontalAlignment="Stretch" Click="WhatsNew_OnClick" Content="{Binding [WhatsNewShort], Source={x:Static platform:MobileText.Instance}}" />
                                     </StackPanel>
-                                    <TextBlock Classes="label" Text="{Binding L[SettingsLanguage]}" />
-                                    <StackPanel Orientation="Horizontal">
-                                        <RadioButton GroupName="UiLanguage" Classes="pill" IsChecked="{Binding IsRussianUi, Mode=TwoWay}" Content="Русский (RU)" />
-                                        <RadioButton GroupName="UiLanguage" Classes="pill" IsChecked="{Binding IsEnglishUi, Mode=TwoWay}" Content="English (EN)" />
-                                    </StackPanel>
-                                    <TextBlock Classes="hint" Text="{Binding L[SettingsLanguageHint]}" />
-                                </StackPanel>
-                            </Border>
-                            <Border Classes="settingsCard">
-                                <StackPanel>
-                                    <!-- The computer hides its windows from screen sharing; the phone hides Replio from screen recording,
-                                         casting and screenshots (FLAG_SECURE). Same setting. -->
-                                    <TextBlock Classes="section" Text="{Binding L[SettingsSectionScreenShare]}" />
-                                    <CheckBox IsChecked="{Binding ShowInScreenShare, Mode=TwoWay}">
-                                        <TextBlock TextWrapping="Wrap" Text="{Binding [PhoneShowInScreenShare], Source={x:Static platform:MobileText.Instance}}" />
-                                    </CheckBox>
-                                    <TextBlock Classes="hint" Text="{Binding [PhoneShowInScreenShareHint], Source={x:Static platform:MobileText.Instance}}" />
-                                </StackPanel>
-                            </Border>
-                            <Button Margin="0,16,0,0" HorizontalAlignment="Stretch" Click="WhatsNew_OnClick" Content="{Binding [WhatsNewShort], Source={x:Static platform:MobileText.Instance}}" />
-                            <TextBlock Margin="0,12,0,0" HorizontalAlignment="Center" FontSize="13" Foreground="{DynamicResource EchoMutedBrush}" Text="{Binding AppVersion}" />
+                                </Border>
+                            </StackPanel>
                         </StackPanel>
                     </ScrollViewer>
-                    <Border Grid.Row="1"
-                            Padding="12,8"
-                            Background="{DynamicResource EchoHeaderBrush}"
-                            BorderBrush="{DynamicResource EchoBorderBrush}"
-                            BorderThickness="0,1,0,0">
-                        <Button Classes="accent" Height="52" HorizontalAlignment="Stretch" FontSize="16" Command="{Binding SaveSettingsCommand}" Content="{Binding L[SaveSettings]}" />
-                    </Border>
                 </Grid>
             </Panel>
 
@@ -1398,7 +1419,7 @@
                     Background="{DynamicResource EchoHeaderBrush}"
                     BorderBrush="{DynamicResource EchoBorderBrush}"
                     BorderThickness="0,1,0,0">
-                <UniformGrid Columns="3">
+                <UniformGrid Columns="2">
                     <Button Classes="navItem"
                             Classes.active="{Binding SelectedMainPage, Converter={x:Static controls:EqualsConverter.Instance}, ConverterParameter=Home}"
                             Command="{Binding GoHomeCommand}">
@@ -1408,17 +1429,6 @@
                                       Data="M 2,10 L 11,2.5 L 20,10 M 4.5,8 L 4.5,19.5 L 9,19.5 L 9,13.5 L 13,13.5 L 13,19.5 L 17.5,19.5 L 17.5,8" />
                             </Border>
                             <TextBlock Classes="navLabel" Text="{Binding [NavHome], Source={x:Static platform:MobileText.Instance}}" />
-                        </StackPanel>
-                    </Button>
-                    <Button Classes="navItem"
-                            Classes.active="{Binding SelectedMainPage, Converter={x:Static controls:EqualsConverter.Instance}, ConverterParameter=Modes}"
-                            Command="{Binding OpenModesCommand}">
-                        <StackPanel>
-                            <Border Classes="navIcon">
-                                <Path Width="22" Height="22" Stretch="Uniform" StrokeThickness="2" StrokeLineCap="Round" StrokeJoin="Round"
-                                      Data="M 2,5 L 20,5 M 2,11 L 20,11 M 2,17 L 20,17 M 7,2.5 L 7,7.5 M 15,8.5 L 15,13.5 M 9,14.5 L 9,19.5" />
-                            </Border>
-                            <TextBlock Classes="navLabel" Text="{Binding [Modes], Source={x:Static platform:MobileText.Instance}}" />
                         </StackPanel>
                     </Button>
                     <Button Classes="navItem"
@@ -1433,6 +1443,28 @@
                         </StackPanel>
                     </Button>
                 </UniformGrid>
+            </Border>
+        </Grid>
+
+        <!-- Setting Replio up for calls: the steps that are still off, each with its button; over the page, scrolls. -->
+        <Grid x:Name="CallSetupSheet" Background="#99000000" IsVisible="False" PointerPressed="CallSetupSheetBackdrop_OnPointerPressed">
+            <Border x:Name="CallSetupPanel"
+                    VerticalAlignment="Bottom"
+                    Padding="16,14,16,20"
+                    CornerRadius="22,22,0,0"
+                    Background="{DynamicResource EchoSurfaceBrush}">
+                <Grid RowDefinitions="Auto,*">
+                    <Grid ColumnDefinitions="*,Auto">
+                        <TextBlock x:Name="CallSetupTitle" FontSize="18" FontWeight="ExtraBold" VerticalAlignment="Center" Foreground="{DynamicResource EchoTextBrush}" />
+                        <Button Grid.Column="1" Classes="ghost icon" Click="CloseCallSetup_OnClick" Content="✕" />
+                    </Grid>
+                    <ScrollViewer Grid.Row="1" Margin="0,8,0,0" HorizontalScrollBarVisibility="Disabled" VerticalScrollBarVisibility="Auto">
+                        <StackPanel Spacing="14">
+                            <StackPanel x:Name="CallSetupList" Spacing="14" />
+                            <TextBlock x:Name="CallSpeakerNote" FontSize="13" TextWrapping="Wrap" Foreground="{DynamicResource EchoMutedBrush}" />
+                        </StackPanel>
+                    </ScrollViewer>
+                </Grid>
             </Border>
         </Grid>
 
