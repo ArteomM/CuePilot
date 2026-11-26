@@ -89,13 +89,31 @@ jobs:
           mkdir -p "$OUT/android"
           cp "$OUT"/android-build/*-Signed.apk "$OUT/android/Replio-$VERSION-android.apk"
           ls -la "$OUT/android"
+      # A second APK only for the emulator check: x86_64 (the phone APK runs there through a slow translation layer
+      # that draws a black screen) with demo data and pages opened by an intent extra for the screenshots.
+      - name: Build the emulator APK
+        shell: bash -e -o pipefail {0}
+        working-directory: apps/Replio.Android
+        env:
+          AVALONIA_TELEMETRY_OPTOUT: "1"
+          DOTNET_CLI_TELEMETRY_OPTOUT: "1"
+        run: |
+          OUT="$GITHUB_WORKSPACE/dist"
+          dotnet publish Replio.Android.csproj -c Release -f net8.0-android -p:RuntimeIdentifiers=android-x64 -p:ReplioDemo=true \
+            -p:AndroidSdkDirectory="$ANDROID_SDK_ROOT" -o "$OUT/emulator-build" --nologo 2>&1 | tee "$GITHUB_WORKSPACE/build-emulator.log"
+          mkdir -p "$OUT/emulator"
+          cp "$OUT"/emulator-build/*-Signed.apk "$OUT/emulator/Replio-emulator.apk"
       - name: Show build errors
         if: failure()
-        run: grep -hE "error|fatal" build.log dist-deps.log 2>/dev/null | sort -u | tail -40 | sed 's/^/::error::/' || tail -40 build.log
+        run: grep -hE "error|fatal" build.log build-emulator.log dist-deps.log 2>/dev/null | sort -u | tail -40 | sed 's/^/::error::/' || tail -40 build.log
       - uses: actions/upload-artifact@v4
         with:
           name: Replio-android
           path: dist/android/*.apk
+      - uses: actions/upload-artifact@v4
+        with:
+          name: Replio-android-emulator
+          path: dist/emulator/*.apk
 
   smoke:
     # Starts the APK on an Android emulator (ARM code runs through the emulator's translation) and fails when
@@ -106,9 +124,9 @@ jobs:
       - uses: actions/checkout@v4
       - uses: actions/download-artifact@v4
         with:
-          name: Replio-android
+          name: Replio-android-emulator
           path: dist
-      - name: ImageMagick for the screenshot
+      - name: ImageMagick for the screenshots
         run: sudo apt-get install -y --no-install-recommends imagemagick > /dev/null
       - name: Enable KVM
         run: |
@@ -120,9 +138,20 @@ jobs:
           api-level: 34
           target: google_apis
           arch: x86_64
+          profile: pixel_5
           disable-animations: true
           emulator-options: -no-window -gpu swiftshader_indirect -noaudio -no-boot-anim -camera-back none
-          script: bash apps/Replio.Android/ci/smoke-test.sh dist/Replio-*.apk
+          script: bash apps/Replio.Android/ci/smoke-test.sh dist/Replio-emulator.apk
+      # Each screen as one log line «SHOT name base64-jpeg», at the end of the log, for the review of the layout.
+      - name: Screens
+        if: always()
+        run: |
+          for f in shots/*.png; do
+            [ -s "$f" ] || continue
+            name="$(basename "$f" .png)"
+            convert "$f" -resize '480x>' -quality 70 "shots/$name.jpg"
+            echo "SHOT $name $(base64 -w 0 "shots/$name.jpg")"
+          done
 
   speech:
     # The phone's whisper.cpp layer on the computer with real models: Russian speech (espeak-ng) recognized with the

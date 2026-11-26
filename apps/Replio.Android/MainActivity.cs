@@ -39,17 +39,38 @@ public class MainActivity : AvaloniaMainActivity<App>
             SelfTest.RunSpeechApi(selfTestUrl);
         }
 
+#if REPLIO_DEMO
+        if (Intent?.GetBooleanExtra("replio_demo_seed", false) == true)
+        {
+            DemoData.Seed();
+        }
+#endif
+
         base.OnCreate(savedInstanceState);
         SetHiddenFromScreenCapture(false);
         // Replio stays in the background from the first start on and waits for calls.
         ReplioService.Start(this);
         HandleShared(Intent);
+        ShowDemoPage(Intent);
     }
 
     protected override void OnNewIntent(Intent? intent)
     {
         base.OnNewIntent(intent);
         HandleShared(intent);
+        ShowDemoPage(intent);
+    }
+
+    /// <summary>Emulator build of CI only: «--es replio_demo live» opens that page for a screenshot.</summary>
+    private static void ShowDemoPage(Intent? intent)
+    {
+#if REPLIO_DEMO
+        string? page = intent?.GetStringExtra("replio_demo");
+        if (!string.IsNullOrEmpty(page))
+        {
+            Views.MainView.RequestDemo(page);
+        }
+#endif
     }
 
     private void HandleShared(Intent? intent)

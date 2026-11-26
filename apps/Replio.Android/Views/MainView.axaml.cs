@@ -172,6 +172,7 @@ public partial class MainView : UserControl
             }
         };
 
+        SetUpReadyLog();
         UpdatePage();
     }
 
@@ -439,7 +440,7 @@ public partial class MainView : UserControl
 
     // ===== Session page =====
 
-    private bool IsLiveSession => _viewModel.IsCapturing && _viewModel.SelectedSession?.Status == SessionStatus.Active;
+    private bool IsLiveSession => _demoLive || _viewModel.IsCapturing && _viewModel.SelectedSession?.Status == SessionStatus.Active;
 
     private void SessionTab_OnClick(object? sender, RoutedEventArgs e)
     {
@@ -642,11 +643,14 @@ public partial class MainView : UserControl
 
     private void SessionMenu_OnClick(object? sender, RoutedEventArgs e)
     {
-        if (sender is not Button { DataContext: SessionSummary session })
+        if (sender is Button { DataContext: SessionSummary session })
         {
-            return;
+            ShowSessionActions(session);
         }
+    }
 
+    private void ShowSessionActions(SessionSummary session)
+    {
         ShowActions(session.Title,
         [
             (_viewModel.L["MenuOpenSession"], () => Execute(_viewModel.OpenSessionCommand, session), false),

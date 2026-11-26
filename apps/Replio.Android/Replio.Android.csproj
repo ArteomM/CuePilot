@@ -41,6 +41,11 @@
     <UseInterpreter>false</UseInterpreter>
   </PropertyGroup>
 
+  <!-- The emulator build of CI (-p:ReplioDemo=true) adds demo data and pages opened by an intent extra for screenshots. -->
+  <PropertyGroup Condition="'$(ReplioDemo)' == 'true'">
+    <DefineConstants>$(DefineConstants);REPLIO_DEMO</DefineConstants>
+  </PropertyGroup>
+
   <ItemGroup>
     <TrimmerRootAssembly Include="Replio" RootMode="All" />
     <!-- The Android SDK adds global usings of Android.App and Android.Widget: their Application and Button clash with Avalonia's. -->
