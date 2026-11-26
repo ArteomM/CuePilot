@@ -10,6 +10,7 @@
 // Exit codes: 0 stopped, 1 error, 2 permission denied, 3 macOS too old, 64 usage.
 // Runs inside Replio.app, so macOS asks for the permissions on behalf of Replio.
 
+import AppKit
 import AVFoundation
 import CoreGraphics
 import CoreMedia
@@ -330,6 +331,12 @@ func decodeFile(input: String, output: String) {
 }
 
 signal(SIGPIPE, SIG_IGN)
+
+// The helper lives inside Replio.app, so macOS took it for a second copy of Replio: once ScreenCaptureKit
+// connected it to the window server, a second Replio icon appeared in the Dock and kept bouncing.
+// A background helper never shows in the Dock or the app switcher.
+NSApplication.shared.setActivationPolicy(.prohibited)
+
 let arguments = CommandLine.arguments
 guard arguments.count >= 2 else {
     log("usage: replio-audio system|mic|request-mic")

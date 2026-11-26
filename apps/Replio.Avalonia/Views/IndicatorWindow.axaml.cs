@@ -135,7 +135,7 @@ public partial class IndicatorWindow : Window
     {
         _captureRunning = isRunning;
         HomeLogo.IsAnimating = isRunning;
-        StopButton.Content = isRunning ? "■" : "▶";
+        StopButton.Content = CaptureGlyph(isRunning);
         ToolTip.SetTip(StopButton, isRunning ? _localizer["IndicatorStopHint"] : _localizer["IndicatorStartHint"]);
     }
 
@@ -190,4 +190,14 @@ public partial class IndicatorWindow : Window
         CaptureButton.ClearValue(BorderBrushProperty);
         CaptureButton.ClearValue(ForegroundProperty);
     }
+
+    private static readonly IBrush GlyphBrush = Brush.Parse("#E9EEF5");
+
+    /// <summary>
+    /// Stop (a rounded square) and start (a triangle) are drawn, not typed: a ■ character comes out a different
+    /// size in every font, and on macOS it was tiny. The same shapes are used on both systems.
+    /// </summary>
+    private static Control CaptureGlyph(bool isRunning) => isRunning
+        ? new global::Avalonia.Controls.Shapes.Rectangle { Width = 11, Height = 11, RadiusX = 2.5, RadiusY = 2.5, Fill = GlyphBrush }
+        : new global::Avalonia.Controls.Shapes.Path { Data = Geometry.Parse("M0,0 L10,6 L0,12 Z"), Fill = GlyphBrush, Margin = new global::Avalonia.Thickness(2, 0, 0, 0) };
 }

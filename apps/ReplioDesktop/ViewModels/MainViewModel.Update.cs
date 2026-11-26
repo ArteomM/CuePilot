@@ -64,7 +64,7 @@ public partial class MainViewModel
     /// <summary>Line under the banner and in Settings: why «Обновить» is off, progress, or the last check result.</summary>
     public string UpdateStatus => _updateStatus;
 
-    public string InstallUpdateButtonText => _isUpdating ? L["UpdateDownloading"] : L["UpdateInstall"];
+    public string InstallUpdateButtonText => _isUpdating ? L["UpdateDownloading"] : L[UpdateService.IsSelfInstall ? "UpdateInstall" : "UpdateDownload"];
 
     public string InstallUpdateToolTip => IsCapturing ? L["UpdateBlockedByRecording"] : L["UpdateInstallToolTip"];
 
@@ -164,6 +164,15 @@ public partial class MainViewModel
         {
             // Never in the middle of a meeting: the recording and its session would be cut off.
             SetUpdateStatus(L["UpdateBlockedByRecording"]);
+            return;
+        }
+
+        if (!UpdateService.IsSelfInstall)
+        {
+            // Mac: the browser downloads the .dmg; the user drags Replio to «Программы» over the old one.
+            OpenUrl(info.Url);
+            SetUpdateStatus(L["UpdateMacDownloadStarted"]);
+            AppendLog($"[update] Opened the download of {info.VersionText} in the browser.");
             return;
         }
 

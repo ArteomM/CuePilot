@@ -46,6 +46,8 @@ public partial class EchoNoteDialog : Window
         HintText.Text = l["NoteDialogHint"];
         TitleBox.Text = title;
         ToolTip.SetTip(TitleBox, l["NoteDialogTitlePlaceholder"]);
+        TitleBox.Watermark = l["NoteDialogTitlePlaceholder"];
+        NoteTextBox.Watermark = l["NoteDialogTextPlaceholder"];
         NoteTextBox.Text = text;
         ToolTip.SetTip(NoteTextBox, l["NoteDialogTextPlaceholder"]);
         OkButton.Content = editing ? l["NoteDialogSave"] : l["NoteDialogAdd"];

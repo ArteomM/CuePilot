@@ -119,7 +119,7 @@ public partial class IndicatorWindow : Window
     {
         _captureRunning = isRunning;
         HomeLogo.IsAnimating = isRunning;
-        StopButton.Content = isRunning ? "■" : "▶";
+        StopButton.Content = CaptureGlyph(isRunning);
         StopButton.ToolTip = isRunning ? _localizer["IndicatorStopHint"] : _localizer["IndicatorStartHint"];
     }
 
@@ -205,4 +205,21 @@ public partial class IndicatorWindow : Window
             DragMove();
         }
     }
+
+    private static readonly Brush GlyphBrush = MakeGlyphBrush();
+
+    private static Brush MakeGlyphBrush()
+    {
+        var brush = new SolidColorBrush(Color.FromRgb(0xE9, 0xEE, 0xF5));
+        brush.Freeze();
+        return brush;
+    }
+
+    /// <summary>
+    /// Stop (a rounded square) and start (a triangle) are drawn, not typed: a ■ character comes out a different
+    /// size in every font, and on macOS it was tiny. The same shapes are used on both systems.
+    /// </summary>
+    private static UIElement CaptureGlyph(bool isRunning) => isRunning
+        ? new System.Windows.Shapes.Rectangle { Width = 11, Height = 11, RadiusX = 2.5, RadiusY = 2.5, Fill = GlyphBrush }
+        : new System.Windows.Shapes.Path { Data = Geometry.Parse("M0,0 L10,6 L0,12 Z"), Fill = GlyphBrush, Margin = new Thickness(2, 0, 0, 0) };
 }

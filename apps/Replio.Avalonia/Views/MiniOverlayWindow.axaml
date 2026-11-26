@@ -104,7 +104,7 @@
                            Name="HotkeyHintText"
                            VerticalAlignment="Center"
                            Foreground="#9AA5B5"
-                           Text="Ctrl+/" />
+                           Text="" />
             </Grid>
 
             <Grid Grid.Row="1" Margin="0,10,0,0" Name="PromptRow" ColumnDefinitions="*,Auto">

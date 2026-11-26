@@ -15,10 +15,37 @@ public sealed record ReplioUpdateInfo(Version Version, string Url, string Sha256
 {
     public string VersionText => Version.ToString(3);
 
-    public static ReplioUpdateInfo? Parse(string json, Uri baseUri)
+    public static ReplioUpdateInfo? Parse(string json, Uri baseUri) => Parse(json, baseUri, OperatingSystem.IsMacOS());
+
+    /// <summary>
+    /// <paramref name="mac"/>: the Mac build reads the "mac" block instead:
+    /// "mac": {"version":"1.1.4","arm64":"Replio-mac-arm64.dmg","x64":"Replio-mac-x64.dmg","notes":"…"}.
+    /// Without that block there is no Mac update (the top-level version is the Windows installer's).
+    /// </summary>
+    public static ReplioUpdateInfo? Parse(string json, Uri baseUri, bool mac)
     {
         using JsonDocument document = JsonDocument.Parse(json);
         JsonElement root = document.RootElement;
+        if (mac)
+        {
+            JsonElement block = Json.Object(root, "mac");
+            if (block.ValueKind != JsonValueKind.Object)
+            {
+                return null;
+            }
+
+            string? macVersion = Json.Text(block, "version");
+            string? dmg = Json.Text(block, System.Runtime.InteropServices.RuntimeInformation.OSArchitecture == System.Runtime.InteropServices.Architecture.Arm64 ? "arm64" : "x64");
+            if (string.IsNullOrWhiteSpace(macVersion) || string.IsNullOrWhiteSpace(dmg) || !Version.TryParse(macVersion.Trim(), out Version? parsedMac) ||
+                !Uri.TryCreate(baseUri, dmg.Trim(), out Uri? dmgUri) || (dmgUri.Scheme != Uri.UriSchemeHttps && dmgUri.Scheme != Uri.UriSchemeHttp))
+            {
+                return null;
+            }
+
+            string macNotes = (Json.Text(block, "notes") ?? Json.Text(root, "notes") ?? string.Empty).Trim();
+            return new ReplioUpdateInfo(Normalize(parsedMac), dmgUri.ToString(), string.Empty, 0, macNotes, Json.Bool(block, "mandatory"));
+        }
+
         string? versionText = Json.Text(root, "version");
         string? url = Json.Text(root, "url");
         if (string.IsNullOrWhiteSpace(versionText) || string.IsNullOrWhiteSpace(url) || !Version.TryParse(versionText.Trim(), out Version? version))
@@ -58,8 +85,11 @@ public static class UpdateService
 
     private static readonly HttpClient Http = new() { Timeout = TimeSpan.FromMinutes(15) };
 
-    /// <summary>Self-update exists for the Windows installer only; the Mac build is updated from its .dmg.</summary>
-    public static bool IsSupported => OperatingSystem.IsWindows();
+    /// <summary>Both systems check for a newer version; the Mac build is updated from its .dmg, which the browser downloads.</summary>
+    public static bool IsSupported => OperatingSystem.IsWindows() || OperatingSystem.IsMacOS();
+
+    /// <summary>Windows downloads and runs the installer itself; on a Mac the .dmg opens in the browser.</summary>
+    public static bool IsSelfInstall => OperatingSystem.IsWindows();
 
     public static Uri FeedUrl
     {

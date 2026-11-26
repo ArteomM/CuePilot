@@ -906,6 +906,7 @@ public partial class MainViewModel : ObservableObject
             _showInScreenShare = value;
             OnPropertyChanged();
             OnPropertyChanged(nameof(HideInScreenShare));
+            OnPropertyChanged(nameof(ScreenShareBadgeText));
         }
     }
 
@@ -1709,13 +1710,23 @@ public partial class MainViewModel : ObservableObject
             string sessionId = _currentSessionId;
             _currentSessionId = string.Empty;
             SessionSummary? active = _sessionLifecycleService.GetById(sessionId);
-            string sessionSummary = await BuildFinalSessionSummaryAsync(active);
-            _sessionLifecycleService.Complete(sessionId, sessionSummary);
-            _currentSessionSummary = sessionSummary;
-            RefreshSessionList();
-            CurrentSessionSummary = _currentSessionSummary;
-            // Not named during the call: the name comes from the summary, in the background.
-            _ = AutoTitleSessionAsync(sessionId, sessionSummary);
+            if (IsEmptyRecording(active))
+            {
+                // Nothing was heard: no AI summary, name or topic update for it (they cost the plan and say nothing).
+                CompleteEmptySession(sessionId);
+            }
+            else
+            {
+                string sessionSummary = await BuildFinalSessionSummaryAsync(active);
+                _sessionLifecycleService.Complete(sessionId, sessionSummary);
+                _currentSessionSummary = sessionSummary;
+                RefreshSessionList();
+                CurrentSessionSummary = _currentSessionSummary;
+                // Not named during the call: the name comes from the summary, in the background.
+                _ = AutoTitleSessionAsync(sessionId, sessionSummary);
+                // A meeting of a topic brings the topic's «Сводка» and graph up to date by itself.
+                _ = AutoActualizeTopicAfterSessionAsync(sessionId);
+            }
         }
         SelectedSessionTab = "Summary";
         SelectedMainPage = "Home";
@@ -1838,8 +1849,9 @@ public partial class MainViewModel : ObservableObject
         AudioMeterLevel = Math.Clamp((stats.MicAverageKb + stats.SystemAverageKb) / 30d, 0, 1);
         AudioHealthMessage = AudioMeterLevel < 0.08 ? L["AudioHealthNoSystem"] : L["AudioHealthListening"];
         AccumulateSttCost(stats.SttCostRub);
+        // Sound levels only: tokens and cost are not shown to users.
         OverlayStatsChanged?.Invoke(
-            $"{L["OverlayStatsSystem"]} {stats.SystemAverageKb:0.0} {L["UnitKbPerSecond"]} | {L["OverlayStatsMic"]} {stats.MicAverageKb:0.0} {L["UnitKbPerSecond"]}{sttSuffix}{tokenSuffix}");
+            $"{L["OverlayStatsSystem"]} {stats.SystemAverageKb:0.0} {L["UnitKbPerSecond"]} | {L["OverlayStatsMic"]} {stats.MicAverageKb:0.0} {L["UnitKbPerSecond"]}{sttSuffix}");
 
         if (stats.SttLagSeconds >= 20 && DateTime.Now - _lastSttLagWarningAt > TimeSpan.FromMinutes(1))
         {
@@ -1896,6 +1908,7 @@ public partial class MainViewModel : ObservableObject
 
     private void ApplyLocalization()
     {
+        OnPropertyChanged(nameof(ScreenShareBadgeText));
         CaptureStatusText = IsCapturing ? L["CaptureStatusCapturing"] : L["CaptureStatusIdle"];
         PrivacyBadgeText = IsCapturing ? L["PrivacyOn"] : L["PrivacyOff"];
 
@@ -2475,7 +2488,7 @@ public partial class MainViewModel : ObservableObject
                 OverlaySuggestionChanged?.Invoke(BestResponseText);
                 _sessionLifecycleService.AddSuggestion(session.Id);
                 SelectedMainPage = "Session";
-                SelectedSessionTab = session.Status == SessionStatus.Active ? "Transcript" : "Usage";
+                SelectedSessionTab = session.Status == SessionStatus.Active ? "Transcript" : "Summary";
                 MainWindowAttentionRequested?.Invoke();
             },
             $"[assist] WhatShouldISay generated (smart={SmartModeEnabled}).",
@@ -2484,6 +2497,13 @@ public partial class MainViewModel : ObservableObject
 
     private Task RegenerateSummaryAsync()
     {
+        if (SelectedSession is { Status: SessionStatus.Completed } selected && IsEmptyRecording(selected))
+        {
+            // Nothing to summarise: the AI would only say that the transcript is empty.
+            ShowFeedback(L["EmptySessionNoSummary"]);
+            return Task.CompletedTask;
+        }
+
         return RunAssistAsync(
             L["ActionSummary"],
             L["ActionSummaryRequest"],
@@ -2722,7 +2742,8 @@ public partial class MainViewModel : ObservableObject
 
     private void OpenActiveSession()
     {
-        if (SelectedSession != null)
+        // During a recording «open» means the live transcript, even if another meeting was open before.
+        if (SelectedSession != null && (string.IsNullOrWhiteSpace(_currentSessionId) || SelectedSession.Id == _currentSessionId))
         {
             SelectedMainPage = "Session";
             SelectedSessionTab = GetDefaultSessionTab(SelectedSession);

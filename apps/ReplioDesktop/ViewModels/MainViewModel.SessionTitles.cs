@@ -9,7 +9,61 @@ namespace ReplioDesktop.ViewModels;
 /// </summary>
 public partial class MainViewModel
 {
+    /// <summary>Fewer recognised words than this: the recording is empty (silence, no sound reached Replio).</summary>
+    public const int MinTranscriptWords = 5;
+
     private string NewSessionTitle(DateTime startedAt) => SessionTitles.Default(startedAt, IsEnglishInterface);
+
+    /// <summary>Words that have a letter or a digit, over all transcript lines.</summary>
+    private static int TranscriptWordCount(SessionSummary? session) =>
+        session?.Transcript.Sum(line => string.IsNullOrWhiteSpace(line.Text)
+            ? 0
+            : line.Text.Split((char[]?)null, StringSplitOptions.RemoveEmptyEntries).Count(word => word.Any(char.IsLetterOrDigit))) ?? 0;
+
+    private static bool IsEmptyRecording(SessionSummary? session) => TranscriptWordCount(session) < MinTranscriptWords;
+
+    /// <summary>
+    /// An empty recording gets no AI call: it is named «Пустая запись» (after its topic, if any), gets a short note
+    /// instead of a summary, and the user is offered to delete it once the main window is back.
+    /// </summary>
+    private void CompleteEmptySession(string sessionId)
+    {
+        string note = L["EmptySessionSummary"];
+        _sessionLifecycleService.Complete(sessionId, note);
+        SessionSummary? session = _sessionLifecycleService.GetById(sessionId);
+        if (session != null && SessionTitles.IsAutomatic(session, TopicNameOf(session)))
+        {
+            string core = L["EmptySessionTitle"];
+            _sessionLifecycleService.SetAutoTitle(sessionId, SessionTitles.Compose(TopicNameOf(session), core), core);
+            _sessionLifecycleService.Flush();
+        }
+
+        _currentSessionSummary = note;
+        RefreshSessionList();
+        ApplyRenamedSession(sessionId);
+        CurrentSessionSummary = note;
+        AppendLog("[session] Empty recording: no AI summary or title.");
+        _ = OfferToDeleteEmptySessionAsync(sessionId);
+    }
+
+    private async Task OfferToDeleteEmptySessionAsync(string sessionId)
+    {
+        // Let the main window come back after the recording stopped, so the question is not hidden behind it.
+        await Task.Delay(TimeSpan.FromSeconds(1.2));
+        SessionSummary? session = _sessionLifecycleService.GetById(sessionId);
+        if (session == null || session.Status != SessionStatus.Completed || !IsEmptyRecording(session))
+        {
+            return;
+        }
+
+        bool delete = ConfirmationRequested?.Invoke(L["EmptySessionDeleteTitle"], L["EmptySessionDeleteMessage"]) ?? false;
+        if (delete && RemoveSessionData(sessionId))
+        {
+            RefreshSessionList();
+            _completedSessionsView.Refresh();
+            AppendLog($"[session] Empty recording deleted: {sessionId}");
+        }
+    }
 
     private string TopicNameOf(SessionSummary session) =>
         string.IsNullOrWhiteSpace(session.TopicId)

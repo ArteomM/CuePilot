@@ -655,7 +655,7 @@ public partial class MainViewModel
             return false;
         }
 
-        List<SessionSummary> sessions = CompletedSessions.Where(s => s.TopicId == topic.Id).ToList();
+        List<SessionSummary> sessions = CompletedSessions.Where(s => s.TopicId == topic.Id && !IsEmptyRecording(s)).ToList();
         if (sessions.Count == 0 && !topic.Sources.Any(s => s.ParsedAt != null))
         {
             return true;

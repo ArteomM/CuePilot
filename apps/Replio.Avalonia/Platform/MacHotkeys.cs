@@ -93,7 +93,8 @@ public sealed class MacHotkeyGesture
             Key.Oem2 => "/",
             _ => key.ToString().ToUpperInvariant()
         });
-        gesture = new MacHotkeyGesture { KeyCode = keyCode, Modifiers = modifiers, DisplayText = string.Join('+', parts) };
+        // Shown to the user (a hotkey that could not be registered): with the Mac key symbols, «⌃⇧/».
+        gesture = new MacHotkeyGesture { KeyCode = keyCode, Modifiers = modifiers, DisplayText = ReplioDesktop.Services.HotkeyDisplay.FormatMac(string.Join('+', parts)) };
         return true;
     }
 

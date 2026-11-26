@@ -5,7 +5,10 @@ namespace ReplioDesktop.Services;
 
 /// <summary>
 /// Where Replio keeps the user's data: sessions, topics, knowledge base and screenshots.
-/// By default %AppData%\Replio. The user can pick another folder in Settings, for example inside Яндекс Диск,
+/// By default the «.replio» folder in the user's home (C:\Users\name\.replio, /Users/name/.replio), the way Claude keeps
+/// its data in «.claude»: easy to find for the user and for agents. Data from before 1.1.4 stays where it was
+/// (%AppData%\Replio, ~/Library/Application Support/Replio) until the user moves it in Settings; nothing is moved
+/// at start. The user can pick another folder in Settings, for example inside Яндекс Диск,
 /// OneDrive or iCloud Drive, and the cloud client then syncs the data between computers; nothing goes to Replio's
 /// servers. Settings, the key, secrets, logs and speech models always stay in %AppData% / %LocalAppData% on this
 /// computer: they are per device and must never be overwritten by another device.
@@ -34,7 +37,27 @@ public static class DataLocation
     /// <summary>%AppData%\Replio: settings, key and other per-device files.</summary>
     public static string ConfigRoot => Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "Replio");
 
-    public static string DefaultRoot => ConfigRoot;
+    /// <summary>~/.replio: the data folder of a new installation.</summary>
+    public static string DefaultRoot => Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.UserProfile), ".replio");
+
+    /// <summary>
+    /// Before 1.1.4 the data lived next to the settings. Such data keeps being used (it is never moved silently)
+    /// until the user moves it to <see cref="DefaultRoot"/> in Settings; a new installation starts there.
+    /// </summary>
+    public static string LegacyRoot => ConfigRoot;
+
+    private static bool HasData(string folder)
+    {
+        try
+        {
+            return Directory.Exists(Path.Combine(folder, "sessions")) || File.Exists(Path.Combine(folder, "topics.json")) ||
+                   File.Exists(Path.Combine(folder, "sessions.json"));
+        }
+        catch (Exception)
+        {
+            return false;
+        }
+    }
 
     public static string PointerPath => Path.Combine(ConfigRoot, PointerFileName);
 
@@ -85,6 +108,12 @@ public static class DataLocation
             }
 
             UnavailableChosenFolder = chosen;
+        }
+
+        // An existing installation keeps its data where it was, unless the new default already has data.
+        if (!HasData(DefaultRoot) && HasData(LegacyRoot))
+        {
+            return LegacyRoot;
         }
 
         return DefaultRoot;

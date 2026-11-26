@@ -12,7 +12,7 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, ...</value>
   </resheader>
-  <data name="MainWindowTitle" xml:space="preserve"><value>Replio Desktop</value></data>
+  <data name="MainWindowTitle" xml:space="preserve"><value>Replio</value></data>
   <data name="MainHeader" xml:space="preserve"><value>Replio — десктопный суфлер</value></data>
   <data name="StartCapture" xml:space="preserve"><value>Запустить захват</value></data>
   <data name="StopCapture" xml:space="preserve"><value>Остановить захват</value></data>
@@ -59,8 +59,8 @@
   <data name="OverlayWindowTitle" xml:space="preserve"><value>Replio</value></data>
   <data name="OverlayTitle" xml:space="preserve"><value>Replio</value></data>
   <data name="OverlayPrompt" xml:space="preserve"><value>Спросите о разговоре или контексте экрана</value></data>
-  <data name="OverlayStatusRunning" xml:space="preserve"><value>● идёт запись</value></data>
-  <data name="OverlayStatusIdle" xml:space="preserve"><value>○ запись остановлена</value></data>
+  <data name="OverlayStatusRunning" xml:space="preserve"><value>● запись</value></data>
+  <data name="OverlayStatusIdle" xml:space="preserve"><value>○ запись выкл.</value></data>
   <data name="OverlaySuggestionPlaceholder" xml:space="preserve"><value>Здесь появится предпросмотр подсказки.</value></data>
   <data name="PermissionWizardTitle" xml:space="preserve"><value>Мастер разрешений Replio</value></data>
   <data name="WizardStep1Title" xml:space="preserve"><value>Шаг 1: Разрешения на захват аудио</value></data>
@@ -216,7 +216,7 @@
   <data name="IndicatorAsk" xml:space="preserve"><value>Показать</value></data>
   <data name="WhatsNewButtonText" xml:space="preserve"><value>Что нового в Replio {0} ↗</value></data>
   <data name="WhatsNewTitle" xml:space="preserve"><value>Replio {0} — что изменилось</value></data>
-  <data name="WhatsNewBody" xml:space="preserve"><value>Replio 1.1.3:&#x0a;• Настройки разложены по разделам: «Аккаунт», «Встречи», «Речь», «ИИ-помощник», «Окна и вид», «Горячие клавиши», «Данные и обновления». Изменения сохраняются сами, кнопки «Сохранить» больше нет.&#x0a;• Каждый тариф видит только то, что ему доступно: на «Локальном» речь распознаётся на компьютере, на «Про» и «Команде» можно выбрать качество распознавания.&#x0a;• «Встречи (по умолчанию)» в настройках действуют во всех темах, где не настроено своё.&#x0a;• Имена и термины теперь можно задать и для каждой темы на вкладке «Как помогать»: они добавляются к общему списку и лучше распознаются.&#x0a;• Тариф «Приватный»: ИИ и распознавание речи идут через сервер компании, который администратор один раз подключает в кабинете на replio.ru.&#x0a;• Переключатель «Глубокий режим» убран: он ничего не менял.&#x0a;&#x0a;Replio 1.1.2:&#x0a;• «Режимы» заменены вкладкой темы «Как помогать»: тип встречи (продажа, собеседование, переговоры, планёрка, консультация или свой вариант), как подсказывать и какие разделы добавить в итоги. Для встреч без темы это настраивается в «Настройках».&#x0a;• Поиск в шапке ищет везде: темы, сводки, итоги, транскрипты, письма, базу знаний и вопросы. Клик открывает нужное место.&#x0a;• «Актуализировать тему» заодно переделывает устаревшие итоги встреч темы, а во встрече из темы заменяет «Обновить итоги».&#x0a;• Полоса лимита в шапке показывает, сколько осталось на сегодня и на месяц. Она желтеет, когда остаётся мало, и краснеет у самого края.&#x0a;• «Справка» открывается небольшим окном с короткими карточками и картинками.&#x0a;• В «Настройках» появились кнопка «Открыть кабинет» и «Папка данных»: храните встречи, темы и базу знаний в Яндекс Диске, OneDrive или iCloud Drive, чтобы они были на всех ваших компьютерах.&#x0a;• Новый логотип, как на сайте. Тариф из личного кабинета подхватывается сам.&#x0a;&#x0a;Replio 1.1.0 — первая версия.&#x0a;• Подсказки во время звонка: «Что сказать», «Что ответить», «Что спросить» и уточняющие вопросы в отдельном окне, которое скрыто от демонстрации экрана.&#x0a;• Итоги встречи, письмо по итогам и транскрипт с кнопками «Копировать»; снимки экрана сохраняются вместе со встречей.&#x0a;• Темы: сессии, база знаний (документы, папки, аудио и видео, свой текст), «Сводка», «Вопросы» с источниками и граф связей. Одна кнопка «Актуализировать тему» разбирает новые материалы, обновляет сводку и граф.&#x0a;• Язык речи определяется автоматически для каждой стороны разговора; его можно выбрать и вручную в настройках.&#x0a;• Аккаунт Replio: вход через replio.ru, ключ хранится на компьютере в зашифрованном виде. Подсказки, итоги и распознавание работают по вашему тарифу.&#x0a;• Обновления приходят прямо в приложение: при новой версии появится кнопка «Обновить». Настройки и ключ при обновлении сохраняются.&#x0a;• Команда replio и MCP-сервер для ИИ-агентов (Claude Code, Codex, Cursor): подробности в %AppData%\Replio\AGENTS.md.</value></data>
+  <data name="WhatsNewBody" xml:space="preserve"><value>Replio 1.1.4:&#x0a;• Записи, в которых не распознано ни одной фразы, больше не отправляются ИИ: они называются «Пустая запись», и Replio предлагает их удалить.&#x0a;• Тема обновляется сама после каждой встречи: сводка и граф готовы без кнопки «Актуализировать тему». Пока идёт обновление, кнопка показывает прогресс.&#x0a;• Значок «Скрыт от демонстрации» показывает настоящее состояние и переключается щелчком.&#x0a;• Граф: подписи больше не наезжают друг на друга, легенда и подсказка вынесены под граф.&#x0a;• Значок Replio в трее во время записи мигает, в его меню есть «Открыть транскрипт», «Остановить запись» и «Снимок экрана».&#x0a;• Панель записи не закрывает поле ввода главного окна, вкладка «Статистика» убрана, кнопка «Выбрать несколько» стоит над списком встреч.&#x0a;• Новые встречи, темы и база знаний хранятся в папке .replio в папке пользователя, как .claude у Claude. Прежние данные остаются на месте, перенести их можно в «Настройки → Данные и обновления».&#x0a;&#x0a;Replio 1.1.3:&#x0a;• Настройки разложены по разделам: «Аккаунт», «Встречи», «Речь», «ИИ-помощник», «Окна и вид», «Горячие клавиши», «Данные и обновления». Изменения сохраняются сами, кнопки «Сохранить» больше нет.&#x0a;• Каждый тариф видит только то, что ему доступно: на «Локальном» речь распознаётся на компьютере, на «Про» и «Команде» можно выбрать качество распознавания.&#x0a;• «Встречи (по умолчанию)» в настройках действуют во всех темах, где не настроено своё.&#x0a;• Имена и термины теперь можно задать и для каждой темы на вкладке «Как помогать»: они добавляются к общему списку и лучше распознаются.&#x0a;• Тариф «Приватный»: ИИ и распознавание речи идут через сервер компании, который администратор один раз подключает в кабинете на replio.ru.&#x0a;• Переключатель «Глубокий режим» убран: он ничего не менял.&#x0a;&#x0a;Replio 1.1.2:&#x0a;• «Режимы» заменены вкладкой темы «Как помогать»: тип встречи (продажа, собеседование, переговоры, планёрка, консультация или свой вариант), как подсказывать и какие разделы добавить в итоги. Для встреч без темы это настраивается в «Настройках».&#x0a;• Поиск в шапке ищет везде: темы, сводки, итоги, транскрипты, письма, базу знаний и вопросы. Клик открывает нужное место.&#x0a;• «Актуализировать тему» заодно переделывает устаревшие итоги встреч темы, а во встрече из темы заменяет «Обновить итоги».&#x0a;• Полоса лимита в шапке показывает, сколько осталось на сегодня и на месяц. Она желтеет, когда остаётся мало, и краснеет у самого края.&#x0a;• «Справка» открывается небольшим окном с короткими карточками и картинками.&#x0a;• В «Настройках» появились кнопка «Открыть кабинет» и «Папка данных»: храните встречи, темы и базу знаний в Яндекс Диске, OneDrive или iCloud Drive, чтобы они были на всех ваших компьютерах.&#x0a;• Новый логотип, как на сайте. Тариф из личного кабинета подхватывается сам.&#x0a;&#x0a;Replio 1.1.0 — первая версия.&#x0a;• Подсказки во время звонка: «Что сказать», «Что ответить», «Что спросить» и уточняющие вопросы в отдельном окне, которое скрыто от демонстрации экрана.&#x0a;• Итоги встречи, письмо по итогам и транскрипт с кнопками «Копировать»; снимки экрана сохраняются вместе со встречей.&#x0a;• Темы: сессии, база знаний (документы, папки, аудио и видео, свой текст), «Сводка», «Вопросы» с источниками и граф связей. Одна кнопка «Актуализировать тему» разбирает новые материалы, обновляет сводку и граф.&#x0a;• Язык речи определяется автоматически для каждой стороны разговора; его можно выбрать и вручную в настройках.&#x0a;• Аккаунт Replio: вход через replio.ru, ключ хранится на компьютере в зашифрованном виде. Подсказки, итоги и распознавание работают по вашему тарифу.&#x0a;• Обновления приходят прямо в приложение: при новой версии появится кнопка «Обновить». Настройки и ключ при обновлении сохраняются.&#x0a;• Команда replio и MCP-сервер для ИИ-агентов (Claude Code, Codex, Cursor): подробности в %AppData%\Replio\AGENTS.md.</value></data>
   <data name="SmartModeToggle" xml:space="preserve"><value>Глубокий режим</value></data>
   <data name="HotkeysTitle" xml:space="preserve"><value>Горячие клавиши</value></data>
   <data name="OpenAiKeyMissing" xml:space="preserve"><value>Не задан API-ключ. Укажите его в Настройках → API-ключ или положите строку ApiKey=... в файл %AppData%\Replio\secrets.txt (либо задайте переменную POLZA_API_KEY).</value></data>
@@ -304,10 +304,10 @@
   <data name="TrayExit" xml:space="preserve"><value>Выход</value></data>
   <data name="IndicatorStopHint" xml:space="preserve"><value>Остановить запись</value></data>
   <data name="IndicatorStartHint" xml:space="preserve"><value>Начать запись</value></data>
-  <data name="IndicatorHomeHint" xml:space="preserve"><value>Открыть главное окно Replio</value></data>
+  <data name="IndicatorHomeHint" xml:space="preserve"><value>Открыть транскрипт встречи в реальном времени</value></data>
   <data name="IndicatorSnapshotHint" xml:space="preserve"><value>Снимок экрана (Ctrl+Shift+S): сохраняется во встрече и учитывается в следующем вопросе к ИИ.</value></data>
   <data name="HiddenFromShareBadge" xml:space="preserve"><value>Скрыт от демонстрации</value></data>
-  <data name="ScreenShareBadgeHint" xml:space="preserve"><value>Индикатор горит: окна Replio скрыты от демонстрации экрана, записи и скриншотов. Не горит: участники созвона их видят. Меняется в «Настройках», раздел «Демонстрация экрана».</value></data>
+  <data name="ScreenShareBadgeHint" xml:space="preserve"><value>Нажмите, чтобы переключить. Зелёная точка: окна Replio скрыты от демонстрации экрана, записи и скриншотов. Серая: участники созвона их видят.</value></data>
   <data name="StartReplio" xml:space="preserve"><value>Запустить Replio</value></data>
   <data name="TabSummary" xml:space="preserve"><value>Итоги</value></data>
   <data name="SummaryDiscussionTitle" xml:space="preserve"><value>Обсуждение</value></data>
@@ -388,7 +388,7 @@
   <data name="MoveToTopic" xml:space="preserve"><value>В тему…</value></data>
   <data name="SelectAllSessions" xml:space="preserve"><value>Выбрать все</value></data>
   <data name="SelectDone" xml:space="preserve"><value>Готово</value></data>
-  <data name="SelectSessions" xml:space="preserve"><value>Выбрать</value></data>
+  <data name="SelectSessions" xml:space="preserve"><value>Выбрать несколько</value></data>
   <data name="SessionsDeletedFeedback" xml:space="preserve"><value>Удалено сессий: {0}</value></data>
   <data name="SessionsMovedFeedback" xml:space="preserve"><value>Перемещено: {0} → «{1}»</value></data>
   <data name="SettingsLanguageHint" xml:space="preserve"><value>English: интерфейс и ответы ИИ на английском; выбранный вручную язык речи тоже станет английским. Действует со следующей записи.</value></data>
@@ -585,8 +585,8 @@
   <data name="NoteDialogAddTitle" xml:space="preserve"><value>Добавить текст в базу знаний</value></data>
   <data name="NoteDialogEditTitle" xml:space="preserve"><value>Изменить заметку</value></data>
   <data name="NoteDialogHint" xml:space="preserve"><value>Договорённости, контекст, требования — всё, что Replio должен учитывать в сводке, ответах и графе.</value></data>
-  <data name="NoteDialogTitlePlaceholder" xml:space="preserve"><value>Название заметки</value></data>
-  <data name="NoteDialogTextPlaceholder" xml:space="preserve"><value>Текст заметки</value></data>
+  <data name="NoteDialogTitlePlaceholder" xml:space="preserve"><value>Название (необязательно)</value></data>
+  <data name="NoteDialogTextPlaceholder" xml:space="preserve"><value>Текст</value></data>
   <data name="NoteDialogAdd" xml:space="preserve"><value>Добавить</value></data>
   <data name="NoteDialogSave" xml:space="preserve"><value>Сохранить</value></data>
   <data name="QuestionsEmptyTitle" xml:space="preserve"><value>Спросите о теме</value></data>
@@ -637,7 +637,7 @@
   <data name="TopicAnswerCost" xml:space="preserve"><value>Стоимость ответа: {0}</value></data>
   <data name="KnowledgeRemovedUpdatingFeedback" xml:space="preserve"><value>Убрано материалов: {0}. Сводка темы обновляется</value></data>
   <data name="SmartModeHint" xml:space="preserve"><value>Точнее в сложных разговорах, но ответ приходит на несколько секунд позже и расходует больше лимита. Для обычных звонков можно не включать.</value></data>
-  <data name="SettingsSttGlossaryExample" xml:space="preserve"><value>Например: Артём, Polza.ai, Replio, KPI, Сбербанк</value></data>
+  <data name="SettingsSttGlossaryExample" xml:space="preserve"><value>Например: Анна, Replio, CRM, KPI, ООО «Вектор»</value></data>
   <data name="HotkeysRegisterFailedMessage" xml:space="preserve"><value>Эти горячие клавиши уже заняты другой программой, поэтому Replio не может их использовать:&#x0a;{0}&#x0a;&#x0a;Поменяйте их в «Настройки → Горячие клавиши» или закройте программу, которая их заняла.</value></data>
   <data name="TopicTabSummary" xml:space="preserve"><value>Сводка</value></data>
   <data name="TipTopicTabSummary" xml:space="preserve"><value>Общая сводка темы по всем её сессиям и материалам. Точка — сводку пора актуализировать</value></data>
@@ -689,7 +689,7 @@
   <data name="TopicActualizeSummary" xml:space="preserve"><value>Обновляю сводку…</value></data>
   <data name="TopicActualizeGraph" xml:space="preserve"><value>Строю граф…</value></data>
   <data name="TopicActualizeDone" xml:space="preserve"><value>Тема актуальна: сводка и граф обновлены</value></data>
-  <data name="TipTopicActualize" xml:space="preserve"><value>Разбирает новые и изменившиеся материалы, обновляет устаревшие итоги встреч (которых ещё нет или которые составлены до смены формата итогов темы), пересобирает «Сводку» по всем сессиям и материалам темы, затем граф. Точка на кнопке: с прошлой актуализации что-то изменилось</value></data>
+  <data name="TipTopicActualize" xml:space="preserve"><value>Обновляет сводку и граф темы по всем её встречам и материалам. После каждой встречи тема обновляется сама.</value></data>
   <data name="SpeechLanguageAuto" xml:space="preserve"><value>Автоопределение</value></data>
   <data name="SettingsSpeechLanguage" xml:space="preserve"><value>Язык речи</value></data>
   <data name="TipSpeechLanguage" xml:space="preserve"><value>Автоопределение: Replio узнаёт язык каждой стороны (вас и собеседника) по первым фразам и держит его до конца записи. Выберите язык, если разговор всегда на нём</value></data>
@@ -759,7 +759,7 @@
   <data name="DataFolderTitle" xml:space="preserve"><value>Папка данных</value></data>
   <data name="DataFolderHint" xml:space="preserve"><value>Встречи, темы, база знаний и снимки. Чтобы они были на всех ваших компьютерах, выберите папку в Яндекс Диске, OneDrive или iCloud Drive: облако само синхронизирует её. На серверы Replio данные не попадают. Настройки и ключ остаются на каждом компьютере свои.</value></data>
   <data name="DataFolderChoose" xml:space="preserve"><value>Выбрать папку…</value></data>
-  <data name="DataFolderReset" xml:space="preserve"><value>Вернуть по умолчанию</value></data>
+  <data name="DataFolderReset" xml:space="preserve"><value>Перенести в папку по умолчанию</value></data>
   <data name="DataFolderOpen" xml:space="preserve"><value>Открыть папку</value></data>
   <data name="DataFolderRestart" xml:space="preserve"><value>Перезапустить Replio</value></data>
   <data name="DataFolderPickTitle" xml:space="preserve"><value>Папка для данных Replio (например, в Яндекс Диске)</value></data>
@@ -813,7 +813,7 @@
   <data name="SettingsSectionMeetings" xml:space="preserve"><value>Встречи (по умолчанию)</value></data>
   <data name="SettingsMeetingsHint" xml:space="preserve"><value>Так Replio помогает на всех встречах: без темы и в темах, где не настроено своё. Тему можно настроить отдельно на её вкладке «Как помогать».</value></data>
   <data name="TopicActualizeSessions" xml:space="preserve"><value>Итоги встреч {0} из {1}…</value></data>
-  <data name="TipSessionTopicActualize" xml:space="preserve"><value>Встреча относится к теме: итоги этой встречи обновятся в формате темы вместе с другими устаревшими итогами, «Сводкой» и графом темы. Точка: что-то устарело</value></data>
+  <data name="TipSessionTopicActualize" xml:space="preserve"><value>Обновляет итоги этой встречи, сводку и граф её темы. После встречи тема обновляется сама.</value></data>
   <data name="SearchGroupTopics" xml:space="preserve"><value>Темы</value></data>
   <data name="SearchGroupSessions" xml:space="preserve"><value>Встречи</value></data>
   <data name="SearchGroupTopicSummaries" xml:space="preserve"><value>Сводки тем</value></data>
@@ -934,10 +934,41 @@
   <data name="TipHotkeysReset" xml:space="preserve"><value>Вернуть сочетания, которые стоят после установки</value></data>
   <data name="TopicGlossaryLabel" xml:space="preserve"><value>Имена и термины темы</value></data>
   <data name="TopicGlossaryHint" xml:space="preserve"><value>Имена участников, компании, продукты и термины этой темы. На встречах темы они добавляются к общему списку из «Настройки → Встречи». Через запятую или с новой строки.</value></data>
-  <data name="TopicGlossaryExample" xml:space="preserve"><value>Например: Иван Петров, KEGOC, ТЭО, Астана</value></data>
+  <data name="TopicGlossaryExample" xml:space="preserve"><value>Например: Анна Смирнова, ООО «Вектор», дорожная карта, MVP</value></data>
   <data name="CompanyServiceTitle" xml:space="preserve"><value>ИИ и речь: сервер вашей компании</value></data>
   <data name="CompanyServiceText" xml:space="preserve"><value>Его один раз настраивает администратор компании в кабинете на replio.ru. Ключи и адреса здесь не нужны.</value></data>
   <data name="CompanyServiceNotReady" xml:space="preserve"><value>Администратор компании ещё не подключил сервер в кабинете на replio.ru. Пока он этого не сделает, подсказки и итоги не работают.</value></data>
   <data name="CompanySpeechLocal" xml:space="preserve"><value>Речь распознаётся на этом компьютере: скачайте модель ниже.</value></data>
   <data name="CompanySpeechService" xml:space="preserve"><value>Речь распознаётся на сервере компании.</value></data>
+  <data name="EmptySessionTitle" xml:space="preserve"><value>Пустая запись</value></data>
+  <data name="EmptySessionSummary" xml:space="preserve"><value>В записи нет распознанной речи, поэтому итоги не составлялись. Проверьте, что Replio слышит ваш микрофон и звук собеседников.</value></data>
+  <data name="EmptySessionDeleteTitle" xml:space="preserve"><value>Пустая запись</value></data>
+  <data name="EmptySessionDeleteMessage" xml:space="preserve"><value>В этой записи нет распознанной речи. Удалить её?</value></data>
+  <data name="EmptySessionNoSummary" xml:space="preserve"><value>В записи нет распознанной речи: итоги составить не из чего.</value></data>
+  <data name="ShownInShareBadge" xml:space="preserve"><value>Виден при демонстрации</value></data>
+  <data name="ScreenShareHiddenFeedback" xml:space="preserve"><value>Replio скрыт от демонстрации экрана</value></data>
+  <data name="ScreenShareShownFeedback" xml:space="preserve"><value>Replio виден при демонстрации экрана</value></data>
+  <data name="KnowledgeSelectHint" xml:space="preserve"><value>Выберите материал слева, чтобы увидеть его текст.</value></data>
+  <data name="KnowledgeNothingYet" xml:space="preserve"><value>Здесь появятся разобранные материалы</value></data>
+  <data name="TrayOpenTranscript" xml:space="preserve"><value>Открыть транскрипт</value></data>
+  <data name="TrayStartRecording" xml:space="preserve"><value>Начать запись</value></data>
+  <data name="TrayStopRecording" xml:space="preserve"><value>Остановить запись</value></data>
+  <data name="TraySnapshot" xml:space="preserve"><value>Снимок экрана</value></data>
+  <data name="TrayTooltipRecording" xml:space="preserve"><value>Replio: идёт запись. Нажмите, чтобы открыть транскрипт</value></data>
+  <data name="UpdateDownload" xml:space="preserve"><value>Скачать</value></data>
+  <data name="UpdateMacDownloadStarted" xml:space="preserve"><value>Новая версия скачивается в браузере. Откройте файл .dmg и перетащите Replio в «Программы», заменив старую версию.</value></data>
+  <data name="WizardStep1Description_Mac" xml:space="preserve"><value>Разрешите Replio доступ к микрофону и проверьте, что нужный микрофон выбран в «Системные настройки → Звук → Вход».</value></data>
+  <data name="VisualStatusManualOnly_Mac" xml:space="preserve"><value>Только ручные снимки (📷 или ⌃⇧S).</value></data>
+  <data name="IndicatorSnapshotHint_Mac" xml:space="preserve"><value>Снимок экрана (⌃⇧S): сохраняется во встрече и учитывается в следующем вопросе к ИИ.</value></data>
+  <data name="TipAsk_Mac" xml:space="preserve"><value>Задать вопрос по разговору. Вопрос и ответ появятся и в оверлее (⌃↩)</value></data>
+  <data name="TipStartCapture_Mac" xml:space="preserve"><value>Начать запись разговора и подсказки в реальном времени (⌃⇧/)</value></data>
+  <data name="TipHotkeyAsk_Mac" xml:space="preserve"><value>Задать вопрос ИИ из любого окна. Формат: Ctrl+Enter (Ctrl — это клавиша ⌃ Control)</value></data>
+  <data name="TipKnowledgeAddFiles_Mac" xml:space="preserve"><value>Прикрепить документы: PDF, Word (doc, docx), Excel (xls, xlsx), картинки (jpg, png), txt, md. Файлы можно и перетащить сюда или вставить через ⌘V</value></data>
+  <data name="TipKnowledgeAddFolder_Mac" xml:space="preserve"><value>Прикрепить папку: будут разобраны все поддерживаемые файлы в ней и во вложенных папках. Папку можно и перетащить сюда или вставить через ⌘V</value></data>
+  <data name="TipKnowledgeAddNote_Mac" xml:space="preserve"><value>Добавить свой текст: договорённости, контекст, требования. Он сразу попадает в базу знаний. Скопированный текст можно и перетащить сюда или вставить через ⌘V</value></data>
+  <data name="KnowledgeListHint_Mac" xml:space="preserve"><value>Перетащите сюда документы, аудио, видео, папки или текст, вставьте их через ⌘V или воспользуйтесь кнопками выше. Replio разберёт их в Markdown (речь из аудио и видео станет текстом) и будет использовать в сводке, ответах и графе.</value></data>
+  <data name="HotkeysHint_Mac" xml:space="preserve"><value>Нажмите на поле и впишите сочетание, например Ctrl+Shift+O. На Mac: Ctrl — клавиша ⌃ Control, Alt — ⌥ Option, Win — ⌘ Command, Shift — ⇧. Сочетание с ошибкой не применяется, пока его не исправят.</value></data>
+  <data name="OpenAiKeyMissing_Mac" xml:space="preserve"><value>Не задан API-ключ. Укажите его в Настройках → API-ключ или положите строку ApiKey=... в файл ~/Library/Application Support/Replio/secrets.txt (либо задайте переменную POLZA_API_KEY).</value></data>
+  <data name="ShowInTaskbar_Mac" xml:space="preserve"><value>Показывать в Dock</value></data>
+  <data name="WhatsNewBody_Mac" xml:space="preserve"><value>Replio 1.1.4:&#x0a;• Записи, в которых не распознано ни одной фразы, больше не отправляются ИИ: они называются «Пустая запись», и Replio предлагает их удалить.&#x0a;• Тема обновляется сама после каждой встречи: сводка и граф готовы без кнопки «Актуализировать тему». Пока идёт обновление, кнопка показывает прогресс.&#x0a;• Значок «Скрыт от демонстрации» показывает настоящее состояние и переключается щелчком.&#x0a;• Граф: подписи больше не наезжают друг на друга, легенда и подсказка вынесены под граф.&#x0a;• Значок Replio в строке меню во время записи мигает, в его меню есть «Открыть транскрипт», «Остановить запись» и «Снимок экрана».&#x0a;• Панель записи не закрывает поле ввода главного окна, вкладка «Статистика» убрана, кнопка «Выбрать несколько» стоит над списком встреч.&#x0a;• Новые встречи, темы и база знаний хранятся в папке .replio в папке пользователя, как .claude у Claude. Прежние данные остаются на месте, перенести их можно в «Настройки → Данные и обновления».&#x0a;• Сочетания клавиш показаны значками ⌃ ⌥ ⇧ ⌘, второй значок Replio в Dock больше не прыгает, а в «Данных и обновлениях» появилась проверка новой версии.&#x0a;&#x0a;Replio 1.1.3:&#x0a;• Настройки разложены по разделам: «Аккаунт», «Встречи», «Речь», «ИИ-помощник», «Окна и вид», «Горячие клавиши», «Данные и обновления». Изменения сохраняются сами, кнопки «Сохранить» больше нет.&#x0a;• Каждый тариф видит только то, что ему доступно: на «Локальном» речь распознаётся на компьютере, на «Про» и «Команде» можно выбрать качество распознавания.&#x0a;• «Встречи (по умолчанию)» в настройках действуют во всех темах, где не настроено своё.&#x0a;• Имена и термины теперь можно задать и для каждой темы на вкладке «Как помогать»: они добавляются к общему списку и лучше распознаются.&#x0a;• Тариф «Приватный»: ИИ и распознавание речи идут через сервер компании, который администратор один раз подключает в кабинете на replio.ru.&#x0a;• Переключатель «Глубокий режим» убран: он ничего не менял.&#x0a;&#x0a;Replio 1.1.2:&#x0a;• «Режимы» заменены вкладкой темы «Как помогать»: тип встречи (продажа, собеседование, переговоры, планёрка, консультация или свой вариант), как подсказывать и какие разделы добавить в итоги. Для встреч без темы это настраивается в «Настройках».&#x0a;• Поиск в шапке ищет везде: темы, сводки, итоги, транскрипты, письма, базу знаний и вопросы. Клик открывает нужное место.&#x0a;• «Актуализировать тему» заодно переделывает устаревшие итоги встреч темы, а во встрече из темы заменяет «Обновить итоги».&#x0a;• Полоса лимита в шапке показывает, сколько осталось на сегодня и на месяц. Она желтеет, когда остаётся мало, и краснеет у самого края.&#x0a;• «Справка» открывается небольшим окном с короткими карточками и картинками.&#x0a;• В «Настройках» появились кнопка «Открыть кабинет» и «Папка данных»: храните встречи, темы и базу знаний в Яндекс Диске, OneDrive или iCloud Drive, чтобы они были на всех ваших компьютерах.&#x0a;• Новый логотип, как на сайте. Тариф из личного кабинета подхватывается сам.&#x0a;&#x0a;Replio 1.1.0 — первая версия.&#x0a;• Подсказки во время звонка: «Что сказать», «Что ответить», «Что спросить» и уточняющие вопросы в отдельном окне, которое скрыто от демонстрации экрана.&#x0a;• Итоги встречи, письмо по итогам и транскрипт с кнопками «Копировать»; снимки экрана сохраняются вместе со встречей.&#x0a;• Темы: сессии, база знаний (документы, папки, аудио и видео, свой текст), «Сводка», «Вопросы» с источниками и граф связей. Одна кнопка «Актуализировать тему» разбирает новые материалы, обновляет сводку и граф.&#x0a;• Язык речи определяется автоматически для каждой стороны разговора; его можно выбрать и вручную в настройках.&#x0a;• Аккаунт Replio: вход через replio.ru, ключ хранится на компьютере в зашифрованном виде. Подсказки, итоги и распознавание работают по вашему тарифу.&#x0a;• Обновления приходят прямо в приложение: при новой версии появится кнопка «Обновить». Настройки и ключ при обновлении сохраняются.&#x0a;• Команда replio и MCP-сервер для ИИ-агентов (Claude Code, Codex, Cursor): подробности в ~/Library/Application Support/Replio/AGENTS.md.</value></data>
 </root>

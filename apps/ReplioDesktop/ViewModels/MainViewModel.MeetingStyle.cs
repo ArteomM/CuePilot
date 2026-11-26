@@ -1,4 +1,4 @@
-using ReplioDesktop.Models;
+﻿using ReplioDesktop.Models;
 using ReplioDesktop.Services;
 
 namespace ReplioDesktop.ViewModels;
@@ -248,7 +248,7 @@ public partial class MainViewModel
     private static DateTime? Later(DateTime? a, DateTime? b) => a == null ? b : b == null ? a : (a > b ? a : b);
 
     private List<SessionSummary> OutdatedSessionSummaries(SessionTopic topic) =>
-        CompletedSessions.Where(s => s.TopicId == topic.Id && IsSessionSummaryOutdated(s)).OrderBy(s => s.StartedAt).ToList();
+        CompletedSessions.Where(s => s.TopicId == topic.Id && IsSessionSummaryOutdated(s) && !IsEmptyRecording(s)).OrderBy(s => s.StartedAt).ToList();
 
     private void OnLocalizationChangedForMeetingStyles()
     {

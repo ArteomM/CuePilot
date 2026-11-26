@@ -12,7 +12,7 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, ...</value>
   </resheader>
-  <data name="MainWindowTitle" xml:space="preserve"><value>Replio Desktop</value></data>
+  <data name="MainWindowTitle" xml:space="preserve"><value>Replio</value></data>
   <data name="MainHeader" xml:space="preserve"><value>Replio Desktop Shell</value></data>
   <data name="StartCapture" xml:space="preserve"><value>Start Capture</value></data>
   <data name="StopCapture" xml:space="preserve"><value>Stop Capture</value></data>
@@ -59,8 +59,8 @@
   <data name="OverlayWindowTitle" xml:space="preserve"><value>Replio</value></data>
   <data name="OverlayTitle" xml:space="preserve"><value>Replio</value></data>
   <data name="OverlayPrompt" xml:space="preserve"><value>Ask anything about your screen or conversation</value></data>
-  <data name="OverlayStatusRunning" xml:space="preserve"><value>● recording</value></data>
-  <data name="OverlayStatusIdle" xml:space="preserve"><value>○ not recording</value></data>
+  <data name="OverlayStatusRunning" xml:space="preserve"><value>● rec</value></data>
+  <data name="OverlayStatusIdle" xml:space="preserve"><value>○ rec off</value></data>
   <data name="OverlaySuggestionPlaceholder" xml:space="preserve"><value>Suggestion preview will appear here.</value></data>
   <data name="PermissionWizardTitle" xml:space="preserve"><value>Replio Permission Wizard</value></data>
   <data name="WizardStep1Title" xml:space="preserve"><value>Step 1: Audio Capture Permissions</value></data>
@@ -216,7 +216,7 @@
   <data name="IndicatorAsk" xml:space="preserve"><value>Show</value></data>
   <data name="WhatsNewButtonText" xml:space="preserve"><value>What's new in Replio {0} ↗</value></data>
   <data name="WhatsNewTitle" xml:space="preserve"><value>Replio {0} highlights</value></data>
-  <data name="WhatsNewBody" xml:space="preserve"><value>Replio 1.1.3:&#x0a;• Settings are split into sections: «Account», «Meetings», «Speech», «AI assistant», «Windows and look», «Hotkeys», «Data and updates». Changes are saved by themselves, there is no «Save» button any more.&#x0a;• Each plan sees only what it can use: on «Local» speech is recognised on the computer, on «Pro» and «Team» you can choose the recognition quality.&#x0a;• «Meetings (default)» in Settings apply to every topic that has no setup of its own.&#x0a;• Names and terms can now also be set per topic on the «How to help» tab: they are added to the common list and recognised better.&#x0a;• «Private» plan: AI and speech recognition run through the company's server, which the administrator connects once in the account on replio.ru.&#x0a;• The «Deep mode» switch is gone: it changed nothing.&#x0a;&#x0a;Replio 1.1.2:&#x0a;• «Modes» are replaced by the topic tab «How to help»: meeting type (sales, interview, negotiation, stand-up, consultation or your own), how to hint and which sections to add to the summary. Meetings without a topic are set up in Settings.&#x0a;• The search in the header looks everywhere: topics, topic summaries, meeting summaries, transcripts, emails, the knowledge base and questions. A click opens the right place.&#x0a;• «Update topic» also redoes out-of-date meeting summaries of the topic and replaces «Rewrite summary» in a topic's meeting.&#x0a;• A limit bar in the header shows what is left today and this month: yellow when little is left, red at the very end.&#x0a;• «Help» opens as a small window with short cards and pictures.&#x0a;• Settings now have «Open account page» and «Data folder»: keep meetings, topics and the knowledge base in Yandex Disk, OneDrive or iCloud Drive to have them on all your computers.&#x0a;• New logo, as on the site. The plan from your account is picked up by itself.&#x0a;&#x0a;Replio 1.1.0 — the first version.&#x0a;• Live hints during a call: «What to say», «What to answer», «What to ask» and follow-up questions in a separate window that is hidden from screen share.&#x0a;• Meeting summary, follow-up email and transcript with «Copy» buttons; screenshots are kept with the meeting.&#x0a;• Topics: sessions, a knowledge base (documents, folders, audio and video, your own text), «Summary», «Questions» with sources and a relation graph. One «Update topic» button parses new materials and refreshes the summary and graph.&#x0a;• The speech language is detected automatically for each side of the call; it can also be chosen in Settings.&#x0a;• Replio account: sign in on replio.ru; the key is stored encrypted on the computer. Hints, summaries and recognition run on your plan.&#x0a;• Updates arrive in the app: a new version shows an «Update» button. Settings and the key are kept on update.&#x0a;• The replio command and an MCP server for AI agents (Claude Code, Codex, Cursor): details in %AppData%\Replio\AGENTS.md.</value></data>
+  <data name="WhatsNewBody" xml:space="preserve"><value>Replio 1.1.4:&#x0a;• Recordings with no recognised speech are no longer sent to the AI: they are named «Empty recording» and Replio offers to delete them.&#x0a;• A topic updates by itself after each meeting: its summary and graph are ready without pressing «Update topic». While it runs, the button shows the progress.&#x0a;• The «Hidden from screen share» badge shows the real state and switches with a click.&#x0a;• Graph: labels no longer overlap, the legend and the hint moved under the graph.&#x0a;• The Replio icon in the tray blinks during a recording; its menu has «Open the live transcript», «Stop recording» and «Take a screenshot».&#x0a;• The recording bar no longer covers the main window's input box, the «Statistics» tab is gone, «Select several» sits above the meeting list.&#x0a;• New meetings, topics and the knowledge base live in the .replio folder in your home folder, like .claude for Claude. Earlier data stays where it was; move it in Settings → Data and updates.&#x0a;&#x0a;Replio 1.1.3:&#x0a;• Settings are split into sections: «Account», «Meetings», «Speech», «AI assistant», «Windows and look», «Hotkeys», «Data and updates». Changes are saved by themselves, there is no «Save» button any more.&#x0a;• Each plan sees only what it can use: on «Local» speech is recognised on the computer, on «Pro» and «Team» you can choose the recognition quality.&#x0a;• «Meetings (default)» in Settings apply to every topic that has no setup of its own.&#x0a;• Names and terms can now also be set per topic on the «How to help» tab: they are added to the common list and recognised better.&#x0a;• «Private» plan: AI and speech recognition run through the company's server, which the administrator connects once in the account on replio.ru.&#x0a;• The «Deep mode» switch is gone: it changed nothing.&#x0a;&#x0a;Replio 1.1.2:&#x0a;• «Modes» are replaced by the topic tab «How to help»: meeting type (sales, interview, negotiation, stand-up, consultation or your own), how to hint and which sections to add to the summary. Meetings without a topic are set up in Settings.&#x0a;• The search in the header looks everywhere: topics, topic summaries, meeting summaries, transcripts, emails, the knowledge base and questions. A click opens the right place.&#x0a;• «Update topic» also redoes out-of-date meeting summaries of the topic and replaces «Rewrite summary» in a topic's meeting.&#x0a;• A limit bar in the header shows what is left today and this month: yellow when little is left, red at the very end.&#x0a;• «Help» opens as a small window with short cards and pictures.&#x0a;• Settings now have «Open account page» and «Data folder»: keep meetings, topics and the knowledge base in Yandex Disk, OneDrive or iCloud Drive to have them on all your computers.&#x0a;• New logo, as on the site. The plan from your account is picked up by itself.&#x0a;&#x0a;Replio 1.1.0 — the first version.&#x0a;• Live hints during a call: «What to say», «What to answer», «What to ask» and follow-up questions in a separate window that is hidden from screen share.&#x0a;• Meeting summary, follow-up email and transcript with «Copy» buttons; screenshots are kept with the meeting.&#x0a;• Topics: sessions, a knowledge base (documents, folders, audio and video, your own text), «Summary», «Questions» with sources and a relation graph. One «Update topic» button parses new materials and refreshes the summary and graph.&#x0a;• The speech language is detected automatically for each side of the call; it can also be chosen in Settings.&#x0a;• Replio account: sign in on replio.ru; the key is stored encrypted on the computer. Hints, summaries and recognition run on your plan.&#x0a;• Updates arrive in the app: a new version shows an «Update» button. Settings and the key are kept on update.&#x0a;• The replio command and an MCP server for AI agents (Claude Code, Codex, Cursor): details in %AppData%\Replio\AGENTS.md.</value></data>
   <data name="SmartModeToggle" xml:space="preserve"><value>Deep mode</value></data>
   <data name="HotkeysTitle" xml:space="preserve"><value>Hotkeys</value></data>
   <data name="OpenAiKeyMissing" xml:space="preserve"><value>API key is missing. Add it in Settings → API key, or put a line ApiKey=... into %AppData%\Replio\secrets.txt (or set POLZA_API_KEY).</value></data>
@@ -304,10 +304,10 @@
   <data name="TrayExit" xml:space="preserve"><value>Exit</value></data>
   <data name="IndicatorStopHint" xml:space="preserve"><value>Stop recording</value></data>
   <data name="IndicatorStartHint" xml:space="preserve"><value>Start recording</value></data>
-  <data name="IndicatorHomeHint" xml:space="preserve"><value>Open Replio main window</value></data>
+  <data name="IndicatorHomeHint" xml:space="preserve"><value>Open the live transcript of the meeting</value></data>
   <data name="IndicatorSnapshotHint" xml:space="preserve"><value>Screenshot (Ctrl+Shift+S): kept with the meeting and used by the next AI question.</value></data>
   <data name="HiddenFromShareBadge" xml:space="preserve"><value>Hidden from screen share</value></data>
-  <data name="ScreenShareBadgeHint" xml:space="preserve"><value>Lit: Replio windows are hidden from screen sharing, recordings and screenshots. Off: others on the call can see them. Change it in Settings, "Screen sharing".</value></data>
+  <data name="ScreenShareBadgeHint" xml:space="preserve"><value>Click to switch. Green dot: Replio windows are hidden from screen sharing, recordings and screenshots. Grey: others on the call can see them.</value></data>
   <data name="StartReplio" xml:space="preserve"><value>Start Replio</value></data>
   <data name="TabSummary" xml:space="preserve"><value>Summary</value></data>
   <data name="SummaryDiscussionTitle" xml:space="preserve"><value>Discussion</value></data>
@@ -388,7 +388,7 @@
   <data name="MoveToTopic" xml:space="preserve"><value>To topic…</value></data>
   <data name="SelectAllSessions" xml:space="preserve"><value>Select all</value></data>
   <data name="SelectDone" xml:space="preserve"><value>Done</value></data>
-  <data name="SelectSessions" xml:space="preserve"><value>Select</value></data>
+  <data name="SelectSessions" xml:space="preserve"><value>Select several</value></data>
   <data name="SessionsDeletedFeedback" xml:space="preserve"><value>Sessions deleted: {0}</value></data>
   <data name="SessionsMovedFeedback" xml:space="preserve"><value>Moved: {0} → "{1}"</value></data>
   <data name="SettingsLanguageHint" xml:space="preserve"><value>English: interface and AI answers in English; a speech language chosen by hand also becomes English. Applies from the next recording.</value></data>
@@ -585,8 +585,8 @@
   <data name="NoteDialogAddTitle" xml:space="preserve"><value>Add text to the knowledge base</value></data>
   <data name="NoteDialogEditTitle" xml:space="preserve"><value>Edit note</value></data>
   <data name="NoteDialogHint" xml:space="preserve"><value>Agreements, context, requirements: anything Replio should take into account in the summary, answers and graph.</value></data>
-  <data name="NoteDialogTitlePlaceholder" xml:space="preserve"><value>Note title</value></data>
-  <data name="NoteDialogTextPlaceholder" xml:space="preserve"><value>Note text</value></data>
+  <data name="NoteDialogTitlePlaceholder" xml:space="preserve"><value>Title (optional)</value></data>
+  <data name="NoteDialogTextPlaceholder" xml:space="preserve"><value>Text</value></data>
   <data name="NoteDialogAdd" xml:space="preserve"><value>Add</value></data>
   <data name="NoteDialogSave" xml:space="preserve"><value>Save</value></data>
   <data name="QuestionsEmptyTitle" xml:space="preserve"><value>Ask about the topic</value></data>
@@ -637,7 +637,7 @@
   <data name="TopicAnswerCost" xml:space="preserve"><value>Answer cost: {0}</value></data>
   <data name="KnowledgeRemovedUpdatingFeedback" xml:space="preserve"><value>Removed sources: {0}. The topic summary is updating</value></data>
   <data name="SmartModeHint" xml:space="preserve"><value>More accurate in difficult conversations, but answers come a few seconds later and use more of the limit. Not needed for ordinary calls.</value></data>
-  <data name="SettingsSttGlossaryExample" xml:space="preserve"><value>For example: Artem, Polza.ai, Replio, KPI, Sberbank</value></data>
+  <data name="SettingsSttGlossaryExample" xml:space="preserve"><value>For example: Anna, Replio, CRM, KPI, Vector Ltd</value></data>
   <data name="HotkeysRegisterFailedMessage" xml:space="preserve"><value>These hotkeys are already taken by another program, so Replio cannot use them:&#x0a;{0}&#x0a;&#x0a;Change them in «Settings → Hotkeys» or close the program that took them.</value></data>
   <data name="TopicTabSummary" xml:space="preserve"><value>Summary</value></data>
   <data name="TipTopicTabSummary" xml:space="preserve"><value>The topic summary over all its sessions and sources. A dot means it should be updated</value></data>
@@ -689,7 +689,7 @@
   <data name="TopicActualizeSummary" xml:space="preserve"><value>Updating the summary…</value></data>
   <data name="TopicActualizeGraph" xml:space="preserve"><value>Building the graph…</value></data>
   <data name="TopicActualizeDone" xml:space="preserve"><value>The topic is up to date: summary and graph rebuilt</value></data>
-  <data name="TipTopicActualize" xml:space="preserve"><value>Reads new and changed materials, redoes meeting summaries that are out of date (never made, or made before the topic's summary format changed), rebuilds the «Summary» from all sessions and materials of the topic, then the graph. The dot means something changed since the last update</value></data>
+  <data name="TipTopicActualize" xml:space="preserve"><value>Updates the topic's summary and graph from all its meetings and materials. After each meeting the topic updates by itself.</value></data>
   <data name="SpeechLanguageAuto" xml:space="preserve"><value>Auto-detect</value></data>
   <data name="SettingsSpeechLanguage" xml:space="preserve"><value>Speech language</value></data>
   <data name="TipSpeechLanguage" xml:space="preserve"><value>Auto-detect: Replio recognises the language of each side (you and the other party) during the first phrases and keeps it until the end of the recording. Pick a language if the call is always in it</value></data>
@@ -759,7 +759,7 @@
   <data name="DataFolderTitle" xml:space="preserve"><value>Data folder</value></data>
   <data name="DataFolderHint" xml:space="preserve"><value>Meetings, topics, the knowledge base and screenshots. To have them on all your computers, pick a folder in Yandex Disk, OneDrive or iCloud Drive: the cloud syncs it. The data never reaches Replio servers. Settings and the key stay separate on each computer.</value></data>
   <data name="DataFolderChoose" xml:space="preserve"><value>Choose folder…</value></data>
-  <data name="DataFolderReset" xml:space="preserve"><value>Back to default</value></data>
+  <data name="DataFolderReset" xml:space="preserve"><value>Move to the default folder</value></data>
   <data name="DataFolderOpen" xml:space="preserve"><value>Open folder</value></data>
   <data name="DataFolderRestart" xml:space="preserve"><value>Restart Replio</value></data>
   <data name="DataFolderPickTitle" xml:space="preserve"><value>Folder for Replio data (for example in your cloud drive)</value></data>
@@ -813,7 +813,7 @@
   <data name="SettingsSectionMeetings" xml:space="preserve"><value>Meetings (default)</value></data>
   <data name="SettingsMeetingsHint" xml:space="preserve"><value>This is how Replio helps in all meetings: without a topic and in topics that have no setup of their own. A topic can be set up separately on its «How to help» tab.</value></data>
   <data name="TopicActualizeSessions" xml:space="preserve"><value>Meeting summaries {0} of {1}…</value></data>
-  <data name="TipSessionTopicActualize" xml:space="preserve"><value>This meeting belongs to a topic: redoes its summary in the topic's format, together with the other out-of-date summaries, the topic's «Summary» and graph. The dot means something is out of date</value></data>
+  <data name="TipSessionTopicActualize" xml:space="preserve"><value>Updates this meeting's summary and its topic's summary and graph. After a meeting the topic updates by itself.</value></data>
   <data name="SearchGroupTopics" xml:space="preserve"><value>Topics</value></data>
   <data name="SearchGroupSessions" xml:space="preserve"><value>Meetings</value></data>
   <data name="SearchGroupTopicSummaries" xml:space="preserve"><value>Topic summaries</value></data>
@@ -934,10 +934,41 @@
   <data name="TipHotkeysReset" xml:space="preserve"><value>Restore the combinations a fresh install has</value></data>
   <data name="TopicGlossaryLabel" xml:space="preserve"><value>Topic names and terms</value></data>
   <data name="TopicGlossaryHint" xml:space="preserve"><value>Participants, companies, products and terms of this topic. In the topic's meetings they are added to the common list from «Settings → Meetings». Separate with commas or new lines.</value></data>
-  <data name="TopicGlossaryExample" xml:space="preserve"><value>For example: John Smith, KEGOC, feasibility study</value></data>
+  <data name="TopicGlossaryExample" xml:space="preserve"><value>For example: Anna Smith, Vector Ltd, roadmap, MVP</value></data>
   <data name="CompanyServiceTitle" xml:space="preserve"><value>AI and speech: your company's server</value></data>
   <data name="CompanyServiceText" xml:space="preserve"><value>Your company's administrator sets it up once in the account on replio.ru. No keys or addresses are needed here.</value></data>
   <data name="CompanyServiceNotReady" xml:space="preserve"><value>Your company's administrator has not connected the server in the account on replio.ru yet. Until then hints and summaries do not work.</value></data>
   <data name="CompanySpeechLocal" xml:space="preserve"><value>Speech is recognised on this computer: download a model below.</value></data>
   <data name="CompanySpeechService" xml:space="preserve"><value>Speech is recognised on your company's server.</value></data>
+  <data name="EmptySessionTitle" xml:space="preserve"><value>Empty recording</value></data>
+  <data name="EmptySessionSummary" xml:space="preserve"><value>No speech was recognised in this recording, so there is no summary. Check that Replio hears your microphone and the other participants.</value></data>
+  <data name="EmptySessionDeleteTitle" xml:space="preserve"><value>Empty recording</value></data>
+  <data name="EmptySessionDeleteMessage" xml:space="preserve"><value>No speech was recognised in this recording. Delete it?</value></data>
+  <data name="EmptySessionNoSummary" xml:space="preserve"><value>No speech was recognised in this recording: there is nothing to summarise.</value></data>
+  <data name="ShownInShareBadge" xml:space="preserve"><value>Visible in screen share</value></data>
+  <data name="ScreenShareHiddenFeedback" xml:space="preserve"><value>Replio is hidden from screen sharing</value></data>
+  <data name="ScreenShareShownFeedback" xml:space="preserve"><value>Replio is visible in screen sharing</value></data>
+  <data name="KnowledgeSelectHint" xml:space="preserve"><value>Pick a material on the left to see its text.</value></data>
+  <data name="KnowledgeNothingYet" xml:space="preserve"><value>Parsed materials will appear here</value></data>
+  <data name="TrayOpenTranscript" xml:space="preserve"><value>Open the live transcript</value></data>
+  <data name="TrayStartRecording" xml:space="preserve"><value>Start recording</value></data>
+  <data name="TrayStopRecording" xml:space="preserve"><value>Stop recording</value></data>
+  <data name="TraySnapshot" xml:space="preserve"><value>Take a screenshot</value></data>
+  <data name="TrayTooltipRecording" xml:space="preserve"><value>Replio is recording. Click to open the live transcript</value></data>
+  <data name="UpdateDownload" xml:space="preserve"><value>Download</value></data>
+  <data name="UpdateMacDownloadStarted" xml:space="preserve"><value>The new version is downloading in the browser. Open the .dmg and drag Replio to Applications, replacing the old one.</value></data>
+  <data name="WizardStep1Description_Mac" xml:space="preserve"><value>Allow microphone access for Replio and check that the right microphone is chosen in System Settings → Sound → Input.</value></data>
+  <data name="VisualStatusManualOnly_Mac" xml:space="preserve"><value>Manual snapshots only (📷 or ⌃⇧S).</value></data>
+  <data name="IndicatorSnapshotHint_Mac" xml:space="preserve"><value>Screenshot (⌃⇧S): kept with the meeting and used by the next AI question.</value></data>
+  <data name="TipAsk_Mac" xml:space="preserve"><value>Ask about the conversation. The question and answer also appear in the overlay (⌃↩)</value></data>
+  <data name="TipStartCapture_Mac" xml:space="preserve"><value>Start recording the conversation with live hints (⌃⇧/)</value></data>
+  <data name="TipHotkeyAsk_Mac" xml:space="preserve"><value>Ask the AI from any window. Format: Ctrl+Enter (Ctrl is the ⌃ Control key)</value></data>
+  <data name="TipKnowledgeAddFiles_Mac" xml:space="preserve"><value>Attach documents: PDF, Word (doc, docx), Excel (xls, xlsx), pictures (jpg, png), txt, md. You can also drag files here or paste them with ⌘V</value></data>
+  <data name="TipKnowledgeAddFolder_Mac" xml:space="preserve"><value>Attach a folder: every supported file in it and its subfolders is parsed. A folder can also be dragged here or pasted with ⌘V</value></data>
+  <data name="TipKnowledgeAddNote_Mac" xml:space="preserve"><value>Add your own text: agreements, context, requirements. It goes into the knowledge base at once. Copied text can also be dragged here or pasted with ⌘V</value></data>
+  <data name="KnowledgeListHint_Mac" xml:space="preserve"><value>Drag documents, audio, video, folders or text here, paste them with ⌘V or use the buttons above. Replio parses them to Markdown (speech in audio and video becomes text) and uses them in the summary, answers and graph.</value></data>
+  <data name="HotkeysHint_Mac" xml:space="preserve"><value>Click a field and type a combination, for example Ctrl+Shift+O. On a Mac: Ctrl is ⌃ Control, Alt is ⌥ Option, Win is ⌘ Command, Shift is ⇧. A combination with a mistake is not applied until it is fixed.</value></data>
+  <data name="OpenAiKeyMissing_Mac" xml:space="preserve"><value>API key is missing. Add it in Settings → API key, or put a line ApiKey=... into ~/Library/Application Support/Replio/secrets.txt (or set POLZA_API_KEY).</value></data>
+  <data name="ShowInTaskbar_Mac" xml:space="preserve"><value>Show in the Dock</value></data>
+  <data name="WhatsNewBody_Mac" xml:space="preserve"><value>Replio 1.1.4:&#x0a;• Recordings with no recognised speech are no longer sent to the AI: they are named «Empty recording» and Replio offers to delete them.&#x0a;• A topic updates by itself after each meeting: its summary and graph are ready without pressing «Update topic». While it runs, the button shows the progress.&#x0a;• The «Hidden from screen share» badge shows the real state and switches with a click.&#x0a;• Graph: labels no longer overlap, the legend and the hint moved under the graph.&#x0a;• The Replio icon in the menu bar blinks during a recording; its menu has «Open the live transcript», «Stop recording» and «Take a screenshot».&#x0a;• The recording bar no longer covers the main window's input box, the «Statistics» tab is gone, «Select several» sits above the meeting list.&#x0a;• New meetings, topics and the knowledge base live in the .replio folder in your home folder, like .claude for Claude. Earlier data stays where it was; move it in Settings → Data and updates.&#x0a;• Hotkeys are shown with ⌃ ⌥ ⇧ ⌘, the second Replio icon no longer bounces in the Dock, and «Data and updates» checks for a new version.&#x0a;&#x0a;Replio 1.1.3:&#x0a;• Settings are split into sections: «Account», «Meetings», «Speech», «AI assistant», «Windows and look», «Hotkeys», «Data and updates». Changes are saved by themselves, there is no «Save» button any more.&#x0a;• Each plan sees only what it can use: on «Local» speech is recognised on the computer, on «Pro» and «Team» you can choose the recognition quality.&#x0a;• «Meetings (default)» in Settings apply to every topic that has no setup of its own.&#x0a;• Names and terms can now also be set per topic on the «How to help» tab: they are added to the common list and recognised better.&#x0a;• «Private» plan: AI and speech recognition run through the company's server, which the administrator connects once in the account on replio.ru.&#x0a;• The «Deep mode» switch is gone: it changed nothing.&#x0a;&#x0a;Replio 1.1.2:&#x0a;• «Modes» are replaced by the topic tab «How to help»: meeting type (sales, interview, negotiation, stand-up, consultation or your own), how to hint and which sections to add to the summary. Meetings without a topic are set up in Settings.&#x0a;• The search in the header looks everywhere: topics, topic summaries, meeting summaries, transcripts, emails, the knowledge base and questions. A click opens the right place.&#x0a;• «Update topic» also redoes out-of-date meeting summaries of the topic and replaces «Rewrite summary» in a topic's meeting.&#x0a;• A limit bar in the header shows what is left today and this month: yellow when little is left, red at the very end.&#x0a;• «Help» opens as a small window with short cards and pictures.&#x0a;• Settings now have «Open account page» and «Data folder»: keep meetings, topics and the knowledge base in Yandex Disk, OneDrive or iCloud Drive to have them on all your computers.&#x0a;• New logo, as on the site. The plan from your account is picked up by itself.&#x0a;&#x0a;Replio 1.1.0 — the first version.&#x0a;• Live hints during a call: «What to say», «What to answer», «What to ask» and follow-up questions in a separate window that is hidden from screen share.&#x0a;• Meeting summary, follow-up email and transcript with «Copy» buttons; screenshots are kept with the meeting.&#x0a;• Topics: sessions, a knowledge base (documents, folders, audio and video, your own text), «Summary», «Questions» with sources and a relation graph. One «Update topic» button parses new materials and refreshes the summary and graph.&#x0a;• The speech language is detected automatically for each side of the call; it can also be chosen in Settings.&#x0a;• Replio account: sign in on replio.ru; the key is stored encrypted on the computer. Hints, summaries and recognition run on your plan.&#x0a;• Updates arrive in the app: a new version shows an «Update» button. Settings and the key are kept on update.&#x0a;• The replio command and an MCP server for AI agents (Claude Code, Codex, Cursor): details in ~/Library/Application Support/Replio/AGENTS.md.</value></data>
 </root>
