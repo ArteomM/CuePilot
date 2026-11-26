@@ -1,0 +1,48 @@
+#!/usr/bin/env bash
+# Smoke test on the Android emulator in CI: installs the APK, starts Replio, waits and reports whether the app
+# is still alive, with its lines from logcat and a small screenshot (base64 JPEG between SCREENSHOT markers).
+set -u
+APK="$1"
+PACKAGE="ru.replio.app"
+
+adb install -r "$APK" || { echo "::error::The APK did not install"; exit 1; }
+adb logcat -c
+# The extra makes the app send one speech API request with a made-up key (Platform/SelfTest.cs).
+ACTIVITY="$(adb shell cmd package resolve-activity --brief -c android.intent.category.LAUNCHER "$PACKAGE" | tr -d '\r' | tail -1)"
+echo "Launcher activity: $ACTIVITY"
+adb shell am start -n "$ACTIVITY" --es replio_selftest_stt "https://polza.ai/api/v1" \
+  || adb shell monkey -p "$PACKAGE" -c android.intent.category.LAUNCHER 1 > /dev/null
+sleep 50
+
+PID="$(adb shell pidof "$PACKAGE" | tr -d '\r')"
+adb logcat -d > logcat.txt
+echo "----- logcat (app, runtime, crashes) -----"
+grep -E "FATAL EXCEPTION|AndroidRuntime|monodroid|mono-rt|DOTNET|Avalonia|Replio|$PACKAGE" logcat.txt | tail -200
+echo "----- self-test -----"
+grep -F "[selftest]" logcat.txt || echo "(no self-test lines)"
+
+adb exec-out screencap -p > screen.png
+if command -v convert > /dev/null && [ -s screen.png ]; then
+  convert screen.png -resize '360x>' -quality 55 screen.jpg
+  echo "SCREENSHOT-BEGIN"
+  base64 -w 0 screen.jpg
+  echo
+  echo "SCREENSHOT-END"
+else
+  echo "No screenshot (ImageMagick missing or screencap failed)"
+fi
+
+if grep -q "\[selftest\] STT API FAILED" logcat.txt; then
+  echo "::error::The speech API request failed on the phone (see [selftest] in the log)"
+  exit 1
+elif grep -q "\[selftest\] STT API request OK" logcat.txt; then
+  echo "Speech API request works on the phone"
+else
+  echo "::warning::The speech API self-test gave no answer (network on the emulator?)"
+fi
+
+if [ -z "$PID" ]; then
+  echo "::error::Replio is not running 50 s after start"
+  exit 1
+fi
+echo "Replio is running (pid $PID)"

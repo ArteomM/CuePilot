@@ -1,0 +1,178 @@
+name: Replio for Android
+
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - "apps/Replio.Android/**"
+      - "apps/ReplioDesktop/Models/**"
+      - "apps/ReplioDesktop/Services/**"
+      - "apps/ReplioDesktop/ViewModels/**"
+      - "apps/ReplioDesktop/Resources/**"
+      - "apps/ReplioDesktop/Views/Controls/MarkdownBlocks.cs"
+      - "apps/Replio.Avalonia/Themes/**"
+      - "apps/Replio.Avalonia/Views/Controls/**"
+      - ".github/workflows/android.yml"
+
+permissions:
+  contents: write
+
+# A newer push replaces a build still running, so «android-latest» always gets the newest APK.
+concurrency:
+  group: android-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: "8.0.x"
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: "17"
+      # The runner's default SDK is newer and refuses net8.0-android; global.json next to the project keeps the
+      # .NET 8 SDK for every dotnet command run from that folder.
+      - name: Install the .NET Android workload
+        working-directory: apps/Replio.Android
+        run: |
+          dotnet --version
+          dotnet workload install android
+      - name: Android platform 34 and build tools
+        run: |
+          SDKMANAGER="$(ls "$ANDROID_SDK_ROOT"/cmdline-tools/*/bin/sdkmanager | sort -V | tail -1)"
+          yes | "$SDKMANAGER" --sdk_root="$ANDROID_SDK_ROOT" "platforms;android-34" "build-tools;34.0.0" "platform-tools" > /dev/null
+          ls "$ANDROID_SDK_ROOT/platforms" "$ANDROID_SDK_ROOT/build-tools"
+      # whisper.cpp for local speech recognition; rebuilt only when native/ changes.
+      - name: Keep the whisper.cpp libraries between builds
+        id: whisper-cache
+        uses: actions/cache@v4
+        with:
+          path: apps/Replio.Android/native/out
+          key: replio-android-whisper-${{ hashFiles('apps/Replio.Android/native/*') }}
+      - name: Build whisper.cpp for the phone
+        if: steps.whisper-cache.outputs.cache-hit != 'true'
+        run: bash apps/Replio.Android/native/build-android.sh
+      # Without a signing key in the secrets the APK is signed with the .NET debug key; it is cached so that
+      # every build has the same key and installs over the previous one (the phone keeps its data).
+      - name: Keep the debug signing key between builds
+        uses: actions/cache@v4
+        with:
+          path: ~/.local/share/Xamarin/Mono for Android/debug.keystore
+          key: replio-android-debug-keystore
+      - name: Signing key from the secrets
+        env:
+          KEYSTORE_BASE64: ${{ secrets.ANDROID_KEYSTORE_BASE64 }}
+        run: |
+          if [ -n "$KEYSTORE_BASE64" ]; then
+            echo "$KEYSTORE_BASE64" | base64 -d > "$RUNNER_TEMP/replio.keystore"
+            echo "SIGNING_ARGS=-p:AndroidKeyStore=true -p:AndroidSigningKeyStore=$RUNNER_TEMP/replio.keystore -p:AndroidSigningKeyAlias=replio -p:AndroidSigningStorePass=env:ANDROID_KEYSTORE_PASSWORD -p:AndroidSigningKeyPass=env:ANDROID_KEYSTORE_PASSWORD" >> "$GITHUB_ENV"
+          fi
+      - name: Build the APK
+        shell: bash -e -o pipefail {0}
+        working-directory: apps/Replio.Android
+        env:
+          AVALONIA_TELEMETRY_OPTOUT: "1"
+          DOTNET_CLI_TELEMETRY_OPTOUT: "1"
+          ANDROID_KEYSTORE_PASSWORD: ${{ secrets.ANDROID_KEYSTORE_PASSWORD }}
+        run: |
+          VERSION="$(sed -n 's:.*<ApplicationDisplayVersion>\(.*\)</ApplicationDisplayVersion>.*:\1:p' Replio.Android.csproj)"
+          OUT="$GITHUB_WORKSPACE/dist"
+          # Missing Android platform or build tools are installed by the SDK itself.
+          dotnet build Replio.Android.csproj -t:InstallAndroidDependencies -f net8.0-android \
+            -p:AndroidSdkDirectory="$ANDROID_SDK_ROOT" -p:AcceptAndroidSDKLicenses=True --nologo 2>&1 | tee "$OUT-deps.log"
+          dotnet publish Replio.Android.csproj -c Release -f net8.0-android \
+            -p:AndroidSdkDirectory="$ANDROID_SDK_ROOT" $SIGNING_ARGS -o "$OUT/android-build" --nologo 2>&1 | tee "$GITHUB_WORKSPACE/build.log"
+          mkdir -p "$OUT/android"
+          cp "$OUT"/android-build/*-Signed.apk "$OUT/android/Replio-$VERSION-android.apk"
+          ls -la "$OUT/android"
+      - name: Show build errors
+        if: failure()
+        run: grep -hE "error|fatal" build.log dist-deps.log 2>/dev/null | sort -u | tail -40 | sed 's/^/::error::/' || tail -40 build.log
+      - uses: actions/upload-artifact@v4
+        with:
+          name: Replio-android
+          path: dist/android/*.apk
+
+  smoke:
+    # Starts the APK on an Android emulator (ARM code runs through the emulator's translation) and fails when
+    # Replio does not survive the start; the log holds its logcat lines and a small screenshot.
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/download-artifact@v4
+        with:
+          name: Replio-android
+          path: dist
+      - name: ImageMagick for the screenshot
+        run: sudo apt-get install -y --no-install-recommends imagemagick > /dev/null
+      - name: Enable KVM
+        run: |
+          echo 'KERNEL=="kvm", GROUP="kvm", MODE="0666", OPTIONS+="static_node=kvm"' | sudo tee /etc/udev/rules.d/99-kvm4all.rules
+          sudo udevadm control --reload-rules
+          sudo udevadm trigger --name-match=kvm
+      - uses: reactivecircus/android-emulator-runner@v2
+        with:
+          api-level: 34
+          target: google_apis
+          arch: x86_64
+          disable-animations: true
+          emulator-options: -no-window -gpu swiftshader_indirect -noaudio -no-boot-anim -camera-back none
+          script: bash apps/Replio.Android/ci/smoke-test.sh dist/Replio-*.apk
+
+  speech:
+    # The phone's whisper.cpp layer on the computer with real models: Russian speech (espeak-ng) recognized with the
+    # full and the short encoder window of live recording, so the log shows text and time of both.
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: espeak-ng and ffmpeg
+        run: sudo apt-get install -y --no-install-recommends espeak-ng ffmpeg > /dev/null
+      - name: Keep the speech models between builds
+        uses: actions/cache@v4
+        with:
+          path: ~/whisper-models
+          key: replio-whisper-models-base-small-q8
+      - name: Speech models
+        run: |
+          mkdir -p ~/whisper-models
+          for m in base-q8_0 small-q8_0; do
+            [ -s ~/whisper-models/ggml-$m.bin ] || curl -sSfL -o ~/whisper-models/ggml-$m.bin "https://huggingface.co/ggerganov/whisper.cpp/resolve/main/ggml-$m.bin"
+          done
+      - name: Build the test program
+        run: |
+          git clone -q --depth 1 --branch v1.7.4 https://github.com/ggml-org/whisper.cpp.git "$RUNNER_TEMP/whisper"
+          cmake -S apps/Replio.Android/native -B "$RUNNER_TEMP/host" -DWHISPER_DIR="$RUNNER_TEMP/whisper" -DCPW_BUILD_TEST=ON -DCMAKE_BUILD_TYPE=Release > /dev/null
+          cmake --build "$RUNNER_TEMP/host" -j "$(nproc)" --target cpw_test > /dev/null
+      - name: Recognize Russian speech
+        run: |
+          espeak-ng -v ru -s 140 -w speech.wav "Добрый день. Давайте обсудим сроки поставки оборудования и стоимость проекта на следующий квартал."
+          ffmpeg -loglevel error -y -i speech.wav -ar 16000 -ac 1 -c:a pcm_s16le speech16.wav
+          for m in base-q8_0 small-q8_0; do
+            for window in 0 auto; do
+              echo "== $m, window $window"
+              "$RUNNER_TEMP/host/cpw_test" ~/whisper-models/ggml-$m.bin speech16.wav ru $window
+            done
+          done
+
+  release:
+    # The latest APK on the «android-latest» release page.
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          name: Replio-android
+          path: dist
+      - name: Publish android-latest release
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh release delete android-latest --repo "$GITHUB_REPOSITORY" --yes --cleanup-tag || true
+          gh release create android-latest dist/*.apk --repo "$GITHUB_REPOSITORY" --target "$GITHUB_SHA" \
+            --title "Replio для Android (последняя сборка)" --prerelease \
+            --notes "APK для телефонов на Android 8 и новее. Скачайте файл на телефон и откройте его; Android попросит разрешить установку из этого источника."

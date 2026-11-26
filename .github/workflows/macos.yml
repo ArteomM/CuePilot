@@ -5,6 +5,7 @@ on:
   push:
     paths:
       - "apps/**"
+      - "!apps/Replio.Android/**"
       - ".github/workflows/macos.yml"
 
 permissions:

@@ -555,6 +555,9 @@ public partial class MainViewModel
             string.Empty);
     }
 
+    /// <summary>Opens a link where Process.Start cannot (the Android app sets it); true when it did.</summary>
+    public static Func<string, bool>? ExternalUrlOpener { get; set; }
+
     private void OpenUrl(string url)
     {
         if (string.IsNullOrWhiteSpace(url))
@@ -564,6 +567,11 @@ public partial class MainViewModel
 
         try
         {
+            if (ExternalUrlOpener?.Invoke(url) == true)
+            {
+                return;
+            }
+
             Process.Start(new ProcessStartInfo(url) { UseShellExecute = true })?.Dispose();
         }
         catch (Exception ex)
