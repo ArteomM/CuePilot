@@ -52,7 +52,10 @@ public sealed class CallAssistant
         set => Preferences.Edit()?.PutBoolean("auto_hints", value)?.Apply();
     }
 
-    /// <summary>Off when the user chose «Пауза»: no button on calls (the service keeps running for the app).</summary>
+    /// <summary>
+    /// «Replio на звонках» in the calls setup: off, there is no button on calls, no background service and no
+    /// «Ждёт звонка» notification (a recording started in the app still runs as usual).
+    /// </summary>
     public bool WatchCalls
     {
         get => Preferences.GetBoolean("watch_calls", true);
@@ -62,10 +65,15 @@ public sealed class CallAssistant
             if (!value && !IsRecording)
             {
                 _overlay.HideAll();
+                ReplioService.StopIfIdle();
             }
-            else if (value && InCall)
+            else if (value)
             {
-                _overlay.ShowBubble(withTip: false);
+                ReplioService.Start(global::Android.App.Application.Context);
+                if (InCall)
+                {
+                    _overlay.ShowBubble(withTip: false);
+                }
             }
 
             StateChanged?.Invoke();
@@ -310,17 +318,39 @@ public sealed class CallAssistant
 
     // ---------------------------------------------------------------- hints
 
-    public void WhatToSay() => RunHint(null, vm => vm.WhatShouldISayCommand);
+    public void WhatToSay() => RunHint(null, vm => vm.WhatShouldISayCommand, "HintTitle");
 
-    public void Ask(string question) => RunHint(question, vm => vm.WhatShouldISayCommand);
+    public void Ask(string question) => RunHint(question, vm => vm.WhatShouldISayCommand, "HintTitle");
 
-    public void Another() => RunHint(null, vm => vm.SuggestReplyCommand);
+    public void Another() => RunHint(null, vm => vm.SuggestReplyCommand, null);
 
-    public void Shorter() => RunHint(CallText.Get("HintShorterPrompt"), vm => vm.WhatShouldISayCommand);
+    public void Shorter() => RunHint(CallText.Get("HintShorterPrompt"), vm => vm.WhatShouldISayCommand, null);
 
-    public void Recap() => RunHint(null, vm => vm.RecapCommand);
+    public void Recap() => RunHint(null, vm => vm.RecapCommand, "HintTitleRecap");
 
-    private void RunHint(string? prompt, Func<MainViewModel, RelayCommand> command)
+#if REPLIO_DEMO
+    /// <summary>CI emulator only: the menu or the hint card over the screen for a screenshot (overlay permission).</summary>
+    public void DemoOverlay(string page)
+    {
+        _overlay.HideAll();
+        if (page == "callmenu")
+        {
+            _overlay.ShowBubble(withTip: false);
+            _overlay.ShowMenu();
+        }
+        else if (page == "callhint")
+        {
+            _overlay.ShowBubble(withTip: false);
+            _overlay.ShowHint("Предложите зафиксировать срок 15 декабря и попросите прислать договор до пятницы.", title: CallText.Get("HintTitleAuto"));
+        }
+    }
+#endif
+
+    /// <summary>
+    /// Asks the view model for a hint and shows the card at the top of the screen with «Думаю…» until it comes.
+    /// <paramref name="titleKey"/> names the card («ЧТО СКАЗАТЬ», «О ЧЁМ РЕЧЬ»); null keeps the card's title.
+    /// </summary>
+    private void RunHint(string? prompt, Func<MainViewModel, RelayCommand> command, string? titleKey)
     {
         if (_viewModel == null)
         {
@@ -341,7 +371,7 @@ public sealed class CallAssistant
 
         _viewModel.OverlayPrompt = prompt ?? string.Empty;
         _hintRequested = true;
-        _overlay.ShowHint(CallText.Get("HintThinking"), thinking: true);
+        _overlay.ShowHint(CallText.Get("HintThinking"), thinking: true, title: titleKey == null ? null : CallText.Get(titleKey));
         Execute(command(_viewModel));
     }
 
@@ -374,7 +404,7 @@ public sealed class CallAssistant
         }
 
         _lastAutoHint = DateTime.Now;
-        WhatToSay();
+        RunHint(null, vm => vm.WhatShouldISayCommand, "HintTitleAuto");
     }
 
     // ---------------------------------------------------------------- topic, snapshot, app
@@ -409,19 +439,21 @@ public sealed class CallAssistant
             return;
         }
 
-        // Let the menu disappear before the screen is taken.
+        // Let the menu slide away before the screen is taken.
         _main.PostDelayed(() =>
         {
             _viewModel.SnapshotStageChanged -= OnSnapshotStage;
             _viewModel.SnapshotStageChanged += OnSnapshotStage;
             Execute(_viewModel.CaptureSnapshotCommand);
-        }, 350);
+        }, 450);
     }
 
     private void OnSnapshotStage(SnapshotStage stage, int number) => OnMain(() =>
     {
         if (stage == SnapshotStage.Saved)
         {
+            // A camera-like flash over the screen, then the note.
+            _overlay.Flash();
             Toast(CallText.Get("SnapshotDone"));
         }
         else if (stage == SnapshotStage.Failed)

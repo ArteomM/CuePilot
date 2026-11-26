@@ -14,7 +14,11 @@
     <!-- The Replio button over a call when the «Слушать звонок» accessibility service is off. -->
     <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW" />
     <uses-permission android:name="android.permission.REQUEST_IGNORE_BATTERY_OPTIMIZATIONS" />
-    <application android:label="Replio" android:icon="@mipmap/icon" android:allowBackup="false" android:usesCleartextTraffic="false">
+    <!-- «Папка данных»: meetings and groups in a folder of the phone's storage that a sync app keeps equal to the
+         computer's cloud folder (asked only when the user picks such a folder in Settings). -->
+    <uses-permission android:name="android.permission.MANAGE_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" android:maxSdkVersion="29" />
+    <application android:label="Replio" android:icon="@mipmap/icon" android:allowBackup="false" android:usesCleartextTraffic="false" android:requestLegacyExternalStorage="true">
         <!-- Attached documents and recordings are opened in other apps through content links (MainActivity.OpenFile). -->
         <provider android:name="androidx.core.content.FileProvider"
                   android:authorities="ru.replio.app.files"

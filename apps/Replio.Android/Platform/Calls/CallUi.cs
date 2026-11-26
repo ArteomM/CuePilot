@@ -1,9 +1,11 @@
 using Android.Content;
+using Android.Content.Res;
 using Android.Graphics;
 using Android.Graphics.Drawables;
 using Android.Text;
 using Android.Util;
 using Android.Views;
+using Android.Views.Animations;
 using Android.Widget;
 
 namespace Replio.Android.Platform.Calls;
@@ -84,6 +86,43 @@ internal static class CallUi
         button.SetMaxLines(1);
         return button;
     }
+
+    /// <summary>
+    /// Touch feedback like Material buttons: a soft ripple from the finger and a small press-in that springs back.
+    /// The tap itself still reaches the view's Click.
+    /// </summary>
+    public static void Pressable(View view, float radiusDp = 20, bool light = true)
+    {
+        try
+        {
+            Color wave = light ? Color.Argb(46, 255, 255, 255) : Color.Argb(40, 14, 17, 22);
+            view.Foreground = new RippleDrawable(ColorStateList.ValueOf(wave), null, Round(view.Context!, Color.White, radiusDp));
+        }
+        catch (Exception)
+        {
+            // An old system without foreground drawables: the press-in is enough.
+        }
+
+        view.Touch += (_, e) =>
+        {
+            switch (e.Event?.ActionMasked)
+            {
+                case MotionEventActions.Down:
+                    view.Animate()?.ScaleX(0.95f).ScaleY(0.95f).SetDuration(90).SetInterpolator(new DecelerateInterpolator()).Start();
+                    break;
+                case MotionEventActions.Up:
+                case MotionEventActions.Cancel:
+                    view.Animate()?.ScaleX(1f).ScaleY(1f).SetDuration(240).SetInterpolator(new OvershootInterpolator(2.2f)).Start();
+                    break;
+            }
+
+            e.Handled = false;
+        };
+    }
+
+    /// <summary>Colours of a switch: mint when on, grey when off.</summary>
+    public static ColorStateList Checked(Color on, Color off) =>
+        new(new[] { new[] { global::Android.Resource.Attribute.StateChecked }, Array.Empty<int>() }, new[] { on.ToArgb(), off.ToArgb() });
 
     public static LinearLayout.LayoutParams Weighted(float weight, int height = ViewGroup.LayoutParams.WrapContent) =>
         new(0, height, weight);

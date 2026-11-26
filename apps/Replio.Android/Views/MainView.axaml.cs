@@ -156,6 +156,7 @@ public partial class MainView : UserControl
         };
 
         SetUpReadyLog();
+        SetUpDataFolder();
         UpdatePage();
         UpdateEmptyText();
     }
@@ -226,7 +227,7 @@ public partial class MainView : UserControl
 
         if (CallSetupSheet.IsVisible)
         {
-            CallSetupSheet.IsVisible = false;
+            CloseCallSetup();
             return true;
         }
 
@@ -259,9 +260,25 @@ public partial class MainView : UserControl
         }
     }
 
+    private string? _shownPage;
+
     private void UpdatePage()
     {
         string page = _viewModel.SelectedMainPage;
+        if (_shownPage != null && _shownPage != page)
+        {
+            // A session comes in from the right and Home back from the left; the bottom bar places just fade.
+            Control? entering = page switch
+            {
+                "Session" => SessionPage,
+                "Settings" => SettingsPage,
+                _ => HomePage
+            };
+            double fromX = page == "Session" ? 36 : _shownPage == "Session" ? -36 : 0;
+            Motion.Enter(entering, fromX);
+        }
+
+        _shownPage = page;
         // A session is a page inside Home: back arrow, no bottom bar (its own hint buttons are at the bottom).
         BackButton.IsVisible = page == "Session";
         HomeLogo.IsVisible = page == "Home";

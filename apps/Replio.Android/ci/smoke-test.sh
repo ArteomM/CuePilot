@@ -16,6 +16,8 @@ adb shell wm dismiss-keyguard || true
 # The emulator's own launcher sometimes stops answering and its «isn't responding» box covers the screenshots.
 adb shell settings put secure anr_show_background 0 || true
 adb shell settings put global hide_error_dialogs 1 || true
+# The Replio button and its menu over other apps, for the «callmenu» and «callhint» screenshots.
+adb shell appops set "$PACKAGE" SYSTEM_ALERT_WINDOW allow || true
 # The extra makes the app send one speech API request with a made-up key (Platform/SelfTest.cs).
 ACTIVITY="$(adb shell cmd package resolve-activity --brief -c android.intent.category.LAUNCHER "$PACKAGE" | tr -d '\r' | tail -1)"
 echo "Launcher activity: $ACTIVITY"
@@ -41,7 +43,7 @@ shot() {
 }
 
 shot home
-for page in group actions session live livetext setup settings; do
+for page in group actions session live livetext setup settings about callmenu callhint; do
   adb shell am start -n "$ACTIVITY" --es replio_demo "$page" > /dev/null
   sleep 5
   shot "$page"

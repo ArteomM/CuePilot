@@ -68,7 +68,34 @@ public partial class MainView
 
     private IBrush CardBrush(string key, string fallback) => Brush(key) ?? new SolidColorBrush(Color.Parse(fallback));
 
+    private bool _fillingCallCard;
+
+    /// <summary>The «Replio на звонках» switch at the top of the sheet.</summary>
+    private void CallWatch_OnChanged(object? sender, global::Avalonia.Interactivity.RoutedEventArgs e)
+    {
+        if (_fillingCallCard)
+        {
+            return;
+        }
+
+        CallAssistant.Instance.WatchCalls = CallWatchSwitch.IsChecked == true;
+        UpdateCallCard();
+    }
+
     private void FillCallCard()
+    {
+        _fillingCallCard = true;
+        try
+        {
+            FillCallCardCore();
+        }
+        finally
+        {
+            _fillingCallCard = false;
+        }
+    }
+
+    private void FillCallCardCore()
     {
         Context context = global::Android.App.Application.Context;
         bool mic = PhonePlatform.HasMicrophonePermission();
@@ -76,20 +103,27 @@ public partial class MainView
         bool battery = IsIgnoringBatteryOptimizations(context);
         CallAssistant assistant = CallAssistant.Instance;
 
+        CallWatchSwitch.IsChecked = assistant.WatchCalls;
+        CallWatchTitle.Text = CallText.Get("SetupWatch");
+        CallWatchText.Text = CallText.Get(assistant.WatchCalls ? "SetupWatchOn" : "SetupWatchOff");
+        CallSetupList.Opacity = assistant.WatchCalls ? 1 : 0.5;
+
         CallSetupList.Children.Clear();
         AddSetupRow(CallText.Get("SetupMic"), null, mic, async () =>
         {
             await PhonePlatform.RequestMicrophonePermissionAsync();
             UpdateCallCard();
-        });
+        }, change: () => OpenAppInfo(MainActivity.Current ?? context));
         AddSetupRow(CallText.Get("SetupListen"), listen ? null : CallText.Get("SetupListenHint"), listen,
-            () => ReplioAccessibilityService.OpenSettings(MainActivity.Current ?? context));
+            () => ReplioAccessibilityService.OpenSettings(MainActivity.Current ?? context),
+            change: () => ReplioAccessibilityService.OpenSettings(MainActivity.Current ?? context));
         if (!listen)
         {
             AddSetupRow(CallText.Get("SetupRestricted"), CallText.Get("SetupRestrictedHint"), false, () => OpenAppInfo(MainActivity.Current ?? context), CallText.Get("SetupAppInfo"));
         }
 
-        AddSetupRow(CallText.Get("SetupBattery"), null, battery, () => RequestIgnoreBatteryOptimizations(MainActivity.Current ?? context));
+        AddSetupRow(CallText.Get("SetupBattery"), null, battery, () => RequestIgnoreBatteryOptimizations(MainActivity.Current ?? context),
+            change: () => OpenBatterySettings(MainActivity.Current ?? context));
         bool recordings = CallRecordingImporter.HasPermission(context);
         AddSetupRow(CallText.Get("SetupRecordings"), recordings ? null : CallText.Get("SetupRecordingsHint"), recordings, async () =>
         {
@@ -101,11 +135,11 @@ public partial class MainView
             }
 
             UpdateCallCard();
-        });
+        }, change: () => OpenAppInfo(MainActivity.Current ?? context));
 
         int left = (mic ? 0 : 1) + (listen ? 0 : 1) + (battery ? 0 : 1);
         CallSetupTitle.Text = CallText.Get("SetupTitle");
-        CallSetupBanner.IsVisible = left > 0 && !assistant.IsRecording;
+        CallSetupBanner.IsVisible = left > 0 && !assistant.IsRecording && assistant.WatchCalls;
         CallSetupBannerTitle.Text = MobileText.Get("BannerTitle");
         CallSetupBannerText.Text = string.Format(MobileText.Get("BannerText"), left);
         UpdateCallPillVisibility();
@@ -113,21 +147,21 @@ public partial class MainView
         // The status in the app bar.
         bool recording = assistant.IsRecording || _viewModel.IsCapturing;
         CallPill.Classes.Set("live", recording);
-        CallPill.Classes.Set("todo", !recording && left > 0);
-        CallPillDot.IsVisible = recording || left == 0;
+        CallPill.Classes.Set("todo", !recording && left > 0 && assistant.WatchCalls);
+        CallPillDot.IsVisible = recording || left == 0 || !assistant.WatchCalls;
         if (recording)
         {
             CallPillText.Text = assistant.IsRecording ? assistant.ElapsedText : MobileText.Get("Recording");
             CallPillDot.Fill = new SolidColorBrush(Color.Parse("#E5484D"));
         }
-        else if (left > 0)
-        {
-            CallPillText.Text = MobileText.Get("CallsSetup");
-        }
         else if (!assistant.WatchCalls)
         {
             CallPillText.Text = MobileText.Get("CallsPaused");
             CallPillDot.Fill = CardBrush("EchoMutedBrush", "#9AA5B5");
+        }
+        else if (left > 0)
+        {
+            CallPillText.Text = MobileText.Get("CallsSetup");
         }
         else
         {
@@ -137,10 +171,10 @@ public partial class MainView
 
         // The sheet starts with what Replio does now, then the steps.
         CallSetupStatus.Text = left == 0 ? CallText.Get("SetupReady") : CallText.Get("SetupNeeded");
+        CallSetupStatus.IsVisible = assistant.WatchCalls;
         CallSpeakerNote.Text = CallText.Get("SetupSpeaker");
     }
 
-    /// <summary>The app bar status: while recording it opens the recording, otherwise the call setup.</summary>
     /// <summary>
     /// The calls status in the app bar; not on a session page (it has its own timer) and not on Home while the
     /// setup card there already says the same.
@@ -151,6 +185,7 @@ public partial class MainView
         CallPill.IsVisible = page != "Session" && !(page == "Home" && CallSetupBanner.IsVisible);
     }
 
+    /// <summary>The app bar status: while recording it opens the recording, otherwise the call setup.</summary>
     private void CallPill_OnClick(object? sender, global::Avalonia.Interactivity.RoutedEventArgs e)
     {
         if (_viewModel.IsCapturing)
@@ -166,20 +201,26 @@ public partial class MainView
     {
         UpdateCallCard();
         CallSetupPanel.MaxHeight = Math.Max(320, Bounds.Height * 0.85);
-        CallSetupSheet.IsVisible = true;
+        Motion.Show(CallSetupSheet, CallSetupPanel, Motion.Kind.Sheet);
     }
 
-    private void CloseCallSetup_OnClick(object? sender, global::Avalonia.Interactivity.RoutedEventArgs e) => CallSetupSheet.IsVisible = false;
+    private void CloseCallSetup() => Motion.Hide(CallSetupSheet, CallSetupPanel, Motion.Kind.Sheet);
+
+    private void CloseCallSetup_OnClick(object? sender, global::Avalonia.Interactivity.RoutedEventArgs e) => CloseCallSetup();
 
     private void CallSetupSheetBackdrop_OnPointerPressed(object? sender, global::Avalonia.Input.PointerPressedEventArgs e)
     {
         if (ReferenceEquals(e.Source, CallSetupSheet))
         {
-            CallSetupSheet.IsVisible = false;
+            CloseCallSetup();
         }
     }
 
-    private void AddSetupRow(string title, string? hint, bool done, Action turnOn, string? buttonText = null)
+    /// <summary>
+    /// A step of the setup: off, a mint «Включить»; on, a tick and a quiet «Изменить» (<paramref name="change"/>)
+    /// that opens the Android page where it can be turned off again.
+    /// </summary>
+    private void AddSetupRow(string title, string? hint, bool done, Action turnOn, string? buttonText = null, Action? change = null)
     {
         var row = new Grid { ColumnDefinitions = new ColumnDefinitions("*,Auto") };
         var texts = new StackPanel { Spacing = 2, VerticalAlignment = VerticalAlignment.Center };
@@ -218,6 +259,21 @@ public partial class MainView
             Grid.SetColumn(button, 1);
             row.Children.Add(button);
         }
+        else if (change != null)
+        {
+            var button = new Button
+            {
+                Content = CallText.Get("SetupChange"),
+                MinHeight = 44,
+                Padding = new global::Avalonia.Thickness(14, 0),
+                Margin = new global::Avalonia.Thickness(10, 0, 0, 0),
+                VerticalAlignment = VerticalAlignment.Center
+            };
+            button.Classes.Add("ghost");
+            button.Click += (_, _) => change();
+            Grid.SetColumn(button, 1);
+            row.Children.Add(button);
+        }
 
         CallSetupList.Children.Add(row);
     }
@@ -233,6 +289,22 @@ public partial class MainView
         catch (Exception ex)
         {
             PhonePlatform.Log("[calls] App info could not be opened: " + ex.Message);
+        }
+    }
+
+    /// <summary>The list of apps Android may put to sleep (to let it put Replio to sleep again).</summary>
+    private static void OpenBatterySettings(Context context)
+    {
+        try
+        {
+            var intent = new Intent(Settings.ActionIgnoreBatteryOptimizationSettings);
+            intent.AddFlags(ActivityFlags.NewTask);
+            context.StartActivity(intent);
+        }
+        catch (Exception ex)
+        {
+            PhonePlatform.Log("[calls] Battery list could not be opened: " + ex.Message);
+            OpenAppInfo(context);
         }
     }
 

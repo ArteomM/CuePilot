@@ -19,6 +19,40 @@
         <Style Selector="Button">
             <Setter Property="MinHeight" Value="48" />
             <Setter Property="FontSize" Value="15" />
+            <!-- A press sinks the button a little and lets it spring back, instead of a jump. -->
+            <Setter Property="Transitions">
+                <Transitions>
+                    <TransformOperationsTransition Property="RenderTransform" Duration="0:0:0.16" Easing="CubicEaseOut" />
+                </Transitions>
+            </Setter>
+        </Style>
+        <Style Selector="Button:pressed">
+            <Setter Property="RenderTransform" Value="scale(0.96)" />
+        </Style>
+        <Style Selector="ListBoxItem">
+            <Setter Property="Transitions">
+                <Transitions>
+                    <TransformOperationsTransition Property="RenderTransform" Duration="0:0:0.16" Easing="CubicEaseOut" />
+                </Transitions>
+            </Setter>
+        </Style>
+        <Style Selector="ListBoxItem:pressed">
+            <Setter Property="RenderTransform" Value="scale(0.97)" />
+        </Style>
+        <!-- A new hint, question or note in the live list rises in softly. -->
+        <Style Selector="Panel.chatItem">
+            <Style.Animations>
+                <Animation Duration="0:0:0.34" Easing="CubicEaseOut" FillMode="Forward">
+                    <KeyFrame Cue="0%">
+                        <Setter Property="Opacity" Value="0" />
+                        <Setter Property="TranslateTransform.Y" Value="16" />
+                    </KeyFrame>
+                    <KeyFrame Cue="100%">
+                        <Setter Property="Opacity" Value="1" />
+                        <Setter Property="TranslateTransform.Y" Value="0" />
+                    </KeyFrame>
+                </Animation>
+            </Style.Animations>
         </Style>
         <!-- Long labels on narrow phones go to a second line instead of being cut. -->
         <Style Selector="Button /template/ ContentPresenter#PART_ContentPresenter">
@@ -1021,7 +1055,10 @@
                                  ScrollViewer.HorizontalScrollBarVisibility="Disabled">
                             <ListBox.ItemTemplate>
                                 <DataTemplate DataType="views:PhoneChatItem">
-                                    <Panel>
+                                    <Panel Classes="chatItem">
+                                        <Panel.RenderTransform>
+                                            <TranslateTransform />
+                                        </Panel.RenderTransform>
                                         <Border Classes="request" Margin="48,2,0,8" IsVisible="{Binding IsUser}">
                                             <TextBlock FontSize="14" FontWeight="SemiBold" TextWrapping="Wrap" Foreground="{DynamicResource EchoSoftTextBrush}" Text="{Binding Message}" />
                                         </Border>
@@ -1449,6 +1486,22 @@
 
                             <!-- ===== О приложении ===== -->
                             <StackPanel IsVisible="{Binding IsSettingsData}">
+                                <!-- «Папка данных»: the same meetings and groups as on the computer, through a folder that a sync
+                                     app keeps equal to the computer's cloud folder (MainView.DataFolder.cs). -->
+                                <Border Classes="settingsCard">
+                                    <StackPanel>
+                                        <TextBlock Classes="section" Text="{Binding L[DataFolderTitle]}" />
+                                        <TextBlock Classes="hint" Margin="0" Text="{Binding [PhoneDataHint], Source={x:Static platform:MobileText.Instance}}" />
+                                        <TextBlock Margin="0,12,0,2" FontSize="13" Foreground="{DynamicResource EchoMutedBrush}" Text="{Binding [PhoneDataNow], Source={x:Static platform:MobileText.Instance}}" />
+                                        <TextBlock FontSize="14.5" FontWeight="SemiBold" TextWrapping="Wrap" Foreground="{DynamicResource EchoTextBrush}" Text="{Binding DataFolderPath}" IsVisible="{Binding IsDataFolderCustom}" />
+                                        <TextBlock FontSize="14.5" FontWeight="SemiBold" TextWrapping="Wrap" Foreground="{DynamicResource EchoTextBrush}" Text="{Binding [PhoneDataDefault], Source={x:Static platform:MobileText.Instance}}" IsVisible="{Binding !IsDataFolderCustom}" />
+                                        <Button Margin="0,14,0,0" Classes="accent" HorizontalAlignment="Stretch" Click="ChooseDataFolder_OnClick" IsEnabled="{Binding !IsDataFolderBusy}" Content="{Binding L[DataFolderChoose]}" />
+                                        <Button Margin="0,8,0,0" HorizontalAlignment="Stretch" Click="DataFolderHowTo_OnClick" Content="{Binding [PhoneDataHow], Source={x:Static platform:MobileText.Instance}}" />
+                                        <Button Margin="0,8,0,0" HorizontalAlignment="Stretch" Command="{Binding ResetDataFolderCommand}" IsVisible="{Binding IsDataFolderCustom}" Content="{Binding L[DataFolderReset]}" />
+                                        <TextBlock Classes="hint" Margin="0,10,0,0" Text="{Binding DataFolderStatus}" IsVisible="{Binding DataFolderStatus, Converter={x:Static StringConverters.IsNotNullOrEmpty}}" />
+                                        <Button Margin="0,10,0,0" Classes="accent" HorizontalAlignment="Stretch" Command="{Binding RestartAppCommand}" IsVisible="{Binding IsRestartNeeded}" Content="{Binding L[DataFolderRestart]}" />
+                                    </StackPanel>
+                                </Border>
                                 <Border Classes="settingsCard">
                                     <StackPanel>
                                         <TextBlock Classes="section" Text="Replio" />
@@ -1546,6 +1599,25 @@
                     </Grid>
                     <ScrollViewer Grid.Row="1" Margin="0,8,0,0" HorizontalScrollBarVisibility="Disabled" VerticalScrollBarVisibility="Auto">
                         <StackPanel Margin="0,0,12,0" Spacing="14">
+                            <!-- On / off for the whole calls mode: off, no button on calls and no «Ждёт звонка». -->
+                            <Border Padding="16,10,10,10" CornerRadius="18" BorderThickness="1" Background="{DynamicResource EchoSurfaceAltBrush}" BorderBrush="{DynamicResource EchoBorderBrush}">
+                                <Grid ColumnDefinitions="*,Auto">
+                                    <StackPanel VerticalAlignment="Center" Spacing="2">
+                                        <TextBlock x:Name="CallWatchTitle" FontSize="16" FontWeight="Bold" TextWrapping="Wrap" Foreground="{DynamicResource EchoTextBrush}" />
+                                        <TextBlock x:Name="CallWatchText" FontSize="13" LineHeight="18" TextWrapping="Wrap" Foreground="{DynamicResource EchoMutedBrush}" />
+                                    </StackPanel>
+                                    <ToggleSwitch x:Name="CallWatchSwitch" Grid.Column="1" Margin="10,0,0,0" VerticalAlignment="Center" OnContent="" OffContent="" IsCheckedChanged="CallWatch_OnChanged">
+                                        <ToggleSwitch.Resources>
+                                            <SolidColorBrush x:Key="ToggleSwitchFillOn" Color="#5EF0C1" />
+                                            <SolidColorBrush x:Key="ToggleSwitchFillOnPointerOver" Color="#5EF0C1" />
+                                            <SolidColorBrush x:Key="ToggleSwitchFillOnPressed" Color="#4AD9AC" />
+                                            <SolidColorBrush x:Key="ToggleSwitchKnobFillOn" Color="#0E1116" />
+                                            <SolidColorBrush x:Key="ToggleSwitchKnobFillOnPointerOver" Color="#0E1116" />
+                                            <SolidColorBrush x:Key="ToggleSwitchKnobFillOnPressed" Color="#0E1116" />
+                                        </ToggleSwitch.Resources>
+                                    </ToggleSwitch>
+                                </Grid>
+                            </Border>
                             <TextBlock x:Name="CallSetupStatus" FontSize="14.5" LineHeight="21" TextWrapping="Wrap" Foreground="{DynamicResource EchoSoftTextBrush}" />
                             <StackPanel x:Name="CallSetupList" Spacing="14" />
                             <TextBlock x:Name="CallSpeakerNote" FontSize="13" TextWrapping="Wrap" Foreground="{DynamicResource EchoMutedBrush}" />

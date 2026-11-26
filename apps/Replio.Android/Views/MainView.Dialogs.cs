@@ -120,11 +120,20 @@ public partial class MainView
     private void ShowMessage(string title, string message) =>
         ShowDialog(title, message, [(_viewModel.L["DialogOk"], null, false)]);
 
-    /// <summary>An action sheet: one full-width button per action, destructive ones in red.</summary>
+    /// <summary>An action sheet from the bottom edge: one full-width button per action, destructive ones in red.</summary>
     private void ShowActions(string title, IEnumerable<(string Label, Action Action, bool Destructive)> actions)
     {
         _dialogDismissed = null;
         DialogContent.Children.Clear();
+        DialogContent.Children.Add(new Border
+        {
+            Width = 40,
+            Height = 4,
+            Margin = new Thickness(0, 0, 0, 14),
+            CornerRadius = new CornerRadius(2),
+            HorizontalAlignment = HorizontalAlignment.Center,
+            Background = Brush("EchoBorderBrush")
+        });
         DialogContent.Children.Add(TitleBlock(title));
         foreach ((string label, Action action, bool destructive) in actions)
         {
@@ -143,7 +152,7 @@ public partial class MainView
         cancel.Margin = new Thickness(0, 8, 0, 0);
         cancel.Click += (_, _) => CloseDialog();
         DialogContent.Children.Add(cancel);
-        DialogLayer.IsVisible = true;
+        OpenDialogLayer(Motion.Kind.Sheet);
     }
 
     /// <summary>A dialog; <paramref name="onDismiss"/> runs when it is closed without a button (back, a tap outside).</summary>
@@ -186,16 +195,30 @@ public partial class MainView
         }
 
         DialogContent.Children.Add(row);
-        DialogLayer.IsVisible = true;
+        OpenDialogLayer(Motion.Kind.Pop);
         _dialogDismissed = onDismiss;
     }
 
     private Action? _dialogDismissed;
+    private Motion.Kind _dialogKind = Motion.Kind.Pop;
+
+    /// <summary>An action sheet sits on the bottom edge with round top corners, a dialog in the middle.</summary>
+    private void OpenDialogLayer(Motion.Kind kind)
+    {
+        _dialogKind = kind;
+        bool sheet = kind == Motion.Kind.Sheet;
+        DialogCard.VerticalAlignment = sheet ? VerticalAlignment.Bottom : VerticalAlignment.Center;
+        DialogCard.Margin = sheet ? new Thickness(0) : new Thickness(16);
+        DialogCard.MaxWidth = sheet ? double.PositiveInfinity : 460;
+        DialogCard.CornerRadius = sheet ? new CornerRadius(24, 24, 0, 0) : new CornerRadius(20);
+        DialogCard.BorderThickness = sheet ? new Thickness(0, 1, 0, 0) : new Thickness(1);
+        DialogCard.Padding = sheet ? new Thickness(18, 10, 18, 24) : new Thickness(18, 16);
+        Motion.Show(DialogLayer, DialogCard, kind);
+    }
 
     private void CloseDialog()
     {
-        DialogLayer.IsVisible = false;
-        DialogContent.Children.Clear();
+        Motion.Hide(DialogLayer, DialogCard, _dialogKind, () => DialogContent.Children.Clear());
         Action? dismissed = _dialogDismissed;
         _dialogDismissed = null;
         dismissed?.Invoke();

@@ -59,6 +59,9 @@ public partial class MainView
         try
         {
             PhonePlatform.Log("[demo] page " + page);
+#if REPLIO_DEMO
+            Replio.Android.Platform.Calls.CallAssistant.Instance.DemoOverlay(page);
+#endif
             CloseDialog();
             CallSetupSheet.IsVisible = false;
             KnowledgeSheet.IsVisible = false;
@@ -67,6 +70,10 @@ public partial class MainView
             {
                 case "settings":
                     Execute(_viewModel.OpenSettingsCommand);
+                    break;
+                case "about":
+                    Execute(_viewModel.OpenSettingsCommand);
+                    _viewModel.IsSettingsData = true;
                     break;
                 case "setup":
                     Execute(_viewModel.GoHomeCommand);
@@ -95,6 +102,10 @@ public partial class MainView
                     _assistTab = false;
                     _viewModel.SelectedSessionTab = "Transcript";
                     UpdateSessionPanels();
+                    break;
+                case "callmenu":
+                case "callhint":
+                    Execute(_viewModel.GoHomeCommand);
                     break;
                 case "actions":
                     Execute(_viewModel.GoHomeCommand);

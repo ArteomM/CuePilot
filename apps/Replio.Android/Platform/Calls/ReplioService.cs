@@ -72,6 +72,28 @@ public class ReplioService : Service
 
     public static void Refresh() => Instance?.ShowNotification();
 
+    /// <summary>«Replio на звонках» is off: no background service and no «Ждёт звонка» notification while nothing records.</summary>
+    public static void StopIfIdle() => Instance?.StopWhenIdle();
+
+    private void StopWhenIdle()
+    {
+        if (_microphone || CallAssistant.Instance.IsRecording || CallAssistant.Instance.WatchCalls)
+        {
+            return;
+        }
+
+        try
+        {
+            PhonePlatform.Log("[service] Calls are off and nothing records: the background service stops.");
+            StopForeground(StopForegroundFlags.Remove);
+            StopSelf();
+        }
+        catch (Exception ex)
+        {
+            PhonePlatform.Log("[service] Could not stop: " + ex.Message);
+        }
+    }
+
     private static bool Send(Context context, string action)
     {
         var intent = new Intent(context, typeof(ReplioService));
@@ -130,6 +152,9 @@ public class ReplioService : Service
                 break;
             case ActionHint:
                 CallAssistant.Instance.WhatToSay();
+                break;
+            case ActionWatch:
+                StopWhenIdle();
                 break;
         }
 
@@ -247,6 +272,7 @@ public class ReplioService : Service
         _microphone = false;
         ReleaseWakeLock();
         ShowNotification(force: true);
+        StopWhenIdle();
     }
 
     private void ReleaseWakeLock()

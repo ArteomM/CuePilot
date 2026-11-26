@@ -27,6 +27,24 @@ public partial class MainViewModel
 
     private partial void SetClipboardText(string text) => _ = MainTopLevel?.Clipboard?.SetTextAsync(text);
 
+    /// <summary>
+    /// «Папка данных» on the phone: a folder in the phone's own storage (a cloud sync app such as FolderSync keeps it
+    /// equal to the computer's cloud folder). The data is copied there like on the computer, a folder not named
+    /// Replio gets a Replio folder inside, and Replio works there after a restart.
+    /// </summary>
+    internal Task MoveDataToPhoneFolderAsync(string folder)
+    {
+        string target = folder;
+        if (!string.Equals(Path.GetFileName(target.TrimEnd('/')), "Replio", StringComparison.OrdinalIgnoreCase))
+        {
+            target = Path.Combine(target, "Replio");
+        }
+
+        return MoveDataAsync(target);
+    }
+
+    internal void ShowPhoneDataFolderStatus(string text) => SetDataFolderStatus(text);
+
     /// <summary>The speech recognition a recording would start with now: the microphone test in Settings uses it.</summary>
     public CaptureStartOptions BuildSpeechTestOptions()
     {

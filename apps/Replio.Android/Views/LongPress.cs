@@ -8,13 +8,16 @@ using Avalonia.VisualTree;
 namespace Replio.Android.Views;
 
 /// <summary>
-/// Press and hold, as in Android apps: half a second on a control with the class «longPress» (a session card, a
-/// group chip, a hint) calls back with that control, after a short vibration; the tap that would follow is
-/// swallowed. Moving the finger (scrolling) cancels it.
+/// Press and hold, as in Android apps: on a control with the class «longPress» (a session card, a group chip, a hint)
+/// the control sinks slowly under the finger; after about half a second the phone vibrates, the control springs back
+/// and its menu slides up. The tap that would follow is swallowed. Moving the finger (scrolling) cancels it.
 /// </summary>
 public sealed class LongPress
 {
-    private static readonly TimeSpan Delay = TimeSpan.FromMilliseconds(480);
+    private static readonly TimeSpan Delay = TimeSpan.FromMilliseconds(520);
+
+    // After the spring-back, so the menu comes as a result of the hold and not at the same instant.
+    private static readonly TimeSpan MenuAfter = TimeSpan.FromMilliseconds(140);
     private const double MoveTolerance = 12;
 
     private readonly Control _root;
@@ -47,6 +50,7 @@ public sealed class LongPress
 
         _start = e.GetPosition(_root);
         _timer.Start();
+        Motion.Hold(_target, Delay);
     }
 
     private void OnMoved(object? sender, PointerEventArgs e)
@@ -66,6 +70,11 @@ public sealed class LongPress
     private void OnReleased(object? sender, PointerReleasedEventArgs e)
     {
         _timer.Stop();
+        if (_target != null && !_fired)
+        {
+            Motion.Release(_target);
+        }
+
         _target = null;
         if (_fired)
         {
@@ -80,6 +89,11 @@ public sealed class LongPress
         _timer.Stop();
         if (!_fired)
         {
+            if (_target != null)
+            {
+                Motion.Release(_target);
+            }
+
             _target = null;
         }
     }
@@ -103,6 +117,7 @@ public sealed class LongPress
             // No vibration on this phone.
         }
 
-        _onLongPress(target);
+        Motion.Spring(target);
+        DispatcherTimer.RunOnce(() => _onLongPress(target), MenuAfter);
     }
 }
