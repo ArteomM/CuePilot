@@ -189,8 +189,8 @@ jobs:
           done
 
   release:
-    # The latest APK on the «android-latest» release page.
-    needs: build
+    # The latest APK on the «android-latest» release page, only after it started on the emulator without a crash.
+    needs: [build, smoke]
     runs-on: ubuntu-latest
     steps:
       - uses: actions/download-artifact@v4

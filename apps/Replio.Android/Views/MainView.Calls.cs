@@ -86,7 +86,7 @@ public partial class MainView
             () => ReplioAccessibilityService.OpenSettings(MainActivity.Current ?? context));
         if (!listen)
         {
-            AddSetupRow(CallText.Get("SetupRestricted"), null, false, () => OpenAppInfo(MainActivity.Current ?? context), CallText.Get("SetupAppInfo"));
+            AddSetupRow(CallText.Get("SetupRestricted"), CallText.Get("SetupRestrictedHint"), false, () => OpenAppInfo(MainActivity.Current ?? context), CallText.Get("SetupAppInfo"));
         }
 
         AddSetupRow(CallText.Get("SetupBattery"), null, battery, () => RequestIgnoreBatteryOptimizations(MainActivity.Current ?? context));
@@ -108,6 +108,7 @@ public partial class MainView
         CallSetupBanner.IsVisible = left > 0 && !assistant.IsRecording;
         CallSetupBannerTitle.Text = MobileText.Get("BannerTitle");
         CallSetupBannerText.Text = string.Format(MobileText.Get("BannerText"), left);
+        UpdateCallPillVisibility();
 
         // The status in the app bar.
         bool recording = assistant.IsRecording || _viewModel.IsCapturing;
@@ -140,6 +141,16 @@ public partial class MainView
     }
 
     /// <summary>The app bar status: while recording it opens the recording, otherwise the call setup.</summary>
+    /// <summary>
+    /// The calls status in the app bar; not on a session page (it has its own timer) and not on Home while the
+    /// setup card there already says the same.
+    /// </summary>
+    private void UpdateCallPillVisibility()
+    {
+        string page = _viewModel.SelectedMainPage;
+        CallPill.IsVisible = page != "Session" && !(page == "Home" && CallSetupBanner.IsVisible);
+    }
+
     private void CallPill_OnClick(object? sender, global::Avalonia.Interactivity.RoutedEventArgs e)
     {
         if (_viewModel.IsCapturing)

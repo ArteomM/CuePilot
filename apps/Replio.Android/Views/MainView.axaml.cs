@@ -266,7 +266,7 @@ public partial class MainView : UserControl
         BackButton.IsVisible = page == "Session";
         HomeLogo.IsVisible = page == "Home";
         BottomNav.IsVisible = page != "Session";
-        CallPill.IsVisible = page != "Session";
+        UpdateCallPillVisibility();
         SessionMenuButton.IsVisible = page == "Session";
         UpdatePageTitle();
         UpdateRecordButton();
