@@ -297,6 +297,8 @@ public partial class MainViewModel : ObservableObject
             {
                 OnSpeechLanguageDetected(line);
             }
+
+            OnCaptureProblemLine(line);
         });
         _captureOrchestrator.StatsUpdated += (_, stats) => RunOnUi(() => OnStatsUpdated(stats));
         _captureOrchestrator.TranscriptReceived += (_, transcript) => RunOnUi(() => OnTranscriptReceived(transcript));
@@ -1900,6 +1902,15 @@ public partial class MainViewModel : ObservableObject
         if (running)
         {
             StopSoundCheckForCapture();
+            _captureRunningSince = DateTime.UtcNow;
+            _captureCrashLine = string.Empty;
+        }
+        else if (DateTime.UtcNow - _captureRunningSince < TimeSpan.FromSeconds(8) && _captureCrashLine.Length > 0)
+        {
+            // The recording ended by itself right after it started: say why instead of silently closing the panel.
+            string reason = _captureCrashLine;
+            _captureCrashLine = string.Empty;
+            NotificationRequested?.Invoke(L["ErrorTitle"], string.Format(L["CaptureFailedToStart"], reason), true);
         }
 
         IsCapturing = running;
@@ -1909,6 +1920,32 @@ public partial class MainViewModel : ObservableObject
         OverlayStateText = running ? L["StateListening"] : L["StateReady"];
         OverlayCaptureStateChanged?.Invoke(running);
         _captureSnapshotCommand.RaiseCanExecuteChanged();
+    }
+
+    private DateTime _captureRunningSince = DateTime.MinValue;
+    private string _captureCrashLine = string.Empty;
+
+    /// <summary>Lines of DesktopCapture that the user should know about: no microphone, another one used, a crash.</summary>
+    private void OnCaptureProblemLine(string line)
+    {
+        if (line.StartsWith("[mic-fallback]", StringComparison.Ordinal))
+        {
+            OverlayNoticeRequested?.Invoke(string.Format(L["MicFallbackNotice"], line["[mic-fallback]".Length..].Trim()));
+        }
+        else if (line.StartsWith("Microphone capture is unavailable", StringComparison.Ordinal))
+        {
+            OverlayNoticeRequested?.Invoke(L["MicUnavailableNotice"]);
+        }
+        else if (line.StartsWith("[stderr] Unhandled exception.", StringComparison.Ordinal))
+        {
+            string text = line["[stderr] Unhandled exception.".Length..].Trim();
+            int colon = text.IndexOf(": ", StringComparison.Ordinal);
+            _captureCrashLine = colon > 0 && colon < 120 ? text[(colon + 2)..] : text;
+            if (_captureCrashLine.Length > 300)
+            {
+                _captureCrashLine = _captureCrashLine[..300];
+            }
+        }
     }
 
     private void ApplyLocalization()

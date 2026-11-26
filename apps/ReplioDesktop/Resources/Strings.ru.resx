@@ -981,4 +981,7 @@
   <data name="SoundCheckSystemSilent" xml:space="preserve"><value>Мелодию Replio не услышал: проверьте громкость и что звук идёт в динамики или наушники по умолчанию.</value></data>
   <data name="SoundCheckMicSilent_Mac" xml:space="preserve"><value>Микрофон молчит: разрешите Replio доступ к микрофону в «Системные настройки → Конфиденциальность и безопасность → Микрофон» и проверьте «Звук → Вход».</value></data>
   <data name="SoundCheckSystemSilent_Mac" xml:space="preserve"><value>Мелодию Replio не услышал: разрешите Replio «Запись экрана и системного звука» в «Системные настройки → Конфиденциальность и безопасность» и проверьте громкость.</value></data>
+  <data name="CaptureFailedToStart" xml:space="preserve"><value>Запись не началась: {0}</value></data>
+  <data name="MicFallbackNotice" xml:space="preserve"><value>Основной микрофон недоступен, пишу с другого: {0}</value></data>
+  <data name="MicUnavailableNotice" xml:space="preserve"><value>Микрофон недоступен: записываю только звук компьютера. Проверьте микрофон в «Настройки → Речь → Проверить звук».</value></data>
 </root>

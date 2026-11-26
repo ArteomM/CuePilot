@@ -981,4 +981,7 @@
   <data name="SoundCheckSystemSilent" xml:space="preserve"><value>Replio did not hear the melody: check the volume and that sound goes to the default speakers or headphones.</value></data>
   <data name="SoundCheckMicSilent_Mac" xml:space="preserve"><value>The microphone is silent: allow Replio in System Settings → Privacy &amp; Security → Microphone and check Sound → Input.</value></data>
   <data name="SoundCheckSystemSilent_Mac" xml:space="preserve"><value>Replio did not hear the melody: allow Replio «Screen &amp; System Audio Recording» in System Settings → Privacy &amp; Security and check the volume.</value></data>
+  <data name="CaptureFailedToStart" xml:space="preserve"><value>The recording did not start: {0}</value></data>
+  <data name="MicFallbackNotice" xml:space="preserve"><value>The main microphone is unavailable, recording from another: {0}</value></data>
+  <data name="MicUnavailableNotice" xml:space="preserve"><value>The microphone is unavailable: recording the computer sound only. Check it in Settings → Speech → Check sound.</value></data>
 </root>

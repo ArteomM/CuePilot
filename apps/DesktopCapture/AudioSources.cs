@@ -25,12 +25,69 @@ namespace DesktopCapture
 #endif
         }
 
+        /// <summary>
+        /// The microphone for calls, or the first one that opens. A Bluetooth headset whose microphone cannot connect
+        /// (0x800704D6, often busy with a phone or another app) used to crash the whole recording on start; now the
+        /// next microphone is used («[mic-fallback]»), and with none at all the recording goes on with the computer's
+        /// sound only (the caller catches the exception).
+        /// </summary>
         public static IWaveIn CreateMicCapture()
         {
 #if WINDOWS
             using (var enumerator = new MMDeviceEnumerator())
             {
-                return new WasapiCapture(enumerator.GetDefaultAudioEndpoint(DataFlow.Capture, Role.Communications));
+                var candidates = new System.Collections.Generic.List<MMDevice>();
+                void Add(Func<MMDevice> get)
+                {
+                    try
+                    {
+                        MMDevice device = get();
+                        if (device != null && !candidates.Exists(c => c.ID == device.ID))
+                        {
+                            candidates.Add(device);
+                        }
+                    }
+                    catch (Exception)
+                    {
+                        // No default device of this role.
+                    }
+                }
+
+                Add(() => enumerator.GetDefaultAudioEndpoint(DataFlow.Capture, Role.Communications));
+                Add(() => enumerator.GetDefaultAudioEndpoint(DataFlow.Capture, Role.Multimedia));
+                foreach (MMDevice device in enumerator.EnumerateAudioEndPoints(DataFlow.Capture, DeviceState.Active))
+                {
+                    MMDevice each = device;
+                    Add(() => each);
+                }
+
+                Exception last = null;
+                foreach (MMDevice device in candidates)
+                {
+                    try
+                    {
+                        // WASAPI opens the device only on start: try it before handing it out.
+                        using (var probe = new WasapiCapture(device))
+                        {
+                            probe.StartRecording();
+                            probe.StopRecording();
+                        }
+
+                        if (!ReferenceEquals(device, candidates[0]))
+                        {
+                            Console.WriteLine("[mic-fallback] " + candidates[0].FriendlyName + " → " + device.FriendlyName);
+                        }
+
+                        return new WasapiCapture(device);
+                    }
+                    catch (Exception ex)
+                    {
+                        last = ex;
+                        Console.WriteLine("[mic-error] " + device.FriendlyName + ": " + ex.Message);
+                    }
+                }
+
+                throw new InvalidOperationException("no microphone could be opened", last);
             }
 #else
             return new HelperProcessCapture("mic");
