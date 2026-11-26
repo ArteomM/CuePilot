@@ -33,6 +33,16 @@ public class CaptureOrchestratorService
     public event EventHandler<TranscriptLine>? TranscriptReceived;
     public event EventHandler<bool>? RunningStateChanged;
 
+    /// <summary>Live level (system sound, microphone) for the computer's recording bar; the phone shows its own level.</summary>
+#pragma warning disable CS0067 // Raised only by the computer's capture.
+    public event Action<double, double>? LevelUpdated;
+#pragma warning restore CS0067
+
+    /// <summary>The computer switches microphones and outputs during a recording; a phone has one microphone.</summary>
+    public void SwitchDevice(string kind, string id)
+    {
+    }
+
     /// <summary>Phone only: every piece sent to recognition, with its time and result (the recording status on screen).</summary>
     public event EventHandler<SpeechPieceResult>? PieceRecognized;
 
@@ -565,6 +575,10 @@ public class CaptureStartOptions
 
     /// <summary>«Name=Value;Name=Value» headers for the Replio gateway (device, app, session).</summary>
     public string SttExtraHeaders { get; set; } = string.Empty;
+
+    /// <summary>The computer's chosen devices; not used on a phone.</summary>
+    public string MicDevice { get; set; } = string.Empty;
+    public string SystemDevice { get; set; } = string.Empty;
 }
 
 public class CaptureStats
