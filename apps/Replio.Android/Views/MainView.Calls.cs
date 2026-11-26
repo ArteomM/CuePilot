@@ -11,14 +11,43 @@ using Replio.Android.Platform.Calls;
 namespace Replio.Android.Views;
 
 /// <summary>
-/// The card at the top of Home: «Replio ждёт звонка» when everything is set, otherwise the steps that are still off
-/// (microphone, «Слушать звонок», not putting Replio to sleep), each with its own button.
+/// Calls on the main screen: a small status in the app bar («● Ждёт звонка», «Настроить звонки», «● 03:12» while
+/// recording) and, while steps are left, one slim card on Home; the steps themselves (microphone, «Слушать
+/// звонок», not putting Replio to sleep, the phone's call recordings) are in a sheet that scrolls.
 /// </summary>
 public partial class MainView
 {
+    private readonly DispatcherTimer _pillTimer = new() { Interval = TimeSpan.FromSeconds(1) };
+
     private void SetUpCallCard()
     {
         CallAssistant.Instance.StateChanged += () => Dispatcher.UIThread.Post(UpdateCallCard);
+        // While recording the status in the app bar counts the time.
+        _pillTimer.Tick += (_, _) =>
+        {
+            if (CallAssistant.Instance.IsRecording)
+            {
+                CallPillText.Text = CallAssistant.Instance.ElapsedText;
+            }
+            else
+            {
+                _pillTimer.Stop();
+            }
+        };
+        _viewModel.PropertyChanged += (_, e) =>
+        {
+            if (e.PropertyName == nameof(ReplioDesktop.ViewModels.MainViewModel.IsCapturing))
+            {
+                Dispatcher.UIThread.Post(() =>
+                {
+                    UpdateCallCard();
+                    if (_viewModel.IsCapturing)
+                    {
+                        _pillTimer.Start();
+                    }
+                });
+            }
+        };
         // The theme brushes are found only once the view is on screen.
         AttachedToVisualTree += (_, _) => UpdateCallCard();
         UpdateCallCard();
@@ -48,31 +77,6 @@ public partial class MainView
         CallAssistant assistant = CallAssistant.Instance;
 
         CallSetupList.Children.Clear();
-        if (assistant.IsRecording)
-        {
-            CallStatusTitle.Text = CallText.Format("RecordingTitle", assistant.ElapsedText);
-            CallStatusText.Text = assistant.HearingText;
-            CallStatusDot.Fill = new SolidColorBrush(Color.Parse("#E5484D"));
-        }
-        else if (assistant.InCall)
-        {
-            CallStatusTitle.Text = CallText.Get("InCallTitle");
-            CallStatusText.Text = CallText.Get("InCallText");
-            CallStatusDot.Fill = CardBrush("EchoAccentBrush", "#5EF0C1");
-        }
-        else if (mic && listen)
-        {
-            CallStatusTitle.Text = CallText.Get("WaitingTitle");
-            CallStatusText.Text = CallText.Get("SetupReady");
-            CallStatusDot.Fill = CardBrush("EchoAccentBrush", "#5EF0C1");
-        }
-        else
-        {
-            CallStatusTitle.Text = CallText.Get("SetupTitle");
-            CallStatusText.Text = CallText.Get("SetupNeeded");
-            CallStatusDot.Fill = CardBrush("EchoMutedBrush", "#9AA5B5");
-        }
-
         AddSetupRow(CallText.Get("SetupMic"), null, mic, async () =>
         {
             await PhonePlatform.RequestMicrophonePermissionAsync();
@@ -98,21 +102,53 @@ public partial class MainView
 
             UpdateCallCard();
         });
-        CallSpeakerNote.Text = CallText.Get("SetupSpeaker");
 
-        // The card stays two lines high; the steps open in a sheet that scrolls.
         int left = (mic ? 0 : 1) + (listen ? 0 : 1) + (battery ? 0 : 1);
         CallSetupTitle.Text = CallText.Get("SetupTitle");
-        CallSetupButton.Content = left > 0 ? CallText.Format("SetupOpenLeft", left) : CallText.Get("SetupOpen");
-        CallSetupButton.Classes.Set("accent", left > 0);
-        if (left == 0 && !assistant.IsRecording && !assistant.InCall)
+        CallSetupBanner.IsVisible = left > 0 && !assistant.IsRecording;
+        CallSetupBannerTitle.Text = MobileText.Get("BannerTitle");
+        CallSetupBannerText.Text = string.Format(MobileText.Get("BannerText"), left);
+
+        // The status in the app bar.
+        bool recording = assistant.IsRecording || _viewModel.IsCapturing;
+        CallPill.Classes.Set("live", recording);
+        CallPill.Classes.Set("todo", !recording && left > 0);
+        CallPillDot.IsVisible = recording || left == 0;
+        if (recording)
         {
-            CallStatusText.Text = CallText.Get("SetupReadyShort");
+            CallPillText.Text = assistant.IsRecording ? assistant.ElapsedText : MobileText.Get("Recording");
+            CallPillDot.Fill = new SolidColorBrush(Color.Parse("#E5484D"));
         }
-        else if (left > 0 && !assistant.IsRecording && !assistant.InCall)
+        else if (left > 0)
         {
-            CallStatusText.Text = CallText.Get("SetupNeededShort");
+            CallPillText.Text = MobileText.Get("CallsSetup");
         }
+        else if (!assistant.WatchCalls)
+        {
+            CallPillText.Text = MobileText.Get("CallsPaused");
+            CallPillDot.Fill = CardBrush("EchoMutedBrush", "#9AA5B5");
+        }
+        else
+        {
+            CallPillText.Text = MobileText.Get("CallsWaiting");
+            CallPillDot.Fill = CardBrush("EchoAccentBrush", "#5EF0C1");
+        }
+
+        // The sheet starts with what Replio does now, then the steps.
+        CallSetupStatus.Text = left == 0 ? CallText.Get("SetupReady") : CallText.Get("SetupNeeded");
+        CallSpeakerNote.Text = CallText.Get("SetupSpeaker");
+    }
+
+    /// <summary>The app bar status: while recording it opens the recording, otherwise the call setup.</summary>
+    private void CallPill_OnClick(object? sender, global::Avalonia.Interactivity.RoutedEventArgs e)
+    {
+        if (_viewModel.IsCapturing)
+        {
+            Execute(_viewModel.OpenActiveSessionCommand);
+            return;
+        }
+
+        CallSetup_OnClick(sender, e);
     }
 
     private void CallSetup_OnClick(object? sender, global::Avalonia.Interactivity.RoutedEventArgs e)

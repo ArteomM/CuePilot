@@ -5,23 +5,24 @@ using ReplioDesktop.Services;
 namespace Replio.Android.Platform;
 
 /// <summary>
-/// What the recording bar shows while Replio records: the microphone level and, in words, what happens to the
-/// speech (listening, recognizing, how far behind, the last error, silence from a microphone taken by a call).
-/// The phone has no log on screen, so a recording that gives no text says why here.
+/// What the recording screen says while Replio records, in a few plain words: «Слушаю…», «Слышу и записываю»,
+/// «Микрофон не слышит звук». A failed piece of recognition is not news (the next one usually works): only two
+/// failures in a row show a calm line, and never the error text itself, which goes to the log.
 /// </summary>
 public sealed class RecordingMonitor : INotifyPropertyChanged
 {
     private const double SoundPeak = 0.004;
     private static readonly TimeSpan SilenceWarningAfter = TimeSpan.FromSeconds(7);
     private static readonly TimeSpan ErrorShownFor = TimeSpan.FromSeconds(30);
+    private const int ErrorsBeforeWarning = 2;
 
     private readonly CaptureOrchestratorService _capture;
     private DateTime _startedAt;
     private DateTime? _lastSoundAt;
     private int _recognized;
     private int _empty;
-    private SpeechPieceResult? _lastPiece;
-    private string? _lastError;
+    private FriendlyError.Kind _lastError;
+    private int _errorsInRow;
     private DateTime _lastErrorAt;
     private int _queue;
     private double _lag;
@@ -79,8 +80,8 @@ public sealed class RecordingMonitor : INotifyPropertyChanged
         _lastSoundAt = null;
         _recognized = 0;
         _empty = 0;
-        _lastPiece = null;
-        _lastError = null;
+        _lastError = FriendlyError.Kind.None;
+        _errorsInRow = 0;
         _queue = 0;
         _lag = 0;
         Level = 0;
@@ -109,21 +110,23 @@ public sealed class RecordingMonitor : INotifyPropertyChanged
 
     private void OnPiece(SpeechPieceResult piece)
     {
-        _lastPiece = piece;
         if (piece.Error != null)
         {
-            _lastError = piece.Error;
+            PhonePlatform.Log("[stt] Piece failed: " + piece.Error);
+            _lastError = FriendlyError.Classify(piece.Error);
+            _errorsInRow++;
             _lastErrorAt = DateTime.Now;
         }
         else if (piece.Text.Length > 0)
         {
             _recognized++;
-            _lastError = null;
+            _errorsInRow = 0;
             _lastSoundAt = DateTime.Now;
         }
         else
         {
             _empty++;
+            _errorsInRow = 0;
         }
 
         Update();
@@ -136,26 +139,36 @@ public sealed class RecordingMonitor : INotifyPropertyChanged
         {
             Show(MobileText.Get("MonitorNoEngine"), problem: true);
         }
-        else if (_lastError != null && now - _lastErrorAt < ErrorShownFor)
+        else if (_errorsInRow >= ErrorsBeforeWarning && now - _lastErrorAt < ErrorShownFor)
         {
-            Show(string.Format(MobileText.Get("MonitorError"), _lastError), problem: true);
+            Show(MobileText.Get(_lastError switch
+            {
+                FriendlyError.Kind.Network => "MonitorNetwork",
+                FriendlyError.Kind.SignIn => "MonitorSignIn",
+                FriendlyError.Kind.Limit => "MonitorLimit",
+                _ => "MonitorTrouble"
+            }), problem: true);
         }
         else if ((_lastSoundAt == null && now - _startedAt > SilenceWarningAfter) ||
                  (_lastSoundAt != null && now - _lastSoundAt.Value > TimeSpan.FromSeconds(40)))
         {
             Show(MobileText.Get("MonitorSilence"), problem: true);
         }
-        else if (_queue > 0 && _lag >= 8)
+        else if (_queue > 0 && _lag >= 30)
         {
-            Show(string.Format(MobileText.Get("MonitorLagging"), _lag), problem: _lag >= 30);
+            Show(MobileText.Get("MonitorLaggingBad"), problem: true);
         }
-        else if (_recognized > 0 && _lastPiece != null)
+        else if (_queue > 0 && _lag >= 10)
         {
-            Show(string.Format(MobileText.Get("MonitorRecognized"), _recognized, _lastPiece.AudioSeconds, _lastPiece.RecognitionSeconds), problem: false);
+            Show(MobileText.Get("MonitorLagging"), problem: false);
         }
-        else if (_empty > 0)
+        else if (_recognized > 0)
         {
-            Show(string.Format(MobileText.Get("MonitorNoSpeech"), _empty), problem: false);
+            Show(MobileText.Get("MonitorRecognized"), problem: false);
+        }
+        else if (_empty > 1)
+        {
+            Show(MobileText.Get("MonitorNoSpeech"), problem: false);
         }
         else if (_queue > 0 || _lastSoundAt != null)
         {

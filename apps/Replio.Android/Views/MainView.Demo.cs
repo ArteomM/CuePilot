@@ -89,6 +89,13 @@ public partial class MainView
                     DemoChat();
                     UpdateSessionPanels();
                     break;
+                case "livetext":
+                    OpenDemoSession();
+                    _demoLive = true;
+                    _assistTab = false;
+                    _viewModel.SelectedSessionTab = "Transcript";
+                    UpdateSessionPanels();
+                    break;
                 case "actions":
                     Execute(_viewModel.GoHomeCommand);
                     _viewModel.SelectedTopicItem = _viewModel.TopicItems.FirstOrDefault();
@@ -123,7 +130,7 @@ public partial class MainView
     private void DemoChat()
     {
         _chat.Clear();
-        AppendChat(isUser: true, ActionLabel("OverlayActionWhatToSay"));
+        AppendChat(isUser: true, MobileText.Get("ActWhatToSay"));
         AppendChat(isUser: false, "Предложите зафиксировать срок 15 декабря и попросите прислать договор до пятницы: тогда отгрузка успеет до праздников.");
         AppendChat(isUser: true, "Какая скидка возможна?");
     }

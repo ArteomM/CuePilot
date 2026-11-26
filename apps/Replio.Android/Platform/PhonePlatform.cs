@@ -16,6 +16,9 @@ public static class PhonePlatform
     /// <summary>Opens a file of the app in another app (a viewer, a player); false when none can open it.</summary>
     public static Func<string, bool> OpenFile { get; set; } = _ => false;
 
+    /// <summary>A short vibration, as Android apps give on a long press.</summary>
+    public static Action Haptic { get; set; } = () => { };
+
     /// <summary>A line in the Android log (logcat, tag Replio); the console in previews.</summary>
     public static Action<string> Log { get; set; } = Console.WriteLine;
 }

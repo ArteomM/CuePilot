@@ -99,22 +99,34 @@ public sealed class CallAssistant
             }
 
             string source = AudioSourceStatus.Describe();
-            string hearing;
-            if (!InCall)
-            {
-                hearing = _monitor?.StatusText ?? string.Empty;
-            }
-            else if (AudioSourceStatus.Silenced || ReplioAccessibilityService.Instance == null)
-            {
-                hearing = CallText.Get("HearNothing");
-            }
-            else
-            {
-                hearing = _watcher?.IsSpeakerOn() == true ? CallText.Get("HearBoth") : CallText.Get("HearMe");
-            }
-
+            string hearing = Hearing(out _);
             return source.Length == 0 ? hearing : hearing.Length == 0 ? source : source + "\n" + hearing;
         }
+    }
+
+    /// <summary>One line for the recording screen: what Replio hears; problem when the user should do something.</summary>
+    public string Hearing(out bool problem)
+    {
+        problem = false;
+        if (!InCall)
+        {
+            problem = _monitor?.IsProblem == true;
+            return _monitor?.StatusText ?? string.Empty;
+        }
+
+        if (AudioSourceStatus.Silenced || ReplioAccessibilityService.Instance == null)
+        {
+            problem = true;
+            return CallText.Get("HearNothing");
+        }
+
+        if (_watcher?.IsSpeakerOn() == true)
+        {
+            return CallText.Get("HearBoth");
+        }
+
+        problem = true;
+        return CallText.Get("HearMe");
     }
 
     public string CurrentTopicName => _viewModel?.SelectedTopic?.Name is { Length: > 0 } name ? name : CallText.Get("MenuNoTopic");

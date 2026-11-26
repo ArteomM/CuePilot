@@ -36,7 +36,7 @@ shot() {
 }
 
 shot home
-for page in group actions session live setup settings; do
+for page in group actions session live livetext setup settings; do
   adb shell am start -n "$ACTIVITY" --es replio_demo "$page" > /dev/null
   sleep 5
   shot "$page"

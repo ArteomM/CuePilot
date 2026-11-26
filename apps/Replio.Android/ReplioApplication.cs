@@ -53,6 +53,7 @@ public class ReplioApplication : global::Android.App.Application
         };
         PhonePlatform.OpenFile = path => MainActivity.Current?.OpenFile(path) ?? false;
         PhonePlatform.Log = line => global::Android.Util.Log.Info("Replio", line);
+        PhonePlatform.Haptic = () => MainActivity.Current?.Window?.DecorView?.PerformHapticFeedback(global::Android.Views.FeedbackConstants.LongPress);
         ReplioDesktop.ViewModels.MainViewModel.ExternalUrlOpener = url =>
         {
             MainActivity.OpenUri(this, url);

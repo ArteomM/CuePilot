@@ -11,9 +11,10 @@
              Foreground="{DynamicResource EchoTextBrush}"
              FontFamily="{StaticResource EchoFont}"
              FontSize="15">
-    <!-- Phone layout of the Windows pages: Home (topics, sessions and a topic's tabs), a session, modes, settings.
-         Made for fingers: a bottom bar for the three places, a big record button, touch targets of 48 px and more,
-         text from 15 px. Colours, fonts and controls are the Echo ones of the desktop apps. -->
+    <!-- Phone layout of the Windows pages: Home (groups, sessions and a group's pages), a session, settings.
+         Made for fingers (Material guidelines): a bottom bar for the two places, a big record button, touch targets of
+         48 px, press and hold for the actions of a card, a chip or a hint, text from 15 px and 18 px for hints during a
+         recording. Colours, fonts and controls are the Echo ones of the desktop apps. -->
     <UserControl.Styles>
         <Style Selector="Button">
             <Setter Property="MinHeight" Value="48" />
@@ -76,10 +77,10 @@
         </Style>
         <!-- Record button over the Home list. -->
         <Style Selector="Button.fab">
-            <Setter Property="Height" Value="60" />
-            <Setter Property="MinWidth" Value="200" />
-            <Setter Property="Padding" Value="28,0" />
-            <Setter Property="CornerRadius" Value="30" />
+            <Setter Property="Height" Value="56" />
+            <Setter Property="MinWidth" Value="172" />
+            <Setter Property="Padding" Value="24,0" />
+            <Setter Property="CornerRadius" Value="28" />
             <Setter Property="BorderThickness" Value="0" />
             <Setter Property="Background" Value="{DynamicResource EchoAccentBrush}" />
             <Setter Property="Foreground" Value="{DynamicResource EchoAccentInkBrush}" />
@@ -272,23 +273,133 @@
             <Setter Property="Background" Value="{DynamicResource EchoSurfaceAltBrush}" />
             <Setter Property="MinHeight" Value="0" />
         </Style>
+        <!-- Underline tabs (Material tabs) for the pages of a group and of a finished session: unlike the group
+             chips above them they read as «pages», not as one more row of buttons. -->
+        <Style Selector="RadioButton.tab">
+            <Setter Property="MinHeight" Value="48" />
+            <Setter Property="Cursor" Value="Hand" />
+            <Setter Property="Template">
+                <ControlTemplate>
+                    <Grid Background="Transparent" RowDefinitions="*,Auto">
+                        <ContentPresenter Name="PART_ContentPresenter"
+                                          Margin="14,0"
+                                          HorizontalAlignment="Center"
+                                          VerticalAlignment="Center"
+                                          Content="{TemplateBinding Content}"
+                                          FontSize="15"
+                                          FontWeight="SemiBold"
+                                          Foreground="{DynamicResource EchoMutedBrush}" />
+                        <Border Name="Indicator" Grid.Row="1" Height="3" Margin="10,0" CornerRadius="2,2,0,0" Background="Transparent" />
+                    </Grid>
+                </ControlTemplate>
+            </Setter>
+        </Style>
+        <Style Selector="RadioButton.tab:checked /template/ ContentPresenter#PART_ContentPresenter">
+            <Setter Property="Foreground" Value="{DynamicResource EchoTextBrush}" />
+            <Setter Property="FontWeight" Value="Bold" />
+        </Style>
+        <Style Selector="RadioButton.tab:checked /template/ Border#Indicator">
+            <Setter Property="Background" Value="{DynamicResource EchoAccentBrush}" />
+        </Style>
+        <!-- Two big halves on the recording screen: «Подсказки» | «Текст». -->
+        <Style Selector="RadioButton.segment">
+            <Setter Property="HorizontalAlignment" Value="Stretch" />
+            <Setter Property="Cursor" Value="Hand" />
+            <Setter Property="Template">
+                <ControlTemplate>
+                    <Border Name="Segment" MinHeight="44" CornerRadius="22" Background="Transparent">
+                        <ContentPresenter Name="PART_ContentPresenter"
+                                          HorizontalAlignment="Center"
+                                          VerticalAlignment="Center"
+                                          Content="{TemplateBinding Content}"
+                                          FontSize="16"
+                                          FontWeight="Bold"
+                                          Foreground="{DynamicResource EchoMutedBrush}" />
+                    </Border>
+                </ControlTemplate>
+            </Setter>
+        </Style>
+        <Style Selector="RadioButton.segment:checked /template/ Border#Segment">
+            <Setter Property="Background" Value="{DynamicResource EchoSelectedTabBrush}" />
+        </Style>
+        <Style Selector="RadioButton.segment:checked /template/ ContentPresenter#PART_ContentPresenter">
+            <Setter Property="Foreground" Value="{DynamicResource EchoTextBrush}" />
+        </Style>
+        <!-- Calls in the app bar: «● Ждёт звонка», «Настроить звонки», «● 03:12» while recording. -->
+        <Style Selector="Button.callPill">
+            <Setter Property="MinHeight" Value="40" />
+            <Setter Property="Height" Value="40" />
+            <Setter Property="Padding" Value="12,0,14,0" />
+            <Setter Property="CornerRadius" Value="20" />
+            <Setter Property="VerticalAlignment" Value="Center" />
+            <Setter Property="Background" Value="{DynamicResource EchoSurfaceAltBrush}" />
+            <Setter Property="BorderBrush" Value="{DynamicResource EchoBorderBrush}" />
+        </Style>
+        <Style Selector="Button.callPill.todo">
+            <Setter Property="Background" Value="{DynamicResource EchoAccentSoftBrush}" />
+            <Setter Property="BorderBrush" Value="{DynamicResource EchoAccentSoftBorderBrush}" />
+        </Style>
+        <Style Selector="Button.callPill.live">
+            <Setter Property="Background" Value="{DynamicResource EchoDangerSoftBrush}" />
+            <Setter Property="BorderBrush" Value="{DynamicResource EchoDangerBorderBrush}" />
+        </Style>
+        <!-- A slim card that opens the call setup while steps are left. -->
+        <Style Selector="Button.banner">
+            <Setter Property="Padding" Value="14,10,10,10" />
+            <Setter Property="CornerRadius" Value="16" />
+            <Setter Property="HorizontalAlignment" Value="Stretch" />
+            <Setter Property="HorizontalContentAlignment" Value="Stretch" />
+            <Setter Property="Background" Value="{DynamicResource EchoAccentSoftBrush}" />
+            <Setter Property="BorderBrush" Value="{DynamicResource EchoAccentSoftBorderBrush}" />
+        </Style>
+        <Style Selector="Button.banner /template/ ContentPresenter#PART_ContentPresenter">
+            <Setter Property="TextAlignment" Value="Left" />
+        </Style>
+        <!-- Hints of a recording: the answer is a big card, the request a small chip on the right. -->
+        <Style Selector="Border.answer">
+            <Setter Property="Background" Value="{DynamicResource EchoSurfaceBrush}" />
+            <Setter Property="BorderBrush" Value="{DynamicResource EchoAccentSoftBorderBrush}" />
+            <Setter Property="BorderThickness" Value="1" />
+            <Setter Property="CornerRadius" Value="18" />
+            <Setter Property="Padding" Value="16,14" />
+        </Style>
+        <Style Selector="Border.request">
+            <Setter Property="Background" Value="{DynamicResource EchoUserBubbleBrush}" />
+            <Setter Property="CornerRadius" Value="14" />
+            <Setter Property="Padding" Value="12,6" />
+            <Setter Property="HorizontalAlignment" Value="Right" />
+        </Style>
+        <Style Selector="TextBlock.liveStatus">
+            <Setter Property="Foreground" Value="{DynamicResource EchoSoftTextBrush}" />
+        </Style>
+        <Style Selector="TextBlock.liveStatus.problem">
+            <Setter Property="Foreground" Value="#E09B1A" />
+        </Style>
+        <Style Selector="Button.secondary">
+            <Setter Property="MinHeight" Value="48" />
+            <Setter Property="Padding" Value="4,0" />
+            <Setter Property="HorizontalAlignment" Value="Stretch" />
+            <Setter Property="HorizontalContentAlignment" Value="Center" />
+            <Setter Property="FontSize" Value="14.5" />
+            <Setter Property="FontWeight" Value="SemiBold" />
+        </Style>
     </UserControl.Styles>
 
     <Grid x:Name="RootGrid">
         <Grid RowDefinitions="Auto,*,Auto">
-            <!-- App bar: the logo and the screen-share badge on Home; elsewhere a back arrow and the page name. -->
-            <Border Height="60"
-                    Padding="6,0,12,0"
+            <!-- App bar: the logo and the calls status on Home and in Settings; in a session a back arrow, its name and «⋯». -->
+            <Border Height="56"
+                    Padding="4,0,8,0"
                     Background="{DynamicResource EchoHeaderBrush}"
                     BorderBrush="{DynamicResource EchoBorderBrush}"
                     BorderThickness="0,0,0,1">
                 <Grid ColumnDefinitions="Auto,*,Auto">
-                    <StackPanel Orientation="Horizontal"
-                                Margin="8,0,0,0"
-                                VerticalAlignment="Center"
-                                IsVisible="{Binding SelectedMainPage, Converter={x:Static controls:EqualsConverter.Instance}, ConverterParameter=Home}">
-                        <controls:EchoLogo Width="34" Height="34" Margin="-2,0,6,0" IsAnimating="{Binding IsCapturing}" />
-                        <TextBlock FontSize="21" FontWeight="ExtraBold" VerticalAlignment="Center" Foreground="{DynamicResource EchoTextBrush}"><Run Text="Repl" /><Run Foreground="{DynamicResource EchoAccentTextBrush}" Text="io" /></TextBlock>
+                    <StackPanel x:Name="HomeLogo"
+                                Orientation="Horizontal"
+                                Margin="10,0,0,0"
+                                VerticalAlignment="Center">
+                        <controls:EchoLogo Width="30" Height="30" Margin="-2,0,6,0" IsAnimating="{Binding IsCapturing}" />
+                        <TextBlock FontSize="20" FontWeight="ExtraBold" VerticalAlignment="Center" Foreground="{DynamicResource EchoTextBrush}"><Run Text="Repl" /><Run Foreground="{DynamicResource EchoAccentTextBrush}" Text="io" /></TextBlock>
                     </StackPanel>
                     <Button x:Name="BackButton"
                             Classes="ghost icon"
@@ -303,45 +414,45 @@
                               StrokeJoin="Round"
                               Data="M 8,1 L 1,8 L 8,15 M 1,8 L 19,8" />
                     </Button>
-                    <TextBlock x:Name="PageTitleText"
-                               Grid.Column="1"
-                               Margin="6,0,8,0"
-                               VerticalAlignment="Center"
-                               FontSize="19"
-                               FontWeight="ExtraBold"
-                               TextTrimming="CharacterEllipsis"
-                               Foreground="{DynamicResource EchoTextBrush}" />
-
-                    <Button Grid.Column="2"
-                            Classes="ghost icon"
-                            Click="SessionPageMenu_OnClick"
-                            IsVisible="{Binding SelectedMainPage, Converter={x:Static controls:EqualsConverter.Instance}, ConverterParameter=Session}">
-                        <TextBlock FontSize="22" FontWeight="Bold" Text="⋯" />
-                    </Button>
+                    <StackPanel Grid.Column="1" Margin="4,0,8,0" VerticalAlignment="Center">
+                        <TextBlock x:Name="PageTitleText"
+                                   FontSize="18"
+                                   FontWeight="ExtraBold"
+                                   TextTrimming="CharacterEllipsis"
+                                   Foreground="{DynamicResource EchoTextBrush}" />
+                        <TextBlock x:Name="PageSubtitleText"
+                                   FontSize="12.5"
+                                   TextTrimming="CharacterEllipsis"
+                                   Foreground="{DynamicResource EchoMutedBrush}"
+                                   IsVisible="False" />
+                    </StackPanel>
+                    <StackPanel Grid.Column="2" Orientation="Horizontal" VerticalAlignment="Center">
+                        <Button x:Name="CallPill" Classes="callPill" Click="CallPill_OnClick">
+                            <StackPanel Orientation="Horizontal" Spacing="8">
+                                <Ellipse x:Name="CallPillDot" Width="9" Height="9" VerticalAlignment="Center" Fill="{DynamicResource EchoAccentBrush}" />
+                                <TextBlock x:Name="CallPillText" FontSize="14" FontWeight="SemiBold" VerticalAlignment="Center" Foreground="{DynamicResource EchoTextBrush}" />
+                            </StackPanel>
+                        </Button>
+                        <Button x:Name="SessionMenuButton"
+                                Classes="ghost icon"
+                                IsVisible="False"
+                                Click="SessionPageMenu_OnClick">
+                            <TextBlock FontSize="22" FontWeight="Bold" Text="⋯" />
+                        </Button>
+                    </StackPanel>
                 </Grid>
             </Border>
 
             <Panel Grid.Row="1">
-                <!-- ===== Home: start a recording, topics, sessions and the tabs of a topic. ===== -->
+                <!-- ===== Home: groups as chips, the call setup while it is not finished, a group's pages, the sessions. ===== -->
                 <Grid x:Name="HomePage"
                       RowDefinitions="Auto,Auto,Auto,*,Auto"
                       IsVisible="{Binding SelectedMainPage, Converter={x:Static controls:EqualsConverter.Instance}, ConverterParameter=Home}">
-                    <!-- Topics: «Все сессии», «Без темы» and the user's topics as chips. -->
-                    <StackPanel Grid.Row="0">
-                    <!-- Replio on calls: waits in the background; the setup steps while something is still off. -->
-                    <Border x:Name="CallCard" Classes="card" Margin="12,10,12,0" CornerRadius="18" Padding="14,12">
-                        <StackPanel Spacing="10">
-                            <StackPanel Orientation="Horizontal" Spacing="10">
-                                <Ellipse x:Name="CallStatusDot" Width="10" Height="10" VerticalAlignment="Center" Fill="{DynamicResource EchoAccentBrush}" />
-                                <TextBlock x:Name="CallStatusTitle" FontSize="16" FontWeight="Bold" VerticalAlignment="Center" />
-                            </StackPanel>
-                            <TextBlock x:Name="CallStatusText" FontSize="13.5" TextWrapping="Wrap" MaxLines="2" TextTrimming="CharacterEllipsis" Foreground="{DynamicResource EchoMutedBrush}" />
-                            <Button x:Name="CallSetupButton" Height="44" HorizontalAlignment="Stretch" Click="CallSetup_OnClick" />
-                        </StackPanel>
-                    </Border>
-                    <Grid Margin="12,12,12,0" ColumnDefinitions="*,Auto">
+                    <!-- Groups: «Все сессии», «Без группы» and the user's groups. Press and hold a group for its actions. -->
+                    <Grid Margin="0,8,0,0" ColumnDefinitions="*,Auto">
                         <ScrollViewer HorizontalScrollBarVisibility="Hidden" VerticalScrollBarVisibility="Disabled">
                             <ListBox x:Name="TopicChips"
+                                     Margin="12,0,0,0"
                                      ItemsSource="{Binding TopicItems}"
                                      SelectedItem="{Binding SelectedTopicItem, Mode=TwoWay}"
                                      Background="Transparent"
@@ -354,10 +465,10 @@
                                 </ListBox.ItemsPanel>
                                 <ListBox.ItemTemplate>
                                     <DataTemplate>
-                                        <Border Classes="topicChip" Height="44" Padding="16,0" CornerRadius="22" BorderThickness="1">
+                                        <Border Classes="topicChip longPress" Height="40" Padding="14,0" CornerRadius="20" BorderThickness="1">
                                             <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
-                                                <TextBlock MaxWidth="200"
-                                                           FontSize="15"
+                                                <TextBlock MaxWidth="180"
+                                                           FontSize="14.5"
                                                            FontWeight="SemiBold"
                                                            VerticalAlignment="Center"
                                                            TextTrimming="CharacterEllipsis"
@@ -372,106 +483,88 @@
                             </ListBox>
                         </ScrollViewer>
                         <Button Grid.Column="1"
-                                Classes="icon"
-                                Margin="8,0,0,0"
-                                FontSize="20"
-                                Command="{Binding CreateTopicCommand}"
-                                Content="+" />
+                                Classes="ghost icon"
+                                Margin="2,0,6,0"
+                                ToolTip.Tip="{Binding [NewGroup], Source={x:Static platform:MobileText.Instance}}"
+                                Command="{Binding CreateTopicCommand}">
+                            <Path Width="18" Height="18" Stretch="Uniform" Stroke="{DynamicResource EchoTextBrush}" StrokeThickness="2.4" StrokeLineCap="Round" Data="M 9,1 L 9,17 M 1,9 L 17,9" />
+                        </Button>
                     </Grid>
-                    </StackPanel>
 
-                    <!-- Title of the list: the topic name (tap to rename), count, actions. -->
-                    <Grid Grid.Row="1" Margin="16,12,12,0" ColumnDefinitions="*,Auto">
-                        <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
-                            <TextBlock x:Name="TopicTitleText"
-                                       FontSize="21"
-                                       FontWeight="ExtraBold"
-                                       VerticalAlignment="Center"
-                                       MaxWidth="210"
-                                       TextTrimming="CharacterEllipsis"
-                                       Foreground="{DynamicResource EchoTextBrush}"
-                                       IsVisible="{Binding !IsEditingTopicName}"
-                                       Text="{Binding LibraryTitle}" />
-                            <TextBox x:Name="TopicNameEditTextBox"
-                                     Width="220"
-                                     FontSize="17"
-                                     VerticalContentAlignment="Center"
-                                     Text="{Binding EditableTopicName}"
-                                     IsVisible="{Binding IsEditingTopicName}" />
-                            <Border Margin="10,0,0,0" Padding="9,3" VerticalAlignment="Center" CornerRadius="11" Background="{DynamicResource EchoSurfaceAltBrush}">
-                                <TextBlock FontSize="12.5" FontWeight="SemiBold" Foreground="{DynamicResource EchoMutedBrush}" Text="{Binding VisibleSessionsCount}" />
+                    <!-- Calls are not set up yet: one slim card instead of the steps themselves. -->
+                    <Button x:Name="CallSetupBanner"
+                            Grid.Row="1"
+                            Classes="banner"
+                            Margin="12,8,12,0"
+                            IsVisible="False"
+                            Click="CallSetup_OnClick">
+                        <Grid ColumnDefinitions="Auto,*,Auto">
+                            <Border Width="36" Height="36" CornerRadius="18" VerticalAlignment="Center" Background="{DynamicResource EchoAccentBrush}">
+                                <Path Width="16" Height="18" Stretch="Uniform" Stroke="{DynamicResource EchoAccentInkBrush}" StrokeThickness="2.2" StrokeLineCap="Round" StrokeJoin="Round"
+                                      Data="M 3,1 L 7,1 L 9,6 L 6.5,7.5 C 7.5,10 9.5,12 12,13 L 13.5,10.5 L 18,12.5 L 18,16.5 C 18,17.5 17,18.5 16,18.5 C 8,18 2,12 1.5,4 C 1.5,2.5 2,1 3,1 Z" />
                             </Border>
-                        </StackPanel>
-                        <StackPanel Grid.Column="1" Orientation="Horizontal" VerticalAlignment="Center">
-                            <Button Classes="ghost"
-                                    Padding="10,0"
-                                    Click="TopicMenu_OnClick"
-                                    IsVisible="{Binding IsTopicSelected}"
-                                    Content="⋯" />
-                            <Button Padding="12,0"
-                                    Margin="6,0,0,0"
-                                    Command="{Binding ToggleSelectionModeCommand}"
-                                    Content="{Binding L[SelectSessions]}">
-                                <Button.IsVisible>
-                                    <MultiBinding Converter="{x:Static BoolConverters.And}">
-                                        <Binding Path="ShowSessionsPanel" />
-                                        <Binding Path="!IsSelectionMode" />
-                                    </MultiBinding>
-                                </Button.IsVisible>
-                            </Button>
-                        </StackPanel>
-                    </Grid>
+                            <StackPanel Grid.Column="1" Margin="12,0,8,0" VerticalAlignment="Center">
+                                <TextBlock x:Name="CallSetupBannerTitle" FontSize="15" FontWeight="Bold" TextWrapping="Wrap" Foreground="{DynamicResource EchoTextBrush}" />
+                                <TextBlock x:Name="CallSetupBannerText" Margin="0,2,0,0" FontSize="13" TextWrapping="Wrap" Foreground="{DynamicResource EchoSoftTextBrush}" />
+                            </StackPanel>
+                            <Path Grid.Column="2" Width="8" Height="14" VerticalAlignment="Center" Stretch="Uniform" Stroke="{DynamicResource EchoSoftTextBrush}" StrokeThickness="2.2" StrokeLineCap="Round" StrokeJoin="Round" Data="M 1,1 L 7,7 L 1,13" />
+                        </Grid>
+                    </Button>
 
-                    <!-- Tabs of a topic. -->
-                    <ScrollViewer Grid.Row="2"
-                                  Margin="12,10,0,0"
-                                  HorizontalScrollBarVisibility="Hidden"
-                                  VerticalScrollBarVisibility="Disabled"
-                                  IsVisible="{Binding IsTopicSelected}">
-                        <StackPanel Orientation="Horizontal">
-                            <RadioButton GroupName="TopicTab" Classes="pill" IsChecked="{Binding IsTopicTabSessions, Mode=TwoWay}" Content="{Binding L[TopicTabSessions]}" />
-                            <RadioButton GroupName="TopicTab" Classes="pill" IsChecked="{Binding IsTopicTabSummary, Mode=TwoWay}" Content="{Binding L[TopicTabSummary]}" />
-                            <RadioButton GroupName="TopicTab" Classes="pill" IsChecked="{Binding IsTopicTabKnowledge, Mode=TwoWay}">
-                                <StackPanel Orientation="Horizontal">
-                                    <TextBlock Text="{Binding L[TopicTabKnowledge]}" />
-                                    <TextBlock Margin="6,0,0,0" Foreground="{DynamicResource EchoMutedBrush}" Text="{Binding KnowledgeSourcesCount}" />
-                                </StackPanel>
-                            </RadioButton>
-                            <RadioButton GroupName="TopicTab" Classes="pill" IsChecked="{Binding IsTopicTabQuestions, Mode=TwoWay}">
-                                <StackPanel Orientation="Horizontal">
-                                    <TextBlock Text="{Binding L[TopicTabQuestions]}" />
-                                    <TextBlock Margin="6,0,0,0" Foreground="{DynamicResource EchoMutedBrush}" Text="{Binding TopicQuestionsCount}" />
-                                </StackPanel>
-                            </RadioButton>
-                            <RadioButton GroupName="TopicTab" Classes="pill" IsChecked="{Binding IsTopicTabGraph, Mode=TwoWay}" Content="{Binding L[TopicTabGraph]}" />
-                            <RadioButton GroupName="TopicTab" Classes="pill" Margin="0,0,12,0" IsChecked="{Binding IsTopicTabMeetings, Mode=TwoWay}" Content="{Binding L[TopicTabMeetings]}" />
-                        </StackPanel>
-                    </ScrollViewer>
+                    <!-- Pages of a group. -->
+                    <Border Grid.Row="2"
+                            Margin="0,4,0,0"
+                            BorderBrush="{DynamicResource EchoBorderBrush}"
+                            BorderThickness="0,0,0,1"
+                            IsVisible="{Binding IsTopicSelected}">
+                        <ScrollViewer HorizontalScrollBarVisibility="Hidden" VerticalScrollBarVisibility="Disabled">
+                            <StackPanel Orientation="Horizontal" Margin="4,0">
+                                <RadioButton GroupName="TopicTab" Classes="tab" IsChecked="{Binding IsTopicTabSessions, Mode=TwoWay}" Content="{Binding L[TopicTabSessions]}" />
+                                <RadioButton GroupName="TopicTab" Classes="tab" IsChecked="{Binding IsTopicTabSummary, Mode=TwoWay}" Content="{Binding L[TopicTabSummary]}" />
+                                <RadioButton GroupName="TopicTab" Classes="tab" IsChecked="{Binding IsTopicTabKnowledge, Mode=TwoWay}" Content="{Binding L[TopicTabKnowledge]}" />
+                                <RadioButton GroupName="TopicTab" Classes="tab" IsChecked="{Binding IsTopicTabQuestions, Mode=TwoWay}" Content="{Binding L[TopicTabQuestions]}" />
+                                <RadioButton GroupName="TopicTab" Classes="tab" IsChecked="{Binding IsTopicTabGraph, Mode=TwoWay}" Content="{Binding L[TopicTabGraph]}" />
+                                <RadioButton GroupName="TopicTab" Classes="tab" IsChecked="{Binding IsTopicTabMeetings, Mode=TwoWay}" Content="{Binding L[TopicTabMeetings]}" />
+                            </StackPanel>
+                        </ScrollViewer>
+                    </Border>
 
-                    <Panel Grid.Row="3" Margin="12,10,12,0">
-                        <!-- «Сессии»: search like the field in the header on the computer, then the list. -->
+                    <Panel Grid.Row="3" Margin="12,8,12,0">
+                        <!-- Sessions: search and «⋯» (select several, the group's actions), then the cards. A tap opens a
+                             session, press and hold gives its actions. -->
                         <Grid RowDefinitions="Auto,*" IsVisible="{Binding ShowSessionsPanel}">
-                            <TextBox Margin="0,0,0,8"
-                                     Watermark="{Binding [SearchPlaceholder], Source={x:Static platform:MobileText.Instance}}"
-                                     Text="{Binding SessionQuery}" />
-                            <TextBlock Grid.Row="1"
-                                       Margin="2,20,2,0"
-                                       FontSize="14"
-                                       TextWrapping="Wrap"
-                                       Foreground="{DynamicResource EchoMutedBrush}"
-                                       Text="{Binding [TopicEmptyHint], Source={x:Static platform:MobileText.Instance}}"
-                                       IsVisible="{Binding VisibleSessionsCount, Converter={x:Static controls:IsZeroConverter.Instance}}" />
-                            <TextBlock Grid.Row="1"
-                                       Margin="2,96,2,0"
-                                       FontSize="14"
-                                       LineHeight="20"
-                                       TextWrapping="Wrap"
-                                       Foreground="{DynamicResource EchoMutedBrush}"
-                                       Text="{Binding [PhoneMicHint], Source={x:Static platform:MobileText.Instance}}"
-                                       IsVisible="{Binding VisibleSessionsCount, Converter={x:Static controls:IsZeroConverter.Instance}}" />
+                            <Grid ColumnDefinitions="*,Auto">
+                                <TextBox Classes="search"
+                                         Watermark="{Binding [SearchPlaceholder], Source={x:Static platform:MobileText.Instance}}"
+                                         Text="{Binding SessionQuery}">
+                                    <TextBox.InnerLeftContent>
+                                        <Path Width="16" Height="16" Margin="12,0,2,0" VerticalAlignment="Center" Stretch="Uniform" Stroke="{DynamicResource EchoMutedBrush}" StrokeThickness="2" StrokeLineCap="Round"
+                                              Data="M 7,1 C 10.3,1 13,3.7 13,7 C 13,10.3 10.3,13 7,13 C 3.7,13 1,10.3 1,7 C 1,3.7 3.7,1 7,1 Z M 11.5,11.5 L 16,16" />
+                                    </TextBox.InnerLeftContent>
+                                </TextBox>
+                                <Button Grid.Column="1"
+                                        Classes="ghost icon"
+                                        Margin="4,0,0,0"
+                                        Click="ListMenu_OnClick">
+                                    <TextBlock FontSize="22" FontWeight="Bold" Text="⋯" />
+                                </Button>
+                            </Grid>
+                            <ScrollViewer Grid.Row="1"
+                                          HorizontalScrollBarVisibility="Disabled"
+                                          IsVisible="{Binding VisibleSessionsCount, Converter={x:Static controls:IsZeroConverter.Instance}}">
+                                <StackPanel Margin="24,40,24,110" MaxWidth="340" HorizontalAlignment="Center">
+                                    <Border Width="72" Height="72" CornerRadius="36" HorizontalAlignment="Center" Background="{DynamicResource EchoAccentSoftBrush}">
+                                        <Path Width="22" Height="30" Stretch="Uniform" Stroke="{DynamicResource EchoAccentTextBrush}" StrokeThickness="2.2" StrokeLineCap="Round"
+                                              Data="M 9,1 C 11,1 12,2.5 12,4 L 12,11 C 12,13 10.5,14 9,14 C 7.5,14 6,13 6,11 L 6,4 C 6,2.5 7,1 9,1 Z M 2,10 C 2,14.5 5,18 9,18 C 13,18 16,14.5 16,10 M 9,18 L 9,22 M 5.5,22.5 L 12.5,22.5" />
+                                    </Border>
+                                    <TextBlock x:Name="EmptyTitleText" Margin="0,16,0,0" HorizontalAlignment="Center" TextAlignment="Center" TextWrapping="Wrap" FontSize="18" FontWeight="ExtraBold" Foreground="{DynamicResource EchoTextBrush}" />
+                                    <TextBlock x:Name="EmptyText" Margin="0,8,0,0" HorizontalAlignment="Center" TextAlignment="Center" TextWrapping="Wrap" FontSize="14.5" LineHeight="21" Foreground="{DynamicResource EchoSoftTextBrush}" />
+                                </StackPanel>
+                            </ScrollViewer>
                             <ListBox x:Name="SessionsList"
                                      Grid.Row="1"
-                                     Padding="0,0,0,90"
+                                     Margin="0,4,0,0"
+                                     Padding="0,0,0,100"
                                      ItemsSource="{Binding CompletedSessionsView}"
                                      controls:ItemContainer.Classes="plain"
                                      ScrollViewer.HorizontalScrollBarVisibility="Disabled"
@@ -479,59 +572,53 @@
                                      Background="Transparent">
                                 <ListBox.DataTemplates>
                                     <DataTemplate DataType="vm:SessionGroupHeader">
-                                        <TextBlock Margin="2,12,0,8" FontSize="13" FontWeight="Bold" Foreground="{DynamicResource EchoMutedBrush}" Text="{Binding Name}" />
+                                        <TextBlock Margin="4,14,0,8" FontSize="13" FontWeight="Bold" Foreground="{DynamicResource EchoMutedBrush}" Text="{Binding Name}" />
                                     </DataTemplate>
                                     <DataTemplate DataType="models:SessionSummary">
-                                        <Grid Margin="0,0,0,8" ColumnDefinitions="Auto,*,Auto">
-                                            <CheckBox Margin="2,0,10,0"
+                                        <Grid Margin="0,0,0,8" ColumnDefinitions="Auto,*">
+                                            <CheckBox Margin="2,0,8,0"
                                                       VerticalAlignment="Center"
                                                       IsChecked="{Binding IsChecked, Mode=TwoWay}"
                                                       IsVisible="{Binding $parent[UserControl].DataContext.IsSelectionMode}" />
                                             <Button Grid.Column="1"
-                                                    Classes="sessionCard"
+                                                    Classes="sessionCard longPress"
                                                     Classes.checked="{Binding IsChecked}"
                                                     HorizontalAlignment="Stretch"
                                                     HorizontalContentAlignment="Stretch"
-                                                    Padding="14,10"
+                                                    Padding="16,12"
                                                     Click="SessionCard_OnClick">
-                                                <Grid RowDefinitions="Auto,Auto" ColumnDefinitions="*,Auto">
+                                                <StackPanel>
                                                     <TextBlock Foreground="{DynamicResource EchoTextBrush}"
                                                                FontSize="16"
                                                                FontWeight="Bold"
+                                                               LineHeight="22"
+                                                               TextWrapping="Wrap"
+                                                               MaxLines="2"
                                                                TextTrimming="CharacterEllipsis"
                                                                Text="{Binding Title}" />
-                                                    <TextBlock Grid.Column="1"
-                                                               Margin="10,0,0,0"
-                                                               VerticalAlignment="Center"
-                                                               FontSize="14"
-                                                               Foreground="{DynamicResource EchoMutedBrush}"
-                                                               Text="{Binding StartedAt, StringFormat={}{0:t}}" />
-                                                    <StackPanel Grid.Row="1" Grid.ColumnSpan="2" Margin="0,6,0,0" Orientation="Horizontal">
-                                                        <Border Padding="9,2"
-                                                                CornerRadius="10"
-                                                                Background="{DynamicResource EchoSurfaceAltBrush}">
-                                                            <TextBlock FontSize="12.5" FontWeight="SemiBold" Foreground="{DynamicResource EchoMutedBrush}" Text="{Binding Usage.SessionDurationText}" />
-                                                        </Border>
-                                                        <Border Margin="8,0,0,0"
+                                                    <Grid Margin="0,6,0,0" ColumnDefinitions="Auto,*">
+                                                        <TextBlock VerticalAlignment="Center" FontSize="13.5" Foreground="{DynamicResource EchoMutedBrush}">
+                                                            <TextBlock.Text>
+                                                                <MultiBinding StringFormat="{}{0:HH:mm} · {1}">
+                                                                    <Binding Path="StartedAt" />
+                                                                    <Binding Path="Usage.SessionDurationText" />
+                                                                </MultiBinding>
+                                                            </TextBlock.Text>
+                                                        </TextBlock>
+                                                        <Border Grid.Column="1"
+                                                                Margin="10,0,0,0"
                                                                 Padding="9,2"
+                                                                HorizontalAlignment="Left"
                                                                 CornerRadius="10"
                                                                 BorderThickness="1"
                                                                 Background="{DynamicResource EchoAccentSoftBrush}"
                                                                 BorderBrush="{DynamicResource EchoAccentSoftBorderBrush}"
                                                                 IsVisible="{Binding TopicName, Converter={x:Static StringConverters.IsNotNullOrEmpty}}">
-                                                            <TextBlock MaxWidth="170" FontSize="12" FontWeight="SemiBold" TextTrimming="CharacterEllipsis" Foreground="{DynamicResource EchoBadgeTextBrush}" Text="{Binding TopicName}" />
+                                                            <TextBlock FontSize="12" FontWeight="SemiBold" TextTrimming="CharacterEllipsis" Foreground="{DynamicResource EchoBadgeTextBrush}" Text="{Binding TopicName}" />
                                                         </Border>
-                                                    </StackPanel>
-                                                </Grid>
+                                                    </Grid>
+                                                </StackPanel>
                                             </Button>
-                                            <Button Grid.Column="2"
-                                                    Classes="ghost icon"
-                                                    Margin="4,0,0,0"
-                                                    VerticalAlignment="Center"
-                                                    FontSize="18"
-                                                    Click="SessionMenu_OnClick"
-                                                    IsVisible="{Binding !$parent[UserControl].DataContext.IsSelectionMode}"
-                                                    Content="⋯" />
                                         </Grid>
                                     </DataTemplate>
                                 </ListBox.DataTemplates>
@@ -843,126 +930,140 @@
                     </Border>
                 </Grid>
 
-                <!-- ===== A session: hints while recording, summary, transcript, email, usage. ===== -->
+                <!-- ===== A session. While recording: a big timer with «Стоп», one plain status line, «Подсказки» | «Текст»
+                     and the hint buttons under the thumb. Afterwards: «Итоги», «Текст», «Подсказки», «Письмо». ===== -->
                 <Grid x:Name="SessionPage"
-                      RowDefinitions="Auto,Auto,Auto,*,Auto"
+                      RowDefinitions="Auto,Auto,*,Auto"
                       IsVisible="{Binding SelectedMainPage, Converter={x:Static controls:EqualsConverter.Instance}, ConverterParameter=Session}">
-                    <StackPanel Margin="14,12,14,0">
-                        <TextBlock FontSize="13" Foreground="{DynamicResource EchoMutedBrush}" Text="{Binding SelectedSession.StartedAt, StringFormat='{}{0:dddd, dd MMM HH:mm}'}" />
-                        <Grid Margin="0,4,0,0" ColumnDefinitions="*,Auto">
-                            <TextBlock x:Name="SessionTitleText"
-                                       FontSize="21"
-                                       FontWeight="ExtraBold"
-                                       TextWrapping="Wrap"
-                                       MaxLines="2"
-                                       TextTrimming="CharacterEllipsis"
-                                       Foreground="{DynamicResource EchoTextBrush}"
-                                       IsVisible="{Binding !IsEditingSessionTitle}"
-                                       Text="{Binding CurrentSessionTitle}" />
-                            <TextBox x:Name="SessionTitleEditTextBox"
-                                     FontSize="17"
-                                     IsVisible="{Binding IsEditingSessionTitle}"
-                                     Text="{Binding EditableSessionTitle}" />
-                        </Grid>
-                    </StackPanel>
-
-                    <!-- Recording card: the live session only. Level, what happens to the speech, a big stop button. -->
-                    <Border x:Name="RecordingBar"
-                            Grid.Row="1"
+                    <Border x:Name="LiveCard"
                             Margin="12,10,12,0"
-                            Padding="14,12"
-                            CornerRadius="18"
+                            Padding="16,10,10,12"
+                            CornerRadius="20"
                             BorderThickness="1"
-                            Background="{DynamicResource EchoAccentSoftBrush}"
-                            BorderBrush="{DynamicResource EchoAccentSoftBorderBrush}"
+                            Background="{DynamicResource EchoSurfaceBrush}"
+                            BorderBrush="{DynamicResource EchoBorderBrush}"
                             IsVisible="False">
-                        <StackPanel>
-                            <StackPanel Orientation="Horizontal">
-                                <controls:EchoListeningBars VerticalAlignment="Center" IsActive="{Binding IsCapturing}" />
-                                <TextBlock x:Name="RecordingStatusText"
-                                           Margin="10,0,0,0"
+                        <Grid RowDefinitions="Auto,Auto" ColumnDefinitions="*,Auto">
+                            <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+                                <Ellipse x:Name="LiveDot" Width="12" Height="12" VerticalAlignment="Center" Fill="#E5484D" />
+                                <TextBlock x:Name="LiveTimerText"
+                                           Margin="10,0,12,0"
                                            VerticalAlignment="Center"
-                                           FontSize="16"
-                                           FontWeight="Bold"
-                                           Foreground="{DynamicResource EchoBadgeTextBrush}"
-                                           Text="{Binding [Recording], Source={x:Static platform:MobileText.Instance}}" />
-                            </StackPanel>
-                            <!-- What happens to the speech: the level of the microphone and, in words, recognition progress or the problem. -->
-                            <StackPanel x:Name="RecordingDetails" Margin="0,10,0,0" x:DataType="platform:RecordingMonitor">
-                                <ProgressBar Height="8" CornerRadius="4" Minimum="0" Maximum="1" Value="{Binding Level}" />
-                                <TextBlock Margin="0,8,0,0" FontSize="14" TextWrapping="Wrap" Foreground="{DynamicResource EchoSoftTextBrush}" Text="{Binding EngineText}" IsVisible="{Binding EngineText, Converter={x:Static StringConverters.IsNotNullOrEmpty}}" />
-                                <TextBlock Classes="monitor" Classes.problem="{Binding IsProblem}" Margin="0,4,0,0" FontSize="14.5" LineHeight="20" FontWeight="SemiBold" TextWrapping="Wrap" Text="{Binding StatusText}" />
+                                           FontSize="30"
+                                           FontWeight="ExtraBold"
+                                           Foreground="{DynamicResource EchoTextBrush}"
+                                           Text="00:00" />
+                                <controls:EchoListeningBars VerticalAlignment="Center" IsActive="{Binding IsCapturing}" />
                             </StackPanel>
                             <Button x:Name="StopButton"
+                                    Grid.Column="1"
                                     Classes="dangerSoft"
-                                    Margin="0,12,0,0"
-                                    Height="52"
-                                    HorizontalAlignment="Stretch"
-                                    FontSize="16"
-                                    FontWeight="Bold"
+                                    MinHeight="48"
+                                    Padding="18,0"
+                                    CornerRadius="24"
+                                    VerticalAlignment="Center"
                                     Click="StopRecording_OnClick">
                                 <StackPanel Orientation="Horizontal">
-                                    <Border Width="14" Height="14" CornerRadius="3" VerticalAlignment="Center" Background="{DynamicResource EchoDangerTextBrush}" />
-                                    <TextBlock Margin="10,0,0,0" VerticalAlignment="Center" Text="{Binding [Stop], Source={x:Static platform:MobileText.Instance}}" />
+                                    <Border Width="13" Height="13" CornerRadius="3" VerticalAlignment="Center" Background="{DynamicResource EchoDangerTextBrush}" />
+                                    <TextBlock x:Name="StopButtonText" Margin="9,0,0,0" VerticalAlignment="Center" FontSize="16" FontWeight="Bold" Text="{Binding [StopShort], Source={x:Static platform:MobileText.Instance}}" />
                                 </StackPanel>
                             </Button>
-                        </StackPanel>
+                            <TextBlock x:Name="LiveStatusText"
+                                       Grid.Row="1"
+                                       Grid.ColumnSpan="2"
+                                       Margin="0,6,0,0"
+                                       Classes="liveStatus"
+                                       FontSize="15"
+                                       FontWeight="SemiBold"
+                                       LineHeight="21"
+                                       TextWrapping="Wrap"
+                                       MaxLines="2"
+                                       TextTrimming="CharacterEllipsis" />
+                        </Grid>
                     </Border>
 
-                    <ScrollViewer Grid.Row="2"
-                                  Margin="12,10,0,0"
-                                  HorizontalScrollBarVisibility="Hidden"
-                                  VerticalScrollBarVisibility="Disabled">
-                        <StackPanel Orientation="Horizontal">
-                            <RadioButton x:Name="TabAssist" GroupName="SessionTab" Classes="pill" Tag="Assist" Click="SessionTab_OnClick" Content="{Binding [TabAssist], Source={x:Static platform:MobileText.Instance}}" />
-                            <RadioButton x:Name="TabSummary" GroupName="SessionTab" Classes="pill" Tag="Summary" Click="SessionTab_OnClick" Content="{Binding L[TabSummary]}" />
-                            <RadioButton x:Name="TabTranscript" GroupName="SessionTab" Classes="pill" Tag="Transcript" Click="SessionTab_OnClick" Content="{Binding L[TabTranscript]}" />
-                            <RadioButton x:Name="TabEmail" GroupName="SessionTab" Classes="pill" Tag="Email" Click="SessionTab_OnClick" Content="{Binding L[TabEmail]}" />
-                            <RadioButton x:Name="TabUsage" GroupName="SessionTab" Classes="pill" Margin="0,0,12,0" Tag="Usage" Click="SessionTab_OnClick" Content="{Binding L[TabUsage]}" />
-                        </StackPanel>
-                    </ScrollViewer>
+                    <!-- While recording: two halves. -->
+                    <Border x:Name="LiveTabs"
+                            Grid.Row="1"
+                            Margin="12,10,12,0"
+                            Padding="3"
+                            CornerRadius="25"
+                            Background="{DynamicResource EchoSurfaceAltBrush}"
+                            IsVisible="False">
+                        <UniformGrid Columns="2">
+                            <RadioButton x:Name="TabLiveAssist" GroupName="LiveTab" Classes="segment" Tag="Assist" Click="SessionTab_OnClick" Content="{Binding [TabAssist], Source={x:Static platform:MobileText.Instance}}" />
+                            <RadioButton x:Name="TabLiveTranscript" GroupName="LiveTab" Classes="segment" Tag="Transcript" Click="SessionTab_OnClick" Content="{Binding [TabText], Source={x:Static platform:MobileText.Instance}}" />
+                        </UniformGrid>
+                    </Border>
+                    <!-- A finished session: its pages. -->
+                    <Border x:Name="SessionTabs"
+                            Grid.Row="1"
+                            BorderBrush="{DynamicResource EchoBorderBrush}"
+                            BorderThickness="0,0,0,1">
+                        <ScrollViewer HorizontalScrollBarVisibility="Hidden" VerticalScrollBarVisibility="Disabled">
+                            <StackPanel Orientation="Horizontal" Margin="4,0">
+                                <RadioButton x:Name="TabSummary" GroupName="SessionTab" Classes="tab" Tag="Summary" Click="SessionTab_OnClick" Content="{Binding L[TabSummary]}" />
+                                <RadioButton x:Name="TabTranscript" GroupName="SessionTab" Classes="tab" Tag="Transcript" Click="SessionTab_OnClick" Content="{Binding [TabText], Source={x:Static platform:MobileText.Instance}}" />
+                                <RadioButton x:Name="TabAssist" GroupName="SessionTab" Classes="tab" Tag="Assist" Click="SessionTab_OnClick" Content="{Binding [TabAssist], Source={x:Static platform:MobileText.Instance}}" />
+                                <RadioButton x:Name="TabEmail" GroupName="SessionTab" Classes="tab" Tag="Email" Click="SessionTab_OnClick" Content="{Binding L[TabEmail]}" />
+                            </StackPanel>
+                        </ScrollViewer>
+                    </Border>
 
-                    <Panel Grid.Row="3" Margin="12,10,12,0">
-                        <!-- «Подсказки»: the dialog of the desktop overlay. -->
+                    <Panel Grid.Row="2" Margin="12,10,12,0">
+                        <!-- Hints: each answer a big card; press and hold to copy or share it. -->
                         <ListBox x:Name="AssistList"
                                  IsVisible="False"
+                                 Padding="0,0,0,8"
                                  Background="Transparent"
                                  BorderThickness="0"
                                  controls:ItemContainer.Classes="plain"
                                  ScrollViewer.HorizontalScrollBarVisibility="Disabled">
                             <ListBox.ItemTemplate>
                                 <DataTemplate DataType="views:PhoneChatItem">
-                                    <Border Classes="bubble"
-                                            Classes.user="{Binding IsUser}"
-                                            Margin="0,0,0,8"
-                                            MaxWidth="340"
-                                            Padding="12,9"
-                                            BorderThickness="1">
-                                        <StackPanel>
-                                            <TextBlock Classes="role" Classes.placeholder="{Binding IsPlaceholder}" FontSize="12" FontWeight="Bold" Text="{Binding Role}" />
-                                            <SelectableTextBlock Margin="0,3,0,0" FontSize="15" LineHeight="21" TextWrapping="Wrap" Foreground="{DynamicResource EchoTextBrush}" Text="{Binding Message}" />
+                                    <Panel>
+                                        <Border Classes="request" Margin="48,2,0,8" IsVisible="{Binding IsUser}">
+                                            <TextBlock FontSize="14" FontWeight="SemiBold" TextWrapping="Wrap" Foreground="{DynamicResource EchoSoftTextBrush}" Text="{Binding Message}" />
+                                        </Border>
+                                        <Border Classes="answer longPress" Margin="0,0,0,12" IsVisible="{Binding IsAnswer}">
+                                            <TextBlock FontSize="18" LineHeight="26" TextWrapping="Wrap" Foreground="{DynamicResource EchoTextBrush}" Text="{Binding Message}" />
+                                        </Border>
+                                        <StackPanel Margin="6,4,0,12" Orientation="Horizontal" IsVisible="{Binding IsThinking}">
+                                            <controls:EchoThinkingDots VerticalAlignment="Center" />
+                                            <TextBlock Margin="10,0,0,0" VerticalAlignment="Center" FontSize="15" Foreground="{DynamicResource EchoMutedBrush}" Text="{Binding [Thinking], Source={x:Static platform:MobileText.Instance}}" />
                                         </StackPanel>
-                                    </Border>
+                                        <Border Margin="0,0,0,12" Padding="14,10" CornerRadius="14" Background="{DynamicResource EchoSurfaceAltBrush}" IsVisible="{Binding IsNotice}">
+                                            <TextBlock FontSize="14.5" LineHeight="20" TextWrapping="Wrap" Foreground="{DynamicResource EchoSoftTextBrush}" Text="{Binding Message}" />
+                                        </Border>
+                                    </Panel>
                                 </DataTemplate>
                             </ListBox.ItemTemplate>
                         </ListBox>
+                        <StackPanel x:Name="AssistEmpty" Margin="24,0,24,40" MaxWidth="320" VerticalAlignment="Center" HorizontalAlignment="Center" IsVisible="False">
+                            <Border Width="64" Height="64" CornerRadius="32" HorizontalAlignment="Center" Background="{DynamicResource EchoAccentSoftBrush}">
+                                <Path Width="26" Height="24" Stretch="Uniform" Stroke="{DynamicResource EchoAccentTextBrush}" StrokeThickness="2.2" StrokeLineCap="Round" StrokeJoin="Round"
+                                      Data="M 3,1 L 21,1 C 22,1 23,2 23,3 L 23,15 C 23,16 22,17 21,17 L 10,17 L 5,22 L 5,17 L 3,17 C 2,17 1,16 1,15 L 1,3 C 1,2 2,1 3,1 Z M 6,7 L 18,7 M 6,11 L 14,11" />
+                            </Border>
+                            <TextBlock x:Name="AssistEmptyText" Margin="0,14,0,0" HorizontalAlignment="Center" TextAlignment="Center" TextWrapping="Wrap" FontSize="15.5" LineHeight="22" Foreground="{DynamicResource EchoSoftTextBrush}" />
+                        </StackPanel>
 
                         <Grid x:Name="SummaryPanel" RowDefinitions="Auto,*" IsVisible="False">
                             <UniformGrid Columns="3">
-                                <Button Margin="0,0,3,0" Padding="4,0" HorizontalAlignment="Stretch" FontSize="14.5" Command="{Binding RegenerateSummaryCommand}" Content="{Binding L[Regenerate]}" />
-                                <Button Margin="3,0" Padding="4,0" HorizontalAlignment="Stretch" FontSize="14.5" Click="ShareSummary_OnClick" Content="{Binding [Share], Source={x:Static platform:MobileText.Instance}}" />
-                                <Button Classes="accent" Margin="3,0,0,0" Padding="4,0" HorizontalAlignment="Stretch" FontSize="14.5" Command="{Binding CopySummaryCommand}" Content="{Binding L[CopyText]}" />
+                                <Button Classes="accent secondary" Margin="0,0,3,0" Command="{Binding CopySummaryCommand}" Content="{Binding L[CopyText]}" />
+                                <Button Classes="secondary" Margin="3,0" Click="ShareSummary_OnClick" Content="{Binding [Share], Source={x:Static platform:MobileText.Instance}}" />
+                                <Button Classes="secondary" Margin="3,0,0,0" Command="{Binding RegenerateSummaryCommand}" Content="{Binding [Redo], Source={x:Static platform:MobileText.Instance}}" />
                             </UniformGrid>
-                            <Border Grid.Row="1" Margin="0,10,0,0" Classes="card">
+                            <Border Grid.Row="1" Margin="0,10,0,12" Classes="card">
                                 <controls:MarkdownView Markdown="{Binding CurrentSessionSummary}" />
                             </Border>
                         </Grid>
 
                         <Grid x:Name="TranscriptPanel" RowDefinitions="Auto,*" IsVisible="False">
-                            <Button Classes="accent" HorizontalAlignment="Right" Padding="14,0" Command="{Binding CopyTranscriptCommand}" Content="{Binding L[CopyTranscript]}" />
+                            <Button x:Name="CopyTranscriptButton" Classes="secondary" HorizontalAlignment="Right" Padding="16,0" Command="{Binding CopyTranscriptCommand}" Content="{Binding L[CopyText]}" />
                             <ListBox x:Name="TranscriptList"
                                      Grid.Row="1"
                                      Margin="0,8,0,0"
+                                     Padding="0,0,0,12"
                                      Background="Transparent"
                                      BorderThickness="0"
                                      controls:ItemContainer.Classes="plain"
@@ -970,7 +1071,9 @@
                                      ItemsSource="{Binding SelectedSessionTranscript}">
                                 <ListBox.ItemTemplate>
                                     <DataTemplate>
-                                        <SelectableTextBlock Margin="2,0,2,10" FontSize="15" LineHeight="21" TextWrapping="Wrap" Foreground="{DynamicResource EchoTextBrush}" Text="{Binding Text}" />
+                                        <Border Classes="longPress" Padding="2,0,2,14" Background="Transparent">
+                                            <TextBlock FontSize="16" LineHeight="23" TextWrapping="Wrap" Foreground="{DynamicResource EchoTextBrush}" Text="{Binding Text}" />
+                                        </Border>
                                     </DataTemplate>
                                 </ListBox.ItemTemplate>
                             </ListBox>
@@ -978,15 +1081,15 @@
 
                         <Grid x:Name="EmailPanel" RowDefinitions="Auto,Auto,*" IsVisible="False">
                             <UniformGrid Columns="3">
-                                <Button Margin="0,0,3,0" Padding="4,0" HorizontalAlignment="Stretch" FontSize="14.5" Command="{Binding FollowUpEmailCommand}" Content="{Binding L[FollowUpEmailAgain]}" />
-                                <Button Margin="3,0" Padding="4,0" HorizontalAlignment="Stretch" FontSize="14.5" Click="ShareEmail_OnClick" IsEnabled="{Binding HasFollowUpEmail}" Content="{Binding [Share], Source={x:Static platform:MobileText.Instance}}" />
-                                <Button Classes="accent" Margin="3,0,0,0" Padding="4,0" HorizontalAlignment="Stretch" FontSize="14.5" Command="{Binding CopyFollowUpEmailCommand}" Content="{Binding L[CopyEmail]}" />
+                                <Button Classes="accent secondary" Margin="0,0,3,0" Command="{Binding CopyFollowUpEmailCommand}" Content="{Binding L[CopyText]}" />
+                                <Button Classes="secondary" Margin="3,0" Click="ShareEmail_OnClick" IsEnabled="{Binding HasFollowUpEmail}" Content="{Binding [Share], Source={x:Static platform:MobileText.Instance}}" />
+                                <Button Classes="secondary" Margin="3,0,0,0" Command="{Binding FollowUpEmailCommand}" Content="{Binding [Redo], Source={x:Static platform:MobileText.Instance}}" />
                             </UniformGrid>
                             <StackPanel Grid.Row="1" Margin="2,10,0,0" Orientation="Horizontal">
                                 <controls:EchoThinkingDots Margin="0,0,10,0" VerticalAlignment="Center" IsVisible="{Binding IsFollowUpEmailBusy}" />
                                 <Panel>
-                                    <TextBlock MaxWidth="320" FontSize="13.5" TextWrapping="Wrap" Foreground="{DynamicResource EchoMutedBrush}" Text="{Binding L[FollowUpEmailBusy]}" IsVisible="{Binding IsFollowUpEmailBusy}" />
-                                    <TextBlock MaxWidth="320" FontSize="13.5" TextWrapping="Wrap" Foreground="{DynamicResource EchoMutedBrush}" Text="{Binding L[FollowUpEmailHint]}">
+                                    <TextBlock MaxWidth="320" FontSize="14" TextWrapping="Wrap" Foreground="{DynamicResource EchoMutedBrush}" Text="{Binding L[FollowUpEmailBusy]}" IsVisible="{Binding IsFollowUpEmailBusy}" />
+                                    <TextBlock MaxWidth="320" FontSize="14" TextWrapping="Wrap" Foreground="{DynamicResource EchoMutedBrush}" Text="{Binding L[FollowUpEmailHint]}">
                                         <TextBlock.IsVisible>
                                             <MultiBinding Converter="{x:Static BoolConverters.And}">
                                                 <Binding Path="!HasFollowUpEmail" />
@@ -997,7 +1100,7 @@
                                 </Panel>
                             </StackPanel>
                             <TextBox Grid.Row="2"
-                                     Margin="0,10,0,0"
+                                     Margin="0,10,0,12"
                                      Classes="readOnlyText"
                                      IsReadOnly="True"
                                      AcceptsReturn="True"
@@ -1006,67 +1109,48 @@
                                      ScrollViewer.VerticalScrollBarVisibility="Auto"
                                      Text="{Binding CurrentFollowUpEmail, Mode=OneWay}" />
                         </Grid>
-
-                        <ScrollViewer x:Name="UsagePanel" IsVisible="False" HorizontalScrollBarVisibility="Disabled">
-                            <StackPanel>
-                                <TextBlock FontSize="14" TextWrapping="Wrap" Foreground="{DynamicResource EchoMutedBrush}" Text="{Binding L[SessionUsageFallback]}" IsVisible="{Binding !UsageView.HasData}" />
-                                <StackPanel IsVisible="{Binding UsageView.HasData}">
-                                    <ItemsControl ItemsSource="{Binding UsageView.Metrics}">
-                                        <ItemsControl.ItemsPanel>
-                                            <ItemsPanelTemplate>
-                                                <UniformGrid Columns="2" />
-                                            </ItemsPanelTemplate>
-                                        </ItemsControl.ItemsPanel>
-                                        <ItemsControl.ItemTemplate>
-                                            <DataTemplate>
-                                                <Border Margin="0,0,8,8" Classes="card" Padding="12,10">
-                                                    <StackPanel>
-                                                        <TextBlock FontSize="12.5" TextWrapping="Wrap" Foreground="{DynamicResource EchoMutedBrush}" Text="{Binding Label}" />
-                                                        <TextBlock Margin="0,3,0,0" FontSize="17" FontWeight="ExtraBold" Foreground="{DynamicResource EchoTextBrush}" Text="{Binding Value}" />
-                                                    </StackPanel>
-                                                </Border>
-                                            </DataTemplate>
-                                        </ItemsControl.ItemTemplate>
-                                    </ItemsControl>
-                                    <Expander Classes="echo" Margin="0,4,8,0" HorizontalAlignment="Stretch" Header="{Binding UsageView.CostHeader}">
-                                        <ItemsControl ItemsSource="{Binding UsageView.CostRows}">
-                                            <ItemsControl.ItemTemplate>
-                                                <DataTemplate>
-                                                    <Grid Margin="0,4" ColumnDefinitions="*,Auto">
-                                                        <TextBlock Classes="costLabel" Classes.total="{Binding IsTotal}" FontSize="14" TextWrapping="Wrap" Foreground="{DynamicResource EchoSoftTextBrush}" Text="{Binding Label}" />
-                                                        <TextBlock Grid.Column="1" Margin="10,0,0,0" Classes="costValue" Classes.total="{Binding IsTotal}" FontSize="14" Foreground="{DynamicResource EchoSoftTextBrush}" Text="{Binding Value}" />
-                                                    </Grid>
-                                                </DataTemplate>
-                                            </ItemsControl.ItemTemplate>
-                                        </ItemsControl>
-                                    </Expander>
-                                </StackPanel>
-                            </StackPanel>
-                        </ScrollViewer>
                     </Panel>
 
-                    <!-- Hint buttons and the question box, as in the desktop overlay. -->
+                    <!-- Hint buttons under the thumb: one big «Что сказать», three small ones, a question on demand. -->
                     <Border x:Name="AskBar"
-                            Grid.Row="4"
-                            Padding="12,10"
+                            Grid.Row="3"
+                            Padding="12,10,12,12"
                             Background="{DynamicResource EchoHeaderBrush}"
                             BorderBrush="{DynamicResource EchoBorderBrush}"
                             BorderThickness="0,1,0,0">
-                        <StackPanel>
-                            <UniformGrid Columns="2">
-                                <Button x:Name="WhatToSayButton" Classes="quick" Margin="0,0,4,8" Click="QuickAction_OnClick" Tag="Reply" />
-                                <Button x:Name="WhatToAskButton" Classes="quick" Margin="4,0,0,8" Click="QuickAction_OnClick" Tag="Next" />
-                                <Button x:Name="FollowUpButton" Classes="quick" Margin="0,0,4,0" Click="QuickAction_OnClick" Tag="FollowUp" />
-                                <Button x:Name="RecapButton" Classes="quick" Margin="4,0,0,0" Click="QuickAction_OnClick" Tag="Recap" />
-                            </UniformGrid>
-                            <Grid Margin="0,10,0,0" ColumnDefinitions="*,Auto">
+                        <StackPanel Spacing="8">
+                            <Grid x:Name="AskRow" ColumnDefinitions="*,Auto" IsVisible="False">
                                 <TextBox x:Name="AskTextBox"
                                          MaxHeight="120"
                                          AcceptsReturn="False"
                                          TextWrapping="Wrap"
                                          Watermark="{Binding [AskPlaceholder], Source={x:Static platform:MobileText.Instance}}" />
-                                <Button Grid.Column="1" Classes="accent" Margin="8,0,0,0" Height="48" Padding="18,0" VerticalAlignment="Bottom" Click="Ask_OnClick" Content="{Binding L[AskPrefix]}" />
+                                <Button Grid.Column="1"
+                                        Classes="accent icon"
+                                        Margin="8,0,0,0"
+                                        CornerRadius="24"
+                                        VerticalAlignment="Bottom"
+                                        ToolTip.Tip="{Binding [AskSend], Source={x:Static platform:MobileText.Instance}}"
+                                        Click="Ask_OnClick">
+                                    <Path Width="18" Height="18" Stretch="Uniform" Stroke="{Binding $parent[Button].Foreground}" StrokeThickness="2.2" StrokeLineCap="Round" StrokeJoin="Round" Data="M 9,17 L 9,1 M 2,8 L 9,1 L 16,8" />
+                                </Button>
                             </Grid>
+                            <Button x:Name="WhatToSayButton"
+                                    Classes="accent"
+                                    Tag="Reply"
+                                    MinHeight="56"
+                                    CornerRadius="28"
+                                    HorizontalAlignment="Stretch"
+                                    HorizontalContentAlignment="Center"
+                                    FontSize="17"
+                                    FontWeight="Bold"
+                                    Click="QuickAction_OnClick"
+                                    Content="{Binding [ActWhatToSay], Source={x:Static platform:MobileText.Instance}}" />
+                            <UniformGrid Columns="3">
+                                <Button x:Name="WhatToAskButton" Classes="secondary" Margin="0,0,4,0" Tag="Next" Click="QuickAction_OnClick" Content="{Binding [ActWhatToAsk], Source={x:Static platform:MobileText.Instance}}" />
+                                <Button x:Name="RecapButton" Classes="secondary" Margin="2,0" Tag="Recap" Click="QuickAction_OnClick" Content="{Binding [ActRecap], Source={x:Static platform:MobileText.Instance}}" />
+                                <Button x:Name="AskToggleButton" Classes="secondary" Margin="4,0,0,0" Click="AskToggle_OnClick" Content="{Binding [ActAsk], Source={x:Static platform:MobileText.Instance}}" />
+                            </UniformGrid>
                         </StackPanel>
                     </Border>
                 </Grid>
@@ -1460,6 +1544,7 @@
                     </Grid>
                     <ScrollViewer Grid.Row="1" Margin="0,8,0,0" HorizontalScrollBarVisibility="Disabled" VerticalScrollBarVisibility="Auto">
                         <StackPanel Spacing="14">
+                            <TextBlock x:Name="CallSetupStatus" FontSize="14.5" LineHeight="21" TextWrapping="Wrap" Foreground="{DynamicResource EchoSoftTextBrush}" />
                             <StackPanel x:Name="CallSetupList" Spacing="14" />
                             <TextBlock x:Name="CallSpeakerNote" FontSize="13" TextWrapping="Wrap" Foreground="{DynamicResource EchoMutedBrush}" />
                         </StackPanel>

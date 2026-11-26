@@ -67,7 +67,7 @@ public partial class MainView : UserControl
 
         _viewModel.PlatformPermissionCheckRequested += () => PhonePlatform.HasMicrophonePermission();
         _viewModel.ConfirmationRequested += OnConfirmationRequested;
-        _viewModel.NotificationRequested += (title, message, isError) => OnUi(() => ShowMessage(title, message));
+        _viewModel.NotificationRequested += (title, message, isError) => OnUi(() => OnNotification(title, message, isError));
         _viewModel.NoteEditor = OnNoteEditorRequested;
         _viewModel.OverlaySuggestionChanged += text => OnUi(() => AppendChat(isUser: false, text));
         _viewModel.OverlayQuestionAsked += text => OnUi(() => AppendChat(isUser: true, text));
@@ -78,6 +78,7 @@ public partial class MainView : UserControl
             {
                 ResetChat();
                 _assistTab = true;
+                AskRow.IsVisible = false;
             }
 
             UpdateSessionPanels();
@@ -108,61 +109,43 @@ public partial class MainView : UserControl
                 case nameof(MainViewModel.ShowSessionsPanel):
                     OnUi(UpdateRecordButton);
                     break;
+                case nameof(MainViewModel.CurrentSessionTitle):
+                    OnUi(UpdatePageTitle);
+                    break;
+                case nameof(MainViewModel.SelectedTopicItem):
+                case nameof(MainViewModel.VisibleSessionsCount):
+                case nameof(MainViewModel.SessionQuery):
+                    OnUi(UpdateEmptyText);
+                    break;
                 case nameof(MainViewModel.SelectedUiLanguage):
                     OnUi(() =>
                     {
                         MobileText.Language = _viewModel.L.CurrentLanguageCode;
                         UpdatePage();
-                        ApplyQuickActionLabels();
+                        UpdateEmptyText();
+                        UpdateCallCard();
                         UpdateHardwareText();
                         UpdateGraphTypeNames();
                     });
                     break;
                 case nameof(MainViewModel.IsEditingTopicName) when _viewModel.IsEditingTopicName:
-                    Dispatcher.UIThread.Post(() =>
-                    {
-                        TopicNameEditTextBox.Focus();
-                        TopicNameEditTextBox.SelectAll();
-                    }, DispatcherPriority.Input);
+                    OnUi(ShowRenameTopicDialog);
                     break;
                 case nameof(MainViewModel.IsEditingSessionTitle) when _viewModel.IsEditingSessionTitle:
-                    Dispatcher.UIThread.Post(() =>
-                    {
-                        SessionTitleEditTextBox.Focus();
-                        SessionTitleEditTextBox.SelectAll();
-                    }, DispatcherPriority.Input);
+                    OnUi(ShowRenameSessionDialog);
                     break;
             }
         };
 
         DataContext = _viewModel;
-        RecordingDetails.DataContext = _monitor;
         CallAssistant.Instance.Attach(_viewModel, _capture, _monitor);
         SetUpCallCard();
         AssistList.ItemsSource = _chat;
+        _chat.CollectionChanged += (_, _) => UpdateAssistEmpty();
         ResetChat();
-        ApplyQuickActionLabels();
+        _ = new LongPress(this, OnLongPress);
+        SetUpLive();
 
-        TopicTitleText.PointerPressed += (_, _) => Execute(_viewModel.StartRenameTopicCommand);
-        TopicNameEditTextBox.KeyDown += (_, e) =>
-        {
-            if (e.Key == Key.Enter)
-            {
-                e.Handled = true;
-                _viewModel.CommitTopicRename();
-            }
-        };
-        TopicNameEditTextBox.LostFocus += (_, _) => _viewModel.CommitTopicRename();
-        SessionTitleText.PointerPressed += (_, _) => Execute(_viewModel.StartRenameSessionCommand);
-        SessionTitleEditTextBox.KeyDown += (_, e) =>
-        {
-            if (e.Key == Key.Enter)
-            {
-                e.Handled = true;
-                Execute(_viewModel.SaveSessionTitleCommand);
-            }
-        };
-        SessionTitleEditTextBox.LostFocus += (_, _) => Execute(_viewModel.SaveSessionTitleCommand);
         AskTextBox.KeyDown += (_, e) =>
         {
             if (e.Key == Key.Enter)
@@ -174,6 +157,7 @@ public partial class MainView : UserControl
 
         SetUpReadyLog();
         UpdatePage();
+        UpdateEmptyText();
     }
 
     protected override void OnAttachedToVisualTree(VisualTreeAttachmentEventArgs e)
@@ -278,18 +262,40 @@ public partial class MainView : UserControl
     private void UpdatePage()
     {
         string page = _viewModel.SelectedMainPage;
-        // A session is a page inside Home: back arrow, no bottom bar (its own question bar is at the bottom).
+        // A session is a page inside Home: back arrow, no bottom bar (its own hint buttons are at the bottom).
         BackButton.IsVisible = page == "Session";
+        HomeLogo.IsVisible = page == "Home";
         BottomNav.IsVisible = page != "Session";
-        PageTitleText.Text = page switch
-        {
-            "Session" => MobileText.Get("SessionTitle"),
-            "Settings" => _viewModel.L["SettingsTab"],
-            _ => string.Empty
-        };
+        CallPill.IsVisible = page != "Session";
+        SessionMenuButton.IsVisible = page == "Session";
+        UpdatePageTitle();
         UpdateRecordButton();
         KnowledgeSheet.IsVisible = false;
         UpdateSessionPanels();
+    }
+
+    /// <summary>The session's name and start in the app bar; «Настройки» on that page; nothing next to the logo on Home.</summary>
+    private void UpdatePageTitle()
+    {
+        string page = _viewModel.SelectedMainPage;
+        PageTitleText.Text = page switch
+        {
+            "Session" => _viewModel.CurrentSessionTitle,
+            "Settings" => _viewModel.L["SettingsTab"],
+            _ => string.Empty
+        };
+        DateTime? started = _viewModel.SelectedSession?.StartedAt;
+        PageSubtitleText.Text = started is { } at ? at.ToString("d MMMM, HH:mm", System.Globalization.CultureInfo.CurrentCulture) : string.Empty;
+        PageSubtitleText.IsVisible = page == "Session" && started != null && !IsLiveSession;
+    }
+
+    /// <summary>Empty list: what to do, in two short lines; «Ничего не нашлось» for a search.</summary>
+    private void UpdateEmptyText()
+    {
+        bool searching = !string.IsNullOrWhiteSpace(_viewModel.SessionQuery);
+        EmptyTitleText.Text = MobileText.Get(searching ? "NoResults" : "EmptyTitle");
+        EmptyText.Text = searching ? string.Empty : MobileText.Get(_viewModel.IsTopicSelected ? "EmptyGroupText" : "EmptyText");
+        EmptyText.IsVisible = !searching;
     }
 
     /// <summary>The record button floats over Home only, and not while sessions are being selected (their action bar is there).</summary>
@@ -414,8 +420,23 @@ public partial class MainView : UserControl
         }
     }
 
+    /// <summary>«Стоп» asks first: a recording stopped by a stray tap cannot be continued.</summary>
+    private void StopRecording_OnClick(object? sender, RoutedEventArgs e)
+    {
+        if (_stopping)
+        {
+            return;
+        }
+
+        ShowDialog(MobileText.Get("StopTitle"), MobileText.Get("StopText"),
+        [
+            (MobileText.Get("StopContinue"), null, false),
+            (MobileText.Get("StopConfirm"), () => StopRecording(), true)
+        ]);
+    }
+
     /// <summary>The last phrases are recognized before the session is closed and summarized.</summary>
-    private async void StopRecording_OnClick(object? sender, RoutedEventArgs e)
+    private async void StopRecording()
     {
         if (_stopping)
         {
@@ -424,23 +445,35 @@ public partial class MainView : UserControl
 
         _stopping = true;
         StopButton.IsEnabled = false;
-        RecordingStatusText.Text = MobileText.Get("Finishing");
+        StopButtonText.Text = MobileText.Get("Stopping");
+        UpdateLive();
         try
         {
+            if (_demoLive)
+            {
+                _demoLive = false;
+                UpdateSessionPanels();
+                return;
+            }
+
             await _capture.StopAndDrainAsync(TimeSpan.FromSeconds(45));
             Execute(_viewModel.StopCaptureCommand);
+        }
+        catch (Exception ex)
+        {
+            PhonePlatform.Log("[ui] Stop failed: " + ex);
         }
         finally
         {
             _stopping = false;
             StopButton.IsEnabled = true;
-            RecordingStatusText.Text = MobileText.Get("Recording");
+            StopButtonText.Text = MobileText.Get("StopShort");
         }
     }
 
     // ===== Session page =====
 
-    private bool IsLiveSession => _demoLive || _viewModel.IsCapturing && _viewModel.SelectedSession?.Status == SessionStatus.Active;
+    private bool IsLiveSession => _demoLive || (_viewModel.IsCapturing && _viewModel.SelectedSession?.Status == SessionStatus.Active);
 
     private void SessionTab_OnClick(object? sender, RoutedEventArgs e)
     {
@@ -461,41 +494,208 @@ public partial class MainView : UserControl
         UpdateSessionPanels();
     }
 
+    /// <summary>
+    /// While recording only «Подсказки» and «Текст», with the big timer and the hint buttons; a finished session
+    /// has its four pages. The assist page shows a short hint instead of an empty list.
+    /// </summary>
     private void UpdateSessionPanels()
     {
+        bool live = IsLiveSession;
         string tab = _assistTab ? "Assist" : _viewModel.SelectedSessionTab;
-        AssistList.IsVisible = tab == "Assist";
+        if (live && tab != "Transcript")
+        {
+            tab = "Assist";
+        }
+        else if (!live && tab is not ("Summary" or "Transcript" or "Email" or "Assist"))
+        {
+            tab = "Summary";
+        }
+
+        LiveCard.IsVisible = live;
+        LiveTabs.IsVisible = live;
+        SessionTabs.IsVisible = !live;
+        AssistList.IsVisible = tab == "Assist" && _chat.Count > 0;
+        AssistEmpty.IsVisible = tab == "Assist" && _chat.Count == 0;
+        AssistEmptyText.Text = MobileText.Get(live ? "HintsEmptyLive" : "HintsEmpty");
         SummaryPanel.IsVisible = tab == "Summary";
         TranscriptPanel.IsVisible = tab == "Transcript";
+        CopyTranscriptButton.IsVisible = !live;
         EmailPanel.IsVisible = tab == "Email";
-        UsagePanel.IsVisible = tab == "Usage";
         AskBar.IsVisible = tab == "Assist";
         TabAssist.IsChecked = tab == "Assist";
         TabSummary.IsChecked = tab == "Summary";
         TabTranscript.IsChecked = tab == "Transcript";
         TabEmail.IsChecked = tab == "Email";
-        TabUsage.IsChecked = tab == "Usage";
-        RecordingBar.IsVisible = IsLiveSession;
+        TabLiveAssist.IsChecked = tab == "Assist";
+        TabLiveTranscript.IsChecked = tab == "Transcript";
+        PageSubtitleText.IsVisible = _viewModel.SelectedMainPage == "Session" && _viewModel.SelectedSession != null && !live;
+        UpdateLive();
         if (TranscriptPanel.IsVisible && _viewModel.SelectedSessionTranscript.Count > 0)
         {
-            Dispatcher.UIThread.Post(() => TranscriptList.ScrollIntoView(_viewModel.SelectedSessionTranscript[^1]), DispatcherPriority.Background);
+            Dispatcher.UIThread.Post(() =>
+            {
+                if (_viewModel.SelectedSessionTranscript.Count > 0)
+                {
+                    TranscriptList.ScrollIntoView(_viewModel.SelectedSessionTranscript[^1]);
+                }
+            }, DispatcherPriority.Background);
         }
     }
 
-    private void ApplyQuickActionLabels()
+    private void UpdateAssistEmpty()
     {
-        WhatToSayButton.Content = ActionLabel("OverlayActionWhatToSay");
-        WhatToAskButton.Content = ActionLabel("OverlayActionWhatShouldISay");
-        FollowUpButton.Content = ActionLabel("OverlayActionFollowUpQuestions");
-        RecapButton.Content = ActionLabel("OverlayActionRecap");
+        bool assist = AssistList.IsVisible || AssistEmpty.IsVisible;
+        AssistList.IsVisible = assist && _chat.Count > 0;
+        AssistEmpty.IsVisible = assist && _chat.Count == 0;
     }
 
-    private string ActionLabel(string key) => (_viewModel.L[key] ?? string.Empty).Trim().TrimStart('•').TrimStart();
+    // ===== Recording screen: timer, one status line, new transcript lines in view =====
+
+    private readonly DispatcherTimer _liveTimer = new() { Interval = TimeSpan.FromSeconds(1) };
+    private string? _notice;
+    private DateTime _noticeUntil;
+    private bool _dotOn = true;
+
+    private void SetUpLive()
+    {
+        _liveTimer.Tick += (_, _) => UpdateLive();
+        _viewModel.SelectedSessionTranscript.CollectionChanged += OnTranscriptChanged;
+        _viewModel.PropertyChanged += (_, e) =>
+        {
+            if (e.PropertyName == nameof(MainViewModel.SelectedSessionTranscript))
+            {
+                OnUi(() =>
+                {
+                    _viewModel.SelectedSessionTranscript.CollectionChanged -= OnTranscriptChanged;
+                    _viewModel.SelectedSessionTranscript.CollectionChanged += OnTranscriptChanged;
+                });
+            }
+        };
+    }
+
+    private void OnTranscriptChanged(object? sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e) => FollowTranscript();
+
+    /// <summary>During a recording the newest phrase stays in view.</summary>
+    private void FollowTranscript()
+    {
+        if (!IsLiveSession || !TranscriptPanel.IsVisible)
+        {
+            return;
+        }
+
+        Dispatcher.UIThread.Post(() =>
+        {
+            if (_viewModel.SelectedSessionTranscript.Count > 0)
+            {
+                TranscriptList.ScrollIntoView(_viewModel.SelectedSessionTranscript[^1]);
+            }
+        }, DispatcherPriority.Background);
+    }
+
+    /// <summary>Timer, a blinking red dot and one line of what Replio hears; a passing notice (a hint failed) for a few seconds.</summary>
+    private void UpdateLive()
+    {
+        bool live = IsLiveSession && _viewModel.SelectedMainPage == "Session";
+        if (!live)
+        {
+            _liveTimer.Stop();
+            return;
+        }
+
+        if (!_liveTimer.IsEnabled)
+        {
+            _liveTimer.Start();
+        }
+
+        CallAssistant assistant = CallAssistant.Instance;
+        LiveTimerText.Text = _demoLive && !assistant.IsRecording ? "12:47" : assistant.ElapsedText;
+        _dotOn = !_dotOn || _stopping;
+        LiveDot.Opacity = _dotOn ? 1 : 0.25;
+
+        string text;
+        bool problem = false;
+        if (_stopping)
+        {
+            text = MobileText.Get("Finishing");
+        }
+        else if (_notice != null && DateTime.Now < _noticeUntil)
+        {
+            text = _notice;
+            problem = true;
+        }
+        else if (_demoLive && !assistant.IsRecording)
+        {
+            _notice = null;
+            text = MobileText.Get("MonitorRecognized");
+        }
+        else
+        {
+            _notice = null;
+            text = assistant.Hearing(out problem);
+        }
+
+        LiveStatusText.Text = text;
+        LiveStatusText.Classes.Set("problem", problem);
+    }
+
+    /// <summary>A short line in place of the status for 8 s (never a dialog over a running call).</summary>
+    private void ShowLiveNotice(string text)
+    {
+        _notice = text;
+        _noticeUntil = DateTime.Now.AddSeconds(8);
+        UpdateLive();
+    }
+
+    /// <summary>
+    /// A message of the view model. While recording nothing pops up over the call: a failed hint becomes a quiet
+    /// note in the hints list, anything else a passing line under the timer. Otherwise a dialog, with an exception
+    /// text turned into plain words (the original goes to the log).
+    /// </summary>
+    private void OnNotification(string title, string message, bool isError)
+    {
+        PhonePlatform.Log($"[notice] {title}: {message}");
+        string assistFailed = _viewModel.L["OpenAiRequestFailed"];
+        bool assist = !string.IsNullOrEmpty(assistFailed) && message.StartsWith(assistFailed, StringComparison.Ordinal);
+        string detail = assist ? message[assistFailed.Length..] : message;
+        FriendlyError.Kind kind = FriendlyError.Classify(detail);
+        if (assist && kind == FriendlyError.Kind.None)
+        {
+            kind = FriendlyError.Kind.Other;
+        }
+
+        string friendly = kind == FriendlyError.Kind.None ? message : FriendlyError.Describe(kind);
+        bool onSession = _viewModel.SelectedMainPage == "Session";
+        if (assist && (onSession || IsLiveSession))
+        {
+            RemoveThinking();
+            _chat.Add(PhoneChatItem.Notice(string.Format(MobileText.Get("HintFailed"), friendly)));
+            ScrollChatToEnd();
+            return;
+        }
+
+        if (_viewModel.IsCapturing && isError)
+        {
+            if (IsLiveSession && onSession)
+            {
+                ShowLiveNotice(friendly);
+            }
+
+            return;
+        }
+
+        ShowMessage(kind == FriendlyError.Kind.None ? title : MobileText.Get("ErrTitle"), friendly);
+    }
 
     private void QuickAction_OnClick(object? sender, RoutedEventArgs e)
     {
         if (sender is not Button { Tag: string tag } button)
         {
+            return;
+        }
+
+        if (_viewModel.IsAssistBusy)
+        {
+            _viewModel.ShowFeedback(MobileText.Get("HintBusy"));
             return;
         }
 
@@ -508,12 +708,19 @@ public partial class MainView : UserControl
             case "Next":
                 Execute(_viewModel.SuggestNextQuestionCommand);
                 break;
-            case "FollowUp":
-                Execute(_viewModel.FollowUpQuestionCommand);
-                break;
             case "Recap":
                 Execute(_viewModel.RecapCommand);
                 break;
+        }
+    }
+
+    /// <summary>«Спросить» opens the question box above the buttons (and closes it on a second tap).</summary>
+    private void AskToggle_OnClick(object? sender, RoutedEventArgs e)
+    {
+        AskRow.IsVisible = !AskRow.IsVisible;
+        if (AskRow.IsVisible)
+        {
+            Dispatcher.UIThread.Post(() => AskTextBox.Focus(), DispatcherPriority.Input);
         }
     }
 
@@ -528,16 +735,19 @@ public partial class MainView : UserControl
             return;
         }
 
+        if (_viewModel.IsAssistBusy)
+        {
+            _viewModel.ShowFeedback(MobileText.Get("HintBusy"));
+            return;
+        }
+
         _viewModel.OverlayPrompt = question;
         AskTextBox.Text = string.Empty;
+        AskRow.IsVisible = false;
         Execute(_viewModel.WhatShouldISayCommand);
     }
 
-    private void ResetChat()
-    {
-        _chat.Clear();
-        _chat.Add(new PhoneChatItem(_viewModel.L["OverlayRoleAssistant"], _viewModel.L["OverlaySuggestionPlaceholder"], isUser: false, isPlaceholder: true));
-    }
+    private void ResetChat() => _chat.Clear();
 
     private void AppendChat(bool isUser, string message)
     {
@@ -554,25 +764,30 @@ public partial class MainView : UserControl
         string normalized = message.Trim();
         RemoveThinking();
         PhoneChatItem? last = _chat.LastOrDefault();
-        if (last is { IsPlaceholder: false } && last.IsUser == isUser && last.Message == normalized)
+        if (last != null && last.IsUser == isUser && last.Message == normalized)
         {
             return;
         }
 
-        if (_chat.Count == 1 && _chat[0].IsPlaceholder)
-        {
-            _chat.Clear();
-        }
-
-        _chat.Add(new PhoneChatItem(isUser ? _viewModel.L["OverlayRoleUser"] : _viewModel.L["OverlayRoleAssistant"], normalized, isUser));
+        _chat.Add(isUser ? PhoneChatItem.Request(normalized) : PhoneChatItem.Answer(normalized));
         if (isUser)
         {
-            _chat.Add(new PhoneChatItem(_viewModel.L["OverlayRoleAssistant"], "…", isUser: false, isPlaceholder: true, isThinking: true));
+            _chat.Add(PhoneChatItem.Thinking());
         }
 
         while (_chat.Count > MaxChatItems)
         {
             _chat.RemoveAt(0);
+        }
+
+        ScrollChatToEnd();
+    }
+
+    private void ScrollChatToEnd()
+    {
+        if (_chat.Count == 0)
+        {
+            return;
         }
 
         PhoneChatItem newest = _chat[^1];
@@ -605,23 +820,71 @@ public partial class MainView : UserControl
 
         var actions = new List<(string, Action, bool)>
         {
-            (_viewModel.L["TopicRename"], () => Execute(_viewModel.StartRenameSessionCommand), false),
-            (_viewModel.L["FollowUpEmail"], () =>
+            (_viewModel.L["TopicRename"], () => Execute(_viewModel.StartRenameSessionCommand), false)
+        };
+        if (session.Status == SessionStatus.Completed)
+        {
+            actions.Add((_viewModel.L["FollowUpEmail"], () =>
             {
                 _assistTab = false;
                 _viewModel.SelectedSessionTab = "Email";
                 Execute(_viewModel.FollowUpEmailCommand);
                 UpdateSessionPanels();
-            }, false)
-        };
-        if (session.Status == SessionStatus.Completed)
-        {
+            }, false));
             actions.Add((MobileText.Get("ChooseTopic"), () => ShowMoveSheet(_viewModel.GetActionSessionIds(session), session.TopicId), false));
             actions.Add((_viewModel.L["MenuDeleteSession"], () => RunConfirmable(() => Execute(_viewModel.DeleteSessionCommand, session)), true));
         }
 
         ShowActions(session.Title, actions);
     }
+
+    /// <summary>Renaming in a small dialog (the phone has no room for a title being edited in place).</summary>
+    private void ShowRenameSessionDialog()
+    {
+        var box = new TextBox { Text = _viewModel.EditableSessionTitle, Margin = new Thickness(0, 12, 0, 0) };
+        ShowDialog(MobileText.Get("SessionName"), string.Empty,
+        [
+            (_viewModel.L["DialogCancel"], () => _viewModel.CancelRenameSessionTitle(), false),
+            (MobileText.Get("Save"), () =>
+            {
+                _viewModel.EditableSessionTitle = box.Text ?? string.Empty;
+                Execute(_viewModel.SaveSessionTitleCommand);
+            }, false)
+        ],
+        [box],
+        onDismiss: () => _viewModel.CancelRenameSessionTitle());
+        FocusAll(box);
+    }
+
+    private void ShowRenameTopicDialog()
+    {
+        string original = _viewModel.EditableTopicName;
+        var box = new TextBox { Text = original, Margin = new Thickness(0, 12, 0, 0) };
+        void Cancel()
+        {
+            _viewModel.EditableTopicName = original;
+            _viewModel.CommitTopicRename();
+        }
+
+        ShowDialog(MobileText.Get("GroupName"), string.Empty,
+        [
+            (_viewModel.L["DialogCancel"], () => Cancel(), false),
+            (MobileText.Get("Save"), () =>
+            {
+                _viewModel.EditableTopicName = box.Text ?? string.Empty;
+                _viewModel.CommitTopicRename();
+            }, false)
+        ],
+        [box],
+        onDismiss: () => Cancel());
+        FocusAll(box);
+    }
+
+    private static void FocusAll(TextBox box) => Dispatcher.UIThread.Post(() =>
+    {
+        box.Focus();
+        box.SelectAll();
+    }, DispatcherPriority.Input);
 
     // ===== Home: sessions and topics =====
 
@@ -641,22 +904,30 @@ public partial class MainView : UserControl
         Execute(_viewModel.OpenSessionCommand, session);
     }
 
-    private void SessionMenu_OnClick(object? sender, RoutedEventArgs e)
-    {
-        if (sender is Button { DataContext: SessionSummary session })
-        {
-            ShowSessionActions(session);
-        }
-    }
-
+    /// <summary>Press and hold on a card: everything that can be done with the session.</summary>
     private void ShowSessionActions(SessionSummary session)
     {
-        ShowActions(session.Title,
-        [
+        var actions = new List<(string, Action, bool)>
+        {
             (_viewModel.L["MenuOpenSession"], () => Execute(_viewModel.OpenSessionCommand, session), false),
-            (MobileText.Get("ChooseTopic"), () => ShowMoveSheet([session.Id], session.TopicId), false),
-            (_viewModel.L["MenuDeleteSession"], () => RunConfirmable(() => Execute(_viewModel.DeleteSessionCommand, session)), true)
-        ]);
+            (MobileText.Get("ChooseTopic"), () => ShowMoveSheet([session.Id], session.TopicId), false)
+        };
+        if (!string.IsNullOrWhiteSpace(session.SummaryText))
+        {
+            actions.Add((MobileText.Get("ShareSummary"), () => PhonePlatform.ShareText(session.Title, session.SummaryText), false));
+        }
+
+        actions.Add((_viewModel.L["SelectSessions"], () =>
+        {
+            if (!_viewModel.IsSelectionMode)
+            {
+                Execute(_viewModel.ToggleSelectionModeCommand);
+            }
+
+            session.IsChecked = true;
+        }, false));
+        actions.Add((_viewModel.L["MenuDeleteSession"], () => RunConfirmable(() => Execute(_viewModel.DeleteSessionCommand, session)), true));
+        ShowActions(session.Title, actions);
     }
 
     private void MoveChecked_OnClick(object? sender, RoutedEventArgs e)
@@ -694,13 +965,73 @@ public partial class MainView : UserControl
         ShowActions(MobileText.Get("ChooseTopic"), actions);
     }
 
-    private void TopicMenu_OnClick(object? sender, RoutedEventArgs e)
+    /// <summary>«⋯» next to the search: select several sessions; for a group also rename and delete it.</summary>
+    private void ListMenu_OnClick(object? sender, RoutedEventArgs e)
     {
-        ShowActions(_viewModel.LibraryTitle,
-        [
-            (_viewModel.L["TopicRename"], () => Execute(_viewModel.StartRenameTopicCommand), false),
-            (_viewModel.L["TopicDelete"], () => RunConfirmable(() => Execute(_viewModel.DeleteTopicCommand)), true)
-        ]);
+        var actions = new List<(string, Action, bool)>
+        {
+            (_viewModel.L["SelectSessions"], () => Execute(_viewModel.ToggleSelectionModeCommand), false)
+        };
+        if (_viewModel.IsTopicSelected)
+        {
+            actions.AddRange(GroupActions());
+        }
+
+        ShowActions(_viewModel.LibraryTitle, actions);
+    }
+
+    private IEnumerable<(string, Action, bool)> GroupActions() =>
+    [
+        (_viewModel.L["TopicRename"], () => Execute(_viewModel.StartRenameTopicCommand), false),
+        (_viewModel.L["TopicTabMeetings"], () => _viewModel.IsTopicTabMeetings = true, false),
+        (_viewModel.L["TopicDelete"], () => RunConfirmable(() => Execute(_viewModel.DeleteTopicCommand)), true)
+    ];
+
+    // ===== Press and hold =====
+
+    /// <summary>A session card, a group chip, a hint or a phrase of the text was held: its actions.</summary>
+    private void OnLongPress(Control target)
+    {
+        switch (target.DataContext)
+        {
+            case SessionSummary session when target is Button:
+                ShowSessionActions(session);
+                break;
+            case TopicItemViewModel { IsTopic: true } group:
+                _viewModel.SelectedTopicItem = group;
+                ShowActions(group.Name, GroupActions());
+                break;
+            case PhoneChatItem { IsAnswer: true } hint:
+                ShowActions(MobileText.Get("TabAssist"),
+                [
+                    (_viewModel.L["CopyText"], () => CopyText(hint.Message), false),
+                    (MobileText.Get("Share"), () => PhonePlatform.ShareText(_viewModel.CurrentSessionTitle, hint.Message), false)
+                ]);
+                break;
+            case SessionTranscriptItem line:
+                ShowActions(MobileText.Get("TabText"),
+                [
+                    (MobileText.Get("CopyLine"), () => CopyText(line.Text), false),
+                    (MobileText.Get("CopyAll"), () => Execute(_viewModel.CopyTranscriptCommand), false)
+                ]);
+                break;
+        }
+    }
+
+    private async void CopyText(string text)
+    {
+        try
+        {
+            if (TopLevel.GetTopLevel(this)?.Clipboard is { } clipboard)
+            {
+                await clipboard.SetTextAsync(text);
+                _viewModel.ShowFeedback(MobileText.Get("Copied"));
+            }
+        }
+        catch (Exception ex)
+        {
+            PhonePlatform.Log("[ui] Copy failed: " + ex.Message);
+        }
     }
 
     // ===== Knowledge base and questions =====
@@ -756,12 +1087,33 @@ public partial class MainView : UserControl
     }
 }
 
-/// <summary>A message of the hint dialog.</summary>
-public sealed class PhoneChatItem(string role, string message, bool isUser, bool isPlaceholder = false, bool isThinking = false)
+/// <summary>A line of the hints list: the user's request, Replio's answer, «Думаю…», or a quiet note (a hint did not come).</summary>
+public sealed class PhoneChatItem
 {
-    public string Role { get; } = role;
-    public string Message { get; } = message;
-    public bool IsUser { get; } = isUser;
-    public bool IsPlaceholder { get; } = isPlaceholder;
-    public bool IsThinking { get; } = isThinking;
+    private enum ItemKind
+    {
+        Request,
+        Answer,
+        Thinking,
+        Notice
+    }
+
+    private readonly ItemKind _kind;
+
+    private PhoneChatItem(ItemKind kind, string message)
+    {
+        _kind = kind;
+        Message = message;
+    }
+
+    public string Message { get; }
+    public bool IsUser => _kind == ItemKind.Request;
+    public bool IsAnswer => _kind == ItemKind.Answer;
+    public bool IsThinking => _kind == ItemKind.Thinking;
+    public bool IsNotice => _kind == ItemKind.Notice;
+
+    public static PhoneChatItem Request(string text) => new(ItemKind.Request, text);
+    public static PhoneChatItem Answer(string text) => new(ItemKind.Answer, text);
+    public static PhoneChatItem Thinking() => new(ItemKind.Thinking, string.Empty);
+    public static PhoneChatItem Notice(string text) => new(ItemKind.Notice, text);
 }

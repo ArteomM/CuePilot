@@ -123,6 +123,7 @@ public partial class MainView
     /// <summary>An action sheet: one full-width button per action, destructive ones in red.</summary>
     private void ShowActions(string title, IEnumerable<(string Label, Action Action, bool Destructive)> actions)
     {
+        _dialogDismissed = null;
         DialogContent.Children.Clear();
         DialogContent.Children.Add(TitleBlock(title));
         foreach ((string label, Action action, bool destructive) in actions)
@@ -131,6 +132,7 @@ public partial class MainView
             button.Margin = new Thickness(0, 8, 0, 0);
             button.Click += (_, _) =>
             {
+                _dialogDismissed = null;
                 CloseDialog();
                 action();
             };
@@ -144,7 +146,8 @@ public partial class MainView
         DialogLayer.IsVisible = true;
     }
 
-    private void ShowDialog(string title, string message, IReadOnlyList<(string Label, Action? Action, bool Destructive)> buttons, IEnumerable<Control>? fields = null)
+    /// <summary>A dialog; <paramref name="onDismiss"/> runs when it is closed without a button (back, a tap outside).</summary>
+    private void ShowDialog(string title, string message, IReadOnlyList<(string Label, Action? Action, bool Destructive)> buttons, IEnumerable<Control>? fields = null, Action? onDismiss = null)
     {
         DialogContent.Children.Clear();
         DialogContent.Children.Add(TitleBlock(title));
@@ -175,6 +178,7 @@ public partial class MainView
             button.Margin = new Thickness(i == 0 ? 0 : 4, 0, i == buttons.Count - 1 ? 0 : 4, 0);
             button.Click += (_, _) =>
             {
+                _dialogDismissed = null;
                 CloseDialog();
                 action?.Invoke();
             };
@@ -183,12 +187,18 @@ public partial class MainView
 
         DialogContent.Children.Add(row);
         DialogLayer.IsVisible = true;
+        _dialogDismissed = onDismiss;
     }
+
+    private Action? _dialogDismissed;
 
     private void CloseDialog()
     {
         DialogLayer.IsVisible = false;
         DialogContent.Children.Clear();
+        Action? dismissed = _dialogDismissed;
+        _dialogDismissed = null;
+        dismissed?.Invoke();
     }
 
     /// <summary>A tap outside the card closes it, like Cancel.</summary>
