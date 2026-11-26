@@ -19,10 +19,27 @@ public partial class MainView
     private void SetUpCallCard()
     {
         CallAssistant.Instance.StateChanged += () => Dispatcher.UIThread.Post(UpdateCallCard);
+        // The theme brushes are found only once the view is on screen.
+        AttachedToVisualTree += (_, _) => UpdateCallCard();
         UpdateCallCard();
     }
 
+    /// <summary>The card must never take the app down: a failure is only logged.</summary>
     private void UpdateCallCard()
+    {
+        try
+        {
+            FillCallCard();
+        }
+        catch (Exception ex)
+        {
+            PhonePlatform.Log("[calls] Call card could not be shown: " + ex);
+        }
+    }
+
+    private IBrush CardBrush(string key, string fallback) => Brush(key) ?? new SolidColorBrush(Color.Parse(fallback));
+
+    private void FillCallCard()
     {
         Context context = global::Android.App.Application.Context;
         bool mic = PhonePlatform.HasMicrophonePermission();
@@ -41,19 +58,19 @@ public partial class MainView
         {
             CallStatusTitle.Text = CallText.Get("InCallTitle");
             CallStatusText.Text = CallText.Get("InCallText");
-            CallStatusDot.Fill = (IBrush?)this.FindResource("EchoAccentBrush");
+            CallStatusDot.Fill = CardBrush("EchoAccentBrush", "#5EF0C1");
         }
         else if (mic && listen)
         {
             CallStatusTitle.Text = CallText.Get("WaitingTitle");
             CallStatusText.Text = CallText.Get("SetupReady");
-            CallStatusDot.Fill = (IBrush?)this.FindResource("EchoAccentBrush");
+            CallStatusDot.Fill = CardBrush("EchoAccentBrush", "#5EF0C1");
         }
         else
         {
             CallStatusTitle.Text = CallText.Get("SetupTitle");
             CallStatusText.Text = CallText.Get("SetupNeeded");
-            CallStatusDot.Fill = (IBrush?)this.FindResource("EchoMutedBrush");
+            CallStatusDot.Fill = CardBrush("EchoMutedBrush", "#9AA5B5");
         }
 
         AddSetupRow(CallText.Get("SetupMic"), null, mic, async () =>
@@ -63,6 +80,11 @@ public partial class MainView
         });
         AddSetupRow(CallText.Get("SetupListen"), listen ? null : CallText.Get("SetupListenHint"), listen,
             () => ReplioAccessibilityService.OpenSettings(MainActivity.Current ?? context));
+        if (!listen)
+        {
+            AddSetupRow(CallText.Get("SetupRestricted"), null, false, () => OpenAppInfo(MainActivity.Current ?? context), CallText.Get("SetupAppInfo"));
+        }
+
         AddSetupRow(CallText.Get("SetupBattery"), null, battery, () => RequestIgnoreBatteryOptimizations(MainActivity.Current ?? context));
         bool recordings = CallRecordingImporter.HasPermission(context);
         AddSetupRow(CallText.Get("SetupRecordings"), recordings ? null : CallText.Get("SetupRecordingsHint"), recordings, async () =>
@@ -79,7 +101,7 @@ public partial class MainView
         CallSpeakerNote.Text = CallText.Get("SetupSpeaker");
     }
 
-    private void AddSetupRow(string title, string? hint, bool done, Action turnOn)
+    private void AddSetupRow(string title, string? hint, bool done, Action turnOn, string? buttonText = null)
     {
         var row = new Grid { ColumnDefinitions = new ColumnDefinitions("*,Auto") };
         var texts = new StackPanel { Spacing = 2, VerticalAlignment = VerticalAlignment.Center };
@@ -89,7 +111,7 @@ public partial class MainView
             FontSize = 15,
             FontWeight = FontWeight.SemiBold,
             TextWrapping = TextWrapping.Wrap,
-            Foreground = done ? (IBrush?)this.FindResource("EchoAccentBrush") : (IBrush?)this.FindResource("EchoTextBrush")
+            Foreground = done ? CardBrush("EchoAccentBrush", "#5EF0C1") : CardBrush("EchoTextBrush", "#E9EEF5")
         });
         if (!string.IsNullOrEmpty(hint))
         {
@@ -98,7 +120,7 @@ public partial class MainView
                 Text = hint,
                 FontSize = 12,
                 TextWrapping = TextWrapping.Wrap,
-                Foreground = (IBrush?)this.FindResource("EchoMutedBrush")
+                Foreground = CardBrush("EchoMutedBrush", "#9AA5B5")
             });
         }
 
@@ -107,7 +129,7 @@ public partial class MainView
         {
             var button = new Button
             {
-                Content = CallText.Get("SetupTurnOn"),
+                Content = buttonText ?? CallText.Get("SetupTurnOn"),
                 MinHeight = 44,
                 Padding = new global::Avalonia.Thickness(16, 0),
                 Margin = new global::Avalonia.Thickness(10, 0, 0, 0),
@@ -120,6 +142,20 @@ public partial class MainView
         }
 
         CallSetupList.Children.Add(row);
+    }
+
+    private static void OpenAppInfo(Context context)
+    {
+        try
+        {
+            var intent = new Intent(Settings.ActionApplicationDetailsSettings, global::Android.Net.Uri.Parse("package:" + context.PackageName));
+            intent.AddFlags(ActivityFlags.NewTask);
+            context.StartActivity(intent);
+        }
+        catch (Exception ex)
+        {
+            PhonePlatform.Log("[calls] App info could not be opened: " + ex.Message);
+        }
     }
 
     private static bool IsIgnoringBatteryOptimizations(Context context) =>
