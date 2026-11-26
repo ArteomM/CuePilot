@@ -43,6 +43,13 @@ namespace DesktopCapture
             }
 
             var options = ParseOptions(args);
+            if (options.MeterSeconds > 0)
+            {
+                // Sound check: levels only, no recognition and no files (Meter.cs).
+                Environment.ExitCode = RunMeter(options.MeterSeconds);
+                return;
+            }
+
             if (!string.IsNullOrWhiteSpace(options.OutputPath))
             {
                 options.OutputPath = Path.GetFullPath(options.OutputPath);
@@ -1447,6 +1454,14 @@ namespace DesktopCapture
                         i++;
                         options.TranscribeFilePath = i < args.Length ? args[i] : null;
                         break;
+                    case "--meter":
+                        i++;
+                        if (i < args.Length && int.TryParse(args[i], out int meterSeconds) && meterSeconds > 0)
+                        {
+                            options.MeterSeconds = meterSeconds;
+                        }
+
+                        break;
                     default:
                         if (!arg.StartsWith("--") && string.IsNullOrWhiteSpace(options.OutputPath))
                         {
@@ -1808,6 +1823,9 @@ namespace DesktopCapture
 
             /// <summary>Audio or video file to transcribe instead of recording (see FileTranscription.cs).</summary>
             public string TranscribeFilePath;
+
+            /// <summary>Sound check: print the levels for this many seconds and exit (see Meter.cs).</summary>
+            public int MeterSeconds;
 
             /// <summary>The same options with another recognition language (auto mode locks per source).</summary>
             public RuntimeOptions WithLanguage(string language)

@@ -59,4 +59,4 @@ jobs:
           gh release delete mac-latest --repo "$GITHUB_REPOSITORY" --yes --cleanup-tag || true
           gh release create mac-latest dist/*.dmg --repo "$GITHUB_REPOSITORY" --target "$GITHUB_SHA" \
             --title "Replio для macOS (последняя сборка)" --prerelease \
-            --notes "arm64 — Mac на Apple Silicon (M1–M4), x64 — Mac на Intel. Как установить: apps/Replio.Avalonia/macos/README-tester.md"
+            --notes "arm64 — Mac на Apple Silicon (M1 и новее), x64 — Mac на Intel. Как установить: apps/Replio.Avalonia/macos/README-tester.md"

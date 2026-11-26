@@ -1897,6 +1897,11 @@ public partial class MainViewModel : ObservableObject
 
     private void OnRunningStateChanged(bool running)
     {
+        if (running)
+        {
+            StopSoundCheckForCapture();
+        }
+
         IsCapturing = running;
         CaptureStatusText = running ? L["CaptureStatusCapturing"] : L["CaptureStatusIdle"];
         PrivacyBadgeText = running ? L["PrivacyOn"] : L["PrivacyOff"];
@@ -1909,6 +1914,7 @@ public partial class MainViewModel : ObservableObject
     private void ApplyLocalization()
     {
         OnPropertyChanged(nameof(ScreenShareBadgeText));
+        OnPropertyChanged(nameof(SoundCheckButtonText));
         CaptureStatusText = IsCapturing ? L["CaptureStatusCapturing"] : L["CaptureStatusIdle"];
         PrivacyBadgeText = IsCapturing ? L["PrivacyOn"] : L["PrivacyOff"];
 
@@ -2321,20 +2327,6 @@ public partial class MainViewModel : ObservableObject
             DialogHeader = string.Format(L["UsageDialogHeader"], session.AssistDialog.Count),
             DialogText = session.AssistDialog.Count == 0 ? L["UsageAssistDialogEmpty"] : dialog.ToString().TrimEnd()
         };
-    }
-
-    private void RunAudioCaptureTest()
-    {
-        Diagnostics.Refresh();
-        if (!Diagnostics.IsReadyForCapture)
-        {
-            AudioHealthMessage = L["AudioTestNotReady"];
-            return;
-        }
-
-        AudioHealthMessage = IsCapturing
-            ? $"{L["AudioTestRunning"]} {SystemStatsText} | {MicStatsText}"
-            : L["AudioTestStartCaptureHint"];
     }
 
     private void OpenSession(object? parameter)
