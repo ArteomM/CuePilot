@@ -14,6 +14,9 @@ public sealed class SpeechModelInfo
     public required int MinRamGb { get; init; }
     public bool Recommended { get; init; }
 
+    /// <summary>Resource key of the plain name users see («Сбалансированная»); <see cref="Title"/> stays the technical one.</summary>
+    public string NameKey => "SpeechModelName_" + Id.Replace('-', '_');
+
     public string Url => "https://huggingface.co/ggerganov/whisper.cpp/resolve/main/" + FileName;
 
     /// <summary>Resource key of the desktop description; the phone shows <see cref="PhoneDescription"/>.</summary>

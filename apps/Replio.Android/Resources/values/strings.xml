@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="accessibility_label">Replio: слушать звонок</string>
+    <string name="accessibility_description">Позволяет Replio записывать встречу вместе со звонком (Android не даёт микрофон обычным приложениям во время разговора), показывать кнопку Replio поверх звонка и делать снимок экрана по вашей команде. Replio не читает содержимое других приложений и ничего не нажимает за вас.</string>
+    <string name="accessibility_summary">Запись во время звонков и кнопка поверх экрана</string>
+</resources>

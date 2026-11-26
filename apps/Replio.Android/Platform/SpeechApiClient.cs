@@ -22,8 +22,17 @@ public sealed class SpeechApiClient : ISpeechRecognizer
     private readonly string _glossary;
     private bool _useJsonBody;
 
-    public SpeechApiClient(string apiUrl, string apiKey, string model, string language, string glossary)
+    private readonly KeyValuePair<string, string>[] _extraHeaders;
+
+    /// <param name="extraHeaders">«Name=Value;Name=Value»: the Replio gateway wants the device, the app and the recording session.</param>
+    public SpeechApiClient(string apiUrl, string apiKey, string model, string language, string glossary, string extraHeaders = "")
     {
+        _extraHeaders = (extraHeaders ?? string.Empty)
+            .Split(';', StringSplitOptions.RemoveEmptyEntries)
+            .Select(pair => pair.Split('=', 2))
+            .Where(parts => parts.Length == 2 && parts[0].Trim().Length > 0)
+            .Select(parts => new KeyValuePair<string, string>(parts[0].Trim(), parts[1].Trim()))
+            .ToArray();
         _apiUrl = apiUrl ?? string.Empty;
         _apiKey = apiKey ?? string.Empty;
         _model = model ?? string.Empty;
@@ -48,6 +57,10 @@ public sealed class SpeechApiClient : ISpeechRecognizer
         {
             using var request = new HttpRequestMessage(HttpMethod.Post, url);
             request.Headers.Authorization = new AuthenticationHeaderValue("Bearer", _apiKey);
+            foreach (KeyValuePair<string, string> header in _extraHeaders)
+            {
+                request.Headers.TryAddWithoutValidation(header.Key, header.Value);
+            }
             request.Content = _useJsonBody ? BuildJsonBody(wav, prompt) : BuildMultipartBody(wav, prompt);
             // Only the asynchronous calls exist on Android: HttpClient.Send there always throws
             // PlatformNotSupportedException. Recognition runs on its own thread, so waiting here blocks nothing.

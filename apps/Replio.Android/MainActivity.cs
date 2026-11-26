@@ -5,7 +5,7 @@ using Android.Content.PM;
 using Android.OS;
 using Avalonia.Android;
 using Replio.Android.Platform;
-using ReplioDesktop.Services;
+using Replio.Android.Platform.Calls;
 
 namespace Replio.Android;
 
@@ -17,7 +17,7 @@ namespace Replio.Android;
     LaunchMode = LaunchMode.SingleTask,
     WindowSoftInputMode = global::Android.Views.SoftInput.AdjustResize,
     ConfigurationChanges = ConfigChanges.Orientation | ConfigChanges.ScreenSize | ConfigChanges.UiMode | ConfigChanges.ScreenLayout | ConfigChanges.SmallestScreenSize)]
-public class MainActivity : AvaloniaMainActivity<App>
+public class MainActivity : AvaloniaMainActivity
 {
     private const int PermissionRequestCode = 4101;
     private TaskCompletionSource<bool>? _permissionRequest;
@@ -27,43 +27,6 @@ public class MainActivity : AvaloniaMainActivity<App>
     protected override void OnCreate(Bundle? savedInstanceState)
     {
         Current = this;
-        CaptureOrchestratorService.PcmSourceFactory = () => new AndroidMicrophone();
-        MediaTranscriptionService.DecoderFactory = path => new AndroidMediaDecoder(path);
-        LocalWhisper.JavaLoader = name =>
-        {
-            try
-            {
-                Java.Lang.JavaSystem.LoadLibrary(name);
-                return true;
-            }
-            catch (Java.Lang.Throwable)
-            {
-                return false;
-            }
-        };
-        CaptureOrchestratorService.RecordingStateHook = recording =>
-        {
-            if (recording)
-            {
-                MicrophoneService.Start(this);
-            }
-            else
-            {
-                MicrophoneService.Stop(this);
-            }
-        };
-        PhonePlatform.HasMicrophonePermission = () => HasMicrophonePermission;
-        PhonePlatform.RequestMicrophonePermissionAsync = RequestMicrophonePermissionAsync;
-        PhonePlatform.ShareText = ShareText;
-        PhonePlatform.SetHiddenFromScreenCapture = SetHiddenFromScreenCapture;
-        PhonePlatform.OpenFile = OpenFile;
-        ReplioDesktop.ViewModels.MainViewModel.ExternalUrlOpener = url =>
-        {
-            OpenUri(url);
-            return true;
-        };
-        PhonePlatform.Log = line => global::Android.Util.Log.Info("Replio", line);
-
         string? selfTestUrl = Intent?.GetStringExtra(SelfTest.SttExtra);
         if (!string.IsNullOrEmpty(selfTestUrl))
         {
@@ -71,6 +34,27 @@ public class MainActivity : AvaloniaMainActivity<App>
         }
 
         base.OnCreate(savedInstanceState);
+        SetHiddenFromScreenCapture(ReplioApplication.HiddenFromCapture);
+        // Replio stays in the background from the first start on and waits for calls.
+        ReplioService.Start(this);
+    }
+
+    protected override void OnResume()
+    {
+        base.OnResume();
+        Current = this;
+        // Back from the system settings (accessibility, battery): the setup card shows what is on now.
+        CallAssistant.Instance.NotifyChanged();
+    }
+
+    protected override void OnDestroy()
+    {
+        if (ReferenceEquals(Current, this))
+        {
+            Current = null;
+        }
+
+        base.OnDestroy();
     }
 
     public bool HasMicrophonePermission =>
@@ -107,13 +91,13 @@ public class MainActivity : AvaloniaMainActivity<App>
     }
 
     /// <summary>Opens a link or a file outside the app (a browser, a player).</summary>
-    public void OpenUri(string uri)
+    public static void OpenUri(Context context, string uri)
     {
         try
         {
             var intent = new Intent(Intent.ActionView, global::Android.Net.Uri.Parse(uri));
             intent.AddFlags(ActivityFlags.NewTask);
-            StartActivity(intent);
+            context.StartActivity(intent);
         }
         catch (Exception)
         {

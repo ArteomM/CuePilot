@@ -1,0 +1,130 @@
+using Android.Content;
+using Android.OS;
+using Android.Provider;
+using Avalonia.Controls;
+using Avalonia.Layout;
+using Avalonia.Media;
+using Avalonia.Threading;
+using Replio.Android.Platform;
+using Replio.Android.Platform.Calls;
+
+namespace Replio.Android.Views;
+
+/// <summary>
+/// The card at the top of Home: «Replio ждёт звонка» when everything is set, otherwise the steps that are still off
+/// (microphone, «Слушать звонок», not putting Replio to sleep), each with its own button.
+/// </summary>
+public partial class MainView
+{
+    private void SetUpCallCard()
+    {
+        CallAssistant.Instance.StateChanged += () => Dispatcher.UIThread.Post(UpdateCallCard);
+        UpdateCallCard();
+    }
+
+    private void UpdateCallCard()
+    {
+        Context context = global::Android.App.Application.Context;
+        bool mic = PhonePlatform.HasMicrophonePermission();
+        bool listen = ReplioAccessibilityService.IsEnabled(context);
+        bool battery = IsIgnoringBatteryOptimizations(context);
+        CallAssistant assistant = CallAssistant.Instance;
+
+        CallSetupList.Children.Clear();
+        if (assistant.IsRecording)
+        {
+            CallStatusTitle.Text = CallText.Format("RecordingTitle", assistant.ElapsedText);
+            CallStatusText.Text = assistant.HearingText;
+            CallStatusDot.Fill = new SolidColorBrush(Color.Parse("#E5484D"));
+        }
+        else if (assistant.InCall)
+        {
+            CallStatusTitle.Text = CallText.Get("InCallTitle");
+            CallStatusText.Text = CallText.Get("InCallText");
+            CallStatusDot.Fill = (IBrush?)this.FindResource("EchoAccentBrush");
+        }
+        else if (mic && listen)
+        {
+            CallStatusTitle.Text = CallText.Get("WaitingTitle");
+            CallStatusText.Text = CallText.Get("SetupReady");
+            CallStatusDot.Fill = (IBrush?)this.FindResource("EchoAccentBrush");
+        }
+        else
+        {
+            CallStatusTitle.Text = CallText.Get("SetupTitle");
+            CallStatusText.Text = CallText.Get("SetupNeeded");
+            CallStatusDot.Fill = (IBrush?)this.FindResource("EchoMutedBrush");
+        }
+
+        AddSetupRow(CallText.Get("SetupMic"), null, mic, async () =>
+        {
+            await PhonePlatform.RequestMicrophonePermissionAsync();
+            UpdateCallCard();
+        });
+        AddSetupRow(CallText.Get("SetupListen"), listen ? null : CallText.Get("SetupListenHint"), listen,
+            () => ReplioAccessibilityService.OpenSettings(MainActivity.Current ?? context));
+        AddSetupRow(CallText.Get("SetupBattery"), null, battery, () => RequestIgnoreBatteryOptimizations(MainActivity.Current ?? context));
+        CallSpeakerNote.Text = CallText.Get("SetupSpeaker");
+    }
+
+    private void AddSetupRow(string title, string? hint, bool done, Action turnOn)
+    {
+        var row = new Grid { ColumnDefinitions = new ColumnDefinitions("*,Auto") };
+        var texts = new StackPanel { Spacing = 2, VerticalAlignment = VerticalAlignment.Center };
+        texts.Children.Add(new TextBlock
+        {
+            Text = (done ? "✓  " : string.Empty) + title,
+            FontSize = 15,
+            FontWeight = FontWeight.SemiBold,
+            TextWrapping = TextWrapping.Wrap,
+            Foreground = done ? (IBrush?)this.FindResource("EchoAccentBrush") : (IBrush?)this.FindResource("EchoTextBrush")
+        });
+        if (!string.IsNullOrEmpty(hint))
+        {
+            texts.Children.Add(new TextBlock
+            {
+                Text = hint,
+                FontSize = 12,
+                TextWrapping = TextWrapping.Wrap,
+                Foreground = (IBrush?)this.FindResource("EchoMutedBrush")
+            });
+        }
+
+        row.Children.Add(texts);
+        if (!done)
+        {
+            var button = new Button
+            {
+                Content = CallText.Get("SetupTurnOn"),
+                MinHeight = 44,
+                Padding = new Avalonia.Thickness(16, 0),
+                Margin = new Avalonia.Thickness(10, 0, 0, 0),
+                VerticalAlignment = VerticalAlignment.Center
+            };
+            button.Classes.Add("accent");
+            button.Click += (_, _) => turnOn();
+            Grid.SetColumn(button, 1);
+            row.Children.Add(button);
+        }
+
+        CallSetupList.Children.Add(row);
+    }
+
+    private static bool IsIgnoringBatteryOptimizations(Context context) =>
+        Build.VERSION.SdkInt < BuildVersionCodes.M ||
+        (context.GetSystemService(Context.PowerService) as PowerManager)?.IsIgnoringBatteryOptimizations(context.PackageName) == true;
+
+    private static void RequestIgnoreBatteryOptimizations(Context context)
+    {
+        try
+        {
+            var intent = new Intent(Settings.ActionRequestIgnoreBatteryOptimizations, global::Android.Net.Uri.Parse("package:" + context.PackageName));
+            intent.AddFlags(ActivityFlags.NewTask);
+            context.StartActivity(intent);
+        }
+        catch (Exception ex)
+        {
+            PhonePlatform.Log("[calls] Battery setting could not be opened: " + ex.Message);
+        }
+    }
+}

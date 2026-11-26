@@ -201,7 +201,7 @@ public class CaptureOrchestratorService
     {
         if (options.UseApiStt)
         {
-            return new SpeechApiClient(options.SttApiUrl, options.SttApiKey, options.SttApiModel, options.Language, options.SttGlossary);
+            return new SpeechApiClient(options.SttApiUrl, options.SttApiKey, options.SttApiModel, options.Language, options.SttGlossary, options.SttExtraHeaders);
         }
 
         return !string.IsNullOrWhiteSpace(options.WhisperModel) && File.Exists(options.WhisperModel) && LocalWhisper.IsAvailable
@@ -562,6 +562,9 @@ public class CaptureStartOptions
     public string SttApiModel { get; set; } = string.Empty;
     public string SttApiKey { get; set; } = string.Empty;
     public string SttGlossary { get; set; } = string.Empty;
+
+    /// <summary>«Name=Value;Name=Value» headers for the Replio gateway (device, app, session).</summary>
+    public string SttExtraHeaders { get; set; } = string.Empty;
 }
 
 public class CaptureStats

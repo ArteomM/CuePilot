@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Replio's accessibility service only needs to be bound: an accessibility service with its window on top may record
+     the microphone while a call is going on, draws its button without the overlay permission and can take a screenshot.
+     It listens to window changes only to know the name of the app in front (for the snapshot caption). -->
+<accessibility-service xmlns:android="http://schemas.android.com/apk/res/android"
+    android:description="@string/accessibility_description"
+    android:summary="@string/accessibility_summary"
+    android:accessibilityEventTypes="typeWindowStateChanged"
+    android:accessibilityFeedbackType="feedbackGeneric"
+    android:accessibilityFlags="flagDefault"
+    android:canRetrieveWindowContent="false"
+    android:canTakeScreenshot="true"
+    android:notificationTimeout="500" />

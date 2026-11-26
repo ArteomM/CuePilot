@@ -97,4 +97,9 @@
     <Compile Include="..\Replio.Avalonia\Views\Controls\ThumbnailImage.cs" Link="Views\Controls\ThumbnailImage.cs" />
   </ItemGroup>
 
+  <!-- Manrope for the native views over a call (Platform/Calls/CallUi.cs). -->
+  <ItemGroup>
+    <AndroidAsset Include="..\ReplioDesktop\Assets\Fonts\Manrope-*.ttf" Link="Assets\fonts\%(Filename)%(Extension)" />
+  </ItemGroup>
+
 </Project>

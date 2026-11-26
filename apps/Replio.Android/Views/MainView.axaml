@@ -406,6 +406,19 @@
                       RowDefinitions="Auto,Auto,Auto,*,Auto"
                       IsVisible="{Binding SelectedMainPage, Converter={x:Static controls:EqualsConverter.Instance}, ConverterParameter=Home}">
                     <!-- Topics: «Все сессии», «Без темы» and the user's topics as chips. -->
+                    <StackPanel Grid.Row="0">
+                    <!-- Replio on calls: waits in the background; the setup steps while something is still off. -->
+                    <Border x:Name="CallCard" Classes="card" Margin="12,12,12,0" CornerRadius="20" Padding="16">
+                        <StackPanel Spacing="10">
+                            <StackPanel Orientation="Horizontal" Spacing="10">
+                                <Ellipse x:Name="CallStatusDot" Width="10" Height="10" VerticalAlignment="Center" Fill="{DynamicResource EchoAccentBrush}" />
+                                <TextBlock x:Name="CallStatusTitle" FontSize="16" FontWeight="Bold" VerticalAlignment="Center" />
+                            </StackPanel>
+                            <TextBlock x:Name="CallStatusText" FontSize="14" TextWrapping="Wrap" Foreground="{DynamicResource EchoMutedBrush}" />
+                            <StackPanel x:Name="CallSetupList" Spacing="8" />
+                            <TextBlock x:Name="CallSpeakerNote" FontSize="12" TextWrapping="Wrap" Foreground="{DynamicResource EchoMutedBrush}" />
+                        </StackPanel>
+                    </Border>
                     <Grid Margin="12,12,12,0" ColumnDefinitions="*,Auto">
                         <ScrollViewer HorizontalScrollBarVisibility="Hidden" VerticalScrollBarVisibility="Disabled">
                             <ListBox x:Name="TopicChips"
@@ -445,6 +458,7 @@
                                 Command="{Binding CreateTopicCommand}"
                                 Content="+" />
                     </Grid>
+                    </StackPanel>
 
                     <!-- Title of the list: the topic name (tap to rename), count, actions. -->
                     <Grid Grid.Row="1" Margin="16,12,12,0" ColumnDefinitions="*,Auto">

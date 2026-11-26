@@ -31,16 +31,18 @@ public partial class MainViewModel
     public CaptureStartOptions BuildSpeechTestOptions()
     {
         (_, _, string whisperModel, _) = ResolveCaptureTools();
-        string key = UseApiStt ? ResolveSttApiKey() : string.Empty;
+        bool api = EffectiveUseApiStt;
+        (string url, string model, string key, string headers) = api ? ResolveSttApi(null) : (string.Empty, string.Empty, string.Empty, string.Empty);
         return new CaptureStartOptions
         {
             WhisperModel = whisperModel,
             Language = _settings.CaptureLanguage,
             SilenceThreshold = _settings.SttSilenceThreshold,
-            UseApiStt = UseApiStt && key.Length > 0,
-            SttApiUrl = string.IsNullOrWhiteSpace(SttApiBaseUrl) ? AppSettings.PolzaBaseUrl : SttApiBaseUrl.Trim(),
-            SttApiModel = SttApiModel.Trim(),
+            UseApiStt = api && key.Length > 0,
+            SttApiUrl = url,
+            SttApiModel = model,
             SttApiKey = key,
+            SttExtraHeaders = headers,
             SttGlossary = SttGlossary
         };
     }

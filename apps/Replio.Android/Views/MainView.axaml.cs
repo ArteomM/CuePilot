@@ -5,6 +5,7 @@ using Avalonia.Input;
 using Avalonia.Interactivity;
 using Avalonia.Threading;
 using Replio.Android.Platform;
+using Replio.Android.Platform.Calls;
 using ReplioDesktop.Models;
 using ReplioDesktop.Services;
 using ReplioDesktop.ViewModels;
@@ -46,10 +47,11 @@ public partial class MainView : UserControl
         var diagnostics = new DiagnosticsViewModel(new EnvironmentDiagnosticsService(dataRoot));
         _capture = new CaptureOrchestratorService();
         _monitor = new RecordingMonitor(_capture);
-        _viewModel = new MainViewModel(dataRoot, _capture, new NoVisualContextCapture(), diagnostics, settingsService, localizationService);
+        _viewModel = new MainViewModel(dataRoot, _capture, new PhoneScreenCapture(), diagnostics, settingsService, localizationService);
 
-        // No screen of other apps to capture; without whisper.cpp (a 32-bit phone) speech goes through the API only.
-        _viewModel.CaptureScreenContextEnabled = false;
+        // «Снимок экрана» works through the «Слушать звонок» accessibility service (Android 11+); without whisper.cpp
+        // (a 32-bit phone) speech goes through the API only.
+        _viewModel.CaptureScreenContextEnabled = global::Android.OS.Build.VERSION.SdkInt >= global::Android.OS.BuildVersionCodes.R;
         if (!localWhisper)
         {
             _viewModel.UseApiStt = true;
@@ -137,6 +139,8 @@ public partial class MainView : UserControl
 
         DataContext = _viewModel;
         RecordingDetails.DataContext = _monitor;
+        CallAssistant.Instance.Attach(_viewModel, _capture, _monitor);
+        SetUpCallCard();
         AssistList.ItemsSource = _chat;
         ResetChat();
         ApplyQuickActionLabels();
@@ -753,39 +757,4 @@ public sealed class PhoneChatItem(string role, string message, bool isUser, bool
     public bool IsUser { get; } = isUser;
     public bool IsPlaceholder { get; } = isPlaceholder;
     public bool IsThinking { get; } = isThinking;
-}
-
-/// <summary>No screen snapshots on the phone.</summary>
-internal sealed class NoVisualContextCapture : IVisualContextCapture
-{
-    public event EventHandler<SessionVisualFrame>? KeyFrameCaptured { add { } remove { } }
-    public event EventHandler<string>? LogLine { add { } remove { } }
-
-    public string StorageRoot => Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "Replio", "captures");
-
-    public void Start(string sessionId, int intervalMs)
-    {
-    }
-
-    public void Stop()
-    {
-    }
-
-    public bool CaptureSnapshot(string source, bool force, out SessionVisualFrame? frame)
-    {
-        frame = null;
-        return false;
-    }
-
-    public void DeleteFrameFiles(IEnumerable<SessionVisualFrame> frames)
-    {
-    }
-
-    public void DeleteSessionFiles(string sessionId)
-    {
-    }
-
-    public void CleanupOrphans(IReadOnlyCollection<SessionVisualFrame> referencedFrames, IReadOnlyCollection<string> knownSessionIds)
-    {
-    }
 }
