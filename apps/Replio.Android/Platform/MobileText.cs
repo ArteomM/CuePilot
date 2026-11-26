@@ -45,7 +45,7 @@ public sealed class MobileText : System.ComponentModel.INotifyPropertyChanged
         ["Recording"] = ("Идёт запись", "Recording"),
         ["Share"] = ("Поделиться", "Share"),
         ["Close"] = ("Закрыть", "Close"),
-        ["Topics"] = ("Темы", "Topics"),
+        ["Topics"] = ("Группы", "Groups"),
         ["Back"] = ("Назад", "Back"),
         ["PhoneSttHint"] = ("Без галочки речь распознаётся на самом телефоне моделью whisper.cpp из списка ниже: интернет не нужен, но телефон греется и батарея садится быстрее. Через API распознаёт сервер провайдера: нужны ключ и интернет.", "Unchecked, speech is recognized on the phone itself by a whisper.cpp model from the list below: no internet needed, but the phone gets warm and the battery drains faster. Through the API the provider's server recognizes it: a key and internet are needed."),
         ["PhoneApiOnlyHint"] = ("На этом телефоне (32-битный процессор) речь распознаётся только через API: выберите провайдера, укажите ключ и модель распознавания.", "On this phone (a 32-bit processor) speech is recognized through the API only: choose the provider, the key and the speech model."),
@@ -62,12 +62,12 @@ public sealed class MobileText : System.ComponentModel.INotifyPropertyChanged
         ["Modes"] = ("Режимы", "Modes"),
         ["WhatsNewShort"] = ("Что нового ↗", "What's new ↗"),
         ["SearchPlaceholder"] = ("Поиск по сессиям", "Search sessions"),
-        ["PhoneWhatsNew"] = ("Версия 1.0.5 для Android, первая версия для телефона:\n• Запись разговора через микрофон телефона, подсказки «Что сказать» и «Что спросить», итоги и письмо по итогам.\n• Распознавание речи на самом телефоне (whisper.cpp, модели скачиваются в Настройках) или через API.\n• Темы, сводка, база знаний (документы, картинки, папки, аудио и видео, свой текст), вопросы по теме и граф, как на компьютере.\n• Режимы, поиск по сессиям, дневная и ночная тема, русский и английский.\n• Replio можно скрыть от записи экрана и трансляции.", "Version 1.0.5 for Android, the first phone version:\n• Recording through the phone microphone, «What to say» and «What to ask» hints, the summary and the follow-up email.\n• Speech recognition on the phone itself (whisper.cpp, models are downloaded in Settings) or through the API.\n• Topics, the topic summary, the knowledge base (documents, pictures, folders, audio and video, own text), topic questions and the graph, as on the computer.\n• Modes, session search, day and night theme, Russian and English.\n• Replio can be hidden from screen recording and casting."),
+        ["PhoneWhatsNew"] = ("Версия 1.0.5 для Android, первая версия для телефона:\n• Запись разговора через микрофон телефона, подсказки «Что сказать» и «Что спросить», итоги и письмо по итогам.\n• Распознавание речи на самом телефоне (whisper.cpp, модели скачиваются в Настройках) или через API.\n• Группы, сводка, база знаний (документы, картинки, папки, аудио и видео, свой текст), вопросы по группе и граф, как на компьютере.\n• Режимы, поиск по сессиям, дневная и ночная тема, русский и английский.\n• Replio можно скрыть от записи экрана и трансляции.", "Version 1.0.5 for Android, the first phone version:\n• Recording through the phone microphone, «What to say» and «What to ask» hints, the summary and the follow-up email.\n• Speech recognition on the phone itself (whisper.cpp, models are downloaded in Settings) or through the API.\n• Groups, the group summary, the knowledge base (documents, pictures, folders, audio and video, own text), group questions and the graph, as on the computer.\n• Modes, session search, day and night theme, Russian and English.\n• Replio can be hidden from screen recording and casting."),
         ["SourceTitle"] = ("Источник", "Source"),
         ["Move"] = ("Перенести", "Move"),
-        ["ChooseTopic"] = ("Перенести в тему", "Move to topic"),
+        ["ChooseTopic"] = ("Перенести в группу", "Move to group"),
         ["SessionActions"] = ("Сессия", "Session"),
-        ["TopicEmptyHint"] = ("Здесь пока нет сессий. Нажмите «Записать» внизу экрана, чтобы записать разговор. Перенести сессию в тему можно кнопкой «⋯» на её карточке.", "No sessions here yet. Tap «Record» at the bottom to record a conversation. Move a session to a topic with «⋯» on its card."),
+        ["TopicEmptyHint"] = ("Здесь пока нет сессий. Нажмите «Записать» внизу экрана, чтобы записать разговор. Перенести сессию в группу можно кнопкой «⋯» на её карточке.", "No sessions here yet. Tap «Record» at the bottom to record a conversation. Move a session to a group with «⋯» on its card."),
         ["AskPlaceholder"] = ("Спросите о разговоре", "Ask about the conversation"),
         ["FolderCopyHint"] = ("Документы папки скопированы в Replio: их разобранный текст виден ниже. Чтобы добавить изменённые файлы, прикрепите папку заново.", "The folder's documents were copied into Replio: their parsed text is shown below. To add changed files, attach the folder again."),
         ["CannotOpenFile"] = ("Не удалось открыть файл: на телефоне нет приложения для этого типа файлов.", "Could not open the file: no app on the phone opens this type of file."),
@@ -106,7 +106,7 @@ public sealed class MobileText : System.ComponentModel.INotifyPropertyChanged
     /// <summary>Phone wording for shared texts that speak of dragging, Ctrl+V or the mouse (see LocalizationService).</summary>
     private static readonly Dictionary<string, (string Ru, string En)> SharedOverrides = new()
     {
-        ["TopicNoSessions"] = ("В теме пока нет сессий. Запишите разговор кнопкой «Записать» или перенесите сессию в тему кнопкой «⋯» на её карточке.", "No sessions in this topic yet. Record a conversation with «Record» or move a session here with «⋯» on its card."),
+        ["TopicNoSessions"] = ("В группе пока нет сессий. Запишите разговор кнопкой «Записать» или перенесите сессию в группу кнопкой «⋯» на её карточке.", "No sessions in this group yet. Record a conversation with «Record» or move a session here with «⋯» on its card."),
         ["KnowledgeListHint"] = ("Добавьте документы, аудио, видео, папку или свой текст кнопками выше. Replio разберёт их в Markdown (речь из аудио и видео станет текстом) и будет использовать в сводке, ответах и графе.", "Add documents, audio, video, a folder or your own text with the buttons above. Replio turns them into Markdown (speech in audio and video becomes text) and uses them in the summary, answers and graph."),
     };
 

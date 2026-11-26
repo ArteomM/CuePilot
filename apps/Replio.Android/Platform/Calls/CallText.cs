@@ -16,8 +16,8 @@ public static class CallText
         ["ActionHint"] = ("Что сказать", "What to say"),
         ["BubbleTip"] = ("Звонок начался. Нажмите, чтобы записать встречу", "A call started. Tap to record the meeting"),
         ["MenuStart"] = ("Начать", "Start"),
-        ["MenuTopic"] = ("Тема: {0}", "Topic: {0}"),
-        ["MenuNoTopic"] = ("Без темы", "No topic"),
+        ["MenuTopic"] = ("Группа: {0}", "Group: {0}"),
+        ["MenuNoTopic"] = ("Без группы", "No group"),
         ["MenuWhatToSay"] = ("Что сказать", "What to say"),
         ["MenuAutoHints"] = ("Подсказки сами", "Auto hints"),
         ["MenuSnapshot"] = ("Снимок экрана", "Screenshot"),
@@ -68,8 +68,8 @@ public static class CallText
         ["PlaybackHint"] = ("Видео, трансляции, встреча в браузере. Звонки в мессенджерах Android так отдать не даёт.", "Video, broadcasts, a meeting in a browser. Android doesn't share messenger calls this way."),
         ["SetupRecordings"] = ("Записи звонков телефона", "The phone's call recordings"),
         ["SetupRecordingsHint"] = ("Если телефон сам записывает звонки (Samsung, Xiaomi и др.), Replio после звонка заберёт запись и расшифрует обе стороны.", "If the phone records calls itself (Samsung, Xiaomi…), Replio picks the recording up after the call and transcribes both sides."),
-        ["ImportedRecording"] = ("Запись звонка из телефона добавлена в тему «{0}», расшифровываю", "The phone's call recording was added to «{0}», transcribing"),
-        ["ImportedShared"] = ("Файл добавлен в тему «{0}», расшифровываю", "The file was added to «{0}», transcribing"),
+        ["ImportedRecording"] = ("Запись звонка из телефона добавлена в группу «{0}», расшифровываю", "The phone's call recording was added to «{0}», transcribing"),
+        ["ImportedShared"] = ("Файл добавлен в группу «{0}», расшифровываю", "The file was added to «{0}», transcribing"),
         ["ImportTopic"] = ("Записи звонков", "Call recordings"),
     };
 
