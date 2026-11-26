@@ -3148,6 +3148,35 @@
                                         <TextBlock Style="{StaticResource SettingsHintStyle}" Margin="0,8,0,0" Text="{Binding L[TipSpeechLanguage]}" />
                                     </StackPanel>
                                 </Border>
+                                <!-- Devices: the microphone and the output device whose sound is recorded (Windows). -->
+                                <Border Style="{StaticResource SettingsCardStyle}">
+                                    <StackPanel>
+                                        <TextBlock Style="{StaticResource SettingsCardTitleStyle}" Text="{Binding L[AudioDevicesTitle]}" />
+                                        <Grid Margin="0,2,0,0">
+                                            <Grid.ColumnDefinitions>
+                                                <ColumnDefinition Width="230" />
+                                                <ColumnDefinition Width="*" />
+                                            </Grid.ColumnDefinitions>
+                                            <Grid.RowDefinitions>
+                                                <RowDefinition Height="Auto" />
+                                                <RowDefinition Height="Auto" />
+                                            </Grid.RowDefinitions>
+                                            <TextBlock VerticalAlignment="Center" Foreground="{DynamicResource EchoSoftTextBrush}" Text="{Binding L[AudioDeviceMic]}" />
+                                            <ComboBox Grid.Column="1" MinWidth="300" MaxWidth="460" HorizontalAlignment="Left" ToolTip="{Binding L[TipAudioDeviceMic]}"
+                                                      ItemsSource="{Binding MicDevices}" DisplayMemberPath="Name" SelectedItem="{Binding SelectedMicDevice, Mode=TwoWay}" />
+                                            <TextBlock Grid.Row="1" Margin="0,10,0,0" VerticalAlignment="Center" Foreground="{DynamicResource EchoSoftTextBrush}" Text="{Binding L[AudioDeviceOutput]}"
+                                                       Visibility="{Binding HasOutputDeviceChoice, Converter={StaticResource BoolToVisibility}}" />
+                                            <ComboBox Grid.Row="1" Grid.Column="1" Margin="0,10,0,0" MinWidth="300" MaxWidth="460" HorizontalAlignment="Left" ToolTip="{Binding L[TipAudioDeviceOutput]}"
+                                                      ItemsSource="{Binding OutputDevices}" DisplayMemberPath="Name" SelectedItem="{Binding SelectedOutputDevice, Mode=TwoWay}"
+                                                      Visibility="{Binding HasOutputDeviceChoice, Converter={StaticResource BoolToVisibility}}" />
+                                        </Grid>
+                                        <StackPanel Margin="0,10,0,0" Orientation="Horizontal">
+                                            <Button Height="32" Padding="14,0" Command="{Binding RefreshAudioDevicesCommand}" Content="{Binding L[AudioDevicesRefresh]}" />
+                                            <TextBlock Margin="12,0,0,0" VerticalAlignment="Center" Foreground="{DynamicResource EchoMutedBrush}" Text="{Binding AudioDevicesStatus}" />
+                                        </StackPanel>
+                                        <TextBlock Style="{StaticResource SettingsHintStyle}" Margin="0,8,0,0" Text="{Binding L[AudioDevicesHint]}" />
+                                    </StackPanel>
+                                </Border>
                                 <Border Style="{StaticResource SettingsCardStyle}">
                                     <StackPanel>
                                         <TextBlock Style="{StaticResource SettingsCardTitleStyle}" Text="{Binding L[SoundCheckTitle]}" />

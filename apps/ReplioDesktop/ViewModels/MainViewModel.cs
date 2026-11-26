@@ -1675,7 +1675,9 @@ public partial class MainViewModel : ObservableObject
                 SttApiModel = sttApiModel,
                 SttApiKey = sttApiKey,
                 SttExtraHeaders = useApiStt && IsManagedAi ? ReplioApi.HeadersLine(_settings.ReplioDeviceId, session.Id) : string.Empty,
-                SttGlossary = SttGlossaryFor(SelectedTopic)
+                SttGlossary = SttGlossaryFor(SelectedTopic),
+                MicDevice = _settings.MicDeviceId ?? string.Empty,
+                SystemDevice = OperatingSystem.IsWindows() ? _settings.OutputDeviceId ?? string.Empty : string.Empty
             });
             _lastSttCostSeen = 0;
             _detectedSpeechLanguages.Clear();

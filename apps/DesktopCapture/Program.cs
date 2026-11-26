@@ -43,10 +43,19 @@ namespace DesktopCapture
             }
 
             var options = ParseOptions(args);
+            AudioSources.PreferredMicId = options.MicDevice ?? string.Empty;
+            AudioSources.PreferredOutputId = options.SystemDevice ?? string.Empty;
+            if (options.ListDevices)
+            {
+                // Settings → «Речь»: the microphones and output devices to choose from.
+                Environment.ExitCode = AudioSources.ListDevices();
+                return;
+            }
+
             if (options.MeterSeconds > 0)
             {
                 // Sound check: levels only, no recognition and no files (Meter.cs).
-                Environment.ExitCode = RunMeter(options.MeterSeconds);
+                Environment.ExitCode = RunMeter(options.MeterSeconds, options.PlayFile);
                 return;
             }
 
@@ -304,10 +313,27 @@ namespace DesktopCapture
                     Console.WriteLine("Mic stream is disabled (default capture endpoint not found).");
                 }
 
-                systemCapture.StartRecording();
+                // A device that fails to start leaves its stream silent; the recording itself goes on.
+                try
+                {
+                    systemCapture.StartRecording();
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine("[system-error] " + ex.Message);
+                }
+
                 if (micCapture != null)
                 {
-                    micCapture.StartRecording();
+                    try
+                    {
+                        micCapture.StartRecording();
+                    }
+                    catch (Exception ex)
+                    {
+                        Console.WriteLine("[mic-error] " + ex.Message);
+                        Console.WriteLine("Microphone capture is unavailable: " + ex.Message);
+                    }
                 }
 
                 var statsThread = new Thread(() =>
@@ -1454,6 +1480,21 @@ namespace DesktopCapture
                         i++;
                         options.TranscribeFilePath = i < args.Length ? args[i] : null;
                         break;
+                    case "--mic-device":
+                        i++;
+                        options.MicDevice = i < args.Length ? args[i] : null;
+                        break;
+                    case "--system-device":
+                        i++;
+                        options.SystemDevice = i < args.Length ? args[i] : null;
+                        break;
+                    case "--list-devices":
+                        options.ListDevices = true;
+                        break;
+                    case "--play":
+                        i++;
+                        options.PlayFile = i < args.Length ? args[i] : null;
+                        break;
                     case "--meter":
                         i++;
                         if (i < args.Length && int.TryParse(args[i], out int meterSeconds) && meterSeconds > 0)
@@ -1826,6 +1867,16 @@ namespace DesktopCapture
 
             /// <summary>Sound check: print the levels for this many seconds and exit (see Meter.cs).</summary>
             public int MeterSeconds;
+
+            /// <summary>Sound check: a WAV to play on the chosen output device while the levels are shown (Windows).</summary>
+            public string PlayFile;
+
+            /// <summary>Devices chosen in Settings (empty: the system defaults); see AudioSources.</summary>
+            public string MicDevice;
+            public string SystemDevice;
+
+            /// <summary>Print the microphones and output devices and exit.</summary>
+            public bool ListDevices;
 
             /// <summary>The same options with another recognition language (auto mode locks per source).</summary>
             public RuntimeOptions WithLanguage(string language)

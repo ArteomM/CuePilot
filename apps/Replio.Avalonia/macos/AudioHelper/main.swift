@@ -1,7 +1,8 @@
 // replio-audio: the macOS audio source for DesktopCapture.
 //
 //   replio-audio system   system audio via ScreenCaptureKit (macOS 13+)
-//   replio-audio mic      the default microphone via AVAudioEngine
+//   replio-audio mic [UID]   the microphone with this device UID (Settings), else the default one, via AVAudioEngine
+//   replio-audio list-devices   the microphones: «[device]<TAB>input<TAB>1|0 (default)<TAB>UID<TAB>name» per line
 //   replio-audio request-mic   asks for microphone access (the macOS prompt) and exits: 0 allowed, 2 not
 //   replio-audio decode <media> <out.wav>   the sound of an audio or video file (mp3, m4a, wav, aiff, mp4, mov…)
 //                                             as a 16 kHz mono 16-bit WAV, via AVFoundation; exit 4 = no sound track
@@ -12,6 +13,7 @@
 
 import AppKit
 import AVFoundation
+import CoreAudio
 import CoreGraphics
 import CoreMedia
 import Foundation
@@ -154,11 +156,75 @@ final class SystemAudioCapture: NSObject, SCStreamOutput, SCStreamDelegate {
     }
 }
 
+// ---------- input devices (CoreAudio) ----------
+
+func audioDevices() -> [AudioDeviceID] {
+    var address = AudioObjectPropertyAddress(mSelector: kAudioHardwarePropertyDevices, mScope: kAudioObjectPropertyScopeGlobal, mElement: kAudioObjectPropertyElementMain)
+    var size: UInt32 = 0
+    guard AudioObjectGetPropertyDataSize(AudioObjectID(kAudioObjectSystemObject), &address, 0, nil, &size) == noErr else { return [] }
+    var ids = [AudioDeviceID](repeating: 0, count: Int(size) / MemoryLayout<AudioDeviceID>.size)
+    guard AudioObjectGetPropertyData(AudioObjectID(kAudioObjectSystemObject), &address, 0, nil, &size, &ids) == noErr else { return [] }
+    return ids
+}
+
+func hasInput(_ device: AudioDeviceID) -> Bool {
+    var address = AudioObjectPropertyAddress(mSelector: kAudioDevicePropertyStreams, mScope: kAudioDevicePropertyScopeInput, mElement: kAudioObjectPropertyElementMain)
+    var size: UInt32 = 0
+    return AudioObjectGetPropertyDataSize(device, &address, 0, nil, &size) == noErr && size > 0
+}
+
+func stringProperty(_ device: AudioDeviceID, _ selector: AudioObjectPropertySelector) -> String {
+    var address = AudioObjectPropertyAddress(mSelector: selector, mScope: kAudioObjectPropertyScopeGlobal, mElement: kAudioObjectPropertyElementMain)
+    var value: Unmanaged<CFString>?
+    var size = UInt32(MemoryLayout<Unmanaged<CFString>?>.size)
+    guard AudioObjectGetPropertyData(device, &address, 0, nil, &size, &value) == noErr, let text = value?.takeRetainedValue() else { return "" }
+    return text as String
+}
+
+func defaultInputDevice() -> AudioDeviceID {
+    var address = AudioObjectPropertyAddress(mSelector: kAudioHardwarePropertyDefaultInputDevice, mScope: kAudioObjectPropertyScopeGlobal, mElement: kAudioObjectPropertyElementMain)
+    var device = AudioDeviceID(0)
+    var size = UInt32(MemoryLayout<AudioDeviceID>.size)
+    AudioObjectGetPropertyData(AudioObjectID(kAudioObjectSystemObject), &address, 0, nil, &size, &device)
+    return device
+}
+
+func listDevices() {
+    let fallback = defaultInputDevice()
+    for device in audioDevices() where hasInput(device) {
+        let uid = stringProperty(device, kAudioDevicePropertyDeviceUID)
+        let name = stringProperty(device, kAudioObjectPropertyName)
+        print("[device]\tinput\t\(device == fallback ? 1 : 0)\t\(uid)\t\(name)")
+    }
+    exit(0)
+}
+
+func inputDevice(uid: String) -> AudioDeviceID? {
+    audioDevices().first { hasInput($0) && stringProperty($0, kAudioDevicePropertyDeviceUID) == uid }
+}
+
 final class MicrophoneCapture {
     private let engine = AVAudioEngine()
+    private let deviceUID: String
+
+    init(deviceUID: String) {
+        self.deviceUID = deviceUID
+    }
 
     func start() throws {
         let input = engine.inputNode
+        // The microphone chosen in Settings; a missing one (unplugged) leaves the default microphone.
+        if !deviceUID.isEmpty, let unit = input.audioUnit {
+            if var device = inputDevice(uid: deviceUID) {
+                let status = AudioUnitSetProperty(unit, kAudioOutputUnitProperty_CurrentDevice, kAudioUnitScope_Global, 0, &device, UInt32(MemoryLayout<AudioDeviceID>.size))
+                if status != noErr {
+                    log("cannot use the chosen microphone (\(status)), using the default one")
+                }
+            } else {
+                log("the chosen microphone is not connected, using the default one")
+            }
+        }
+
         let format = input.outputFormat(forBus: 0)
         guard format.sampleRate > 0, format.channelCount > 0 else {
             throw NSError(domain: "replio-audio", code: 1, userInfo: [NSLocalizedDescriptionKey: "no microphone found"])
@@ -201,9 +267,9 @@ func startSystem() {
     }
 }
 
-func startMicrophone() {
+func startMicrophone(deviceUID: String) {
     let begin = {
-        let capture = MicrophoneCapture()
+        let capture = MicrophoneCapture(deviceUID: deviceUID)
         captureHolder = capture
         do {
             try capture.start()
@@ -343,6 +409,10 @@ guard arguments.count >= 2 else {
     exit(64)
 }
 
+if arguments[1] == "list-devices" {
+    listDevices()
+}
+
 if arguments[1] == "request-mic" {
     requestMicrophone()
     dispatchMain()
@@ -368,7 +438,7 @@ switch arguments[1] {
 case "system":
     startSystem()
 case "mic":
-    startMicrophone()
+    startMicrophone(deviceUID: arguments.count >= 3 ? arguments[2] : "")
 default:
     log("usage: replio-audio system|mic|request-mic")
     exit(64)

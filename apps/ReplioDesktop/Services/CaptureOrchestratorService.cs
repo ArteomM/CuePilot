@@ -251,6 +251,16 @@ public class CaptureOrchestratorService
             args.Add("--keep-chunks");
         }
 
+        if (!string.IsNullOrWhiteSpace(options.MicDevice))
+        {
+            args.Add("--mic-device " + Quote(options.MicDevice));
+        }
+
+        if (!string.IsNullOrWhiteSpace(options.SystemDevice))
+        {
+            args.Add("--system-device " + Quote(options.SystemDevice));
+        }
+
         bool hasLocalWhisper = !string.IsNullOrWhiteSpace(options.WhisperBin) &&
             !string.IsNullOrWhiteSpace(options.WhisperModel);
         if (hasLocalWhisper)
@@ -310,6 +320,10 @@ public class CaptureStartOptions
     /// <summary>«Name=Value;Name=Value» headers for the Replio gateway (device, app, session).</summary>
     public string SttExtraHeaders { get; set; } = string.Empty;
     public string SttGlossary { get; set; } = string.Empty;
+
+    /// <summary>Devices chosen in Settings; empty = as in the system.</summary>
+    public string MicDevice { get; set; } = string.Empty;
+    public string SystemDevice { get; set; } = string.Empty;
 }
 
 public class CaptureStats

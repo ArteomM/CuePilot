@@ -1,7 +1,6 @@
 using System.Diagnostics;
 using System.Globalization;
 using System.IO;
-using System.Runtime.InteropServices;
 using System.Text;
 using System.Text.RegularExpressions;
 
@@ -10,8 +9,8 @@ namespace ReplioDesktop.Services;
 /// <summary>
 /// The sound check of Settings, like in video call apps: Replio plays a short melody and at the same time shows the
 /// levels of the microphone and of the computer's sound (DesktopCapture «--meter»). Nothing is recorded, recognised
-/// or saved, and no session is made. The melody is generated (a soft three-note chime) and played by the system:
-/// winmm on Windows, afplay on macOS.
+/// or saved, and no session is made. The melody is generated (a soft three-note chime); on Windows DesktopCapture plays
+/// it on the chosen output device, on macOS afplay plays it.
 /// </summary>
 public sealed class SoundCheckService
 {
@@ -43,7 +42,11 @@ public sealed class SoundCheckService
         }
     }
 
-    public void Start(string workingDirectory, int seconds)
+    /// <summary>
+    /// <paramref name="micDevice"/>, <paramref name="outputDevice"/>: the devices chosen in Settings (empty: as in
+    /// the system). On Windows DesktopCapture plays the melody itself on that output device; on macOS afplay does.
+    /// </summary>
+    public void Start(string workingDirectory, int seconds, string micDevice, string outputDevice)
     {
         if (IsRunning)
         {
@@ -52,6 +55,24 @@ public sealed class SoundCheckService
 
         string? exe = CaptureOrchestratorService.FindCaptureExecutable(workingDirectory);
         string args = "--meter " + seconds.ToString(CultureInfo.InvariantCulture);
+        if (!string.IsNullOrWhiteSpace(micDevice))
+        {
+            args += " --mic-device \"" + micDevice.Replace("\"", string.Empty) + "\"";
+        }
+
+        if (OperatingSystem.IsWindows())
+        {
+            if (!string.IsNullOrWhiteSpace(outputDevice))
+            {
+                args += " --system-device \"" + outputDevice.Replace("\"", string.Empty) + "\"";
+            }
+
+            string? melody = WriteMelody();
+            if (melody != null)
+            {
+                args += " --play \"" + melody + "\"";
+            }
+        }
         var process = new Process
         {
             StartInfo = new ProcessStartInfo
@@ -111,7 +132,10 @@ public sealed class SoundCheckService
             return;
         }
 
-        PlayMelody();
+        if (OperatingSystem.IsMacOS())
+        {
+            PlayMelodyMac();
+        }
     }
 
     public void Stop()
@@ -141,21 +165,33 @@ public sealed class SoundCheckService
         }
     }
 
-    private void PlayMelody()
+    private string? WriteMelody()
     {
         try
         {
             string path = Path.Combine(Path.GetTempPath(), "replio-sound-check.wav");
             File.WriteAllBytes(path, BuildMelody());
-            if (OperatingSystem.IsWindows())
-            {
-                PlaySound(path, IntPtr.Zero, SndFilename | SndAsync | SndNoDefault);
-            }
-            else if (OperatingSystem.IsMacOS())
-            {
-                StopPlayer();
-                _player = Process.Start(new ProcessStartInfo("/usr/bin/afplay", "\"" + path + "\"") { UseShellExecute = false, CreateNoWindow = true });
-            }
+            return path;
+        }
+        catch (Exception ex)
+        {
+            LogLine?.Invoke("[sound-check] Melody not written: " + ex.Message);
+            return null;
+        }
+    }
+
+    private void PlayMelodyMac()
+    {
+        string? path = WriteMelody();
+        if (path == null)
+        {
+            return;
+        }
+
+        try
+        {
+            StopPlayer();
+            _player = Process.Start(new ProcessStartInfo("/usr/bin/afplay", "\"" + path + "\"") { UseShellExecute = false, CreateNoWindow = true });
         }
         catch (Exception ex)
         {
@@ -167,11 +203,6 @@ public sealed class SoundCheckService
     {
         try
         {
-            if (OperatingSystem.IsWindows())
-            {
-                PlaySound(null, IntPtr.Zero, 0);
-            }
-
             if (_player is { HasExited: false })
             {
                 _player.Kill();
@@ -241,11 +272,4 @@ public sealed class SoundCheckService
         writer.Flush();
         return stream.ToArray();
     }
-
-    private const uint SndAsync = 0x0001;
-    private const uint SndNoDefault = 0x0002;
-    private const uint SndFilename = 0x00020000;
-
-    [DllImport("winmm.dll", CharSet = CharSet.Unicode, EntryPoint = "PlaySoundW")]
-    private static extern bool PlaySound(string? sound, IntPtr module, uint flags);
 }

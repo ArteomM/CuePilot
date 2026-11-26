@@ -107,14 +107,13 @@ public partial class MainViewModel
             _soundCheck.LogLine += line => RunOnUi(() => AppendLog(line));
         }
 
-        string projectDir = Path.Combine(_projectRoot, "apps", "DesktopCapture");
         _soundCheckMicMax = _soundCheckSystemMax = 0;
         SoundCheckMicLevel = SoundCheckSystemLevel = 0;
         AudioHealthMessage = string.Empty;
         SoundCheckStatus = L["SoundCheckRunningHint"];
         IsSoundCheckRunning = true;
         AppendLog("[sound-check] Started.");
-        _soundCheck.Start(Directory.Exists(projectDir) ? projectDir : _projectRoot, SoundCheckSeconds);
+        _soundCheck.Start(CaptureWorkingDirectory(), SoundCheckSeconds, _settings.MicDeviceId ?? string.Empty, _settings.OutputDeviceId ?? string.Empty);
     }
 
     private void FinishSoundCheck()

@@ -1,6 +1,10 @@
 using System;
 using System.Globalization;
+using System.IO;
 using System.Threading;
+#if WINDOWS
+using NAudio.CoreAudioApi;
+#endif
 using NAudio.Wave;
 
 namespace DesktopCapture
@@ -8,13 +12,15 @@ namespace DesktopCapture
     /// <summary>
     /// «--meter SECONDS»: the sound check of Settings. Listens to the microphone and to the computer's sound and prints
     /// «[level] system=0.123 mic=0.045» ten times a second (peak, 0–1), without chunks, recognition or a session.
-    /// Stops after SECONDS, on Enter or when stdin closes.
+    /// Stops after SECONDS, on Enter or when stdin closes. «--play FILE» plays a WAV on the chosen output device
+    /// (Windows) while the levels run, so the bar of the computer's sound shows that this device is the one heard.
     /// </summary>
     partial class Program
     {
-        private static int RunMeter(int seconds)
+        private static int RunMeter(int seconds, string playFile)
         {
             float systemPeak = 0, micPeak = 0;
+            IDisposable player = null;
             object gate = new object();
             var stop = new ManualResetEvent(false);
             IWaveIn system = null, mic = null;
@@ -44,6 +50,7 @@ namespace DesktopCapture
                     mic = null;
                 }
 
+                player = StartMelody(playFile);
                 new Thread(() =>
                 {
                     try
@@ -75,6 +82,7 @@ namespace DesktopCapture
             }
             finally
             {
+                player?.Dispose();
                 foreach (IWaveIn capture in new[] { system, mic })
                 {
                     if (capture == null)
@@ -92,6 +100,62 @@ namespace DesktopCapture
 
                     capture.Dispose();
                 }
+            }
+        }
+
+        private static IDisposable StartMelody(string path)
+        {
+#if WINDOWS
+            if (string.IsNullOrWhiteSpace(path) || !File.Exists(path))
+            {
+                return null;
+            }
+
+            try
+            {
+                using (var enumerator = new MMDeviceEnumerator())
+                {
+                    MMDevice device = AudioSources.OutputDevice(enumerator);
+                    var reader = new AudioFileReader(path);
+                    var output = device != null ? new WasapiOut(device, AudioClientShareMode.Shared, true, 100) : new WasapiOut();
+                    output.Init(reader);
+                    output.Play();
+                    return new Melody(output, reader);
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine("[play-error] " + ex.Message);
+                return null;
+            }
+#else
+            return null;
+#endif
+        }
+
+        private sealed class Melody : IDisposable
+        {
+            private readonly IWavePlayer _output;
+            private readonly IDisposable _reader;
+
+            public Melody(IWavePlayer output, IDisposable reader)
+            {
+                _output = output;
+                _reader = reader;
+            }
+
+            public void Dispose()
+            {
+                try
+                {
+                    _output.Stop();
+                }
+                catch (Exception)
+                {
+                }
+
+                _output.Dispose();
+                _reader.Dispose();
             }
         }
 

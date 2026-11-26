@@ -105,6 +105,7 @@ public partial class MainViewModel
 
             _settingsSection = value;
             OnPropertyChanged();
+            OnSettingsSectionChangedForAudio();
             foreach (string name in new[]
             {
                 nameof(IsSettingsAccount), nameof(IsSettingsMeetings), nameof(IsSettingsSpeech), nameof(IsSettingsAi),

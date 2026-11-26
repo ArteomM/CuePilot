@@ -2221,6 +2221,27 @@
                                     <TextBlock Classes="settingsHint" Margin="0,8,0,0" Text="{Binding L[TipSpeechLanguage]}" />
                                 </StackPanel>
                             </Border>
+                            <!-- Devices: the microphone (macOS records the sound of all apps, so there is no output choice there). -->
+                            <Border Classes="settingsCard">
+                                <StackPanel>
+                                    <TextBlock Classes="settingsCardTitle" Text="{Binding L[AudioDevicesTitle]}" />
+                                    <Grid Margin="0,2,0,0" ColumnDefinitions="230,*" RowDefinitions="Auto,Auto">
+                                        <TextBlock VerticalAlignment="Center" Foreground="{DynamicResource EchoSoftTextBrush}" Text="{Binding L[AudioDeviceMic]}" />
+                                        <ComboBox Grid.Column="1" MinWidth="300" MaxWidth="460" HorizontalAlignment="Left" ToolTip.Tip="{Binding L[TipAudioDeviceMic]}"
+                                                  ItemsSource="{Binding MicDevices}" SelectedItem="{Binding SelectedMicDevice, Mode=TwoWay}" DisplayMemberBinding="{Binding Name}" />
+                                        <TextBlock Grid.Row="1" Margin="0,10,0,0" VerticalAlignment="Center" Foreground="{DynamicResource EchoSoftTextBrush}" Text="{Binding L[AudioDeviceOutput]}"
+                                                   IsVisible="{Binding HasOutputDeviceChoice}" />
+                                        <ComboBox Grid.Row="1" Grid.Column="1" Margin="0,10,0,0" MinWidth="300" MaxWidth="460" HorizontalAlignment="Left" ToolTip.Tip="{Binding L[TipAudioDeviceOutput]}"
+                                                  ItemsSource="{Binding OutputDevices}" SelectedItem="{Binding SelectedOutputDevice, Mode=TwoWay}" DisplayMemberBinding="{Binding Name}"
+                                                  IsVisible="{Binding HasOutputDeviceChoice}" />
+                                    </Grid>
+                                    <StackPanel Margin="0,10,0,0" Orientation="Horizontal">
+                                        <Button Height="32" Padding="14,0" Command="{Binding RefreshAudioDevicesCommand}" Content="{Binding L[AudioDevicesRefresh]}" />
+                                        <TextBlock Margin="12,0,0,0" VerticalAlignment="Center" Foreground="{DynamicResource EchoMutedBrush}" Text="{Binding AudioDevicesStatus}" />
+                                    </StackPanel>
+                                    <TextBlock Classes="settingsHint" Margin="0,8,0,0" Text="{Binding L[AudioDevicesHint]}" />
+                                </StackPanel>
+                            </Border>
                             <Border Classes="settingsCard">
                                 <StackPanel>
                                     <TextBlock Classes="settingsCardTitle" Text="{Binding L[SoundCheckTitle]}" />
