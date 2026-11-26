@@ -186,7 +186,7 @@ public static class Render
     public static string TopicMarkdown(Archive archive, SessionTopic topic)
     {
         var text = new StringBuilder();
-        text.Append("# Тема: ").AppendLine(topic.Name).AppendLine();
+        text.Append("# Группа: ").AppendLine(topic.Name).AppendLine();
         text.Append("- Id: ").AppendLine(topic.Id);
         if (topic.KnowledgeUpdatedAt is { } updated)
         {

@@ -112,7 +112,7 @@ public partial class ConversationAssistService
             $"Visual context:\n{visualContext}\n\n" +
             $"Web context:\n{webContext}\n\n" +
             "Return exactly one question in Russian, no markdown. " +
-            "Do not ask about what the topic context already settles; prefer open points from earlier meetings when they fit.";
+            "Do not ask about what the group context already settles; prefer open points from earlier meetings when they fit.";
 
         LlmResponse response = await CompleteAsync(options, AssistModelTier.Fast, systemPrompt, fullPrompt, images, cancellationToken);
         return AssistResult.From(response, NormalizeSingleQuestion(response.Text));

@@ -94,7 +94,8 @@ public static class McpServer
         ["capabilities"] = new JsonObject { ["tools"] = new JsonObject() },
         ["serverInfo"] = new JsonObject { ["name"] = "replio", ["version"] = Help.Version.Replace("replio ", string.Empty) },
         ["instructions"] =
-            "Replio meeting sessions on this computer: transcript, AI summary (Markdown, Russian headings), screenshots, topics. " +
+            "Replio meeting sessions on this computer: transcript, AI summary (Markdown, Russian headings), screenshots, topics " +
+            "(shown to users as «Группы», groups of meetings). " +
             "Find a session with list_sessions (by words, topic or dates), then read it with get_session. " +
             "A session can be named by id, by «last», by a time like «2026-11-17 14:05» or by words of its title. Read-only."
     };

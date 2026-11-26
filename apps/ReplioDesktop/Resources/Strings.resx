@@ -216,7 +216,7 @@
   <data name="IndicatorAsk" xml:space="preserve"><value>Show</value></data>
   <data name="WhatsNewButtonText" xml:space="preserve"><value>What's new in Replio {0} ↗</value></data>
   <data name="WhatsNewTitle" xml:space="preserve"><value>Replio {0} highlights</value></data>
-  <data name="WhatsNewBody" xml:space="preserve"><value>Replio 1.1.4:&#x0a;• Recordings with no recognised speech are no longer sent to the AI: they are named «Empty recording» and Replio offers to delete them.&#x0a;• A topic updates by itself after each meeting: its summary and graph are ready without pressing «Update topic». While it runs, the button shows the progress.&#x0a;• The «Hidden from screen share» badge shows the real state and switches with a click.&#x0a;• Graph: labels no longer overlap, the legend and the hint moved under the graph.&#x0a;• The Replio icon in the tray blinks during a recording; its menu has «Open the live transcript», «Stop recording» and «Take a screenshot».&#x0a;• The recording bar no longer covers the main window's input box, the «Statistics» tab is gone, «Select several» sits above the meeting list.&#x0a;• New meetings, topics and the knowledge base live in the .replio folder in your home folder, like .claude for Claude. Earlier data stays where it was; move it in Settings → Data and updates.&#x0a;&#x0a;Replio 1.1.3:&#x0a;• Settings are split into sections: «Account», «Meetings», «Speech», «AI assistant», «Windows and look», «Hotkeys», «Data and updates». Changes are saved by themselves, there is no «Save» button any more.&#x0a;• Each plan sees only what it can use: on «Local» speech is recognised on the computer, on «Pro» and «Team» you can choose the recognition quality.&#x0a;• «Meetings (default)» in Settings apply to every topic that has no setup of its own.&#x0a;• Names and terms can now also be set per topic on the «How to help» tab: they are added to the common list and recognised better.&#x0a;• «Private» plan: AI and speech recognition run through the company's server, which the administrator connects once in the account on replio.ru.&#x0a;• The «Deep mode» switch is gone: it changed nothing.&#x0a;&#x0a;Replio 1.1.2:&#x0a;• «Modes» are replaced by the topic tab «How to help»: meeting type (sales, interview, negotiation, stand-up, consultation or your own), how to hint and which sections to add to the summary. Meetings without a topic are set up in Settings.&#x0a;• The search in the header looks everywhere: topics, topic summaries, meeting summaries, transcripts, emails, the knowledge base and questions. A click opens the right place.&#x0a;• «Update topic» also redoes out-of-date meeting summaries of the topic and replaces «Rewrite summary» in a topic's meeting.&#x0a;• A limit bar in the header shows what is left today and this month: yellow when little is left, red at the very end.&#x0a;• «Help» opens as a small window with short cards and pictures.&#x0a;• Settings now have «Open account page» and «Data folder»: keep meetings, topics and the knowledge base in Yandex Disk, OneDrive or iCloud Drive to have them on all your computers.&#x0a;• New logo, as on the site. The plan from your account is picked up by itself.&#x0a;&#x0a;Replio 1.1.0 — the first version.&#x0a;• Live hints during a call: «What to say», «What to answer», «What to ask» and follow-up questions in a separate window that is hidden from screen share.&#x0a;• Meeting summary, follow-up email and transcript with «Copy» buttons; screenshots are kept with the meeting.&#x0a;• Topics: sessions, a knowledge base (documents, folders, audio and video, your own text), «Summary», «Questions» with sources and a relation graph. One «Update topic» button parses new materials and refreshes the summary and graph.&#x0a;• The speech language is detected automatically for each side of the call; it can also be chosen in Settings.&#x0a;• Replio account: sign in on replio.ru; the key is stored encrypted on the computer. Hints, summaries and recognition run on your plan.&#x0a;• Updates arrive in the app: a new version shows an «Update» button. Settings and the key are kept on update.&#x0a;• The replio command and an MCP server for AI agents (Claude Code, Codex, Cursor): details in %AppData%\Replio\AGENTS.md.</value></data>
+  <data name="WhatsNewBody" xml:space="preserve"><value>Replio 1.1.4:&#x0a;• Topics are now called groups: «New group», «Update group», «No group». Everything in them stays.&#x0a;• Recordings with no recognised speech are no longer sent to the AI: they are named «Empty recording» and Replio offers to delete them.&#x0a;• A group updates by itself after each meeting: its summary and graph are ready without pressing «Update group». While it runs, the button shows the progress.&#x0a;• The «Hidden from screen share» badge shows the real state and switches with a click.&#x0a;• Graph: labels no longer overlap, the legend and the hint moved under the graph.&#x0a;• The Replio icon in the tray blinks during a recording; its menu has «Open the live transcript», «Stop recording» and «Take a screenshot».&#x0a;• The recording bar no longer covers the main window's input box, the «Statistics» tab is gone, «Select several» sits above the meeting list.&#x0a;• New meetings, groups and the knowledge base live in the .replio folder in your home folder, like .claude for Claude. Earlier data stays where it was; move it in Settings → Data and updates.&#x0a;&#x0a;Replio 1.1.3:&#x0a;• Settings are split into sections: «Account», «Meetings», «Speech», «AI assistant», «Windows and look», «Hotkeys», «Data and updates». Changes are saved by themselves, there is no «Save» button any more.&#x0a;• Each plan sees only what it can use: on «Local» speech is recognised on the computer, on «Pro» and «Team» you can choose the recognition quality.&#x0a;• «Meetings (default)» in Settings apply to every group that has no setup of its own.&#x0a;• Names and terms can now also be set per group on the «How to help» tab: they are added to the common list and recognised better.&#x0a;• «Private» plan: AI and speech recognition run through the company's server, which the administrator connects once in the account on replio.ru.&#x0a;• The «Deep mode» switch is gone: it changed nothing.&#x0a;&#x0a;Replio 1.1.2:&#x0a;• «Modes» are replaced by the group tab «How to help»: meeting type (sales, interview, negotiation, stand-up, consultation or your own), how to hint and which sections to add to the summary. Meetings without a group are set up in Settings.&#x0a;• The search in the header looks everywhere: groups, group summaries, meeting summaries, transcripts, emails, the knowledge base and questions. A click opens the right place.&#x0a;• «Update group» also redoes out-of-date meeting summaries of the group and replaces «Rewrite summary» in a group's meeting.&#x0a;• A limit bar in the header shows what is left today and this month: yellow when little is left, red at the very end.&#x0a;• «Help» opens as a small window with short cards and pictures.&#x0a;• Settings now have «Open account page» and «Data folder»: keep meetings, groups and the knowledge base in Yandex Disk, OneDrive or iCloud Drive to have them on all your computers.&#x0a;• New logo, as on the site. The plan from your account is picked up by itself.&#x0a;&#x0a;Replio 1.1.0 — the first version.&#x0a;• Live hints during a call: «What to say», «What to answer», «What to ask» and follow-up questions in a separate window that is hidden from screen share.&#x0a;• Meeting summary, follow-up email and transcript with «Copy» buttons; screenshots are kept with the meeting.&#x0a;• Groups: sessions, a knowledge base (documents, folders, audio and video, your own text), «Summary», «Questions» with sources and a relation graph. One «Update group» button parses new materials and refreshes the summary and graph.&#x0a;• The speech language is detected automatically for each side of the call; it can also be chosen in Settings.&#x0a;• Replio account: sign in on replio.ru; the key is stored encrypted on the computer. Hints, summaries and recognition run on your plan.&#x0a;• Updates arrive in the app: a new version shows an «Update» button. Settings and the key are kept on update.&#x0a;• The replio command and an MCP server for AI agents (Claude Code, Codex, Cursor): details in %AppData%\Replio\AGENTS.md.</value></data>
   <data name="SmartModeToggle" xml:space="preserve"><value>Deep mode</value></data>
   <data name="HotkeysTitle" xml:space="preserve"><value>Hotkeys</value></data>
   <data name="OpenAiKeyMissing" xml:space="preserve"><value>API key is missing. Add it in Settings → API key, or put a line ApiKey=... into %AppData%\Replio\secrets.txt (or set POLZA_API_KEY).</value></data>
@@ -237,7 +237,7 @@
   <data name="SettingsSttModel" xml:space="preserve"><value>Recognition model</value></data>
   <data name="SettingsSttApiKey" xml:space="preserve"><value>Access key</value></data>
   <data name="SettingsSttGlossary" xml:space="preserve"><value>Names and terms</value></data>
-  <data name="SettingsSttGlossaryHint" xml:space="preserve"><value>Words that recognition gets wrong: colleagues' names, your company, products. They apply to all meetings. Add words for a particular topic in that topic's «How to help» tab. Separate with commas or new lines.</value></data>
+  <data name="SettingsSttGlossaryHint" xml:space="preserve"><value>Words that recognition gets wrong: colleagues' names, your company, products. They apply to all meetings. Add words for a particular group in that group's «How to help» tab. Separate with commas or new lines.</value></data>
   <data name="SettingsSttHint" xml:space="preserve"><value>The field is optional. If the API fails, the chunk is recognized locally by whisper.cpp.</value></data>
   <data name="OverlayActionWhatToSay" xml:space="preserve"><value>• What to say</value></data>
   <data name="SmartToggleShort" xml:space="preserve"><value>Deep</value></data>
@@ -373,19 +373,19 @@
   <data name="DeleteCheckedConfirmTitle" xml:space="preserve"><value>Delete sessions</value></data>
   <data name="DeleteCheckedConfirmMessage" xml:space="preserve"><value>Delete the selected sessions ({0})? Transcripts, summaries and screenshots will be deleted permanently.</value></data>
   <data name="DeleteCheckedSessions" xml:space="preserve"><value>Delete ({0})</value></data>
-  <data name="DeleteTopicConfirmTitle" xml:space="preserve"><value>Delete topic</value></data>
-  <data name="DeleteTopicConfirmMessage" xml:space="preserve"><value>Delete the topic "{0}" and its knowledge base? The sessions stay in the history without a topic.</value></data>
+  <data name="DeleteTopicConfirmTitle" xml:space="preserve"><value>Delete group</value></data>
+  <data name="DeleteTopicConfirmMessage" xml:space="preserve"><value>Delete the group "{0}" and its knowledge base? The sessions stay in the history without a group.</value></data>
   <data name="FollowUpEmailAgain" xml:space="preserve"><value>Draft again</value></data>
   <data name="FollowUpEmailBusy" xml:space="preserve"><value>Drafting the follow-up email…</value></data>
   <data name="FollowUpEmailHint" xml:space="preserve"><value>A draft email to the participants appears here: subject, short recap, action items with owners and deadlines. Press "Follow-up email"; the draft is based on this session's summary and transcript.</value></data>
   <data name="FollowUpEmailReadyHint" xml:space="preserve"><value>The draft is ready: review it, copy it and paste it into your mail. It is saved with the session.</value></data>
   <data name="FollowUpEmailTitle" xml:space="preserve"><value>Follow-up email</value></data>
   <data name="MenuDeleteSession" xml:space="preserve"><value>Delete session</value></data>
-  <data name="MenuMoveToNewTopic" xml:space="preserve"><value>To a new topic…</value></data>
-  <data name="MenuMoveToTopic" xml:space="preserve"><value>To topic "{0}"</value></data>
+  <data name="MenuMoveToNewTopic" xml:space="preserve"><value>To a new group…</value></data>
+  <data name="MenuMoveToTopic" xml:space="preserve"><value>To group "{0}"</value></data>
   <data name="MenuOpenSession" xml:space="preserve"><value>Open</value></data>
-  <data name="MenuRemoveFromTopic" xml:space="preserve"><value>Remove from topic</value></data>
-  <data name="MoveToTopic" xml:space="preserve"><value>To topic…</value></data>
+  <data name="MenuRemoveFromTopic" xml:space="preserve"><value>Remove from group</value></data>
+  <data name="MoveToTopic" xml:space="preserve"><value>To group…</value></data>
   <data name="SelectAllSessions" xml:space="preserve"><value>Select all</value></data>
   <data name="SelectDone" xml:space="preserve"><value>Done</value></data>
   <data name="SelectSessions" xml:space="preserve"><value>Select several</value></data>
@@ -399,16 +399,16 @@
   <data name="ThemeLight" xml:space="preserve"><value>Day</value></data>
   <data name="TipAsk" xml:space="preserve"><value>Ask about the conversation. The question and answer also appear in the overlay (Ctrl+Enter)</value></data>
   <data name="TipAskBox" xml:space="preserve"><value>Type a question about the current conversation and press Enter</value></data>
-  <data name="TipCheckSession" xml:space="preserve"><value>Check the session to delete it or move it to a topic</value></data>
+  <data name="TipCheckSession" xml:space="preserve"><value>Check the session to delete it or move it to a group</value></data>
   <data name="TipClose" xml:space="preserve"><value>Close</value></data>
   <data name="TipCopyTranscript" xml:space="preserve"><value>Copy the whole meeting transcript to the clipboard: time, name and text of every line</value></data>
   <data name="TipCopyEmail" xml:space="preserve"><value>Copy the email to the clipboard to paste it into your mail</value></data>
   <data name="TipCopySummary" xml:space="preserve"><value>Copy the summary text to the clipboard, e.g. to paste into a messenger or email</value></data>
-  <data name="TipCopyTopicKnowledge" xml:space="preserve"><value>Copy the topic knowledge base to the clipboard</value></data>
-  <data name="TipCreateTopic" xml:space="preserve"><value>Create a topic: a section that groups related sessions and builds their shared knowledge base</value></data>
+  <data name="TipCopyTopicKnowledge" xml:space="preserve"><value>Copy the group knowledge base to the clipboard</value></data>
+  <data name="TipCreateTopic" xml:space="preserve"><value>Create a group: a section that groups related sessions and builds their shared knowledge base</value></data>
   <data name="TipDeleteChecked" xml:space="preserve"><value>Permanently delete the checked sessions</value></data>
   <data name="TipDeleteSession" xml:space="preserve"><value>Delete session</value></data>
-  <data name="TipDeleteTopic" xml:space="preserve"><value>Delete the topic. The sessions stay in the history</value></data>
+  <data name="TipDeleteTopic" xml:space="preserve"><value>Delete the group. The sessions stay in the history</value></data>
   <data name="TipFollowUpEmail" xml:space="preserve"><value>Draft an email to the participants: short recap, action items, owners and deadlines. Opens on the Email tab</value></data>
   <data name="TipFollowUpEmailAgain" xml:space="preserve"><value>Draft the email again from the current summary</value></data>
   <data name="TipGoHome" xml:space="preserve"><value>Back to the home screen with your sessions</value></data>
@@ -417,22 +417,22 @@
   <data name="TipLanguageEn" xml:space="preserve"><value>Interface and AI answers in English</value></data>
   <data name="TipLanguageRu" xml:space="preserve"><value>Russian interface; speech recognition and AI answers in Russian</value></data>
   <data name="TipModes" xml:space="preserve"><value>Modes: your own prompt and notes template for different kinds of meetings</value></data>
-  <data name="TipMoveChecked" xml:space="preserve"><value>Move the checked sessions to a topic. You can also drag them onto a topic on the left</value></data>
+  <data name="TipMoveChecked" xml:space="preserve"><value>Move the checked sessions to a group. You can also drag them onto a group on the left</value></data>
   <data name="TipNewRecording" xml:space="preserve"><value>Start a new recording</value></data>
-  <data name="TipOpenSession" xml:space="preserve"><value>Open the session. Drag the card onto a topic on the left to group it; right-click for a menu</value></data>
+  <data name="TipOpenSession" xml:space="preserve"><value>Open the session. Drag the card onto a group on the left to add it there; right-click for a menu</value></data>
   <data name="TipOverlayFollowUp" xml:space="preserve"><value>Suggest follow-up questions about the latest topic</value></data>
   <data name="TipOverlayRecap" xml:space="preserve"><value>Recap: what the last few minutes were about</value></data>
   <data name="TipOverlayWhatToAsk" xml:space="preserve"><value>Suggest a question to ask right now</value></data>
   <data name="TipOverlayWhatToSay" xml:space="preserve"><value>Suggest what to say right now</value></data>
-  <data name="TipRefreshTopicKnowledge" xml:space="preserve"><value>Rebuild the shared knowledge base from all sessions of the topic. Needed after sessions are added or removed</value></data>
+  <data name="TipRefreshTopicKnowledge" xml:space="preserve"><value>Rebuild the shared knowledge base from all sessions of the group. Needed after sessions are added or removed</value></data>
   <data name="TipRegenerate" xml:space="preserve"><value>Write the summary again from the whole transcript. The current summary is replaced</value></data>
   <data name="TipRenameSession" xml:space="preserve"><value>Click to rename the session</value></data>
-  <data name="TipRenameTopic" xml:space="preserve"><value>Rename the topic</value></data>
+  <data name="TipRenameTopic" xml:space="preserve"><value>Rename the group</value></data>
   <data name="TipSaveSettings" xml:space="preserve"><value>Save the settings. Your API key and values are kept on upgrade</value></data>
-  <data name="TipSearch" xml:space="preserve"><value>Search everything: topics and their summaries, meeting titles, summaries, transcripts and emails, the knowledge base and questions. All words must be found, in any order</value></data>
+  <data name="TipSearch" xml:space="preserve"><value>Search everything: groups and their summaries, meeting titles, summaries, transcripts and emails, the knowledge base and questions. All words must be found, in any order</value></data>
   <data name="TipSelectAll" xml:space="preserve"><value>Check all sessions in the list (press again to uncheck)</value></data>
   <data name="TipSelectDone" xml:space="preserve"><value>Leave selection mode</value></data>
-  <data name="TipSelectMode" xml:space="preserve"><value>Check several sessions to delete them or move them to a topic</value></data>
+  <data name="TipSelectMode" xml:space="preserve"><value>Check several sessions to delete them or move them to a group</value></data>
   <data name="TipSettings" xml:space="preserve"><value>Settings: appearance, language, AI, speech recognition, hotkeys</value></data>
   <data name="TipSmartMode" xml:space="preserve"><value>The AI thinks longer over every answer: more accurate, slower and more expensive</value></data>
   <data name="TipStartCapture" xml:space="preserve"><value>Start recording the conversation with live hints (Ctrl+Shift+/)</value></data>
@@ -446,32 +446,32 @@
   <data name="TipThemeLight" xml:space="preserve"><value>Light theme for daytime</value></data>
   <data name="TipToggleTheme" xml:space="preserve"><value>Switch between day and night theme</value></data>
   <data name="TipTopicRow" xml:space="preserve"><value>Show sessions. Drag session cards here to move them</value></data>
-  <data name="TipTopicStale" xml:space="preserve"><value>Sessions were added or removed: press «Update topic»</value></data>
+  <data name="TipTopicStale" xml:space="preserve"><value>Sessions were added or removed: press «Update group»</value></data>
   <data name="TipWhatsNew" xml:space="preserve"><value>What changed in this version</value></data>
   <data name="TopicAllSessions" xml:space="preserve"><value>All sessions</value></data>
-  <data name="TopicCreate" xml:space="preserve"><value>+ New topic</value></data>
-  <data name="TopicDelete" xml:space="preserve"><value>Delete topic</value></data>
-  <data name="TopicEmptyHint" xml:space="preserve"><value>No sessions here yet. Drag session cards from All sessions onto a topic on the left, or check several and press To topic…</value></data>
+  <data name="TopicCreate" xml:space="preserve"><value>+ New group</value></data>
+  <data name="TopicDelete" xml:space="preserve"><value>Delete group</value></data>
+  <data name="TopicEmptyHint" xml:space="preserve"><value>No sessions here yet. Drag session cards from All sessions onto a group on the left, or check several and press To group…</value></data>
   <data name="TopicKnowledgeBusy" xml:space="preserve"><value>Building the shared knowledge base…</value></data>
-  <data name="TopicKnowledgeEmpty" xml:space="preserve"><value>No knowledge base yet: press «Update topic»</value></data>
+  <data name="TopicKnowledgeEmpty" xml:space="preserve"><value>No knowledge base yet: press «Update group»</value></data>
   <data name="TopicKnowledgeEmptyAnswer" xml:space="preserve"><value>The model returned an empty answer.</value></data>
-  <data name="TopicKnowledgeStale" xml:space="preserve"><value>The sessions changed: press «Update topic»</value></data>
+  <data name="TopicKnowledgeStale" xml:space="preserve"><value>The sessions changed: press «Update group»</value></data>
   <data name="TopicKnowledgeTitle" xml:space="preserve"><value>Shared context and knowledge base</value></data>
   <data name="TopicKnowledgeUpToDate" xml:space="preserve"><value>Up to date as of {0} · sessions: {1} · materials: {2}</value></data>
   <data name="TopicAsk" xml:space="preserve"><value>Ask</value></data>
-  <data name="TopicAskPlaceholder" xml:space="preserve"><value>Ask about this topic, e.g. what was agreed on deadlines</value></data>
-  <data name="TopicAskBusy" xml:space="preserve"><value>Gathering current data from the topic's sessions and looking for the answer…</value></data>
+  <data name="TopicAskPlaceholder" xml:space="preserve"><value>Ask about this group, e.g. what was agreed on deadlines</value></data>
+  <data name="TopicAskBusy" xml:space="preserve"><value>Gathering current data from the group's sessions and looking for the answer…</value></data>
   <data name="TopicAskAnswered" xml:space="preserve"><value>Question: “{0}” · {1}</value></data>
-  <data name="TipTopicAsk" xml:space="preserve"><value>Answer from the current summaries and transcripts of the topic's sessions. Conflicting statements by participants in recent meetings are flagged separately</value></data>
-  <data name="TipTopicAskBox" xml:space="preserve"><value>A question about the topic: answered from all its sessions and the knowledge base. Enter sends, Shift+Enter adds a line</value></data>
+  <data name="TipTopicAsk" xml:space="preserve"><value>Answer from the current summaries and transcripts of the group's sessions. Conflicting statements by participants in recent meetings are flagged separately</value></data>
+  <data name="TipTopicAskBox" xml:space="preserve"><value>A question about the group: answered from all its sessions and the knowledge base. Enter sends, Shift+Enter adds a line</value></data>
   <data name="TipCopyTopicAnswer" xml:space="preserve"><value>Copy the answer to the clipboard</value></data>
-  <data name="TopicNewName" xml:space="preserve"><value>New topic</value></data>
-  <data name="TopicNoSessions" xml:space="preserve"><value>Drag sessions here and the topic builds a shared knowledge base from them</value></data>
+  <data name="TopicNewName" xml:space="preserve"><value>New group</value></data>
+  <data name="TopicNoSessions" xml:space="preserve"><value>Drag sessions here and the group builds a shared knowledge base from them</value></data>
   <data name="TopicRefreshKnowledge" xml:space="preserve"><value>Update</value></data>
   <data name="TopicRename" xml:space="preserve"><value>Rename</value></data>
-  <data name="TopicUnsorted" xml:space="preserve"><value>No topic</value></data>
-  <data name="TopicsDragHint" xml:space="preserve"><value>Drag a session onto a topic to group it</value></data>
-  <data name="TopicsTitle" xml:space="preserve"><value>TOPICS</value></data>
+  <data name="TopicUnsorted" xml:space="preserve"><value>No group</value></data>
+  <data name="TopicsDragHint" xml:space="preserve"><value>Drag a session onto a group to add it there</value></data>
+  <data name="TopicsTitle" xml:space="preserve"><value>GROUPS</value></data>
   <data name="TipHotkeyAsk" xml:space="preserve"><value>Ask the AI from any window. Format: Ctrl+Enter</value></data>
   <data name="TipHotkeyClearChat" xml:space="preserve"><value>Clear the overlay dialog</value></data>
   <data name="TipHotkeyMove" xml:space="preserve"><value>Move the overlay: left, right, up, down</value></data>
@@ -529,36 +529,36 @@
   <data name="TopicTabKnowledge" xml:space="preserve"><value>Knowledge base</value></data>
   <data name="TopicTabQuestions" xml:space="preserve"><value>Questions</value></data>
   <data name="TopicTabGraph" xml:space="preserve"><value>Graph</value></data>
-  <data name="TipTopicTabSessions" xml:space="preserve"><value>Sessions of this topic. Drag sessions here from «All sessions» or «No topic»</value></data>
-  <data name="TipTopicTabKnowledge" xml:space="preserve"><value>Files, folders and texts attached to the topic, parsed to Markdown</value></data>
-  <data name="TipTopicTabQuestions" xml:space="preserve"><value>Ask AI about the topic: answers from sessions and the knowledge base, with sources and discrepancies</value></data>
-  <data name="TipTopicTabGraph" xml:space="preserve"><value>Entities of the topic and how they relate: people, companies, projects, tasks, decisions, documents</value></data>
+  <data name="TipTopicTabSessions" xml:space="preserve"><value>Sessions of this group. Drag sessions here from «All sessions» or «No group»</value></data>
+  <data name="TipTopicTabKnowledge" xml:space="preserve"><value>Files, folders and texts attached to the group, parsed to Markdown</value></data>
+  <data name="TipTopicTabQuestions" xml:space="preserve"><value>Ask AI about the group: answers from sessions and the knowledge base, with sources and discrepancies</value></data>
+  <data name="TipTopicTabGraph" xml:space="preserve"><value>Entities of the group and how they relate: people, companies, projects, tasks, decisions, documents</value></data>
   <data name="KnowledgeAddFiles" xml:space="preserve"><value>+ Documents</value></data>
   <data name="KnowledgeAddFolder" xml:space="preserve"><value>+ Folder</value></data>
   <data name="KnowledgeAddNote" xml:space="preserve"><value>+ Text</value></data>
   <data name="TipKnowledgeAddFiles" xml:space="preserve"><value>Attach documents: PDF, Word (doc, docx), Excel (xls, xlsx), pictures (jpg, png), txt, md. You can also drag files here or paste them with Ctrl+V</value></data>
   <data name="TipKnowledgeAddFolder" xml:space="preserve"><value>Attach a folder: every supported file in it and its subfolders is parsed. A folder can also be dragged here or pasted with Ctrl+V</value></data>
   <data name="TipKnowledgeAddNote" xml:space="preserve"><value>Add your own text: agreements, context, requirements. It goes into the knowledge base at once. Copied text can also be dragged here or pasted with Ctrl+V</value></data>
-  <data name="KnowledgeAddFilesTitle" xml:space="preserve"><value>Attach documents to the topic</value></data>
-  <data name="KnowledgeAddFolderTitle" xml:space="preserve"><value>Attach a folder to the topic</value></data>
+  <data name="KnowledgeAddFilesTitle" xml:space="preserve"><value>Attach documents to the group</value></data>
+  <data name="KnowledgeAddFolderTitle" xml:space="preserve"><value>Attach a folder to the group</value></data>
   <data name="KnowledgeFileFilterName" xml:space="preserve"><value>Documents (PDF, Word, Excel, pictures, text)</value></data>
   <data name="KnowledgeListHint" xml:space="preserve"><value>Drag documents, audio, video, folders or text here, paste them with Ctrl+V or use the buttons above. Replio parses them to Markdown (speech in audio and video becomes text) and uses them in the summary, answers and graph.</value></data>
   <data name="KnowledgeParseAll" xml:space="preserve"><value>Parse everything new</value></data>
   <data name="TipKnowledgeParseAll" xml:space="preserve"><value>Parse all new and changed items one by one</value></data>
   <data name="KnowledgeOpenFolder" xml:space="preserve"><value>Open knowledge base folder</value></data>
-  <data name="TipKnowledgeOpenFolder" xml:space="preserve"><value>Open the folder where Replio keeps the parsed .md files of this topic</value></data>
+  <data name="TipKnowledgeOpenFolder" xml:space="preserve"><value>Open the folder where Replio keeps the parsed .md files of this group</value></data>
   <data name="KnowledgeParse" xml:space="preserve"><value>Parse</value></data>
   <data name="KnowledgeReparse" xml:space="preserve"><value>Parse again</value></data>
   <data name="TipKnowledgeParse" xml:space="preserve"><value>Read the item and store it as Markdown. Pictures and scans are recognized by AI, speech in audio and video by the speech recognition settings</value></data>
   <data name="KnowledgeRemove" xml:space="preserve"><value>Remove</value></data>
-  <data name="TipKnowledgeRemove" xml:space="preserve"><value>Remove the item from the topic knowledge base. The original on disk is kept</value></data>
+  <data name="TipKnowledgeRemove" xml:space="preserve"><value>Remove the item from the group knowledge base. The original on disk is kept</value></data>
   <data name="KnowledgeEditNote" xml:space="preserve"><value>Edit</value></data>
   <data name="TipKnowledgeEditNote" xml:space="preserve"><value>Edit the note; it is parsed again after saving</value></data>
   <data name="KnowledgeOpenOriginal" xml:space="preserve"><value>Open</value></data>
   <data name="TipKnowledgeOpenOriginal" xml:space="preserve"><value>Open the original file or folder</value></data>
   <data name="TipKnowledgeCopy" xml:space="preserve"><value>Copy the parsed text to the clipboard</value></data>
   <data name="KnowledgeAddedFeedback" xml:space="preserve"><value>Added: {0}</value></data>
-  <data name="KnowledgeAlreadyAdded" xml:space="preserve"><value>Already attached to the topic</value></data>
+  <data name="KnowledgeAlreadyAdded" xml:space="preserve"><value>Already attached to the group</value></data>
   <data name="KnowledgeDropHint" xml:space="preserve"><value>Drop to add to the knowledge base</value></data>
   <data name="KnowledgeDropSubHint" xml:space="preserve"><value>Each file and folder becomes its own entry, text becomes a note</value></data>
   <data name="KnowledgeAddedSkippedFeedback" xml:space="preserve"><value>Added: {0}. Skipped: {1}, unsupported format</value></data>
@@ -569,10 +569,10 @@
   <data name="KnowledgeParsing" xml:space="preserve"><value>Parsing…</value></data>
   <data name="KnowledgeParsingFile" xml:space="preserve"><value>Parsing {0} of {1}: {2}</value></data>
   <data name="KnowledgeRemoveConfirmTitle" xml:space="preserve"><value>Remove from the knowledge base?</value></data>
-  <data name="KnowledgeRemoveConfirmMessage" xml:space="preserve"><value>«{0}» and its parsed text will be removed from the topic. What only this source said disappears from the graph at once, and the topic summary is updated. The original files on disk stay.</value></data>
+  <data name="KnowledgeRemoveConfirmMessage" xml:space="preserve"><value>«{0}» and its parsed text will be removed from the group. What only this source said disappears from the graph at once, and the group summary is updated. The original files on disk stay.</value></data>
   <data name="KnowledgeSkippedHeading" xml:space="preserve"><value>Could not parse</value></data>
   <data name="KnowledgeSourceEmpty" xml:space="preserve"><value>Not parsed yet. Press «Parse» and the text Replio will use appears here.</value></data>
-  <data name="KnowledgeSummaryEmpty" xml:space="preserve"><value>The summary is not built yet. Press «Update topic»: Replio merges the sessions and materials of the topic into one knowledge base and builds the graph.</value></data>
+  <data name="KnowledgeSummaryEmpty" xml:space="preserve"><value>The summary is not built yet. Press «Update group»: Replio merges the sessions and materials of the group into one knowledge base and builds the graph.</value></data>
   <data name="KnowledgeSourceLabel" xml:space="preserve"><value>Source</value></data>
   <data name="KnowledgeTooManyImages" xml:space="preserve"><value>Too many pictures in the folder: the first 40 are recognized</value></data>
   <data name="KnowledgeStatusNew" xml:space="preserve"><value>New, not parsed</value></data>
@@ -581,7 +581,7 @@
   <data name="KnowledgeStatusMissing" xml:space="preserve"><value>The original is not found on disk</value></data>
   <data name="KnowledgeStatusParsed" xml:space="preserve"><value>Parsed {0} · {1} chars</value></data>
   <data name="KnowledgeStatusParsedFolder" xml:space="preserve"><value>Parsed {0} · files: {1}, skipped: {2}</value></data>
-  <data name="KnowledgeSummaryTitle" xml:space="preserve"><value>Topic summary</value></data>
+  <data name="KnowledgeSummaryTitle" xml:space="preserve"><value>Group summary</value></data>
   <data name="NoteDialogAddTitle" xml:space="preserve"><value>Add text to the knowledge base</value></data>
   <data name="NoteDialogEditTitle" xml:space="preserve"><value>Edit note</value></data>
   <data name="NoteDialogHint" xml:space="preserve"><value>Agreements, context, requirements: anything Replio should take into account in the summary, answers and graph.</value></data>
@@ -589,22 +589,22 @@
   <data name="NoteDialogTextPlaceholder" xml:space="preserve"><value>Text</value></data>
   <data name="NoteDialogAdd" xml:space="preserve"><value>Add</value></data>
   <data name="NoteDialogSave" xml:space="preserve"><value>Save</value></data>
-  <data name="QuestionsEmptyTitle" xml:space="preserve"><value>Ask about the topic</value></data>
-  <data name="QuestionsEmptyHint" xml:space="preserve"><value>The answer is built from the summaries and transcripts of all sessions of the topic, its knowledge base and its graph: linked people, tasks and documents are found even when the question does not name them. Recent meetings win over older ones; discrepancies between people are listed separately.</value></data>
+  <data name="QuestionsEmptyTitle" xml:space="preserve"><value>Ask about the group</value></data>
+  <data name="QuestionsEmptyHint" xml:space="preserve"><value>The answer is built from the summaries and transcripts of all sessions of the group, its knowledge base and its graph: linked people, tasks and documents are found even when the question does not name them. Recent meetings win over older ones; discrepancies between people are listed separately.</value></data>
   <data name="QuestionSuggestion1" xml:space="preserve"><value>What did we agree on at the last meeting?</value></data>
   <data name="QuestionSuggestion2" xml:space="preserve"><value>Where do participants contradict each other?</value></data>
   <data name="QuestionSuggestion3" xml:space="preserve"><value>Which tasks are open and who owns them?</value></data>
   <data name="QuestionSuggestion4" xml:space="preserve"><value>Which deadlines and figures are already fixed?</value></data>
   <data name="GraphBuild" xml:space="preserve"><value>Build graph</value></data>
   <data name="GraphRebuild" xml:space="preserve"><value>Update graph</value></data>
-  <data name="TipGraphBuild" xml:space="preserve"><value>AI finds the entities of the topic and the relations between them in the sessions and knowledge base. «Questions» use the graph to find linked facts</value></data>
+  <data name="TipGraphBuild" xml:space="preserve"><value>AI finds the entities of the group and the relations between them in the sessions and knowledge base. «Questions» use the graph to find linked facts</value></data>
   <data name="GraphBusy" xml:space="preserve"><value>Building the graph…</value></data>
   <data name="GraphEmpty" xml:space="preserve"><value>No graph yet</value></data>
   <data name="GraphUpToDate" xml:space="preserve"><value>Nodes: {0} · links: {1} · {2}</value></data>
-  <data name="GraphStale" xml:space="preserve"><value>new data, press «Update topic»</value></data>
+  <data name="GraphStale" xml:space="preserve"><value>new data, press «Update group»</value></data>
   <data name="GraphEmptyAnswer" xml:space="preserve"><value>The model found no entities for the graph.</value></data>
-  <data name="GraphEmptyTitle" xml:space="preserve"><value>Topic graph</value></data>
-  <data name="GraphEmptyHint" xml:space="preserve"><value>Press «Update topic»: Replio finds people, companies, projects, tasks, decisions and documents and shows how they are connected.</value></data>
+  <data name="GraphEmptyTitle" xml:space="preserve"><value>Group graph</value></data>
+  <data name="GraphEmptyHint" xml:space="preserve"><value>Press «Update group»: Replio finds people, companies, projects, tasks, decisions and documents and shows how they are connected.</value></data>
   <data name="GraphSearchPlaceholder" xml:space="preserve"><value>Find on the graph</value></data>
   <data name="TipGraphSearch" xml:space="preserve"><value>Highlight nodes whose name or description contains this text</value></data>
   <data name="GraphControlsHint" xml:space="preserve"><value>Wheel to zoom · drag to move · double-click to fit</value></data>
@@ -623,11 +623,11 @@
   <data name="KnowledgeSourcesSummary" xml:space="preserve"><value>Sources: {0}</value></data>
   <data name="TipKnowledgeSelect" xml:space="preserve"><value>Check several sources to remove them at once</value></data>
   <data name="TipKnowledgeSelectAll" xml:space="preserve"><value>Check all sources or clear all checks</value></data>
-  <data name="TipKnowledgeRemoveChecked" xml:space="preserve"><value>Remove the checked sources from the topic: their parsed text is deleted, the graph and the summary are updated. The originals on disk stay</value></data>
-  <data name="TipKnowledgeRemoveRow" xml:space="preserve"><value>Remove the source from the topic (Delete key)</value></data>
-  <data name="KnowledgeRemoveManyConfirmMessage" xml:space="preserve"><value>Remove {0} sources from the topic? Their parsed text is deleted, what only they said disappears from the graph at once, and the topic summary is updated. The original files on disk stay.</value></data>
+  <data name="TipKnowledgeRemoveChecked" xml:space="preserve"><value>Remove the checked sources from the group: their parsed text is deleted, the graph and the summary are updated. The originals on disk stay</value></data>
+  <data name="TipKnowledgeRemoveRow" xml:space="preserve"><value>Remove the source from the group (Delete key)</value></data>
+  <data name="KnowledgeRemoveManyConfirmMessage" xml:space="preserve"><value>Remove {0} sources from the group? Their parsed text is deleted, what only they said disappears from the graph at once, and the group summary is updated. The original files on disk stay.</value></data>
   <data name="KnowledgeRemovedFeedback" xml:space="preserve"><value>Removed sources: {0}</value></data>
-  <data name="KnowledgeAutoRefreshFailed" xml:space="preserve"><value>Could not update the topic summary. Press «Update topic» when the connection and balance allow</value></data>
+  <data name="KnowledgeAutoRefreshFailed" xml:space="preserve"><value>Could not update the group summary. Press «Update group» when the connection and balance allow</value></data>
   <data name="KnowledgeParseTimeout" xml:space="preserve"><value>Parsing took more than 10 minutes and was stopped. Try again or split the file into parts</value></data>
   <data name="UsageCostHeader" xml:space="preserve"><value>Cost · {0}</value></data>
   <data name="UsageDialogHeader" xml:space="preserve"><value>Assistant dialog · {0}</value></data>
@@ -635,12 +635,12 @@
   <data name="TipUsageDialog" xml:space="preserve"><value>All requests to the assistant during the session and its answers</value></data>
   <data name="UsageLastTokensValue" xml:space="preserve"><value>prompt {0}, answer {1}, total {2}</value></data>
   <data name="TopicAnswerCost" xml:space="preserve"><value>Answer cost: {0}</value></data>
-  <data name="KnowledgeRemovedUpdatingFeedback" xml:space="preserve"><value>Removed sources: {0}. The topic summary is updating</value></data>
+  <data name="KnowledgeRemovedUpdatingFeedback" xml:space="preserve"><value>Removed sources: {0}. The group summary is updating</value></data>
   <data name="SmartModeHint" xml:space="preserve"><value>More accurate in difficult conversations, but answers come a few seconds later and use more of the limit. Not needed for ordinary calls.</value></data>
   <data name="SettingsSttGlossaryExample" xml:space="preserve"><value>For example: Anna, Replio, CRM, KPI, Vector Ltd</value></data>
   <data name="HotkeysRegisterFailedMessage" xml:space="preserve"><value>These hotkeys are already taken by another program, so Replio cannot use them:&#x0a;{0}&#x0a;&#x0a;Change them in «Settings → Hotkeys» or close the program that took them.</value></data>
   <data name="TopicTabSummary" xml:space="preserve"><value>Summary</value></data>
-  <data name="TipTopicTabSummary" xml:space="preserve"><value>The topic summary over all its sessions and sources. A dot means it should be updated</value></data>
+  <data name="TipTopicTabSummary" xml:space="preserve"><value>The group summary over all its sessions and sources. A dot means it should be updated</value></data>
   <data name="QuestionsSummary" xml:space="preserve"><value>Questions: {0}</value></data>
   <data name="QuestionsRemoveChecked" xml:space="preserve"><value>Delete selected ({0})</value></data>
   <data name="TipQuestionsSelect" xml:space="preserve"><value>Check several questions to delete them at once</value></data>
@@ -659,7 +659,7 @@
   <data name="MacPermissionOpenSettings" xml:space="preserve"><value>Open settings</value></data>
   <data name="KnowledgeAddMedia" xml:space="preserve"><value>+ Media</value></data>
   <data name="TipKnowledgeAddMedia" xml:space="preserve"><value>Attach audio or video (mp3, wav, m4a, ogg, mp4, mov, mkv and more). «Parse» recognises the speech the same way as in meetings (Settings → Speech) and stores the text with time marks and a link to the file. You can also drag files here</value></data>
-  <data name="KnowledgeAddMediaTitle" xml:space="preserve"><value>Attach audio or video to the topic</value></data>
+  <data name="KnowledgeAddMediaTitle" xml:space="preserve"><value>Attach audio or video to the group</value></data>
   <data name="KnowledgeMediaFilterName" xml:space="preserve"><value>Audio and video</value></data>
   <data name="KnowledgeExtractingAudio" xml:space="preserve"><value>Reading the sound…</value></data>
   <data name="KnowledgeTranscribing" xml:space="preserve"><value>Transcribing: {0} of {1}</value></data>
@@ -682,14 +682,14 @@
   <data name="ScreenshotsHint" xml:space="preserve"><value>Click a screenshot to open it in your picture viewer. The summary and the transcript link to these screenshots.</value></data>
   <data name="TipOpenScreenshot" xml:space="preserve"><value>Open the screenshot in your picture viewer</value></data>
   <data name="ScreenshotMissing" xml:space="preserve"><value>The screenshot file was not found; it may have been deleted.</value></data>
-  <data name="RecordingInTopicNotice" xml:space="preserve"><value>Recording into the topic «{0}»</value></data>
-  <data name="TopicActualize" xml:space="preserve"><value>Update topic</value></data>
+  <data name="RecordingInTopicNotice" xml:space="preserve"><value>Recording into the group «{0}»</value></data>
+  <data name="TopicActualize" xml:space="preserve"><value>Update group</value></data>
   <data name="TopicActualizeBusy" xml:space="preserve"><value>Updating…</value></data>
   <data name="TopicActualizeParsing" xml:space="preserve"><value>Reading materials…</value></data>
   <data name="TopicActualizeSummary" xml:space="preserve"><value>Updating the summary…</value></data>
   <data name="TopicActualizeGraph" xml:space="preserve"><value>Building the graph…</value></data>
-  <data name="TopicActualizeDone" xml:space="preserve"><value>The topic is up to date: summary and graph rebuilt</value></data>
-  <data name="TipTopicActualize" xml:space="preserve"><value>Updates the topic's summary and graph from all its meetings and materials. After each meeting the topic updates by itself.</value></data>
+  <data name="TopicActualizeDone" xml:space="preserve"><value>The group is up to date: summary and graph rebuilt</value></data>
+  <data name="TipTopicActualize" xml:space="preserve"><value>Updates the group's summary and graph from all its meetings and materials. After each meeting the group updates by itself.</value></data>
   <data name="SpeechLanguageAuto" xml:space="preserve"><value>Auto-detect</value></data>
   <data name="SettingsSpeechLanguage" xml:space="preserve"><value>Speech language</value></data>
   <data name="TipSpeechLanguage" xml:space="preserve"><value>Auto-detect: Replio recognises the language of each side (you and the other party) during the first phrases and keeps it until the end of the recording. Pick a language if the call is always in it</value></data>
@@ -713,9 +713,9 @@
   <data name="AccountUpgrade" xml:space="preserve"><value>Change plan</value></data>
   <data name="TipAccountUpgrade" xml:space="preserve"><value>Opens the plans on replio.ru</value></data>
   <data name="AccountSignOut" xml:space="preserve"><value>Sign out</value></data>
-  <data name="TipAccountSignOut" xml:space="preserve"><value>Removes the key from this computer and revokes it on the server. Sessions and topics stay</value></data>
+  <data name="TipAccountSignOut" xml:space="preserve"><value>Removes the key from this computer and revokes it on the server. Sessions and groups stay</value></data>
   <data name="AccountSignOutTitle" xml:space="preserve"><value>Sign out of Replio?</value></data>
-  <data name="AccountSignOutConfirm" xml:space="preserve"><value>The key of this computer will be revoked. Your sessions, topics and knowledge base stay on the computer. You can sign in again at any time.</value></data>
+  <data name="AccountSignOutConfirm" xml:space="preserve"><value>The key of this computer will be revoked. Your sessions, groups and knowledge base stay on the computer. You can sign in again at any time.</value></data>
   <data name="AccountLoading" xml:space="preserve"><value>Loading the plan…</value></data>
   <data name="AccountUnknown" xml:space="preserve"><value>The plan could not be loaded yet.</value></data>
   <data name="AccountRefreshFailed" xml:space="preserve"><value>The plan could not be loaded: {0}</value></data>
@@ -729,7 +729,7 @@
   <data name="AccountModelDefault" xml:space="preserve"><value>plan default</value></data>
   <data name="AccountSttLocal" xml:space="preserve"><value>on this computer</value></data>
   <data name="TipReplioFastModel" xml:space="preserve"><value>The faster the model, the sooner a hint appears</value></data>
-  <data name="TipReplioAnalysisModel" xml:space="preserve"><value>Model for summaries, emails, topic questions and the graph</value></data>
+  <data name="TipReplioAnalysisModel" xml:space="preserve"><value>Model for summaries, emails, group questions and the graph</value></data>
   <data name="TipReplioSttModel" xml:space="preserve"><value>Speech recognition through Replio</value></data>
   <data name="SttStatusReplio" xml:space="preserve"><value>Recognition: Replio</value></data>
   <data name="UpdateBanner" xml:space="preserve"><value>Version {0} is available</value></data>
@@ -752,12 +752,12 @@
   <data name="UpdateCheckButton" xml:space="preserve"><value>Check for updates</value></data>
   <data name="UpdateCheckToolTip" xml:space="preserve"><value>Replio checks replio.ru at start and once a day. Settings, key and sessions are kept on update.</value></data>
   <data name="HelpButton" xml:space="preserve"><value>Help</value></data>
-  <data name="TipHelp" xml:space="preserve"><value>How to use Replio: recording, hints, topics, hotkeys, AI agents</value></data>
+  <data name="TipHelp" xml:space="preserve"><value>How to use Replio: recording, hints, groups, hotkeys, AI agents</value></data>
   <data name="HelpCopyMcp" xml:space="preserve"><value>Copy the Claude Code command</value></data>
   <data name="HelpCopied" xml:space="preserve"><value>Command copied</value></data>
   <data name="HelpOpenAgents" xml:space="preserve"><value>Open the guide for agents</value></data>
   <data name="DataFolderTitle" xml:space="preserve"><value>Data folder</value></data>
-  <data name="DataFolderHint" xml:space="preserve"><value>Meetings, topics, the knowledge base and screenshots. To have them on all your computers, pick a folder in Yandex Disk, OneDrive or iCloud Drive: the cloud syncs it. The data never reaches Replio servers. Settings and the key stay separate on each computer.</value></data>
+  <data name="DataFolderHint" xml:space="preserve"><value>Meetings, groups, the knowledge base and screenshots. To have them on all your computers, pick a folder in Yandex Disk, OneDrive or iCloud Drive: the cloud syncs it. The data never reaches Replio servers. Settings and the key stay separate on each computer.</value></data>
   <data name="DataFolderChoose" xml:space="preserve"><value>Choose folder…</value></data>
   <data name="DataFolderReset" xml:space="preserve"><value>Move to the default folder</value></data>
   <data name="DataFolderOpen" xml:space="preserve"><value>Open folder</value></data>
@@ -798,12 +798,12 @@
   <data name="MeetingPresetFormat_negotiation" xml:space="preserve"><value>Positions: what we want and what the other side wants.&#x0a;Concessions and conditions: what was offered, accepted or rejected.&#x0a;Open questions: what is not agreed yet.</value></data>
   <data name="MeetingPresetGuidance_standup" xml:space="preserve"><value>This is a team meeting. Help me capture tasks: who does what and by when. Point out tasks without an owner or a deadline and suggest clarifying them. Keep answers short.</value></data>
   <data name="MeetingPresetFormat_standup" xml:space="preserve"><value>Status: what was done since the last meeting.&#x0a;Blockers: what is in the way and who helps to remove it.</value></data>
-  <data name="MeetingPresetGuidance_consulting" xml:space="preserve"><value>This is a consultation and I am the consultant. Help me understand the client's situation precisely and suggest clarifying questions. Rely on the topic's knowledge base. Warn me about risks and about what needs to be checked.</value></data>
+  <data name="MeetingPresetGuidance_consulting" xml:space="preserve"><value>This is a consultation and I am the consultant. Help me understand the client's situation precisely and suggest clarifying questions. Rely on the group's knowledge base. Warn me about risks and about what needs to be checked.</value></data>
   <data name="MeetingPresetFormat_consulting" xml:space="preserve"><value>Client's situation: the request and the key facts.&#x0a;Recommendations: what we advised and why.&#x0a;To check: what data or documents are needed.</value></data>
-  <data name="MeetingStyleInheritedHint" xml:space="preserve"><value>Meetings in this topic use the defaults from «Settings → Meetings»: {0}. Pick a variant above to give this topic its own.</value></data>
+  <data name="MeetingStyleInheritedHint" xml:space="preserve"><value>Meetings in this group use the defaults from «Settings → Meetings»: {0}. Pick a variant above to give this group its own.</value></data>
   <data name="TopicTabMeetings" xml:space="preserve"><value>How to help</value></data>
-  <data name="TipTopicTabMeetings" xml:space="preserve"><value>How Replio helps in this topic's meetings: hints during the conversation and the summary format</value></data>
-  <data name="MeetingStyleTitle" xml:space="preserve"><value>How Replio helps in this topic's meetings</value></data>
+  <data name="TipTopicTabMeetings" xml:space="preserve"><value>How Replio helps in this group's meetings: hints during the conversation and the summary format</value></data>
+  <data name="MeetingStyleTitle" xml:space="preserve"><value>How Replio helps in this group's meetings</value></data>
   <data name="MeetingStyleIntro" xml:space="preserve"><value>Pick the type of meetings, and Replio will tailor its hints and summaries to it. You can adjust the texts to your liking.</value></data>
   <data name="MeetingStylePresetLabel" xml:space="preserve"><value>Type of meetings</value></data>
   <data name="MeetingGuidanceLabel" xml:space="preserve"><value>How to help in meetings</value></data>
@@ -811,12 +811,12 @@
   <data name="SummaryFormatLabel" xml:space="preserve"><value>What to add to summaries</value></data>
   <data name="SummaryFormatHint" xml:space="preserve"><value>Sections to add to the summary after tasks, key points and participants, one per line: «Name: what goes there». Leave empty for the usual sections only.</value></data>
   <data name="SettingsSectionMeetings" xml:space="preserve"><value>Meetings (default)</value></data>
-  <data name="SettingsMeetingsHint" xml:space="preserve"><value>This is how Replio helps in all meetings: without a topic and in topics that have no setup of their own. A topic can be set up separately on its «How to help» tab.</value></data>
+  <data name="SettingsMeetingsHint" xml:space="preserve"><value>This is how Replio helps in all meetings: without a group and in groups that have no setup of their own. A group can be set up separately on its «How to help» tab.</value></data>
   <data name="TopicActualizeSessions" xml:space="preserve"><value>Meeting summaries {0} of {1}…</value></data>
-  <data name="TipSessionTopicActualize" xml:space="preserve"><value>Updates this meeting's summary and its topic's summary and graph. After a meeting the topic updates by itself.</value></data>
-  <data name="SearchGroupTopics" xml:space="preserve"><value>Topics</value></data>
+  <data name="TipSessionTopicActualize" xml:space="preserve"><value>Updates this meeting's summary and its group's summary and graph. After a meeting the group updates by itself.</value></data>
+  <data name="SearchGroupTopics" xml:space="preserve"><value>Groups</value></data>
   <data name="SearchGroupSessions" xml:space="preserve"><value>Meetings</value></data>
-  <data name="SearchGroupTopicSummaries" xml:space="preserve"><value>Topic summaries</value></data>
+  <data name="SearchGroupTopicSummaries" xml:space="preserve"><value>Group summaries</value></data>
   <data name="SearchGroupKnowledge" xml:space="preserve"><value>Knowledge base</value></data>
   <data name="SearchGroupQuestions" xml:space="preserve"><value>Questions</value></data>
   <data name="SearchInName" xml:space="preserve"><value>in the title</value></data>
@@ -841,21 +841,21 @@
   <data name="HelpTopicHintsTitle" xml:space="preserve"><value>Hints during a call</value></data>
   <data name="HelpTopicHintsBody" xml:space="preserve"><value>- Show or hide the hints window with {OVERLAY}.&#x0a;- **What to say**, **What to ask**, **Follow-up questions**, **Recap**: an answer from the latest lines.&#x0a;- Your own question: type it and press Enter or {ASK}.&#x0a;- A screenshot for the AI: the 📷 button or {SNAPSHOT}.</value></data>
   <data name="HelpTopicAfterTitle" xml:space="preserve"><value>After the meeting</value></data>
-  <data name="HelpTopicAfterBody" xml:space="preserve"><value>- Open the meeting in the list on the home screen.&#x0a;- Tabs: **Summary**, **Transcript**, **Screenshots**, **Email** and **Usage**.&#x0a;- Every tab has **Copy**.&#x0a;- A meeting can be renamed, moved to a topic or deleted.</value></data>
-  <data name="HelpTopicTopicsTitle" xml:space="preserve"><value>Topics and knowledge base</value></data>
-  <data name="HelpTopicTopicsBody" xml:space="preserve"><value>- **+ New topic**: everything about one project or client. Drag meetings onto a topic to move them.&#x0a;- **Knowledge base**: **+ Documents**, **+ Folder**, **+ Media** or **+ Text**. Files can be dropped or pasted ({PASTE}).&#x0a;- **Update topic** redoes out-of-date meeting summaries, then the **Summary** and the **Graph**. In a meeting of a topic this button replaces «Update summary».&#x0a;- Ask about the topic on the **Questions** tab: the answer uses all meetings and materials.</value></data>
+  <data name="HelpTopicAfterBody" xml:space="preserve"><value>- Open the meeting in the list on the home screen.&#x0a;- Tabs: **Summary**, **Transcript**, **Screenshots**, **Email** and **Usage**.&#x0a;- Every tab has **Copy**.&#x0a;- A meeting can be renamed, moved to a group or deleted.</value></data>
+  <data name="HelpTopicTopicsTitle" xml:space="preserve"><value>Groups and knowledge base</value></data>
+  <data name="HelpTopicTopicsBody" xml:space="preserve"><value>- **+ New group**: everything about one project or client. Drag meetings onto a group to move them.&#x0a;- **Knowledge base**: **+ Documents**, **+ Folder**, **+ Media** or **+ Text**. Files can be dropped or pasted ({PASTE}).&#x0a;- **Update group** redoes out-of-date meeting summaries, then the **Summary** and the **Graph**. In a meeting of a group this button replaces «Update summary».&#x0a;- Ask about the group on the **Questions** tab: the answer uses all meetings and materials.</value></data>
   <data name="HelpTopicHotkeysTitle" xml:space="preserve"><value>Hotkeys</value></data>
   <data name="HelpTopicHotkeysBody" xml:space="preserve"><value>{HOTKEYS}&#x0a;&#x0a;Change them in **Settings** → **Hotkeys**.</value></data>
   <data name="HelpTopicDataTitle" xml:space="preserve"><value>Data folder and cloud</value></data>
-  <data name="HelpTopicDataBody" xml:space="preserve"><value>- Meetings, topics and the knowledge base live in the **data folder**: **Settings** → **Data and updates**.&#x0a;- Pick a folder in Yandex Disk, OneDrive or iCloud Drive, and your meetings will be on all your computers.&#x0a;- Nothing goes to Replio servers. Settings and the sign-in key stay separate on each computer.</value></data>
+  <data name="HelpTopicDataBody" xml:space="preserve"><value>- Meetings, groups and the knowledge base live in the **data folder**: **Settings** → **Data and updates**.&#x0a;- Pick a folder in Yandex Disk, OneDrive or iCloud Drive, and your meetings will be on all your computers.&#x0a;- Nothing goes to Replio servers. Settings and the sign-in key stay separate on each computer.</value></data>
   <data name="HelpTopicAgentsTitle" xml:space="preserve"><value>AI agents (MCP)</value></data>
   <data name="HelpTopicAgentsBody" xml:space="preserve"><value>{MAC_WARNING}Replio gives your meetings to local AI agents: Claude Code, Codex, Cursor. The data is read only on this computer.&#x0a;&#x0a;**Claude Code.** Run in a terminal or press **Copy the Claude Code command** below:&#x0a;&#x0a;```&#x0a;{MCP_CLAUDE}&#x0a;```&#x0a;&#x0a;**Cursor and other MCP clients.** Add to the MCP settings (`mcp.json`):&#x0a;&#x0a;```&#x0a;{MCP_JSON}&#x0a;```&#x0a;&#x0a;Then ask the agent: «find yesterday's meeting and list the tasks».&#x0a;&#x0a;**Terminal:** `{CLI} list`, `{CLI} show last`, `{CLI} guide`.</value></data>
   <data name="HelpTopicTroubleTitle" xml:space="preserve"><value>If something does not work</value></data>
   <data name="HelpTopicTroubleBody" xml:space="preserve"><value>- **No hints or summary.** Check the sign-in and what is left in **Settings** → **Account**.&#x0a;- **The other side is not heard.** While recording open **Settings** → **Speech** → **Check sound**. Their sound must play through this computer's speakers or headphones.&#x0a;- **A hotkey does not work.** Another program took it: set a different one in **Settings** → **Hotkeys**.&#x0a;- Questions and ideas: hello@replio.ru.</value></data>
-  <data name="HelpTopicMeetingsTitle" xml:space="preserve"><value>How Replio helps in a topic</value></data>
-  <data name="HelpTopicMeetingsBody" xml:space="preserve"><value>- Open a topic → the **How to help** tab.&#x0a;- Pick the **type of meetings**: sales, job interview, negotiation, team meeting, consultation or an ordinary meeting.&#x0a;- **How to help in meetings**: what the hints should focus on. **What to add to summaries**: which sections to add to the summary.&#x0a;- **Topic names and terms**: participants, companies and terms, so recognition spells them right.&#x0a;- Edit the texts freely: the variant becomes **Custom**.&#x0a;- Topics without their own setup and meetings without a topic follow **Settings → Meetings**.</value></data>
+  <data name="HelpTopicMeetingsTitle" xml:space="preserve"><value>How Replio helps in a group</value></data>
+  <data name="HelpTopicMeetingsBody" xml:space="preserve"><value>- Open a group → the **How to help** tab.&#x0a;- Pick the **type of meetings**: sales, job interview, negotiation, team meeting, consultation or an ordinary meeting.&#x0a;- **How to help in meetings**: what the hints should focus on. **What to add to summaries**: which sections to add to the summary.&#x0a;- **Group names and terms**: participants, companies and terms, so recognition spells them right.&#x0a;- Edit the texts freely: the variant becomes **Custom**.&#x0a;- Groups without their own setup and meetings without a group follow **Settings → Meetings**.</value></data>
   <data name="HelpTopicSearchTitle" xml:space="preserve"><value>Search</value></data>
-  <data name="HelpTopicSearchBody" xml:space="preserve"><value>- Type in the search box at the top: Replio looks through topics and their summaries, meeting titles, summaries, transcripts and emails, the knowledge base and questions.&#x0a;- All words must be found, in any order.&#x0a;- Click a result to open the right place, or press **Enter** for the first one. **Esc** closes the list.</value></data>
+  <data name="HelpTopicSearchBody" xml:space="preserve"><value>- Type in the search box at the top: Replio looks through groups and their summaries, meeting titles, summaries, transcripts and emails, the knowledge base and questions.&#x0a;- All words must be found, in any order.&#x0a;- Click a result to open the right place, or press **Enter** for the first one. **Esc** closes the list.</value></data>
   <data name="AccountOpenCabinet" xml:space="preserve"><value>Open account page</value></data>
   <data name="TipAccountOpenCabinet" xml:space="preserve"><value>Opens your account on replio.ru in the browser: plan, payments, devices</value></data>
   <data name="LimitShort" xml:space="preserve"><value>Limit · {0}%</value></data>
@@ -932,8 +932,8 @@
   <data name="HotkeysHint" xml:space="preserve"><value>Click a field and type a combination, for example Ctrl+Shift+O. A combination with a mistake is not applied until it is fixed.</value></data>
   <data name="HotkeysReset" xml:space="preserve"><value>Restore defaults</value></data>
   <data name="TipHotkeysReset" xml:space="preserve"><value>Restore the combinations a fresh install has</value></data>
-  <data name="TopicGlossaryLabel" xml:space="preserve"><value>Topic names and terms</value></data>
-  <data name="TopicGlossaryHint" xml:space="preserve"><value>Participants, companies, products and terms of this topic. In the topic's meetings they are added to the common list from «Settings → Meetings». Separate with commas or new lines.</value></data>
+  <data name="TopicGlossaryLabel" xml:space="preserve"><value>Group names and terms</value></data>
+  <data name="TopicGlossaryHint" xml:space="preserve"><value>Participants, companies, products and terms of this group. In the group's meetings they are added to the common list from «Settings → Meetings». Separate with commas or new lines.</value></data>
   <data name="TopicGlossaryExample" xml:space="preserve"><value>For example: Anna Smith, Vector Ltd, roadmap, MVP</value></data>
   <data name="CompanyServiceTitle" xml:space="preserve"><value>AI and speech: your company's server</value></data>
   <data name="CompanyServiceText" xml:space="preserve"><value>Your company's administrator sets it up once in the account on replio.ru. No keys or addresses are needed here.</value></data>
@@ -970,5 +970,5 @@
   <data name="HotkeysHint_Mac" xml:space="preserve"><value>Click a field and type a combination, for example Ctrl+Shift+O. On a Mac: Ctrl is ⌃ Control, Alt is ⌥ Option, Win is ⌘ Command, Shift is ⇧. A combination with a mistake is not applied until it is fixed.</value></data>
   <data name="OpenAiKeyMissing_Mac" xml:space="preserve"><value>API key is missing. Add it in Settings → API key, or put a line ApiKey=... into ~/Library/Application Support/Replio/secrets.txt (or set POLZA_API_KEY).</value></data>
   <data name="ShowInTaskbar_Mac" xml:space="preserve"><value>Show in the Dock</value></data>
-  <data name="WhatsNewBody_Mac" xml:space="preserve"><value>Replio 1.1.4:&#x0a;• Recordings with no recognised speech are no longer sent to the AI: they are named «Empty recording» and Replio offers to delete them.&#x0a;• A topic updates by itself after each meeting: its summary and graph are ready without pressing «Update topic». While it runs, the button shows the progress.&#x0a;• The «Hidden from screen share» badge shows the real state and switches with a click.&#x0a;• Graph: labels no longer overlap, the legend and the hint moved under the graph.&#x0a;• The Replio icon in the menu bar blinks during a recording; its menu has «Open the live transcript», «Stop recording» and «Take a screenshot».&#x0a;• The recording bar no longer covers the main window's input box, the «Statistics» tab is gone, «Select several» sits above the meeting list.&#x0a;• New meetings, topics and the knowledge base live in the .replio folder in your home folder, like .claude for Claude. Earlier data stays where it was; move it in Settings → Data and updates.&#x0a;• Hotkeys are shown with ⌃ ⌥ ⇧ ⌘, the second Replio icon no longer bounces in the Dock, and «Data and updates» checks for a new version.&#x0a;&#x0a;Replio 1.1.3:&#x0a;• Settings are split into sections: «Account», «Meetings», «Speech», «AI assistant», «Windows and look», «Hotkeys», «Data and updates». Changes are saved by themselves, there is no «Save» button any more.&#x0a;• Each plan sees only what it can use: on «Local» speech is recognised on the computer, on «Pro» and «Team» you can choose the recognition quality.&#x0a;• «Meetings (default)» in Settings apply to every topic that has no setup of its own.&#x0a;• Names and terms can now also be set per topic on the «How to help» tab: they are added to the common list and recognised better.&#x0a;• «Private» plan: AI and speech recognition run through the company's server, which the administrator connects once in the account on replio.ru.&#x0a;• The «Deep mode» switch is gone: it changed nothing.&#x0a;&#x0a;Replio 1.1.2:&#x0a;• «Modes» are replaced by the topic tab «How to help»: meeting type (sales, interview, negotiation, stand-up, consultation or your own), how to hint and which sections to add to the summary. Meetings without a topic are set up in Settings.&#x0a;• The search in the header looks everywhere: topics, topic summaries, meeting summaries, transcripts, emails, the knowledge base and questions. A click opens the right place.&#x0a;• «Update topic» also redoes out-of-date meeting summaries of the topic and replaces «Rewrite summary» in a topic's meeting.&#x0a;• A limit bar in the header shows what is left today and this month: yellow when little is left, red at the very end.&#x0a;• «Help» opens as a small window with short cards and pictures.&#x0a;• Settings now have «Open account page» and «Data folder»: keep meetings, topics and the knowledge base in Yandex Disk, OneDrive or iCloud Drive to have them on all your computers.&#x0a;• New logo, as on the site. The plan from your account is picked up by itself.&#x0a;&#x0a;Replio 1.1.0 — the first version.&#x0a;• Live hints during a call: «What to say», «What to answer», «What to ask» and follow-up questions in a separate window that is hidden from screen share.&#x0a;• Meeting summary, follow-up email and transcript with «Copy» buttons; screenshots are kept with the meeting.&#x0a;• Topics: sessions, a knowledge base (documents, folders, audio and video, your own text), «Summary», «Questions» with sources and a relation graph. One «Update topic» button parses new materials and refreshes the summary and graph.&#x0a;• The speech language is detected automatically for each side of the call; it can also be chosen in Settings.&#x0a;• Replio account: sign in on replio.ru; the key is stored encrypted on the computer. Hints, summaries and recognition run on your plan.&#x0a;• Updates arrive in the app: a new version shows an «Update» button. Settings and the key are kept on update.&#x0a;• The replio command and an MCP server for AI agents (Claude Code, Codex, Cursor): details in ~/Library/Application Support/Replio/AGENTS.md.</value></data>
+  <data name="WhatsNewBody_Mac" xml:space="preserve"><value>Replio 1.1.4:&#x0a;• Topics are now called groups: «New group», «Update group», «No group». Everything in them stays.&#x0a;• Recordings with no recognised speech are no longer sent to the AI: they are named «Empty recording» and Replio offers to delete them.&#x0a;• A group updates by itself after each meeting: its summary and graph are ready without pressing «Update group». While it runs, the button shows the progress.&#x0a;• The «Hidden from screen share» badge shows the real state and switches with a click.&#x0a;• Graph: labels no longer overlap, the legend and the hint moved under the graph.&#x0a;• The Replio icon in the menu bar blinks during a recording; its menu has «Open the live transcript», «Stop recording» and «Take a screenshot».&#x0a;• The recording bar no longer covers the main window's input box, the «Statistics» tab is gone, «Select several» sits above the meeting list.&#x0a;• New meetings, groups and the knowledge base live in the .replio folder in your home folder, like .claude for Claude. Earlier data stays where it was; move it in Settings → Data and updates.&#x0a;• Hotkeys are shown with ⌃ ⌥ ⇧ ⌘, the second Replio icon no longer bounces in the Dock, and «Data and updates» checks for a new version.&#x0a;&#x0a;Replio 1.1.3:&#x0a;• Settings are split into sections: «Account», «Meetings», «Speech», «AI assistant», «Windows and look», «Hotkeys», «Data and updates». Changes are saved by themselves, there is no «Save» button any more.&#x0a;• Each plan sees only what it can use: on «Local» speech is recognised on the computer, on «Pro» and «Team» you can choose the recognition quality.&#x0a;• «Meetings (default)» in Settings apply to every group that has no setup of its own.&#x0a;• Names and terms can now also be set per group on the «How to help» tab: they are added to the common list and recognised better.&#x0a;• «Private» plan: AI and speech recognition run through the company's server, which the administrator connects once in the account on replio.ru.&#x0a;• The «Deep mode» switch is gone: it changed nothing.&#x0a;&#x0a;Replio 1.1.2:&#x0a;• «Modes» are replaced by the group tab «How to help»: meeting type (sales, interview, negotiation, stand-up, consultation or your own), how to hint and which sections to add to the summary. Meetings without a group are set up in Settings.&#x0a;• The search in the header looks everywhere: groups, group summaries, meeting summaries, transcripts, emails, the knowledge base and questions. A click opens the right place.&#x0a;• «Update group» also redoes out-of-date meeting summaries of the group and replaces «Rewrite summary» in a group's meeting.&#x0a;• A limit bar in the header shows what is left today and this month: yellow when little is left, red at the very end.&#x0a;• «Help» opens as a small window with short cards and pictures.&#x0a;• Settings now have «Open account page» and «Data folder»: keep meetings, groups and the knowledge base in Yandex Disk, OneDrive or iCloud Drive to have them on all your computers.&#x0a;• New logo, as on the site. The plan from your account is picked up by itself.&#x0a;&#x0a;Replio 1.1.0 — the first version.&#x0a;• Live hints during a call: «What to say», «What to answer», «What to ask» and follow-up questions in a separate window that is hidden from screen share.&#x0a;• Meeting summary, follow-up email and transcript with «Copy» buttons; screenshots are kept with the meeting.&#x0a;• Groups: sessions, a knowledge base (documents, folders, audio and video, your own text), «Summary», «Questions» with sources and a relation graph. One «Update group» button parses new materials and refreshes the summary and graph.&#x0a;• The speech language is detected automatically for each side of the call; it can also be chosen in Settings.&#x0a;• Replio account: sign in on replio.ru; the key is stored encrypted on the computer. Hints, summaries and recognition run on your plan.&#x0a;• Updates arrive in the app: a new version shows an «Update» button. Settings and the key are kept on update.&#x0a;• The replio command and an MCP server for AI agents (Claude Code, Codex, Cursor): details in ~/Library/Application Support/Replio/AGENTS.md.</value></data>
 </root>

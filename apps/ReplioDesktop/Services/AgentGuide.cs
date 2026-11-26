@@ -82,7 +82,8 @@ public static class AgentGuide
             .AppendLine("- Sessions: `" + Path.Combine(root, "sessions") + "` — one `<id>.json` per session " +
                         "(Title, StartedAt, EndedAt, TopicId, SummaryText in Markdown, Transcript[], Screenshots[]).")
             .AppendLine("- Screenshots: `" + Path.Combine(root, "visual-context", "<sessionId>", "screenshots") + "` (JPEG).")
-            .AppendLine("- Topics: `" + Path.Combine(root, "topics.json") + "` (Name, KnowledgeText = topic overview, Sources[]).")
+            .AppendLine("- Topics: `" + Path.Combine(root, "topics.json") + "` (Name, KnowledgeText = topic overview, Sources[]). " +
+                        "The app shows topics to users as «Группы» (groups); commands and fields keep the name «topic».")
             .AppendLine("- Parsed topic documents: `" + Path.Combine(root, "knowledge", "<topicId>", "<sourceId>.md") + "`.")
             .AppendLine("- Exports: `" + Path.Combine(root, "exports") + "` unless `--out` is given.")
             .AppendLine()
