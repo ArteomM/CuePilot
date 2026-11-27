@@ -63,13 +63,13 @@ adb shell input swipe 540 1300 540 2200 250
 sleep 2
 shot sheetdrag
 # The finger rests on a card until it is ready (vibration), then pulls (restpull: no sheet, «cancelled» in the log)
-# or lifts on the spot (restlift: the sheet). Each «input» call itself takes a few hundred ms to start.
+# or lifts on the spot (restlift: the sheet). Ready comes at 480 ms, the menu by itself at 840 ms.
 adb shell am start -n "$ACTIVITY" --es replio_demo home > /dev/null
 sleep 5
-adb shell "input motionevent DOWN 540 1050; sleep 0.25; input motionevent MOVE 540 1100; input motionevent MOVE 540 1250; input motionevent MOVE 540 1400; input motionevent UP 540 1400"
+adb shell "input motionevent DOWN 540 1050; sleep 0.55; input motionevent MOVE 540 1100; input motionevent MOVE 540 1250; input motionevent MOVE 540 1400; input motionevent UP 540 1400"
 sleep 2
 shot restpull
-adb shell "input motionevent DOWN 540 1050; sleep 0.25; input motionevent UP 540 1050"
+adb shell "input motionevent DOWN 540 1050; sleep 0.55; input motionevent UP 540 1050"
 sleep 2
 shot restlift
 
