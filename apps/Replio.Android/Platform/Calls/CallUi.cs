@@ -73,6 +73,41 @@ internal static class CallUi
         return label;
     }
 
+    /// <summary>
+    /// Makes the text a little smaller when its longest word is wider than the label, so a narrow tile shows
+    /// «Звук / приложений» on two lines instead of breaking the word in the middle.
+    /// </summary>
+    public static void FitWords(TextView label, float minSp = 10f)
+    {
+        float minPx = TypedValue.ApplyDimension(ComplexUnitType.Sp, minSp, label.Resources!.DisplayMetrics);
+        label.LayoutChange += (_, _) =>
+        {
+            int width = label.Width - label.PaddingLeft - label.PaddingRight;
+            Paint? paint = label.Paint;
+            if (width <= 0 || paint == null)
+            {
+                return;
+            }
+
+            float widest = 0;
+            foreach (string word in (label.Text ?? string.Empty).Split(' ', StringSplitOptions.RemoveEmptyEntries))
+            {
+                widest = Math.Max(widest, paint.MeasureText(word));
+            }
+
+            if (widest <= width)
+            {
+                return;
+            }
+
+            float size = Math.Max(minPx, label.TextSize * width / widest * 0.97f);
+            if (size < label.TextSize - 0.5f)
+            {
+                label.Post(() => label.SetTextSize(ComplexUnitType.Px, size));
+            }
+        };
+    }
+
     /// <summary>A Material icon from Resources/drawable (white vectors), tinted.</summary>
     public static ImageView Icon(Context context, int drawable, Color tint)
     {

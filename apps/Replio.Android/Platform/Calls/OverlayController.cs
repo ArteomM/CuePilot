@@ -830,6 +830,7 @@ internal sealed class OverlayController
         label.Gravity = GravityFlags.Center;
         label.SetMaxLines(2);
         label.SetPadding(0, CallUi.Dp(context, 6), 0, 0);
+        CallUi.FitWords(label);
         tile.AddView(label, CallUi.Fill());
         tile.ContentDescription = title;
         tile.Click += (_, _) => click();
