@@ -62,13 +62,16 @@ shot holdcard
 adb shell input swipe 540 1300 540 2200 250
 sleep 2
 shot sheetdrag
-# The finger rests on a card past the ready moment, then pulls (holdpull: no sheet) or lifts on the spot (holdlift:
-# the sheet). Timed touches from inside the demo build (Views/MainView.DemoTouch.cs).
-for page in holdpull holdlift; do
-  adb shell am start -n "$ACTIVITY" --es replio_demo "$page" > /dev/null
-  sleep 5
-  shot "$page"
-done
+# The finger rests on a card until it is ready (vibration), then pulls (restpull: no sheet, «cancelled» in the log)
+# or lifts on the spot (restlift: the sheet). Each «input» call itself takes a few hundred ms to start.
+adb shell am start -n "$ACTIVITY" --es replio_demo home > /dev/null
+sleep 5
+adb shell "input motionevent DOWN 540 1050; sleep 0.25; input motionevent MOVE 540 1100; input motionevent MOVE 540 1250; input motionevent MOVE 540 1400; input motionevent UP 540 1400"
+sleep 2
+shot restpull
+adb shell "input motionevent DOWN 540 1050; sleep 0.25; input motionevent UP 540 1050"
+sleep 2
+shot restlift
 
 for page in callmenu callhint; do
   adb shell am start -n "$ACTIVITY" --es replio_demo "$page" > /dev/null
@@ -89,7 +92,7 @@ adb logcat -d > logcat.txt
 echo "----- logcat (app, runtime, crashes) -----"
 grep -E "FATAL EXCEPTION|AndroidRuntime|monodroid|mono-rt|DOTNET|Avalonia|Replio|$PACKAGE" logcat.txt | grep -v "AiAiEcho\|FontLog\|ImsResolver\|CarrierSvc" | tail -150
 echo "----- touch -----"
-grep -E "\[ui\] (long press|sheet pulled)|\[calls\] menu pulled|\[demo\] (page|touch)" logcat.txt | tail -30 || true
+grep -E "\[ui\] (long press|sheet pulled)|\[calls\] menu pulled|\[demo\] page" logcat.txt | tail -30 || true
 echo "----- self-test -----"
 grep -F "[selftest]" logcat.txt || echo "(no self-test lines)"
 

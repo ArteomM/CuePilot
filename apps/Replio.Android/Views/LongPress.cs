@@ -148,6 +148,7 @@ public sealed class LongPress
         if (_stage == Stage.Holding)
         {
             _stage = Stage.Ready;
+            PhonePlatform.Log("[ui] long press ready");
             try
             {
                 PhonePlatform.Haptic();
