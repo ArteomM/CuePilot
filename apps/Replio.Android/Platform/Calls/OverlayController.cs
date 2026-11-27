@@ -642,6 +642,8 @@ internal sealed class OverlayController
         var level = new WaveView(context, CallUi.Mint, 10);
         line.AddView(level, new LinearLayout.LayoutParams(CallUi.Dp(context, 70), CallUi.Dp(context, 16)) { LeftMargin = CallUi.Dp(context, 10) });
         status.AddView(line);
+        TextView idleTitle = CallUi.Label(context, "Replio", 19, CallUi.Text, "ExtraBold");
+        status.AddView(idleTitle);
         var hearingRow = new LinearLayout(context) { Orientation = Orientation.Horizontal };
         hearingRow.SetGravity(GravityFlags.CenterVertical);
         ImageView hearingIcon = CallUi.Icon(context, Resource.Drawable.ic_rp_volume_up, CallUi.Muted);
@@ -683,17 +685,19 @@ internal sealed class OverlayController
 
         body.AddView(BuildBottomRow(context, topics));
 
-        var levels = new float[10];
+        var levels = Enumerable.Repeat(0.28f, 10).ToArray();
         bool dotOn = true;
         _refreshMenu = () =>
         {
             bool recording = _assistant.IsRecording;
             line.Visibility = recording ? ViewStates.Visible : ViewStates.Gone;
+            idleTitle.Visibility = recording ? ViewStates.Gone : ViewStates.Visible;
             timer.Text = _assistant.ElapsedText;
             dotOn = !dotOn;
             dot.Alpha = dotOn ? 1f : 0.3f;
             Array.Copy(levels, 1, levels, 0, levels.Length - 1);
-            levels[^1] = recording ? _assistant.Level : 0.05f;
+            // A floor keeps quiet moments as low bars, not a dashed line that looks broken.
+            levels[^1] = 0.28f + (recording ? _assistant.Level * 0.72f : 0f);
             level.SetHeights((float[])levels.Clone());
 
             string text = _assistant.HearingLine(out bool problem, out bool speaker);
@@ -1552,6 +1556,7 @@ internal sealed class OverlayController
 
             if (e.Action == MotionEventActions.Outside)
             {
+                PhonePlatform.Log("[calls] menu closed by a touch outside");
                 _close();
                 return true;
             }
@@ -1582,6 +1587,7 @@ internal sealed class OverlayController
                         }
                         else
                         {
+                            PhonePlatform.Log($"[calls] menu push too short ({-TranslationY:0} of {Height} px)");
                             _settle();
                         }
                     }
@@ -1594,6 +1600,7 @@ internal sealed class OverlayController
 
         private void Down(MotionEvent e)
         {
+            PhonePlatform.Log($"[calls] menu touch at {e.RawX:0},{e.RawY:0}");
             _downX = e.RawX;
             _downY = e.RawY;
             _lastY = e.RawY;
@@ -1617,6 +1624,7 @@ internal sealed class OverlayController
             }
 
             _dragging = true;
+            PhonePlatform.Log("[calls] menu push started");
             _downY -= _slop; // no jump by the slop distance
             Animate()?.Cancel();
             return true;

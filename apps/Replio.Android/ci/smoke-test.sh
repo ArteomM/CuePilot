@@ -94,7 +94,7 @@ adb logcat -d > logcat.txt
 echo "----- logcat (app, runtime, crashes) -----"
 grep -E "FATAL EXCEPTION|AndroidRuntime|monodroid|mono-rt|DOTNET|Avalonia|Replio|$PACKAGE" logcat.txt | grep -v "AiAiEcho\|FontLog\|ImsResolver\|CarrierSvc" | tail -150
 echo "----- touch -----"
-grep -E "\[ui\] (long press|sheet pulled)|\[calls\] menu pu(lled|shed)|\[demo\] page" logcat.txt | tail -30 || true
+grep -E "\[ui\] (long press|sheet pulled)|\[calls\] menu|\[demo\] page" logcat.txt | tail -30 || true
 echo "----- self-test -----"
 grep -F "[selftest]" logcat.txt || echo "(no self-test lines)"
 

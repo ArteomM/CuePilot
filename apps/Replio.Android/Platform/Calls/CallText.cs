@@ -38,7 +38,7 @@ public static class CallText
         ["HintThinking"] = ("Думаю…", "Thinking…"),
         ["HintTitle"] = ("ЧТО СКАЗАТЬ", "WHAT TO SAY"),
         ["HintTitleRecap"] = ("О ЧЁМ РЕЧЬ", "RECAP"),
-        ["HintTitleAuto"] = ("ПРОЗВУЧАЛ ВОПРОС · ВАРИАНТ ОТВЕТА", "A QUESTION CAME UP · A POSSIBLE ANSWER"),
+        ["HintTitleAuto"] = ("ПРОЗВУЧАЛ ВОПРОС", "A QUESTION CAME UP"),
         ["HintAnother"] = ("Другой вариант", "Another option"),
         ["HintShorter"] = ("Короче", "Shorter"),
         ["HintShorterPrompt"] = ("Скажи то же самое короче, одной фразой.", "Say the same, shorter, in one sentence."),
