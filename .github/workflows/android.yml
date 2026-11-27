@@ -25,6 +25,9 @@ concurrency:
 jobs:
   build:
     runs-on: ubuntu-latest
+    outputs:
+      # «true» when the APK is signed with the key the phones already have (a secret key, or the cached debug key).
+      known_key: ${{ steps.signing.outputs.known_key }}
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-dotnet@v4
@@ -58,18 +61,29 @@ jobs:
         run: bash apps/Replio.Android/native/build-android.sh
       # Without a signing key in the secrets the APK is signed with the .NET debug key; it is cached so that
       # every build has the same key and installs over the previous one (the phone keeps its data).
+      # A cache belongs to its branch: a new branch finds none and .NET makes a NEW debug key, whose APK Android
+      # refuses to install over the one on the phone (2026-11-27). Such a build is never published.
       - name: Keep the debug signing key between builds
+        id: keystore-cache
         uses: actions/cache@v4
         with:
           path: ~/.local/share/Xamarin/Mono for Android/debug.keystore
           key: replio-android-debug-keystore
       - name: Signing key from the secrets
+        id: signing
         env:
           KEYSTORE_BASE64: ${{ secrets.ANDROID_KEYSTORE_BASE64 }}
+          CACHED_KEY: ${{ steps.keystore-cache.outputs.cache-hit }}
         run: |
           if [ -n "$KEYSTORE_BASE64" ]; then
             echo "$KEYSTORE_BASE64" | base64 -d > "$RUNNER_TEMP/replio.keystore"
             echo "SIGNING_ARGS=-p:AndroidKeyStore=true -p:AndroidSigningKeyStore=$RUNNER_TEMP/replio.keystore -p:AndroidSigningKeyAlias=replio -p:AndroidSigningStorePass=env:ANDROID_KEYSTORE_PASSWORD -p:AndroidSigningKeyPass=env:ANDROID_KEYSTORE_PASSWORD" >> "$GITHUB_ENV"
+            echo "known_key=true" >> "$GITHUB_OUTPUT"
+          elif [ "$CACHED_KEY" = "true" ]; then
+            echo "known_key=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "known_key=false" >> "$GITHUB_OUTPUT"
+            echo "::warning::No signing key on this branch: the APK gets a new key, will not install over Replio on a phone and is not published"
           fi
       - name: Build the APK
         shell: bash -e -o pipefail {0}
@@ -89,6 +103,8 @@ jobs:
           mkdir -p "$OUT/android"
           cp "$OUT"/android-build/*-Signed.apk "$OUT/android/Replio-$VERSION-android.apk"
           ls -la "$OUT/android"
+          # The signing certificate, to compare builds: a different one means the APK will not install over the old.
+          "$ANDROID_SDK_ROOT/build-tools/34.0.0/apksigner" verify --print-certs "$OUT/android/Replio-$VERSION-android.apk" | grep -i "SHA-256" || true
       # A second APK only for the emulator check: x86_64 (the phone APK runs there through a slow translation layer
       # that draws a black screen) with demo data and pages opened by an intent extra for the screenshots.
       - name: Build the emulator APK
@@ -190,9 +206,10 @@ jobs:
 
   release:
     # The latest APK on the «android-latest» release page, only after it started on the emulator without a crash.
-    # The UX-audit branch publishes only when started by hand («Run workflow»), after Arteom's go.
+    # Only an APK signed with the key the phones have. The UX-audit branch never publishes: its debug key is not
+    # the phones' one, so its work reaches android-latest through the Android branch.
     needs: [build, smoke]
-    if: github.event_name == 'workflow_dispatch' || github.ref_name != 'claude/project-thread-uxbmbt'
+    if: needs.build.outputs.known_key == 'true' && github.ref_name != 'claude/project-thread-uxbmbt'
     runs-on: ubuntu-latest
     steps:
       - uses: actions/download-artifact@v4
