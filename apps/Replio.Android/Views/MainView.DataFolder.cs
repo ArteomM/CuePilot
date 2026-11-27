@@ -14,6 +14,13 @@ public partial class MainView
 {
     private void SetUpDataFolder() => _viewModel.RestartRequested += PhoneStorage.RestartApp;
 
+    /// <summary>«Данные и синхронизация» opens and folds (most people never need it).</summary>
+    private void DataFolderFold_OnClick(object? sender, RoutedEventArgs e)
+    {
+        DataFolderDetails.IsVisible = !DataFolderDetails.IsVisible;
+        DataFolderChevron.RenderTransform = DataFolderDetails.IsVisible ? new global::Avalonia.Media.RotateTransform(180) : null;
+    }
+
     private async void ChooseDataFolder_OnClick(object? sender, RoutedEventArgs e)
     {
         try

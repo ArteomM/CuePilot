@@ -56,7 +56,7 @@ public class ReplioApplication : global::Android.App.Application
         PhonePlatform.Haptic = () => MainActivity.Current?.Window?.DecorView?.PerformHapticFeedback(global::Android.Views.FeedbackConstants.LongPress);
         ReplioDesktop.ViewModels.MainViewModel.ExternalUrlOpener = url =>
         {
-            MainActivity.OpenUri(this, url);
+            MainActivity.OpenLink(this, url);
             return true;
         };
 

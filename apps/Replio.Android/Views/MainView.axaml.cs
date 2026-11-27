@@ -113,6 +113,12 @@ public partial class MainView : UserControl
                     OnUi(UpdatePageTitle);
                     break;
                 case nameof(MainViewModel.SelectedTopicItem):
+                    OnUi(() =>
+                    {
+                        UpdateEmptyText();
+                        UpdateRecordButton();
+                    });
+                    break;
                 case nameof(MainViewModel.VisibleSessionsCount):
                 case nameof(MainViewModel.SessionQuery):
                     OnUi(UpdateEmptyText);
@@ -276,15 +282,16 @@ public partial class MainView : UserControl
                 "Settings" => SettingsPage,
                 _ => HomePage
             };
-            double fromX = page == "Session" ? 36 : _shownPage == "Session" ? -36 : 0;
+            // Settings is a page under Home now (no bottom bar): it comes in from the right like a session.
+            double fromX = page is "Session" or "Settings" ? 36 : _shownPage is "Session" or "Settings" ? -36 : 0;
             Motion.Enter(entering, fromX);
         }
 
         _shownPage = page;
         // A session is a page inside Home: back arrow, no bottom bar (its own hint buttons are at the bottom).
-        BackButton.IsVisible = page == "Session";
+        BackButton.IsVisible = page != "Home";
         HomeLogo.IsVisible = page == "Home";
-        BottomNav.IsVisible = page != "Session";
+        SettingsButton.IsVisible = page == "Home";
         UpdateCallPillVisibility();
         SessionMenuButton.IsVisible = page == "Session";
         UpdatePageTitle();
@@ -318,8 +325,14 @@ public partial class MainView : UserControl
     }
 
     /// <summary>The record button floats over Home only, and not while sessions are being selected (their action bar is there).</summary>
-    private void UpdateRecordButton() =>
+    private void UpdateRecordButton()
+    {
         RecordFab.IsVisible = _viewModel.SelectedMainPage == "Home" && !(_viewModel.IsSelectionMode && _viewModel.ShowSessionsPanel);
+        // Inside a group the button says where the recording goes: «Записать в «Продажи»».
+        RecordFabText.Text = _viewModel.SelectedTopic is { Name.Length: > 0 } topic
+            ? string.Format(MobileText.Get("RecordInGroup"), topic.Name)
+            : MobileText.Get("RecordStart");
+    }
 
     private void Back_OnClick(object? sender, RoutedEventArgs e) => HandleBack();
 
@@ -704,6 +717,13 @@ public partial class MainView : UserControl
             return;
         }
 
+        // A passing problem (no connection) is a short line at the bottom, not a window to dismiss.
+        if (kind == FriendlyError.Kind.Network)
+        {
+            _viewModel.ShowFeedback(friendly);
+            return;
+        }
+
         ShowMessage(kind == FriendlyError.Kind.None ? title : MobileText.Get("ErrTitle"), friendly);
     }
 
@@ -831,6 +851,29 @@ public partial class MainView : UserControl
 
     private void ShareEmail_OnClick(object? sender, RoutedEventArgs e) =>
         PhonePlatform.ShareText(_viewModel.CurrentSessionTitle, _viewModel.CurrentFollowUpEmail);
+
+    /// <summary>«⋯» of the summary: redoing it replaces the current text and uses the plan, so it asks first.</summary>
+    private void SummaryMore_OnClick(object? sender, RoutedEventArgs e) =>
+        ShowActions(MobileText.Get("More"), [(MobileText.Get("RedoSummary"), () => ConfirmRedo(MobileText.Get("RedoSummary"), MobileText.Get("RedoSummaryAsk"), _viewModel.RegenerateSummaryCommand), false)]);
+
+    /// <summary>«⋯» of the email: the first draft is written at once, a new one replaces the old after a question.</summary>
+    private void EmailMore_OnClick(object? sender, RoutedEventArgs e)
+    {
+        if (!_viewModel.HasFollowUpEmail)
+        {
+            ShowActions(MobileText.Get("More"), [(_viewModel.L["FollowUpEmail"], () => Execute(_viewModel.FollowUpEmailCommand), false)]);
+            return;
+        }
+
+        ShowActions(MobileText.Get("More"), [(MobileText.Get("RedoEmail"), () => ConfirmRedo(MobileText.Get("RedoEmail"), MobileText.Get("RedoEmailAsk"), _viewModel.FollowUpEmailCommand), false)]);
+    }
+
+    private void ConfirmRedo(string title, string text, System.Windows.Input.ICommand command) =>
+        ShowDialog(title, text,
+        [
+            (_viewModel.L["DialogCancel"], null, false),
+            (MobileText.Get("RedoSummaryGo"), () => Execute(command), false)
+        ]);
 
     private void SessionPageMenu_OnClick(object? sender, RoutedEventArgs e)
     {

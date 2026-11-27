@@ -120,7 +120,10 @@ public partial class MainView
     private void ShowMessage(string title, string message) =>
         ShowDialog(title, message, [(_viewModel.L["DialogOk"], null, false)]);
 
-    /// <summary>An action sheet from the bottom edge: one full-width button per action, destructive ones in red.</summary>
+    /// <summary>
+    /// An action sheet from the bottom edge, as a Material list: one 56 dp row per action with its text on the left,
+    /// no frames, destructive ones in red. No «Отмена»: a swipe down, «Назад» or a tap outside closes it.
+    /// </summary>
     private void ShowActions(string title, IEnumerable<(string Label, Action Action, bool Destructive)> actions)
     {
         _dialogDismissed = null;
@@ -134,24 +137,41 @@ public partial class MainView
             HorizontalAlignment = HorizontalAlignment.Center,
             Background = Brush("EchoBorderBrush")
         });
-        DialogContent.Children.Add(TitleBlock(title));
+        TextBlock heading = TitleBlock(title);
+        heading.FontSize = 15;
+        heading.Foreground = Brush("EchoMutedBrush");
+        heading.MaxLines = 2;
+        heading.TextTrimming = TextTrimming.CharacterEllipsis;
+        heading.Margin = new Thickness(4, 0, 4, 6);
+        DialogContent.Children.Add(heading);
         foreach ((string label, Action action, bool destructive) in actions)
         {
-            Button button = DialogButton(label, destructive ? "dangerSoft" : null);
-            button.Margin = new Thickness(0, 8, 0, 0);
-            button.Click += (_, _) =>
+            var row = new Button
+            {
+                Content = label,
+                MinHeight = 56,
+                Padding = new Thickness(4, 0),
+                HorizontalAlignment = HorizontalAlignment.Stretch,
+                HorizontalContentAlignment = HorizontalAlignment.Left,
+                VerticalContentAlignment = VerticalAlignment.Center,
+                FontSize = 16.5,
+                FontWeight = FontWeight.SemiBold
+            };
+            row.Classes.Add("ghost");
+            if (destructive)
+            {
+                row.Foreground = new SolidColorBrush(Color.Parse("#F06A6F"));
+            }
+
+            row.Click += (_, _) =>
             {
                 _dialogDismissed = null;
                 CloseDialog();
                 action();
             };
-            DialogContent.Children.Add(button);
+            DialogContent.Children.Add(row);
         }
 
-        Button cancel = DialogButton(_viewModel.L["DialogCancel"], "ghost");
-        cancel.Margin = new Thickness(0, 8, 0, 0);
-        cancel.Click += (_, _) => CloseDialog();
-        DialogContent.Children.Add(cancel);
         OpenDialogLayer(Motion.Kind.Sheet);
     }
 

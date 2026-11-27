@@ -71,7 +71,7 @@ public sealed class MobileText : System.ComponentModel.INotifyPropertyChanged
         ["Move"] = ("Перенести", "Move"),
         ["ChooseTopic"] = ("Перенести в группу", "Move to group"),
         ["SessionActions"] = ("Сессия", "Session"),
-        ["TopicEmptyHint"] = ("Здесь пока нет сессий. Нажмите «Записать» внизу экрана, чтобы записать разговор. Перенести сессию в группу можно кнопкой «⋯» на её карточке.", "No sessions here yet. Tap «Record» at the bottom to record a conversation. Move a session to a group with «⋯» on its card."),
+        ["TopicEmptyHint"] = ("Здесь пока нет сессий. Нажмите «Записать» внизу экрана, чтобы записать разговор. Чтобы перенести сессию в группу, нажмите на её карточку и подержите.", "No sessions here yet. Tap «Record» at the bottom to record a conversation. To move a session to a group, press and hold its card."),
         ["AskPlaceholder"] = ("Спросите о разговоре", "Ask about the conversation"),
         ["FolderCopyHint"] = ("Документы папки скопированы в Replio: их разобранный текст виден ниже. Чтобы добавить изменённые файлы, прикрепите папку заново.", "The folder's documents were copied into Replio: their parsed text is shown below. To add changed files, attach the folder again."),
         ["CannotOpenFile"] = ("Не удалось открыть файл: на телефоне нет приложения для этого типа файлов.", "Could not open the file: no app on the phone opens this type of file."),
@@ -101,6 +101,25 @@ public sealed class MobileText : System.ComponentModel.INotifyPropertyChanged
         ["TestRecognitionFailed"] = ("{0}: ошибка распознавания: {1}", "{0}: recognition error: {1}"),
         ["RecordStart"] = ("Записать", "Record"),
         ["RecordOpen"] = ("Идёт запись", "Recording"),
+        ["RecordInGroup"] = ("Записать в «{0}»", "Record to «{0}»"),
+        ["Settings"] = ("Настройки", "Settings"),
+        ["More"] = ("Ещё", "More"),
+        ["NewGroupShort"] = ("Новая группа", "New group"),
+        ["RedoSummary"] = ("Пересоздать итоги", "Redo the summary"),
+        ["RedoSummaryAsk"] = ("Итоги будут написаны заново по тексту встречи, нынешние заменятся. Это расходует лимит тарифа.", "The summary is written again from the meeting text and replaces the current one. This uses your plan's limit."),
+        ["RedoSummaryGo"] = ("Пересоздать", "Redo"),
+        ["RedoEmail"] = ("Написать письмо заново", "Write the email again"),
+        ["RedoEmailAsk"] = ("Письмо будет написано заново, нынешнее заменится. Это расходует лимит тарифа.", "The email is written again and replaces the current one. This uses your plan's limit."),
+        ["StepSignIn"] = ("Войти в аккаунт", "Sign in"),
+        ["StepSignInHint"] = ("Без входа Replio записывает звук, но не превращает его в текст.", "Without signing in Replio records sound but does not turn it into text."),
+        ["StepSignInButton"] = ("Войти", "Sign in"),
+        ["StepSigningIn"] = ("Ждём подтверждения на сайте…", "Waiting for the confirmation on the site…"),
+        ["StepMore"] = ("Дополнительно", "Optional"),
+        ["ListenExplainTitle"] = ("Что делает «Слушать звонок»", "What «Listen to calls» does"),
+        ["ListenExplainText"] = ("Android разрешает записывать разговор рядом со звонком только так. Служба Replio держит микрофон во время звонка, показывает кнопку Replio поверх звонилки и делает снимок экрана, только когда вы сами нажмёте «Снимок».\n\nОна не читает текст на экране, ничего не нажимает за вас и не передаёт ничего, кроме записи встречи.\n\nВ списке выберите «Replio: слушать звонок» и включите.", "Android lets an app record a conversation next to a call only this way. Replio's service keeps the microphone during the call, shows the Replio button over the dialer and takes a screenshot only when you tap «Screenshot».\n\nIt does not read the text on the screen, does not tap anything for you and sends nothing but the meeting recording.\n\nIn the list choose «Replio: listen to calls» and turn it on."),
+        ["ListenExplainGo"] = ("Открыть настройки", "Open settings"),
+        ["NotNow"] = ("Не сейчас", "Not now"),
+        ["DataSync"] = ("Данные и синхронизация", "Data and sync"),
         ["NavHome"] = ("Главная", "Home"),
         ["SessionTitle"] = ("Сессия", "Session"),
         ["MonitorLaggingBad"] = ("Телефон не успевает: текст сильно запаздывает", "The phone can't keep up: the text is far behind"),
@@ -163,7 +182,7 @@ public sealed class MobileText : System.ComponentModel.INotifyPropertyChanged
     /// <summary>Phone wording for shared texts that speak of dragging, Ctrl+V or the mouse (see LocalizationService).</summary>
     private static readonly Dictionary<string, (string Ru, string En)> SharedOverrides = new()
     {
-        ["TopicNoSessions"] = ("В группе пока нет сессий. Запишите разговор кнопкой «Записать» или перенесите сессию в группу кнопкой «⋯» на её карточке.", "No sessions in this group yet. Record a conversation with «Record» or move a session here with «⋯» on its card."),
+        ["TopicNoSessions"] = ("В группе пока нет сессий. Запишите разговор кнопкой «Записать» или перенесите сюда сессию: нажмите на её карточку и подержите.", "No sessions in this group yet. Record a conversation with «Record» or move a session here: press and hold its card."),
         ["KnowledgeListHint"] = ("Добавьте документы, аудио, видео, папку или свой текст кнопками выше. Replio разберёт их в Markdown (речь из аудио и видео станет текстом) и будет использовать в сводке, ответах и графе.", "Add documents, audio, video, a folder or your own text with the buttons above. Replio turns them into Markdown (speech in audio and video becomes text) and uses them in the summary, answers and graph."),
     };
 

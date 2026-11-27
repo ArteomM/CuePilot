@@ -283,6 +283,56 @@ public class MainActivity : AvaloniaMainActivity<App>
         CallAssistant.Instance.NotifyChanged();
     }
 
+    /// <summary>
+    /// Opens a web page inside Replio's task, as a Custom Tab of the browser where it supports them: «Назад» comes
+    /// back to Replio, and after signing in Replio returns by itself (<see cref="ReturnFromBrowser"/>). Other
+    /// links, and phones without a running Replio screen, go to the browser as before.
+    /// </summary>
+    public static void OpenLink(Context fallback, string uri)
+    {
+        if (Current is not { } activity || !uri.StartsWith("https://", StringComparison.OrdinalIgnoreCase))
+        {
+            OpenUri(fallback, uri);
+            return;
+        }
+
+        try
+        {
+            var intent = new Intent(Intent.ActionView, global::Android.Net.Uri.Parse(uri));
+            // The Custom Tabs protocol without the AndroidX library: an empty session and the toolbar colour.
+            var extras = new Bundle();
+            extras.PutBinder("android.support.customtabs.extra.SESSION", null);
+            intent.PutExtras(extras);
+            intent.PutExtra("android.support.customtabs.extra.TOOLBAR_COLOR", global::Android.Graphics.Color.ParseColor("#0E1116").ToArgb());
+            intent.PutExtra("android.support.customtabs.extra.TITLE_VISIBILITY", 1);
+            activity.StartActivity(intent);
+        }
+        catch (Exception)
+        {
+            OpenUri(fallback, uri);
+        }
+    }
+
+    /// <summary>Signed in on the site: Replio comes back over the page (it was opened in Replio's own task).</summary>
+    public void ReturnFromBrowser()
+    {
+        if (IsInForeground)
+        {
+            return;
+        }
+
+        try
+        {
+            var intent = new Intent(this, typeof(MainActivity));
+            intent.AddFlags(ActivityFlags.SingleTop | ActivityFlags.ReorderToFront);
+            StartActivity(intent);
+        }
+        catch (Exception ex)
+        {
+            PhonePlatform.Log("[account] Could not come back from the browser: " + ex.Message);
+        }
+    }
+
     /// <summary>Opens a link or a file outside the app (a browser, a player).</summary>
     public static void OpenUri(Context context, string uri)
     {
