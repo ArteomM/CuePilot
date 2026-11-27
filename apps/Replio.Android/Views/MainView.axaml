@@ -1505,7 +1505,7 @@
                                 <Border Classes="settingsCard">
                                     <StackPanel>
                                         <TextBlock Classes="section" Text="Replio" />
-                                        <TextBlock FontSize="15" FontWeight="SemiBold" Foreground="{DynamicResource EchoTextBrush}" Text="{Binding AppVersion}" />
+                                        <TextBlock FontSize="15" FontWeight="SemiBold" Foreground="{DynamicResource EchoTextBrush}" Text="{Binding PhoneVersionText}" />
                                         <Button Margin="0,12,0,0" Height="44" HorizontalAlignment="Stretch" Click="WhatsNew_OnClick" Content="{Binding [WhatsNewShort], Source={x:Static platform:MobileText.Instance}}" />
                                     </StackPanel>
                                 </Border>

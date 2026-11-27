@@ -20,6 +20,26 @@ public partial class MainViewModel
     public static string ImportsDirectory => Path.Combine(
         Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "Replio", "imports");
 
+    /// <summary>«1.1.4 (113)»: the version with the build number, so the phone shows which APK is installed.</summary>
+    public string PhoneVersionText { get; } = BuildPhoneVersionText();
+
+    private static string BuildPhoneVersionText()
+    {
+        try
+        {
+            global::Android.Content.Context context = global::Android.App.Application.Context;
+#pragma warning disable CA1422, CS0618 // Older calls kept for Android 8 and 9.
+            global::Android.Content.PM.PackageInfo? info = context.PackageManager?.GetPackageInfo(context.PackageName ?? string.Empty, 0);
+            long build = info == null ? 0 : OperatingSystem.IsAndroidVersionAtLeast(28) ? info.LongVersionCode : info.VersionCode;
+#pragma warning restore CA1422, CS0618
+            return build > 0 ? $"{AppVersion} ({build})" : AppVersion;
+        }
+        catch (Exception)
+        {
+            return AppVersion;
+        }
+    }
+
     private partial IFilteredListView CreateFilteredListView(
         ObservableCollection<SessionSummary> source,
         Predicate<object> filter,

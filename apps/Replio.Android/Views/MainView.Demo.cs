@@ -107,6 +107,14 @@ public partial class MainView
                 case "callhint":
                     Execute(_viewModel.GoHomeCommand);
                     break;
+#if REPLIO_DEMO
+                case "holdpull":
+                case "holdlift":
+                    Execute(_viewModel.GoHomeCommand);
+                    _viewModel.SelectedTopicItem = _viewModel.TopicItems.FirstOrDefault();
+                    DemoTouch(pull: page == "holdpull");
+                    break;
+#endif
                 case "actions":
                     Execute(_viewModel.GoHomeCommand);
                     _viewModel.SelectedTopicItem = _viewModel.TopicItems.FirstOrDefault();

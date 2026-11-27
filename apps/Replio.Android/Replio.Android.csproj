@@ -21,7 +21,7 @@
     <ApplicationId>ru.replio.app</ApplicationId>
     <ApplicationTitle>Replio</ApplicationTitle>
     <!-- ApplicationVersion must grow with every release so Android installs the APK over the previous one. -->
-    <ApplicationVersion>112</ApplicationVersion>
+    <ApplicationVersion>113</ApplicationVersion>
     <ApplicationDisplayVersion>1.1.4</ApplicationDisplayVersion>
     <Version>1.1.4</Version>
     <AssemblyVersion>1.1.4.0</AssemblyVersion>
