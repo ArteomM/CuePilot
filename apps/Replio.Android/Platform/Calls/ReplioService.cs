@@ -1,6 +1,7 @@
 using Android.App;
 using Android.Content;
 using Android.Content.PM;
+using Android.Graphics.Drawables;
 using Android.OS;
 using Android.Runtime;
 
@@ -21,9 +22,16 @@ public class ReplioService : Service
     public const string ActionHint = "ru.replio.app.HINT";
     public const string ActionMicOn = "ru.replio.app.MIC_ON";
     public const string ActionMicOff = "ru.replio.app.MIC_OFF";
+    public const string ActionShowBubble = "ru.replio.app.SHOW_BUBBLE";
 
-    private const string ChannelId = "replio-background";
+    // Three channels, so each can be silenced on its own in the Android settings. The waiting one keeps the id of
+    // the old single channel: what the user set for it stays.
+    private const string WaitingChannelId = "replio-background";
+    private const string RecordingChannelId = "replio-recording";
+    private const string ResultsChannelId = "replio-results";
     private const int NotificationId = 4102;
+    private const int ResultsNotificationId = 4104;
+    private static bool _channelsReady;
     private PowerManager.WakeLock? _wakeLock;
     private bool _microphone;
     private global::Android.Media.Projection.MediaProjection? _projection;
@@ -152,6 +160,9 @@ public class ReplioService : Service
                 break;
             case ActionHint:
                 CallAssistant.Instance.WhatToSay();
+                break;
+            case ActionShowBubble:
+                CallAssistant.Instance.ShowBubbleAgain();
                 break;
             case ActionWatch:
                 StopWhenIdle();
@@ -318,16 +329,37 @@ public class ReplioService : Service
         }
     }
 
-    private Notification BuildNotification()
+    /// <summary>«Ожидание звонка», «Запись разговора» (both quiet) and «Итоги встреч» (a normal notification).</summary>
+    private static void EnsureChannels(NotificationManager? manager)
     {
-        var manager = (NotificationManager?)GetSystemService(NotificationService);
-        if (Build.VERSION.SdkInt >= BuildVersionCodes.O && manager?.GetNotificationChannel(ChannelId) == null)
+        if (_channelsReady || manager == null || Build.VERSION.SdkInt < BuildVersionCodes.O)
         {
-            var channel = new NotificationChannel(ChannelId, CallText.Get("ChannelName"), NotificationImportance.Low);
-            channel.SetShowBadge(false);
-            manager?.CreateNotificationChannel(channel);
+            return;
         }
 
+        try
+        {
+            // Creating an existing channel again only renames it; its sound and importance stay as the user set them.
+            var waiting = new NotificationChannel(WaitingChannelId, CallText.Get("WaitingChannel"), NotificationImportance.Low);
+            waiting.SetShowBadge(false);
+            manager.CreateNotificationChannel(waiting);
+            var recording = new NotificationChannel(RecordingChannelId, CallText.Get("RecordingChannel"), NotificationImportance.Low);
+            recording.SetShowBadge(false);
+            manager.CreateNotificationChannel(recording);
+            var results = new NotificationChannel(ResultsChannelId, CallText.Get("ResultsChannel"), NotificationImportance.Default);
+            results.SetShowBadge(true);
+            manager.CreateNotificationChannel(results);
+            _channelsReady = true;
+        }
+        catch (Exception ex)
+        {
+            PhonePlatform.Log("[service] Channels: " + ex.Message);
+        }
+    }
+
+    private Notification BuildNotification()
+    {
+        EnsureChannels((NotificationManager?)GetSystemService(NotificationService));
         CallAssistant assistant = CallAssistant.Instance;
         string title;
         string text;
@@ -353,7 +385,7 @@ public class ReplioService : Service
             : PendingIntent.GetActivity(this, 0, open, PendingIntentFlags.Immutable | PendingIntentFlags.UpdateCurrent);
 
 #pragma warning disable CA1416, CA1422 // Notification.Builder(context, channel) exists from API 26, the minimum of this app.
-        var builder = new Notification.Builder(this, ChannelId)
+        var builder = new Notification.Builder(this, assistant.IsRecording ? RecordingChannelId : WaitingChannelId)
             .SetContentTitle(title)
             .SetContentText(text)
             .SetSmallIcon(assistant.IsRecording ? Resource.Drawable.ic_stat_mic : Resource.Drawable.ic_stat_replio)
@@ -365,12 +397,17 @@ public class ReplioService : Service
             builder.SetUsesChronometer(true);
             builder.SetWhen(new DateTimeOffset(assistant.RecordingStarted).ToUnixTimeMilliseconds());
             builder.SetShowWhen(true);
-            builder.AddAction(new Notification.Action.Builder(null, CallText.Get("ActionStop"), ServiceIntent(ActionStop, 1)).Build());
-            builder.AddAction(new Notification.Action.Builder(null, CallText.Get("ActionHint"), ServiceIntent(ActionHint, 2)).Build());
+            builder.AddAction(ActionButton(Resource.Drawable.ic_rp_stop, "ActionStop", ServiceIntent(ActionStop, 1)));
+            builder.AddAction(ActionButton(Resource.Drawable.ic_rp_quote, "ActionHint", ServiceIntent(ActionHint, 2)));
         }
         else
         {
-            builder.AddAction(new Notification.Action.Builder(null, CallText.Get("ActionRecord"), ServiceIntent(ActionRecord, 3)).Build());
+            builder.AddAction(ActionButton(Resource.Drawable.ic_rp_mic, "ActionRecord", ServiceIntent(ActionRecord, 3)));
+        }
+
+        if (assistant.BubbleHidden && (assistant.InCall || assistant.IsRecording))
+        {
+            builder.AddAction(ActionButton(Resource.Drawable.ic_rp_open, "ActionShowBubble", ServiceIntent(ActionShowBubble, 4)));
         }
 #pragma warning restore CA1416, CA1422
         if (content != null)
@@ -379,6 +416,91 @@ public class ReplioService : Service
         }
 
         return builder.Build();
+    }
+
+    private Notification.Action ActionButton(int icon, string textKey, PendingIntent intent) =>
+        new Notification.Action.Builder(Icon.CreateWithResource(this, icon), CallText.Get(textKey), intent).Build()!;
+
+    /// <summary>
+    /// «Итоги встречи готовы»: the meeting's name and the start of its summary; a tap opens it in Replio, «Поделиться»
+    /// sends the summary to mail or a messenger.
+    /// </summary>
+    public static void ShowResults(string sessionId, string title, string summary)
+    {
+        Context context = global::Android.App.Application.Context;
+        try
+        {
+            var manager = (NotificationManager?)context.GetSystemService(NotificationService);
+            if (manager == null)
+            {
+                return;
+            }
+
+            EnsureChannels(manager);
+            var open = new Intent(context, typeof(MainActivity));
+            open.PutExtra(MainActivity.OpenSessionExtra, sessionId);
+            open.AddFlags(ActivityFlags.NewTask | ActivityFlags.SingleTop);
+            PendingIntent? openIntent = PendingIntent.GetActivity(context, 5, open, PendingIntentFlags.Immutable | PendingIntentFlags.UpdateCurrent);
+
+            var share = new Intent(Intent.ActionSend);
+            share.SetType("text/plain");
+            share.PutExtra(Intent.ExtraSubject, title);
+            share.PutExtra(Intent.ExtraText, title + "\n\n" + summary.Trim());
+            Intent chooser = Intent.CreateChooser(share, CallText.Get("ResultsShare"))!;
+            chooser.AddFlags(ActivityFlags.NewTask);
+            PendingIntent? shareIntent = PendingIntent.GetActivity(context, 6, chooser, PendingIntentFlags.Immutable | PendingIntentFlags.UpdateCurrent);
+
+            string preview = Preview(summary);
+#pragma warning disable CA1416, CA1422 // Notification.Builder(context, channel) exists from API 26, the minimum of this app.
+            var builder = new Notification.Builder(context, ResultsChannelId)
+                .SetContentTitle(CallText.Get("ResultsTitle"))
+                .SetContentText(title)
+                .SetStyle(new Notification.BigTextStyle().BigText(preview.Length == 0 ? title : title + "\n" + preview))
+                .SetSmallIcon(Resource.Drawable.ic_stat_replio)
+                .SetAutoCancel(true);
+            if (openIntent != null)
+            {
+                builder.SetContentIntent(openIntent);
+                builder.AddAction(new Notification.Action.Builder(Icon.CreateWithResource(context, Resource.Drawable.ic_rp_open), CallText.Get("ResultsOpen"), openIntent).Build());
+            }
+
+            if (shareIntent != null)
+            {
+                builder.AddAction(new Notification.Action.Builder(Icon.CreateWithResource(context, Resource.Drawable.ic_rp_share), CallText.Get("ResultsShare"), shareIntent).Build());
+            }
+#pragma warning restore CA1416, CA1422
+
+            manager.Notify(ResultsNotificationId, builder.Build());
+        }
+        catch (Exception ex)
+        {
+            PhonePlatform.Log("[service] Results notification: " + ex.Message);
+        }
+    }
+
+    /// <summary>The first lines of a summary without its markdown marks, at most about 300 characters.</summary>
+    private static string Preview(string summary)
+    {
+        var lines = new List<string>();
+        int length = 0;
+        foreach (string raw in summary.Split('\n'))
+        {
+            string line = raw.Trim().TrimStart('#', '*', '-', '•', ' ').Replace("**", string.Empty).Trim();
+            if (line.Length == 0)
+            {
+                continue;
+            }
+
+            lines.Add(line);
+            length += line.Length;
+            if (length > 300 || lines.Count >= 4)
+            {
+                break;
+            }
+        }
+
+        string text = string.Join("\n", lines);
+        return text.Length > 320 ? text[..317] + "…" : text;
     }
 
     private PendingIntent ServiceIntent(string action, int code)

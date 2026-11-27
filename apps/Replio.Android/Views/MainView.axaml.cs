@@ -615,6 +615,8 @@ public partial class MainView : UserControl
     private void UpdateLive()
     {
         bool live = IsLiveSession && _viewModel.SelectedMainPage == "Session";
+        // The live meeting keeps the screen on, like a navigator: the timer and hints stay readable.
+        MainActivity.Current?.SetKeepScreenOn(live && _viewModel.IsCapturing);
         if (!live)
         {
             _liveTimer.Stop();

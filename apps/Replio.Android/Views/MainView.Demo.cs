@@ -12,6 +12,7 @@ namespace Replio.Android.Views;
 public partial class MainView
 {
     private static string? _pendingDemo;
+    private static string? _pendingSession;
     private bool _readyLogged;
     private bool _demoLive;
 
@@ -32,6 +33,12 @@ public partial class MainView
             Dispatcher.UIThread.Post(() =>
             {
                 PhonePlatform.Log($"[ui] ready {Bounds.Width:0}x{Bounds.Height:0}");
+                if (_pendingSession is { } session)
+                {
+                    _pendingSession = null;
+                    OpenSessionById(session);
+                }
+
                 if (_pendingDemo is { } page)
                 {
                     _pendingDemo = null;
@@ -51,6 +58,37 @@ public partial class MainView
         else
         {
             _pendingDemo = page;
+        }
+    }
+
+    /// <summary>«Итоги встречи готовы» was tapped: that meeting opens (once the screen exists).</summary>
+    public static void OpenSessionFromOutside(string sessionId)
+    {
+        if (Current is { _readyLogged: true } view)
+        {
+            Dispatcher.UIThread.Post(() => view.OpenSessionById(sessionId));
+        }
+        else
+        {
+            _pendingSession = sessionId;
+        }
+    }
+
+    private void OpenSessionById(string sessionId)
+    {
+        try
+        {
+            if (_viewModel.IsCapturing || _viewModel.PhoneFindSession(sessionId) is not SessionSummary session)
+            {
+                return;
+            }
+
+            CloseDialog();
+            Execute(_viewModel.OpenSessionCommand, session);
+        }
+        catch (Exception ex)
+        {
+            PhonePlatform.Log("[ui] Meeting could not be opened: " + ex.Message);
         }
     }
 
@@ -105,6 +143,8 @@ public partial class MainView
                     break;
                 case "callmenu":
                 case "callhint":
+                case "callstart":
+                case "callmenuidle":
                     Execute(_viewModel.GoHomeCommand);
                     break;
                 case "actions":

@@ -73,13 +73,15 @@ adb shell "input motionevent DOWN 540 1050; sleep 0.55; input motionevent UP 540
 sleep 2
 shot restlift
 
-for page in callmenu callhint; do
+# callstart: the Replio button as a call begins; callmenu: its compact menu at the top during a recording;
+# callhint: the hint card with one more answer waiting; callmenuidle: the menu before a recording.
+for page in callstart callmenu callhint callmenuidle; do
   adb shell am start -n "$ACTIVITY" --es replio_demo "$page" > /dev/null
   sleep 5
   shot "$page"
   if [ "$page" = callmenu ]; then
-    # The menu over a call closes when pulled down by a tile (callmenudrag: only the Replio button is left).
-    adb shell input swipe 787 1300 787 2200 250
+    # The menu closes when pushed up by a tile (callmenudrag: only the Replio button is left, «menu pushed up» in the log).
+    adb shell input swipe 540 520 540 60 250
     sleep 2
     shot callmenudrag
   fi
@@ -92,7 +94,7 @@ adb logcat -d > logcat.txt
 echo "----- logcat (app, runtime, crashes) -----"
 grep -E "FATAL EXCEPTION|AndroidRuntime|monodroid|mono-rt|DOTNET|Avalonia|Replio|$PACKAGE" logcat.txt | grep -v "AiAiEcho\|FontLog\|ImsResolver\|CarrierSvc" | tail -150
 echo "----- touch -----"
-grep -E "\[ui\] (long press|sheet pulled)|\[calls\] menu pulled|\[demo\] page" logcat.txt | tail -30 || true
+grep -E "\[ui\] (long press|sheet pulled)|\[calls\] menu pu(lled|shed)|\[demo\] page" logcat.txt | tail -30 || true
 echo "----- self-test -----"
 grep -F "[selftest]" logcat.txt || echo "(no self-test lines)"
 

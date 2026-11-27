@@ -25,10 +25,44 @@ namespace Replio.Android;
     DataMimeTypes = new[] { "audio/*", "video/*" })]
 public class MainActivity : AvaloniaMainActivity<App>
 {
+    /// <summary>Started by a tap on the call after a reboot: the screen comes up only to create Replio, then steps back.</summary>
+    public const string BackgroundExtra = "replio_background";
+
+    /// <summary>A meeting to open (the «Итоги встречи готовы» notification).</summary>
+    public const string OpenSessionExtra = "replio_open_session";
+
     private const int PermissionRequestCode = 4101;
     private TaskCompletionSource<bool>? _permissionRequest;
+    private bool _returnToCall;
+    private bool _keepScreenOn;
 
     public static MainActivity? Current { get; private set; }
+
+    /// <summary>Replio's screen is what the user sees now (no notification for what they already see).</summary>
+    public static bool IsInForeground { get; private set; }
+
+    /// <summary>
+    /// Creates the app screen out of sight: after a reboot the button on a call works before Replio was opened. The
+    /// screen steps back to the call as soon as it is ready. False when Android refused to start it.
+    /// </summary>
+    public static bool WakeInBackground()
+    {
+        Context context = global::Android.App.Application.Context;
+        var intent = new Intent(context, typeof(MainActivity));
+        intent.PutExtra(BackgroundExtra, true);
+        intent.AddFlags(ActivityFlags.NewTask | ActivityFlags.NoAnimation);
+        try
+        {
+            // The accessibility service may start a screen from the background; so may an app with the overlay permission.
+            (ReplioAccessibilityService.Instance as Context ?? context).StartActivity(intent);
+            return true;
+        }
+        catch (Exception ex)
+        {
+            PhonePlatform.Log("[calls] The app screen could not be started: " + ex.Message);
+            return false;
+        }
+    }
 
     protected override void OnCreate(Bundle? savedInstanceState)
     {
@@ -51,6 +85,7 @@ public class MainActivity : AvaloniaMainActivity<App>
         // Replio stays in the background from the first start on and waits for calls.
         ReplioService.Start(this);
         HandleShared(Intent);
+        HandleLaunchExtras(Intent);
         ShowDemoPage(Intent);
     }
 
@@ -64,7 +99,51 @@ public class MainActivity : AvaloniaMainActivity<App>
     {
         base.OnNewIntent(intent);
         HandleShared(intent);
+        HandleLaunchExtras(intent);
         ShowDemoPage(intent);
+    }
+
+    private void HandleLaunchExtras(Intent? intent)
+    {
+        if (intent == null)
+        {
+            return;
+        }
+
+        if (intent.GetBooleanExtra(BackgroundExtra, false))
+        {
+            _returnToCall = true;
+            intent.RemoveExtra(BackgroundExtra);
+        }
+
+        string? session = intent.GetStringExtra(OpenSessionExtra);
+        if (!string.IsNullOrEmpty(session))
+        {
+            intent.RemoveExtra(OpenSessionExtra);
+            Views.MainView.OpenSessionFromOutside(session);
+        }
+    }
+
+    /// <summary>The live meeting screen keeps the phone awake: the timer and hints stay readable on a long call.</summary>
+    public void SetKeepScreenOn(bool on)
+    {
+        if (on == _keepScreenOn)
+        {
+            return;
+        }
+
+        _keepScreenOn = on;
+        RunOnUiThread(() =>
+        {
+            if (on)
+            {
+                Window?.AddFlags(global::Android.Views.WindowManagerFlags.KeepScreenOn);
+            }
+            else
+            {
+                Window?.ClearFlags(global::Android.Views.WindowManagerFlags.KeepScreenOn);
+            }
+        });
     }
 
     /// <summary>Emulator build of CI only: «--es replio_demo live» opens that page for a screenshot.</summary>
@@ -110,9 +189,29 @@ public class MainActivity : AvaloniaMainActivity<App>
     {
         base.OnResume();
         Current = this;
+        IsInForeground = true;
+        if (_returnToCall)
+        {
+            // Woken by a tap on the call: once the screen exists (and nothing needs a permission answer), back to the call.
+            _returnToCall = false;
+            Window?.DecorView?.PostDelayed(() =>
+            {
+                if (HasMicrophonePermission && !IsFinishing)
+                {
+                    MoveTaskToBack(true);
+                }
+            }, 1200);
+        }
+
         // Back from the system settings (accessibility, battery): the setup card shows what is on now.
         CallAssistant.Instance.NotifyChanged();
         CallAssistant.Instance.ImportPhoneRecordings();
+    }
+
+    protected override void OnPause()
+    {
+        IsInForeground = false;
+        base.OnPause();
     }
 
     protected override void OnDestroy()

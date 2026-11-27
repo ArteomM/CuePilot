@@ -190,7 +190,9 @@ jobs:
 
   release:
     # The latest APK on the «android-latest» release page, only after it started on the emulator without a crash.
+    # The UX-audit branch publishes only when started by hand («Run workflow»), after Arteom's go.
     needs: [build, smoke]
+    if: github.event_name == 'workflow_dispatch' || github.ref_name != 'claude/project-thread-uxbmbt'
     runs-on: ubuntu-latest
     steps:
       - uses: actions/download-artifact@v4

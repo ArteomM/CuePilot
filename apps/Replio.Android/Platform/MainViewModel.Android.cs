@@ -65,6 +65,26 @@ public partial class MainViewModel
 
     internal void ShowPhoneDataFolderStatus(string text) => SetDataFolderStatus(text);
 
+    /// <summary>The meeting being recorded now; empty when nothing records.</summary>
+    internal string PhoneRecordingSessionId => IsCapturing ? _currentSessionId : string.Empty;
+
+    /// <summary>Something was already heard in the recording (a hint about nothing would be made up).</summary>
+    internal bool PhoneRecordingHasSpeech => _sessionLifecycleService.GetById(PhoneRecordingSessionId)?.Transcript.Count > 0;
+
+    internal SessionSummary? PhoneFindSession(string sessionId) => _sessionLifecycleService.GetById(sessionId);
+
+    /// <summary>
+    /// A hint asked over a call is about that call: during a recording the meeting being recorded becomes the
+    /// selected one, even when the user had opened an older meeting in the app.
+    /// </summary>
+    internal void PhoneSelectRecordingSession()
+    {
+        if (IsCapturing && _currentSessionId.Length > 0 && SelectedSession?.Id != _currentSessionId)
+        {
+            OpenActiveSession();
+        }
+    }
+
     /// <summary>The speech recognition a recording would start with now: the microphone test in Settings uses it.</summary>
     public CaptureStartOptions BuildSpeechTestOptions()
     {

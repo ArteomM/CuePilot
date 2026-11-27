@@ -21,6 +21,7 @@ internal static class CallUi
     public static readonly Color Muted = Color.ParseColor("#9AA5B5");
     public static readonly Color Mint = Color.ParseColor("#5EF0C1");
     public static readonly Color Red = Color.ParseColor("#E5484D");
+    public static readonly Color Amber = Color.ParseColor("#E09B1A");
 
     private static readonly Dictionary<string, Typeface?> Fonts = [];
 
@@ -70,6 +71,26 @@ internal static class CallUi
         label.SetTypeface(Font(context, weight), TypefaceStyle.Normal);
         label.SetLineSpacing(0, 1.15f);
         return label;
+    }
+
+    /// <summary>A Material icon from Resources/drawable (white vectors), tinted.</summary>
+    public static ImageView Icon(Context context, int drawable, Color tint)
+    {
+        var icon = new ImageView(context);
+        icon.SetImageResource(drawable);
+        icon.ImageTintList = ColorStateList.ValueOf(tint);
+        icon.SetScaleType(ImageView.ScaleType.FitCenter);
+        return icon;
+    }
+
+    /// <summary>A round icon button, 44 dp (the touch area) with a 22 dp icon and a spoken name.</summary>
+    public static FrameLayout IconButton(Context context, int drawable, Color tint, string description, Action click)
+    {
+        var button = new FrameLayout(context) { Clickable = true, ContentDescription = description };
+        button.AddView(Icon(context, drawable, tint), new FrameLayout.LayoutParams(Dp(context, 22), Dp(context, 22), GravityFlags.Center));
+        button.Click += (_, _) => click();
+        Pressable(button, 22);
+        return button;
     }
 
     /// <summary>A flat button: a rounded tile with a label, at least 48 dp tall.</summary>
