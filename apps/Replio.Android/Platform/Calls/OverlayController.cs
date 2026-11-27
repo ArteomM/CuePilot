@@ -1579,6 +1579,12 @@ internal sealed class OverlayController
                 case MotionEventActions.Cancel:
                     if (_dragging)
                     {
+                        if (e.ActionMasked == MotionEventActions.Up)
+                        {
+                            // The lift carries the last stretch of a quick flick (a slow phone can deliver few moves).
+                            Drag(e);
+                        }
+
                         _dragging = false;
                         float density = Resources?.DisplayMetrics?.Density ?? 1f;
                         if (-TranslationY > Height * 0.25f || -_speed / density > FlickDpPerMs)
