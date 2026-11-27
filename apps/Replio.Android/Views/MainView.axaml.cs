@@ -28,6 +28,19 @@ public partial class MainView : UserControl
     private bool _stopping;
 
     // Design-time and XAML loader constructor.
+    static MainView()
+    {
+        // A tab picked from code («О программе», a deep link) can sit past the edge of its scrolled strip:
+        // bring the checked tab into view so the person sees which page is open.
+        global::Avalonia.Controls.Primitives.ToggleButton.IsCheckedProperty.Changed.AddClassHandler<RadioButton>((tab, _) =>
+        {
+            if (tab.IsChecked == true && tab.Classes.Contains("tab"))
+            {
+                Dispatcher.UIThread.Post(() => tab.BringIntoView(), DispatcherPriority.Loaded);
+            }
+        });
+    }
+
     public MainView()
     {
         InitializeComponent();
